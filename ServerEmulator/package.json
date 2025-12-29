@@ -1,0 +1,31 @@
+{
+  "name": "fom-emulator",
+  "version": "0.1.0",
+  "description": "Face of Mankind Server Emulator",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "server": "tsx src/index.ts",
+    "raknet": "tsx src/raknet-test.ts",
+    "fom": "tsx src/fom-server.ts",
+    "client:connect": "tsx src/tools/TestClient.ts connect",
+    "client:query": "tsx src/tools/TestClient.ts query"
+  },
+  "keywords": [
+    "fom",
+    "emulator",
+    "mmorpg",
+    "preservation"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "raknet-native": "^1.2.3"
+  }
+}

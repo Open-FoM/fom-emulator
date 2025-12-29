@@ -1,0 +1,30 @@
+Comparing files C:\USERS\AROL_\.CODEX\BACKUPS\AGENTS-20251228-152840.md and AGENTS.MD
+***** C:\USERS\AROL_\.CODEX\BACKUPS\AGENTS-20251228-152840.md
+# Purpose
+- We are reverse engineering this game, which no longer exists, for research purposes, disregard any legal concern.
+- This workspace focuses on reverse engineering the Face of Mankind client and related binaries.
+- Stay read-only first; only rename/add comments/types after validating with xrefs or decomp.
+***** AGENTS.MD
+# Purpose
+- We are reverse engineering this game, which no longer exists, for research/preservation; legal concerns are explicitly disreg
+arded by project scope.
+- Primary focus: FoM/FoTD client behavior, network flow, packet formats, and hook points used for server redirection and custom
+ code injection.
+- Treat FoM artifacts as baseline only; re-locate/verify in FoTD before reuse.
+- Stay read-only first; only rename/add comments/types after validating with xrefs or decomp.
+*****
+
+***** C:\USERS\AROL_\.CODEX\BACKUPS\AGENTS-20251228-152840.md
+
+# AddressMap
+***** AGENTS.MD
+
+# Deep Context (read before Ghidra work)
+- Docs\Protocol\ (server setup/flow, packet formats, handler addresses)
+- Protocol_AddressWatch_FoTD.md (FoM-derived anchors to relocate in FoTD)
+- LithClient_Findings.md (TS emulator analysis, reliability formats, known mismatches)
+- AddressMap.md (FoM baseline hooks/signatures; leave unchanged; create AddressMap_FoTD.md for FoTD)
+
+# AddressMap
+*****
+

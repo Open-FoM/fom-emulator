@@ -1,0 +1,13 @@
+Comparing files C:\FOM_DECOMPILATION\DOCS\NOTES\AGENTS_20251228-230305.md and C:\FOM_DECOMPILATION\AGENTS.MD
+***** C:\FOM_DECOMPILATION\DOCS\NOTES\AGENTS_20251228-230305.md
+- ServerEmulator_Findings.md (TS emulator analysis, reliability formats, known mismatches)
+- AddressMap.md (FoM baseline hooks/signatures; leave unchanged; create AddressMap_FoTD.md for FoTD)
+***** C:\FOM_DECOMPILATION\AGENTS.MD
+- ServerEmulator_Findings.md (TS emulator analysis, reliability formats, known mismatches)
+- Docs\Specs\FoTD_Emulator.md (emulator plan + architecture)
+- Docs\Projects\FoTD_Emulator.md (milestones + decision log)
+- Docs\Logs\FoTD_Emulator.md (active task checklist)
+- ServerEmulator\ (emulator codebase to align with FoTD)
+- AddressMap.md (FoM baseline hooks/signatures; leave unchanged; create AddressMap_FoTD.md for FoTD)
+*****
+

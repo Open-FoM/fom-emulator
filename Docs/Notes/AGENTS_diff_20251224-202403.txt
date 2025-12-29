@@ -1,0 +1,13 @@
+Comparing files C:\USERS\AROL_\.CODEX\BACKUPS\AGENTS-20251224-202314.md and AGENTS.MD
+***** C:\USERS\AROL_\.CODEX\BACKUPS\AGENTS-20251224-202314.md
+    7:  
+    8:  # Targets (local paths)
+***** AGENTS.MD
+    7:  
+    8:  # AddressMap
+    9:  - On session start, open `AddressMap.md` in repo root.
+   10:  - Update `AddressMap.md` whenever new hook targets or renames are confirmed.
+   11:  
+   12:  # Targets (local paths)
+*****
+

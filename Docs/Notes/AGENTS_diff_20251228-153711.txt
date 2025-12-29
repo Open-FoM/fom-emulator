@@ -1,0 +1,10 @@
+Comparing files C:\USERS\AROL_\.CODEX\BACKUPS\AGENTS-20251228-153657.md and AGENTS.MD
+***** C:\USERS\AROL_\.CODEX\BACKUPS\AGENTS-20251228-153657.md
+- catalog\ (CRes_*_items.csv / CRes_*_categories.csv item tables; derived from CRes.dll)
+
+***** AGENTS.MD
+- catalog\ (CRes_*_items.csv / CRes_*_categories.csv item tables; derived from CRes.dll)
+- FoTD\Resources\ (CRes.dll/CShell.dll live here; catalog + client resource handling)
+
+*****
+

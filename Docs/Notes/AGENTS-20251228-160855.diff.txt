@@ -1,0 +1,4 @@
+=> - On session start, open `AddressMap.md` in repo root and `AddressMap_FoTD.md` when working FoTD.
+=> - For FoTD work, continuously map/record confirmed addresses in `AddressMap_FoTD.md` (keep `AddressMap.md` unchanged baseline).
+<= - On session start, open `AddressMap.md` in repo root.
+<= - Update `AddressMap.md` whenever new hook targets or renames are confirmed.

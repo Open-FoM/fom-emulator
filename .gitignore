@@ -1,0 +1,38 @@
+# deny all by default
+*
+.*
+
+!.gitignore
+
+# root text/batch files
+!/*.txt
+!/*.md
+!/*.bat
+
+# main folders to include
+!/catalog/
+!/catalog/**
+!/Docs/
+!/Docs/**
+!/HookInjector/
+!/HookInjector/**
+/HookInjector/build/
+/HookInjector/build/**
+!/ServerEmulator/
+!/ServerEmulator/**
+
+# allow FoTD subtree for IDA files only
+!/FoTD/
+!/FoTD/**/
+!/FoTD/**/*.i64
+!/FoTD/**/*.idb
+!/FoTD/**/*.id0
+!/FoTD/**/*.id1
+!/FoTD/**/*.id2
+!/FoTD/**/*.nam
+!/FoTD/**/*.til
+
+# optional root files to ignore for now
+/launch_with_log.out.txt
+/start_server_forcelogin.bat
+/start_server_lithdebug.bat

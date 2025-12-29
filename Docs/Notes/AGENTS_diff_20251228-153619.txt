@@ -1,0 +1,11 @@
+Comparing files C:\USERS\AROL_\.CODEX\BACKUPS\AGENTS-20251228-153607.md and AGENTS.MD
+***** C:\USERS\AROL_\.CODEX\BACKUPS\AGENTS-20251228-153607.md
+- C:\FoM_Decompilation\FoTD\server.dll
+
+***** AGENTS.MD
+- C:\FoM_Decompilation\FoTD\server.dll
+- C:\FoM_Decompilation\FoTD\Resources\CRes.dll
+- C:\FoM_Decompilation\FoTD\Resources\CShell.dll
+
+*****
+
