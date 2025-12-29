@@ -60,6 +60,7 @@ class FoMServer {
       analysis: analysisEnabled,
       consoleRepeatSuppressMs,
     });
+    PacketLogger.setGlobal(this.packetLogger);
     
     this.setupHandlers();
   }

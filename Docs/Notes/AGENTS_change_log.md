@@ -84,3 +84,12 @@
 - Diff: Docs\Notes\AGENTS_diff_20251228-230305.txt (Tools/diff.ps1 missing; used fc.exe)
 - Rollback: copy "C:\Users\arol_\.codex\backups\AGENTS-20251228-230305.md" AGENTS.md
 - Docs/AGENTS.md update: N/A (no Docs/AGENTS.md found)
+## 2025-12-29 04:44:39
+- Intended delta: Add Git Integration (Always-On) guidance to keep work committed and avoid redundancy.
+- Files: AGENTS.md
+- Checksum: C:\FoM_Decompilation\Docs\Notes\AGENTS_20251229-044302.sha256.txt
+- Backup: C:\Users\arol_\.codex\backups\AGENTS-20251229-044302.md
+- Notes copy: C:\FoM_Decompilation\Docs\Notes\AGENTS_20251229-044302.md
+- Diff: Docs\Notes\AGENTS_diff_20251229-044302.txt (Tools/diff.ps1 missing; used fc.exe)
+- Rollback: copy "C:\Users\arol_\.codex\backups\AGENTS-20251229-044302.md" AGENTS.md
+- Docs/AGENTS.md update: N/A (no Docs/AGENTS.md found)

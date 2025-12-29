@@ -89,6 +89,10 @@ Notes:
 | 0x10190D70 | 0x00190D70 | CNetworkMgrClient_HandlePacket_ID_MOVE_ITEMS | Handles move-items packet; deep inventory mutation | string + decomp | high |
 | 0x1018F110 | 0x0018F110 | HandlePacket_ID_USE_ITEM | Use-item packet handling (ID -92) | dispatch + decomp | high |
 | 0x10199A40 | 0x00199A40 | CNetworkMgrClient_DispatchPacketId | Packet ID switch/dispatcher (includes items + weapon unload) | decomp | high |
+| 0x1018E1F0 | 0x0018E1F0 | HandlePacket_ID_6D_LoginResponse | Login response handler (packet ID 0x6D) | dispatch + disasm | high |
+| 0x1018DCE0 | 0x0018DCE0 | Packet_6D_Read | Login response bitstream parse (InitBitStream + ReadBitsCompressed) | disasm | med |
+| 0x1018E340 | 0x0018E340 | HandlePacket_ID_73 | Handler for packet ID 0x73 (post-login?) | dispatch + disasm | low |
+| 0x1018DDA0 | 0x0018DDA0 | Packet_73_Read | ID 0x73 bitstream parse (uses Read_u32c/Read_u16c) | disasm | med |
 | 0x10190B90 | 0x00190B90 | HandlePacket_ID_ITEMS_CHANGED | Handler for Packet_ID_ITEMS_CHANGED (ID -126) | dispatch + decomp | high |
 | 0x10192D40 | 0x00192D40 | HandlePacket_ID_ITEMS_REMOVED | Handler for Packet_ID_ITEMS_REMOVED (ID -127) | dispatch + decomp | high |
 | 0x10197030 | 0x00197030 | HandlePacket_ID_ITEMS_ADDED | Handler for Packet_ID_ITEMS_ADDED (ID -109) | dispatch + decomp | high |
@@ -101,6 +105,7 @@ Notes:
 | 0x1018E8F0 | 0x0018E8F0 | HandlePacket_ID_NAME_CHANGE | Handler for Packet_ID_NAME_CHANGE (ID -114) | dispatch + decomp | med |
 | 0x10196CE0 | 0x00196CE0 | HandlePacket_ID_BACKPACK_CONTENTS | Handler for Packet_ID_BACKPACK_CONTENTS (ID -110) | dispatch + decomp | med |
 | 0x10193740 | 0x00193740 | HandlePacket_ID_MAIL | Handler for Packet_ID_MAIL (ID -116) | dispatch + decomp | med |
+| 0x1013DE40 | 0x0013DE40 | CWindowSendMail_OnCommand | Send‑mail UI handler; validates recipient/subject/body then builds + sends Packet_ID_MAIL | decomp | med |
 | 0x10182CC0 | 0x00182CC0 | HandlePacket_ID_FRIENDS | Handler for Packet_ID_FRIENDS (ID -105) | dispatch + decomp | med |
 | 0x10197F90 | 0x00197F90 | HandlePacket_ID_STORAGE | Handler for Packet_ID_STORAGE (ID -103) | dispatch + decomp | med |
 | 0x10195DA0 | 0x00195DA0 | HandlePacket_ID_MINING | Handler for Packet_ID_MINING (ID -102) | dispatch + decomp | med |
@@ -113,7 +118,7 @@ Notes:
 | 0x1018F480 | 0x0018F480 | HandlePacket_ID_A6 | Handler for Packet_ID_A6 (ID -90; name TBD) | dispatch + disasm | med |
 | 0x10192690 | 0x00192690 | HandlePacket_ID_A8 | Handler for Packet_ID_A8 (ID -88; name TBD) | dispatch + disasm | med |
 | 0x10199050 | 0x00199050 | HandlePacket_ID_A9 | Handler for Packet_ID_A9 (ID -87; name TBD) | dispatch + disasm | med |
-| 0x10198840 | 0x00198840 | HandlePacket_ID_AA | Handler for Packet_ID_AA (ID -86; name TBD) | dispatch + disasm | med |
+| 0x10198840 | 0x00198840 | HandlePacket_ID_PLAYER2PLAYER | Handler for Packet_ID_PLAYER2PLAYER (ID -86) | dispatch + disasm + RTTI | med |
 | 0x10195EE0 | 0x00195EE0 | HandlePacket_ID_AC | Handler for Packet_ID_AC (ID -84; name TBD) | dispatch + disasm | med |
 | 0x101994B0 | 0x001994B0 | HandlePacket_ID_AF | Handler for Packet_ID_AF (ID -81; name TBD) | dispatch + disasm | med |
 | 0x101996D0 | 0x001996D0 | HandlePacket_ID_B0 | Handler for Packet_ID_B0 (ID -80; name TBD) | dispatch + disasm | med |
@@ -124,38 +129,59 @@ Notes:
 | 0x10003760 | 0x00003760 | MapItemId_ToAssets | Maps item id -> model/skin assets | decomp + strings | high |
 | 0x101281D0 | 0x001281D0 | BuildItemPreview_FromItemId | Builds item preview using MapItemId_ToAssets | xrefs + decomp | med |
 | 0x101A0900 | 0x001A0900 | SendPacket_WEAPONFIRE | Builds Packet_ID_WEAPONFIRE and sends to server | decomp | high |
-| 0x101A0680 | 0x001A0680 | Packet_ID_WEAPONFIRE_read | Packet_ID_WEAPONFIRE read (vtable) | disasm | med |
+| 0x101A0680 | 0x001A0680 | Packet_ID_WEAPONFIRE_read | Packet_ID_WEAPONFIRE read (vtable) | decomp | med |
 | 0x101A06D0 | 0x001A06D0 | Packet_ID_WEAPONFIRE_write | Packet_ID_WEAPONFIRE write (vtable) | disasm | med |
 | 0x101C5350 | 0x001C5350 | SendPacket_RELOAD | Builds Packet_ID_RELOAD and sends to server | decomp | high |
 | 0x101C5BA0 | 0x001C5BA0 | SendPacket_RELOAD_Alt | Alternate reload send path | decomp | med |
 | 0x101A27A0 | 0x001A27A0 | SendPacket_UPDATE | Builds Packet_ID_UPDATE and sends WeaponFireEntry list | disasm | high |
-| 0x1019F570 | 0x0019F570 | Packet_ID_UPDATE_read | Packet_ID_UPDATE read (vtable) | disasm | med |
-| 0x101A0630 | 0x001A0630 | Packet_ID_UPDATE_write | Packet_ID_UPDATE write (vtable) | disasm | med |
-| 0x101A1440 | 0x001A1440 | WeaponFireEntry_write | Writes WeaponFireEntry by type into bitstream | disasm | med |
+| 0x1018D9C0 | 0x0018D9C0 | LTClient_SendPacket_BuildIfNeeded | Sends packet via LTClient vtbl+0x28; builds packet if needed | decomp | med |
+| 0x1019F570 | 0x0019F570 | Packet_ID_UPDATE_read | Packet_ID_UPDATE read (vtable) | decomp | med |
+| 0x101A0630 | 0x001A0630 | Packet_ID_UPDATE_write | Packet_ID_UPDATE write (vtable) | decomp | med |
+| 0x101A1440 | 0x001A1440 | WeaponFireEntry_write | Writes WeaponFireEntry by type into bitstream | decomp | med |
+
+### Code (admin/debug utilities + item list)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10039A80 | 0x00039A80 | Cmd_Admin | Handles "admin" command; `itemlist` writes ItemList.txt from runtime item table | decomp | high |
+| 0x10246140 | 0x00246140 | FormatString_Args | Formats string with varargs (used by itemlist output) | decomp | med |
+| 0x10241A10 | 0x00241A10 | String_AssignFromPtr | std::string assign helper | decomp | low |
+| 0x10241530 | 0x00241530 | String_FromU16 | Converts u16 to string (item id formatting) | decomp | low |
 | 0x101A14C0 | 0x001A14C0 | WeaponFireEntry_add | Adds entry to list; cap 10 | disasm | med |
 | 0x101A2390 | 0x001A2390 | WeaponFireEntry_build_from_state | Builds entry from game state | disasm | med |
 | 0x101A21A0 | 0x001A21A0 | WeaponFireEntry_pick_list_entry | Selects list entry for payload | disasm | med |
-| 0x101A1310 | 0x001A1310 | WeaponFireEntry_type1_write | Type1 payload writer | disasm | med |
+| 0x101A1310 | 0x001A1310 | WeaponFireEntry_type1_write | Type1 payload writer | decomp | med |
 | 0x101A00B0 | 0x001A00B0 | WeaponFireEntry_type2_write | Type2 payload writer | disasm | med |
 | 0x101A0360 | 0x001A0360 | WeaponFireEntry_type3_write | Type3 payload writer | disasm | med |
 | 0x101A04D0 | 0x001A04D0 | WeaponFireEntry_type4_write | Type4 payload writer | disasm | med |
+| 0x1010C330 | 0x0010C330 | BuildItemTooltip | Builds item tooltip text from runtime ItemStructA fields + template lookup | disasm | high |
+| 0x101093A0 | 0x001093A0 | Item_GetDurabilityPercent | Computes durability% from ItemStructA and template max | disasm | high |
+| 0x10109330 | 0x00109330 | Item_GetAmmoItemIdOrTemplate | Returns ammo item id (runtime override or template) | disasm | high |
+| 0x1024C940 | 0x0024C940 | ItemTemplate_CopyVariantByIndex | Copies 0x5C variant record by index from template | decomp | high |
+| 0x10247DF0 | 0x00247DF0 | FormatDuration_MinSec | Formats seconds to “Xm” when divisible by 60 | decomp | high |
+| 0x102330C0 | 0x002330C0 | ItemTemplate_GetAmmoItemId | Returns ammo item id from template (word @+0x30) | decomp | high |
+| 0x10232300 | 0x00232300 | ItemTemplate_GetMaxDurability | Returns template max durability for item id | decomp | high |
+| 0x1026F900 | 0x0026F900 | ItemId_GetDisplayName | Resolves item display name from id | disasm | med |
 
 ### Code (packet read helpers: B5/B6)
 | VA | RVA | Symbol | Purpose | Evidence | Conf |
 |---|---|---|---|---|---|
-| 0x101273D0 | 0x001273D0 | Packet_ID_B5_read | Packet_ID_B5 read/parse entry point (type switch) | disasm | high |
-| 0x101272E0 | 0x001272E0 | Packet_ID_B5_read_list | Reads list of Packet_ID_B5_read_entry | disasm | med |
-| 0x100FF8D0 | 0x000FF8D0 | Packet_ID_B5_read_entry | Packet_ID_B5 complex entry (bitfields + nested lists) | disasm | med |
-| 0x100FF800 | 0x000FF800 | Packet_ID_B5_read_entry_list | Reads list of Packet_ID_B5_read_entry2 | disasm | med |
-| 0x100FD880 | 0x000FD880 | Packet_ID_B5_read_entry2 | Packet_ID_B5 nested entry (large) | disasm | med |
-| 0x100FCA80 | 0x000FCA80 | Packet_ID_B5_read_entry2_subA | Packet_ID_B5 entry2 sub-struct (u8/u16/u32 + 2048 bits) | disasm | med |
-| 0x101491E0 | 0x001491E0 | Packet_ID_B6_read | Packet_ID_B6 read/parse entry point (type switch) | disasm | high |
-| 0x10147C70 | 0x00147C70 | Packet_ID_B6_read_structA | Packet_ID_B6 struct A read | disasm | med |
-| 0x10147CF0 | 0x00147CF0 | Packet_ID_B6_read_structB | Packet_ID_B6 struct B read | disasm | med |
+| 0x101273D0 | 0x001273D0 | Packet_ID_B5_read | Packet_ID_B5 read/parse entry point (type switch) | decomp | high |
+| 0x101272E0 | 0x001272E0 | Packet_ID_B5_read_list | Reads list of Packet_ID_B5_read_entry | decomp | med |
+| 0x100FF8D0 | 0x000FF8D0 | Packet_ID_B5_read_entry | Packet_ID_B5 complex entry (bitfields + nested lists) | decomp | med |
+| 0x100FF800 | 0x000FF800 | Packet_ID_B5_read_entry_list | Reads list of Packet_ID_B5_read_entry2 | decomp | med |
+| 0x100FD880 | 0x000FD880 | Packet_ID_B5_read_entry2 | Packet_ID_B5 nested entry (large) | decomp | med |
+| 0x100FCA80 | 0x000FCA80 | Packet_ID_B5_read_entry2_subA | Packet_ID_B5 entry2 sub-struct (u8/u16/u32 + 2048 bits) | decomp | med |
+| 0x100FD370 | 0x000FD370 | Packet_ID_B5_read_entry2_map | Packet_ID_B5 entry2 map (u32 key + 2048-bit string) | decomp | med |
+| 0x100FD1A0 | 0x000FD1A0 | Packet_ID_B5_entry2_map_get_or_insert | Map lookup/insert for entry2 map | decomp | low |
+| 0x101261D0 | 0x001261D0 | Packet_ID_B5_read_extra_list | Packet_ID_B5 extra list (u32c count + entry) | decomp | med |
+| 0x10125E90 | 0x00125E90 | Packet_ID_B5_read_extra_list_entry | Extra list entry (u32c + 2 bits) | decomp | low |
+| 0x101491E0 | 0x001491E0 | Packet_ID_B6_read | Packet_ID_B6 read/parse entry point (type switch) | decomp | high |
+| 0x10147C70 | 0x00147C70 | Packet_ID_B6_read_structA | Packet_ID_B6 struct A read | decomp | med |
+| 0x10147CF0 | 0x00147CF0 | Packet_ID_B6_read_structB | Packet_ID_B6 struct B read | decomp | med |
 | 0x10147A90 | 0x00147A90 | Read_6BitFlags | Reads 6 single-bit flags into consecutive bytes | disasm | med |
-| 0x101487A0 | 0x001487A0 | Packet_ID_B6_read_structC | Packet_ID_B6 struct C read (list) | disasm | med |
-| 0x10149050 | 0x00149050 | Packet_ID_B6_read_structD | Packet_ID_B6 struct D read (lists) | disasm | med |
-| 0x10148570 | 0x00148570 | Packet_ID_B6_read_structD_entry | StructD entry read (u32 + 2048 bits + list) | disasm | med |
+| 0x101487A0 | 0x001487A0 | Packet_ID_B6_read_structC | Packet_ID_B6 struct C read (list) | decomp | med |
+| 0x10149050 | 0x00149050 | Packet_ID_B6_read_structD | Packet_ID_B6 struct D read (lists) | decomp | med |
+| 0x10148570 | 0x00148570 | Packet_ID_B6_read_structD_entry | StructD entry read (u32 + 2048 bits + list) | decomp | med |
 | 0x1026BE70 | 0x0026BE70 | Read_QuantVec3_9bit | Reads quantized vec3 + 9-bit value | disasm | med |
 | 0x10272500 | 0x00272500 | Read_QuantVec3 | Reads quantized vec3 (bit-width + sign bits) | disasm | med |
 | 0x10257770 | 0x00257770 | Read_BitfieldBlock_0x30 | Reads packed bitfield block (variable layout) | disasm | med |
@@ -164,6 +190,9 @@ Notes:
 | 0x101C9310 | 0x001C9310 | BitStream_WriteBit1 | Writes 1 bit | disasm | med |
 | 0x101C96C0 | 0x001C96C0 | BitStream_WriteBits | Core bitstream WriteBits | disasm | med |
 | 0x101C9810 | 0x001C9810 | BitStream_WriteBitsCompressed | Compressed integer writer | disasm | high |
+| 0x1000C6C0 | 0x0000C6C0 | Packet_InitBitStreamFromPayload | Init BitStream from packet payload (header byte 0x19 branch) | decomp | high |
+| 0x101C8DA0 | 0x001C8DA0 | BitStream_InitFromBuffer | Init BitStream from buffer (copy/own) | decomp | high |
+| 0x101C8E80 | 0x001C8E80 | BitStream_FreeOwnedBuffer | Frees owned BitStream buffer | decomp | high |
 | 0x101CA120 | 0x001CA120 | Net_IsBigEndian | Endianness check | disasm | high |
 | 0x101CA080 | 0x001CA080 | ByteSwapCopy | Byte swap helper | disasm | high |
 | 0x10272420 | 0x00272420 | Write_QuantVec3 | Writes quantized vec3 | disasm | med |
@@ -176,56 +205,69 @@ Notes:
 | 0x101C9AA0 | 0x001C9AA0 | BitStream_ReadBitsCompressed | Bitstream compressed read (byte-skip/lead-flag scheme) | disasm | high |
 | 0x101C9390 | 0x001C9390 | BitStream_ReadBit | Core bitstream ReadBit (1 bit) | disasm | high |
 
+### Code (packet read helpers: mail)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1013DA40 | 0x0013DA40 | Packet_ID_MAIL_read_entry | Mail entry bitstream read (size 0x848) | decomp | med |
+| 0x1013DC60 | 0x0013DC60 | Packet_ID_MAIL_entry_list_insert | Inserts mail entry into vector/list | decomp | low |
+| 0x1013DCF0 | 0x0013DCF0 | Packet_ID_MAIL_entry_list_insert_unique | Inserts mail entry if not already present | decomp | low |
+| 0x1013CF40 | 0x0013CF40 | Packet_ID_MAIL_entry_list_contains | Checks list for entry id match | decomp | low |
+| 0x1013C970 | 0x0013C970 | Packet_ID_MAIL_entry_fill | Fills mail entry strings from UI | decomp | low |
+| 0x1013D0F0 | 0x0013D0F0 | Packet_ID_MAIL_write_entry | Mail entry bitstream write | decomp | med |
+| 0x1013D1E0 | 0x0013D1E0 | Packet_ID_MAIL_write_entries | Writes mail entry list (u8 count + entries) | decomp | med |
+| 0x1013D250 | 0x0013D250 | Packet_ID_MAIL_write_idlist | Writes mail id list (u8 count + u32 list) | decomp | med |
+| 0x1013D2E0 | 0x0013D2E0 | Packet_ID_MAIL_write | Mail packet write (entries + optional id list) | decomp | med |
+
 ### Code (packet read helpers: market/faction/playerfile)
 | VA | RVA | Symbol | Purpose | Evidence | Conf |
 |---|---|---|---|---|---|
 | 0x1000D730 | 0x0000D730 | Playerfile_read_blockC0_entry | Playerfile blockC0 entry read (presence bit + bitfields) | disasm | med |
 | 0x1000D870 | 0x0000D870 | Playerfile_read_blockC0 | Playerfile blockC0 read (u32c header + 10 entries) | disasm | med |
 | 0x100A0C90 | 0x000A0C90 | Packet_ID_PLAYERFILE_read_structA | FriendEntry read for Packet_ID_PLAYERFILE | disasm | med |
-| 0x1013C6F0 | 0x0013C6F0 | Packet_ID_PLAYERFILE_read | Playerfile packet main read/dispatch | disasm | med |
-| 0x100AAD00 | 0x000AAD00 | Packet_ID_FACTION_read | Faction packet main read/dispatch (type switch) | disasm | high |
-| 0x100A7720 | 0x000A7720 | Packet_ID_FACTION_read_blockA | Faction blockA read (strings/flags/lists) | disasm | med |
-| 0x100A9D00 | 0x000A9D00 | Packet_ID_FACTION_read_listA | Faction listA read (header + structB + u32 list) | disasm | med |
-| 0x100A6E70 | 0x000A6E70 | Packet_ID_A9_read_structB | listA entry read (u8+string+lists) | disasm | med |
-| 0x100AAC20 | 0x000AAC20 | Packet_ID_FACTION_read_listB | Faction listB read (count + entries) | disasm | med |
-| 0x100A9680 | 0x000A9680 | Packet_ID_FACTION_read_listB_entry | Faction listB entry (u8c + list of Packet_ID_A5_read_struct2) | disasm | med |
-| 0x100A99F0 | 0x000A99F0 | Packet_ID_FACTION_read_listC | Faction listC read (count + entries) | disasm | med |
-| 0x100A6390 | 0x000A6390 | Packet_ID_FACTION_read_listC_entry | Faction listC entry (u8c + u32c list of pairs) | disasm | med |
-| 0x100A74F0 | 0x000A74F0 | Packet_ID_FACTION_read_block_107C | Faction block_107C read (u16/u16 + entries) | disasm | med |
-| 0x1009F9A0 | 0x0009F9A0 | Packet_ID_FACTION_read_block_107C_entry | block_107C entry read (u32/u8/u32s + 4 strings) | disasm | med |
-| 0x100A7060 | 0x000A7060 | Packet_ID_FACTION_read_block_1090 | Faction block_1090 read (u8 count + block_10A0 entries) | disasm | med |
-| 0x1009EE50 | 0x0009EE50 | Packet_ID_FACTION_read_block_10A0 | block_10A0 entry read (u32/u8s + 3 strings) | disasm | med |
-| 0x100A75F0 | 0x000A75F0 | Packet_ID_FACTION_read_block_1160 | Faction block_1160 read (count + block_11A4 entries) | disasm | med |
-| 0x1009FDA0 | 0x0009FDA0 | Packet_ID_FACTION_read_block_11A4 | block_11A4 entry read (u32/u16/bit/u8 + strings + blockC0) | disasm | med |
-| 0x1009FF90 | 0x0009FF90 | Packet_ID_FACTION_read_block_1170 | block_1170 read (bit + 3 strings + u16/u8) | disasm | med |
-| 0x10252B70 | 0x00252B70 | Packet_ID_FACTION_read_block_1318 | block_1318 read (u32/u32 + list of u16/u8/bit) | disasm | med |
-| 0x100A02E0 | 0x000A02E0 | Packet_ID_FACTION_read_block_1340 | block_1340 read (u32/bit/u32/u16 + 0x1E entries) | disasm | med |
-| 0x100A06F0 | 0x000A06F0 | Packet_ID_FACTION_read_block_1738 | block_1738 read (u8/u32/u8s/bit + strings + u32s) | disasm | med |
-| 0x100A9EB0 | 0x000A9EB0 | Packet_ID_FACTION_read_block_17BC | block_17BC read (u8 count + entry w/ block_0D50) | disasm | med |
-| 0x1011AD30 | 0x0011AD30 | Packet_ID_A9_read | Packet_ID_A9 main read/dispatch (type switch) | disasm | high |
-| 0x10119210 | 0x00119210 | Packet_ID_A9_read_structA | Packet_ID_A9 structA read | disasm | med |
-| 0x1011A5E0 | 0x0011A5E0 | Packet_ID_A9_read_structA_list | Packet_ID_A9 structA list read | disasm | med |
-| 0x101181E0 | 0x001181E0 | Packet_ID_A9_read_structC | Packet_ID_A9 structC read (4x u8) | disasm | med |
-| 0x10118230 | 0x00118230 | Packet_ID_A9_read_structC2 | Packet_ID_A9 structC2 read (u8/u32/string + conditional tail) | disasm | med |
-| 0x101182F0 | 0x001182F0 | Packet_ID_A9_read_structC3 | Packet_ID_A9 structC3 read (u32/strings/u32s + bit + u8) | disasm | med |
-| 0x10119030 | 0x00119030 | Packet_ID_A9_read_structD | Packet_ID_A9 structD read (u32/u8/strings + sublists) | disasm | med |
-| 0x10118B00 | 0x00118B00 | Packet_ID_A9_read_structD_sub_B8 | structD sublist (u32 count + structC2) | disasm | med |
-| 0x10118DE0 | 0x00118DE0 | Packet_ID_A9_read_structD_sub_F8 | structD sublist (u16/u16 + u8 count + structC2) | disasm | med |
-| 0x10118F50 | 0x00118F50 | Packet_ID_A9_read_structD_sub_10C | structD sublist (u32 count + structC3) | disasm | med |
-| 0x1011AC50 | 0x0011AC50 | Packet_ID_A9_read_structD_list | Packet_ID_A9 structD list read | disasm | med |
-| 0x100A7950 | 0x000A7950 | Packet_ID_FACTION_read_block_0D50 | Faction block_0D50 read (u16 count + FriendEntry list) | disasm | med |
-| 0x100A72D0 | 0x000A72D0 | Packet_ID_FACTION_read_block_0D78 | Faction block_0D78 read (count + entries) | disasm | med |
-| 0x1009F580 | 0x0009F580 | Packet_ID_FACTION_read_block_0D78_entry | block_0D78 entry read (u32/u8/strings) | disasm | med |
-| 0x1009F050 | 0x0009F050 | Packet_ID_FACTION_read_block_0E08 | Faction block_0E08 read | disasm | med |
-| 0x100A7350 | 0x000A7350 | Packet_ID_FACTION_read_block_0E2C | Faction block_0E2C read (count + 2x u32 + 3x string) | disasm | med |
-| 0x100A71E0 | 0x000A71E0 | Packet_ID_FACTION_read_block_0E3C | Faction block_0E3C read (count + entries) | disasm | med |
-| 0x1009F350 | 0x0009F350 | Packet_ID_FACTION_read_block_0E3C_entry | block_0E3C entry read (u32s/strings + optional blockC0) | disasm | med |
+| 0x1013C6F0 | 0x0013C6F0 | Packet_ID_PLAYERFILE_read | Playerfile packet main read/dispatch | decomp | med |
+| 0x100AAD00 | 0x000AAD00 | Packet_ID_FACTION_read | Faction packet main read/dispatch (type switch) | decomp + disasm | high |
+| 0x100A7720 | 0x000A7720 | Packet_ID_FACTION_read_blockA | Faction blockA read (strings/flags/lists) | decomp | med |
+| 0x100A9D00 | 0x000A9D00 | Packet_ID_FACTION_read_listA | Faction listA read (header + structB + u32 list) | decomp | med |
+| 0x100A6E70 | 0x000A6E70 | Packet_ID_A9_read_structB | listA entry read (u8+string+lists) | decomp | med |
+| 0x100AAC20 | 0x000AAC20 | Packet_ID_FACTION_read_listB | Faction listB read (count + entries) | decomp | med |
+| 0x100A9680 | 0x000A9680 | Packet_ID_FACTION_read_listB_entry | Faction listB entry (u8c + list of Packet_ID_A5_read_struct2) | decomp | med |
+| 0x100A99F0 | 0x000A99F0 | Packet_ID_FACTION_read_listC | Faction listC read (count + entries) | decomp | med |
+| 0x100A6390 | 0x000A6390 | Packet_ID_FACTION_read_listC_entry | Faction listC entry (u8c + u32c list of pairs) | decomp | med |
+| 0x100A74F0 | 0x000A74F0 | Packet_ID_FACTION_read_block_107C | Faction block_107C read (u16/u16 + entries) | decomp | med |
+| 0x1009F9A0 | 0x0009F9A0 | Packet_ID_FACTION_read_block_107C_entry | block_107C entry read (u32/u8/u32s + 4 strings) | decomp | med |
+| 0x100A7060 | 0x000A7060 | Packet_ID_FACTION_read_block_1090 | Faction block_1090 read (u8 count + block_10A0 entries) | decomp | med |
+| 0x1009EE50 | 0x0009EE50 | Packet_ID_FACTION_read_block_10A0 | block_10A0 entry read (u32/u8s + 3 strings) | decomp | med |
+| 0x100A75F0 | 0x000A75F0 | Packet_ID_FACTION_read_block_1160 | Faction block_1160 read (count + block_11A4 entries) | decomp | med |
+| 0x1009FDA0 | 0x0009FDA0 | Packet_ID_FACTION_read_block_11A4 | block_11A4 entry read (u32/u16/bit/u8 + strings + blockC0) | decomp | med |
+| 0x1009FF90 | 0x0009FF90 | Packet_ID_FACTION_read_block_1170 | block_1170 read (bit + 3 strings + u16/u8) | decomp | med |
+| 0x10252B70 | 0x00252B70 | Packet_ID_FACTION_read_block_1318 | block_1318 read (u32/u32 + list of u16/u8/bit) | decomp | med |
+| 0x100A02E0 | 0x000A02E0 | Packet_ID_FACTION_read_block_1340 | block_1340 read (u32/bit/u32/u16 + 0x1E entries) | decomp | med |
+| 0x100A06F0 | 0x000A06F0 | Packet_ID_FACTION_read_block_1738 | block_1738 read (u8/u32/u8s/bit + strings + u32s) | decomp | med |
+| 0x100A9EB0 | 0x000A9EB0 | Packet_ID_FACTION_read_block_17BC | block_17BC read (u8 count + entry w/ block_0D50) | decomp | med |
+| 0x1011AD30 | 0x0011AD30 | Packet_ID_A9_read | Packet_ID_A9 main read/dispatch (type switch) | decomp | high |
+| 0x10119210 | 0x00119210 | Packet_ID_A9_read_structA | Packet_ID_A9 structA read | decomp | med |
+| 0x1011A5E0 | 0x0011A5E0 | Packet_ID_A9_read_structA_list | Packet_ID_A9 structA list read | decomp | med |
+| 0x101181E0 | 0x001181E0 | Packet_ID_A9_read_structC | Packet_ID_A9 structC read (4x u8) | decomp | med |
+| 0x10118230 | 0x00118230 | Packet_ID_A9_read_structC2 | Packet_ID_A9 structC2 read (u8/u32/string + conditional tail) | decomp | med |
+| 0x101182F0 | 0x001182F0 | Packet_ID_A9_read_structC3 | Packet_ID_A9 structC3 read (u32/strings/u32s + bit + u8) | decomp | med |
+| 0x10119030 | 0x00119030 | Packet_ID_A9_read_structD | Packet_ID_A9 structD read (u32/u8/strings + sublists) | decomp | med |
+| 0x10118B00 | 0x00118B00 | Packet_ID_A9_read_structD_sub_B8 | structD sublist (u32 count + structC2) | decomp | med |
+| 0x10118DE0 | 0x00118DE0 | Packet_ID_A9_read_structD_sub_F8 | structD sublist (u16/u16 + u8 count + structC2) | decomp | med |
+| 0x10118F50 | 0x00118F50 | Packet_ID_A9_read_structD_sub_10C | structD sublist (u32 count + structC3) | decomp | med |
+| 0x1011AC50 | 0x0011AC50 | Packet_ID_A9_read_structD_list | Packet_ID_A9 structD list read | decomp | med |
+| 0x100A7950 | 0x000A7950 | Packet_ID_FACTION_read_block_0D50 | Faction block_0D50 read (u16 count + FriendEntry list) | decomp | med |
+| 0x100A72D0 | 0x000A72D0 | Packet_ID_FACTION_read_block_0D78 | Faction block_0D78 read (count + entries) | decomp | med |
+| 0x1009F580 | 0x0009F580 | Packet_ID_FACTION_read_block_0D78_entry | block_0D78 entry read (u32/u8/strings) | decomp | med |
+| 0x1009F050 | 0x0009F050 | Packet_ID_FACTION_read_block_0E08 | Faction block_0E08 read | decomp | med |
+| 0x100A7350 | 0x000A7350 | Packet_ID_FACTION_read_block_0E2C | Faction block_0E2C read (count + 2x u32 + 3x string) | decomp | med |
+| 0x100A71E0 | 0x000A71E0 | Packet_ID_FACTION_read_block_0E3C | Faction block_0E3C read (count + entries) | decomp | med |
+| 0x1009F350 | 0x0009F350 | Packet_ID_FACTION_read_block_0E3C_entry | block_0E3C entry read (u32s/strings + optional blockC0) | decomp | med |
 | 0x100A7810 | 0x000A7810 | Packet_ID_FACTION_read_block_0FD4 | Faction block_0FD4 read (count + entries) | disasm | med |
 | 0x100A05E0 | 0x000A05E0 | Packet_ID_FACTION_read_block_0FD4_entry | block_0FD4 entry read (u32 + 3x string + blockC0) | disasm | med |
-| 0x100A78B0 | 0x000A78B0 | Packet_ID_FACTION_read_block_1784 | Faction block_1784 read (u16/u16 + entries) | disasm | med |
-| 0x100A08B0 | 0x000A08B0 | Packet_ID_FACTION_read_block_1784_entry | block_1784 entry read (u8/u32/u8/u32 + strings + u32) | disasm | med |
-| 0x10251DA0 | 0x00251DA0 | Packet_ID_FACTION_read_blockA_struct_4C0 | blockA sub-struct (6x u32 + u8 list) | disasm | med |
-| 0x100A7110 | 0x000A7110 | Packet_ID_FACTION_read_blockA_list_4E8 | blockA list (u32 + u8 + string) | disasm | med |
+| 0x100A78B0 | 0x000A78B0 | Packet_ID_FACTION_read_block_1784 | Faction block_1784 read (u16/u16 + entries) | decomp | med |
+| 0x100A08B0 | 0x000A08B0 | Packet_ID_FACTION_read_block_1784_entry | block_1784 entry read (u8/u32/u8/u32 + strings + u32) | decomp | med |
+| 0x10251DA0 | 0x00251DA0 | Packet_ID_FACTION_read_blockA_struct_4C0 | blockA sub-struct (6x u32 + u8 list) | decomp | med |
+| 0x100A7110 | 0x000A7110 | Packet_ID_FACTION_read_blockA_list_4E8 | blockA list (u32 + u8 + string) | decomp | med |
 | 0x100C87E0 | 0x000C87E0 | Packet_ID_MARKET_read_structB | Market structB read (u8/u16/u32s/bit/u8s/bit) | disasm | med |
 | 0x100C89A0 | 0x000C89A0 | Packet_ID_MARKET_read_structC | Market structC read (u8/u8/u16/bit/u8) | disasm | med |
 | 0x100C8A10 | 0x000C8A10 | Packet_ID_MARKET_read_structC2 | Market structC2 read (u8/u8/u16/bit) | disasm | med |
@@ -233,7 +275,7 @@ Notes:
 | 0x100C9EC0 | 0x000C9EC0 | Packet_ID_MARKET_read_listB | Market listB read (ItemStructA + u32c/u16c/u32c) | disasm | med |
 | 0x100CA060 | 0x000CA060 | Packet_ID_MARKET_read_block | Market block read (u16 + 5x 9-bit values) | disasm | med |
 | 0x100CA150 | 0x000CA150 | Packet_ID_MARKET_read_block6 | Market block6 read (6x block) | disasm | med |
-| 0x100CA180 | 0x000CA180 | Packet_ID_MARKET_read | Market packet main read/dispatch | disasm | med |
+| 0x100CA180 | 0x000CA180 | Packet_ID_MARKET_read | Market packet main read/dispatch | decomp | med |
 | 0x1025C7B0 | 0x0025C7B0 | Packet_ID_MARKET_read_listD | Market listD read (u16/u8/u16) | disasm | med |
 | 0x1025B1D0 | 0x0025B1D0 | Packet_ID_MARKET_read_listE | Market listE read (u16/u32) | disasm | med |
 | 0x10267840 | 0x00267840 | Packet_ID_MARKET_read_listA | Market listA read (structA + 3x u32c) | disasm | med |
@@ -241,8 +283,8 @@ Notes:
 ### Code (packet read helpers: skills)
 | VA | RVA | Symbol | Purpose | Evidence | Conf |
 |---|---|---|---|---|---|
-| 0x10141890 | 0x00141890 | Packet_ID_SKILLS_read | Skills packet main read/dispatch | disasm | high |
-| 0x1024AD30 | 0x0024AD30 | Packet_ID_SKILLS_read_list | Skills list read (header + entries) | disasm | med |
+| 0x10141890 | 0x00141890 | Packet_ID_SKILLS_read | Skills packet main read/dispatch | decomp | high |
+| 0x1024AD30 | 0x0024AD30 | Packet_ID_SKILLS_read_list | Skills list read (header + entries) | decomp | med |
 | 0x1024ACA0 | 0x0024ACA0 | Packet_ID_SKILLS_read_list_insert | Skills list insert helper | disasm | med |
 
 ### Code (packet ctors / IDs)
@@ -273,10 +315,13 @@ Notes:
 | 0x1013C110 | 0x0013C110 | Packet_ID_PLAYERFILE_ctor | Packet ID = -97 (0x9F) | decomp | high |
 | 0x10141800 | 0x00141800 | Packet_ID_SKILLS_ctor | Packet ID = -93 (0xA3) | decomp | high |
 | 0x1015DE50 | 0x0015DE50 | Packet_ID_A5_ctor | Packet ID = -91 (0xA5; name TBD) | disasm | med |
+| 0x100CC840 | 0x000CC840 | Packet_ID_PLAYER2PLAYER_ctor | Packet ID = -86 (0xAA) | disasm + RTTI | med |
 
 ### Packet layouts (CShell.dll)
 Notes:
 - Bitstream read helpers: sub_1000C990 = ReadCompressed<u32>, sub_1000C9F0 = ReadCompressed<u16>, sub_101C9AA0 = ReadCompressed<N bits>, sub_1023D7B0 = u16 count + count*u32 list, sub_102550A0 = u32 + ItemEntry.
+- u64c helper: sub_100AB5D0 = ReadCompressed<u64>; sub_100AB660 = WriteCompressed<u64>.
+- UI helper: CWindowMgr_GetWindowById @ 0x10107540 (id < 0x5D) => *(this + 0x30 + id*4), else 0.
 - ItemEntry read helper: sub_10254F80 (details below).
 - Offsets are relative to the packet object base (VariableSizedPacket-derived).
 
@@ -306,7 +351,7 @@ Convenience legend:
 - bits(N) = raw bitfield via sub_101C9930/sub_101C96C0 (MSB-first stream order).
 
 #### Packet_ID_USE_ITEM (ID -92) — server→client
-Read: sub_10181200 @ 0x10181200; handler: 0x1018F110.
+Read: Packet_ID_USE_ITEM_read @ 0x10181200 (decomp); handler: 0x1018F110.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990); expects == sub_100079B0(91).
 - u32c @+0x434 (sub_1000C990); item lookup key in sub_1023F010/sub_1023DE50.
@@ -314,7 +359,7 @@ Fields (read order):
 - u8c  @+0x439 (compressed u8; handler accepts 0x17–0x1C).
 
 #### Packet_ID_MOVE_ITEMS (ID -118) — server→client
-Read: sub_10090910 @ 0x10090910; handler: 0x10190D70.
+Read: Packet_ID_MOVE_ITEMS_read @ 0x10090910 (decomp); handler: 0x10190D70.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990); expects == sub_100079B0(91).
 - list @+0x434 via sub_1023D7B0: u16c count + count*u32c entries.
@@ -359,7 +404,7 @@ MoveItems list helpers:
 - sub_1023FD50: merge/stack list entries into inventory (uses sub_1023E450 / sub_1023D1A0).
 
 #### Packet_ID_ITEMS_CHANGED (ID -126) — server→client
-Read: Packet_ID_ITEMS_CHANGED_read @ 0x10190990; handler: 0x10190B90.
+Read: Packet_ID_ITEMS_CHANGED_read @ 0x10190990 (decomp); handler: 0x10190B90.
 Write: Packet_ID_ITEMS_CHANGED_write @ 0x10190920 (list walk over +0x438, count @+0x43C).
 Fields (read order):
 - u32c @+0x430 (sub_1000C990); expects == sub_100079B0(91).
@@ -369,14 +414,14 @@ Fields (read order):
   - ItemEntry (ItemStructA_read @ 0x10254F80; see below).
 
 #### Packet_ID_ITEMS_REMOVED (ID -127) — server→client
-Read: Packet_ID_ITEMS_REMOVED_read @ 0x1018DE80; handler: 0x10192D40.
+Read: Packet_ID_ITEMS_REMOVED_read @ 0x1018DE80 (decomp); handler: 0x10192D40.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990); expects == sub_100079B0(91).
 - u8c  @+0x434 (sub_101C9AA0; reason/type).
 - list @+0x438 via Read_u32c_list_u16count: u16c count + count*u32c entries.
 
 #### Packet_ID_ITEMS_ADDED (ID -109) — server→client
-Read: Packet_ID_ITEMS_ADDED_read @ 0x1018DFD0; handler: 0x10197030.
+Read: Packet_ID_ITEMS_ADDED_read @ 0x1018DFD0 (decomp); handler: 0x10197030.
 Write: Packet_ID_ITEMS_ADDED_write @ 0x101966B0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990); expects == sub_100079B0(91).
@@ -385,7 +430,7 @@ Fields (read order):
 - payload @+0x438 via sub_102404E0 (see below).
 
 #### Packet_ID_UNLOAD_WEAPON (ID -113) — server→client
-Read: sub_1008FDE0 @ 0x1008FDE0; handler: 0x1018EA20.
+Read: Packet_ID_UNLOAD_WEAPON_read @ 0x1008FDE0 (decomp); handler: 0x1018EA20.
 Fields (read order):
 - u32c @+0x434 (sub_1000C990); compares to sub_100079B0(91).
 - u8c  @+0x438 (mode; handler uses 2/3).
@@ -393,7 +438,7 @@ Fields (read order):
 - if mode==1 or 2: u32c @+0x430 (sub_1000C990).
 
 #### Packet_ID_ITEM_REMOVED (ID -120) - server->client
-Read: Packet_ID_ITEM_REMOVED_read @ 0x1018DED0; handler: 0x1018E550.
+Read: Packet_ID_ITEM_REMOVED_read @ 0x1018DED0 (decomp); handler: 0x1018E550.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990); expects == sub_100079B0(91).
 - u8c  @+0x434 (sub_101C9AA0; handler uses 1/2/3).
@@ -401,17 +446,17 @@ Fields (read order):
 - bit  @+0x43C (flag).
 
 
-#### Packet_ID_UPDATE (ID -130) — client→server (weaponfire/update payload)
-Read: Packet_ID_UPDATE_read @ 0x1019F570.
-Write: Packet_ID_UPDATE_write @ 0x101A0630 (writes a single 8-bit 0 into packet bitstream; meaning TBD).
+#### Packet_ID_UPDATE (ID -130) — client->server (weaponfire/update payload)
+Read: Packet_ID_UPDATE_read @ 0x1019F570 (decomp).
+Write: Packet_ID_UPDATE_write @ 0x101A0630 (decomp; writes terminating u8=0 after entries).
 Send: SendPacket_UPDATE @ 0x101A27A0 (builds Packet_ID_UPDATE, appends WeaponFireEntry records, sends if count>0).
 Notes:
 - CNetworkMgrClient_DispatchPacketId has no inbound case for ID 0x7E (default case).
 - Entry count stored at +0x430, capped at 10 (see WeaponFireEntry_add @ 0x101A14C0).
-- Bitstream payload is a sequence of WeaponFireEntry records written into packet stream at +0x0C (no explicit count observed; likely delimited by packet length).
+- Bitstream payload is a sequence of WeaponFireEntry records written into packet stream at +0x0C, terminated by a zero type byte (no explicit count observed).
 - Vtable xrefs for off_102CED90 only at ctor (0x1019E3C6) and SendPacket_UPDATE (0x101A2835); no inbound read path found.
 
-#### Packet_ID_UPDATE (ID -130) payload: WeaponFireEntry list (client→server)
+#### Packet_ID_UPDATE (ID -130) payload: WeaponFireEntry list (client->server)
 - WeaponFireEntry_add @ 0x101A14C0 (adds entry if count<10; increments count @+0x430).
 - WeaponFireEntry_write @ 0x101A1440 (writes entry type + fields into packet bitstream).
 - WeaponFireEntry_build_from_state @ 0x101A2390 populates most fields prior to write:
@@ -443,21 +488,22 @@ WeaponFireEntry type1 (write @ 0x101A1310):
 - then type2 payload (same entry object) via WeaponFireEntry_type2_write
 
 WeaponFireEntry type2 (write @ 0x101A00B0):
-- u32c @+0x00
+- u32c @+0x04
 - Write_QuantVec3_And9 @+0x08
 - Write_BitfieldBlock_0x30 @+0x22
 - bit @+0x84
 - if bit==0, optional fields in order:
-  - u8  @+0x5A
-  - bit + 12 bits @+0x5C if >0
-  - bit + 5 bits  @+0x60 if >0
-  - bit + 16 bits @+0x66 if >0
-  - bit + 7 bits  @+0x6A if >0
-  - bit + QuantVec3_And9 @+0x6C if >0
-  - bit + 4 bits @+0x7A if >0
-  - bit + 4 bits @+0x7C if >0
-  - bit + 6 bits @+0x7E if >0
-  - bit + u16c @+0x80 if >0 (range check for @+0xA3)
+  - u8  = (dword @+0x64) + 0x5A (8 bits)
+  - bit + 12 bits @+0x68 if != 0x10
+  - bit + 5 bits  @+0x6C if >0
+  - bit + u16c    @+0x86 if >0
+  - bit @+0x74
+  - bit + 7 bits @+0x78 if >0, then Write_QuantVec3 @+0x88
+  - bit @+0x7C, then 4 bits @+0x94 and 4 bits @+0x95 if set
+  - bit + 6 bits @+0x80 if >0
+  - if BitfieldBlock_0x30_HasExtra(@+0x22):
+    - bit + u16c @+0x96 if >0
+    - optional 7 bits @+0xA3 if sub_102323C0(...) returns true
   - 8 bits @+0xA2
   - 3 bits @+0xB0
   - bit @+0xB8
@@ -466,28 +512,28 @@ WeaponFireEntry type2 (write @ 0x101A00B0):
   - bit @+0xA4
 
 WeaponFireEntry type3 (write @ 0x101A0360):
-- u32c @+0x00
-- u16c @+0x04
-- 3 bits @+0x06
-- u8c @+0x07
+- u32c @+0x04
+- u16c @+0x60
+- 3 bits @+0xA0
+- u8c @+0xA1
 - Write_QuantVec3_And9 @+0x08
-- u8c @+0x54; if nonzero, stop.
-- else: 5 bits @+0x55, 4 bits @+0x5A, optional 6 bits @+0x5E, optional u32c @+0x60 if 2<=field<=4, then 14 bits @+0x68.
+- u8  @+0x85; if nonzero, stop.
+- else: bit @+0x7C, 5 bits @+0x6C, 4 bits @+0x70, optional 6 bits @+0x80, optional u32c @+0x78 if 2<=field<=4, then 14 bits @+0xBC.
 
 WeaponFireEntry type4 (write @ 0x101A04D0):
-- u32c @+0x00
-- u16c @+0x04
+- u32c @+0x04
+- u16c @+0x86
 - bit @+0x84
 - 14 bits @+0xBC
-- bits(1) @+0xC4, @+0xC5, @+0xC6, @+0xC7
+- sub_1019F280 @+0xC4 (unknown bitfield block)
 - Write_QuantVec3_And9 @+0x08
 - bit + u32c @+0x54 if >0
 - bit + u32c @+0x58 if >0
 - bit + u32c @+0x5C if >0
-- WriteString? @+0xC8 (via vtable dword_1035AA4C->fn+0x34, max 0x800)
+- string @+0xC8 (via vtable dword_1035AA4C->fn+0x34, max 0x800)
 
 #### Packet_ID_WEAPONFIRE (ID -121) - client->server
-Read: Packet_ID_WEAPONFIRE_read @ 0x101A0680.
+Read: Packet_ID_WEAPONFIRE_read @ 0x101A0680 (decomp).
 Write: Packet_ID_WEAPONFIRE_write @ 0x101A06D0.
 Fields (read/write order):
 - u32c @+0x430
@@ -498,7 +544,7 @@ Notes:
 
 
 #### Packet_ID_MERGE_ITEMS (ID -112) - server->client
-Read: Packet_ID_MERGE_ITEMS_read @ 0x1010AC90; handler: 0x1018EC20.
+Read: Packet_ID_MERGE_ITEMS_read @ 0x1010AC90 (decomp); handler: 0x1018EC20.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990); expects == sub_100079B0(91).
 - bit  @+0x434 (flag).
@@ -510,7 +556,7 @@ Fields (read order):
   - u32c @+0x43C (sub_1000C990).
 
 #### Packet_ID_NAME_CHANGE (ID -114) - server->client
-Read: Packet_ID_NAME_CHANGE_read @ 0x10181140; handler: 0x1018E8F0.
+Read: Packet_ID_NAME_CHANGE_read @ 0x10181140 (decomp); handler: 0x1018E8F0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990); expects == sub_100079B0(91).
 - bits(2048) @+0x434 (raw block; MSB-first).
@@ -520,7 +566,7 @@ Fields (read order):
 - post-read: sub_100328E0(this+0x454) reads one bit from the block context.
 
 #### Packet_ID_BACKPACK_CONTENTS (ID -110) - server->client
-Read: Packet_ID_BACKPACK_CONTENTS_read @ 0x100AC6C0; handler: 0x10196CE0.
+Read: Packet_ID_BACKPACK_CONTENTS_read @ 0x100AC6C0 (decomp); handler: 0x10196CE0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (sub_101C9AA0).
@@ -530,18 +576,47 @@ Fields (read order):
 - list @+0x464 via sub_1023D7B0 (u16c count + count*u32c).
 
 #### Packet_ID_MAIL (ID -116) - server->client
-Read: Packet_ID_MAIL_read @ 0x1013DDC0; handler: 0x10193740.
+Read: Packet_ID_MAIL_read @ 0x1013DDC0 (decomp); handler: 0x10193740.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - mail entries via Packet_ID_MAIL_read_entries @ 0x1013DD20:
   - u8c count
-  - repeat count: sub_1013DA40 + sub_1013DC60 (mail entry decode; details TBD).
+  - repeat count: Packet_ID_MAIL_read_entry @ 0x1013DA40 (decomp; fields below), then Packet_ID_MAIL_entry_list_insert @ 0x1013DC60.
 - bit flag @+0x444 (reads 1 bit); if set, Packet_ID_MAIL_read_idlist @ 0x1013DB60:
   - u8c count
   - count x u32c (compressed).
+Write: Packet_ID_MAIL_write @ 0x1013D2E0 (decomp).
+- writes u32c @+0x430 (sub_10031AB0, value from sub_100079B0(0x5B)).
+- writes mail entries via Packet_ID_MAIL_write_entries @ 0x1013D1E0 (u8c count + Packet_ID_MAIL_write_entry).
+- writes bit @+0x444; if set, Packet_ID_MAIL_write_idlist @ 0x1013D250 (u8c count + u32 list).
+
+Packet_ID_MAIL_read_entry @ 0x1013DA40 (fields in order):
+- u32c @+0x00 (sub_1000C990).
+- u8c  @+0x04 (BitStream_ReadBitsCompressed 8 bits).
+- u32c @+0x08 (sub_1000C990).
+- bits(2048) @+0x0C (vtbl+0x38; max 0x800).
+- bits(2048) @+0x48 (vtbl+0x38; max 0x800).
+- if u8c@+0x04 == 0: bits(2048) @+0x20 (vtbl+0x38; max 0x800).
+Entry size: 0x848 bytes (list insert stride at 0x1013DC60).
+
+Packet_ID_MAIL_write_entry @ 0x1013D0F0 (write order):
+- u32c (BitStream_WriteBitsCompressed 32; endian swap if Net_IsBigEndian).
+- u8c  (BitStream_WriteBitsCompressed 8).
+- u32c (BitStream_WriteBitsCompressed 32; endian swap if Net_IsBigEndian).
+- bits(2048) @+0x0C (vtbl+0x34).
+- bits(2048) @+0x48 (vtbl+0x34).
+- if u8c@+0x04 == 0: bits(2048) @+0x20 (vtbl+0x34).
+
+Packet_ID_MAIL_entry_fill @ 0x1013C970 (UI helper; fills entry buffers):
+- u32 @+0x00, u8 @+0x04, u32 @+0x08.
+- strncpy_s @+0x0C (len 0x14), @+0x20 (len 0x28), @+0x48 (len 0x800).
+
+Send flow (CWindowSendMail_OnCommand @ 0x1013DE40, case 8):
+- Validates recipient (len >= 4), subject (len >= 5), body (len >= 10), rejects self‑send (case‑insensitive), and runs sub_10248020 (string filter) on each.
+- Builds Packet_ID_MAIL, fills one entry via Packet_ID_MAIL_entry_fill, inserts unique, writes, then sends via LTClient_SendPacket_BuildIfNeeded(packet, 2, 1, 3, 1).
 
 #### Packet_ID_PRODUCTION (ID -101) - server->client
-Read: Packet_ID_PRODUCTION_read @ 0x10164A30; handler: 0x10195A00.
+Read: Packet_ID_PRODUCTION_read @ 0x10164A30 (decomp); handler: 0x10195A00.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type).
@@ -554,7 +629,7 @@ Fields (read order):
   - 4x u32c @+0x438..+0x444 (sub_1000CAC0 loop).
   - 10x lists @+0x44C (each via sub_1023D7B0: u16c count + count*u32c).
 - if type == 2:
-  - entries via Packet_ID_PRODUCTION_read_entries @ 0x101648E0:
+  - entries via Packet_ID_PRODUCTION_read_entries @ 0x101648E0 (decomp):
     - u32c count
     - repeat count:
       - u32c
@@ -565,7 +640,7 @@ Fields (read order):
 - else (type != 0/2): no extra fields observed.
 
 #### Packet_ID_MARKET (ID -100) - server->client
-Read: Packet_ID_MARKET_read @ 0x100CA180; handler: 0x10195AF0.
+Read: Packet_ID_MARKET_read @ 0x100CA180 (decomp); handler: 0x10195AF0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type).
@@ -644,7 +719,7 @@ Helper layouts:
 - block6 (Packet_ID_MARKET_read_block6 @ 0x100CA150): 6x block.
 
 #### Packet_ID_FACTION (ID -99) - server->client
-Read: Packet_ID_FACTION_read @ 0x100AAD00; handler: 0x101993B0.
+Read: Packet_ID_FACTION_read @ 0x100AAD00 (decomp); handler: 0x101993B0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type).
@@ -875,8 +950,8 @@ Case map (type value => extra reads), jump table @ 0x100AB360 (76 entries; type 
 - type 61: u32c @+0x1074; Packet_ID_FACTION_read_block_1738 @+0x1738.
 - type 62: Packet_ID_FACTION_read_block_1784 @+0x1784.
 - type 63: bits(2048) @+0x436; u8c @+0x1798; u32c @+0x1074.
-- type 64: u8c @+0x1798; u8c @+0x1799.
-- type 65: bits(2048) @+0x0D64; u8c @+0x1798.
+- type 64: u8c @+0x1798; u8c @+0x1799; u32c @+0x1074.
+- type 65: bits(2048) @+0x0D64; u8c @+0x1798; u32c @+0x1074.
 - type 67: u32c @+0x1074; u32c @+0x0D60.
 - type 68: u32c @+0x1074; u32c @+0x0D60; u8c @+0x1798.
 - type 69: bits(2048) @+0x0D64; u32c @+0x1074.
@@ -887,7 +962,7 @@ Case map (type value => extra reads), jump table @ 0x100AB360 (76 entries; type 
 - types 76, 77: u32c @+0x0D60; u8c @+0x435.
 
 #### Packet_ID_PLAYERFILE (ID -97) - server->client
-Read: Packet_ID_PLAYERFILE_read @ 0x1013C6F0; handler: 0x10198F30.
+Read: Packet_ID_PLAYERFILE_read @ 0x1013C6F0 (decomp); handler: 0x10198F30.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - bit @+0x434 (flag via direct bit read).
@@ -930,7 +1005,7 @@ Playerfile_read_blockC0_entry @ 0x1000D730:
   - u8c  @+0x0A
 
 #### Packet_ID_SKILLS (ID -93) - server->client
-Read: Packet_ID_SKILLS_read @ 0x10141890; handler: 0x101931E0.
+Read: Packet_ID_SKILLS_read @ 0x10141890 (decomp); handler: 0x101931E0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type).
@@ -951,7 +1026,7 @@ Fields (read order):
   - u32c @+0x468 (sub_1000C990).
 
 #### Packet_ID_A5 (ID -91) - server->client (name TBD)
-Read: Packet_ID_A5_read @ 0x1015E730; handler: 0x10197580.
+Read: Packet_ID_A5_read @ 0x1015E730 (decomp); handler: 0x10197580.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type).
@@ -1013,7 +1088,7 @@ Struct3: Packet_ID_A5_read_struct3 @ 0x1015E590
   - u32c
 
 #### Packet_ID_A6 (ID -90) - server->client (name TBD)
-Read: Packet_ID_A6_read @ 0x100AB9F0; handler: 0x1018F480.
+Read: Packet_ID_A6_read @ 0x100AB9F0 (decomp); handler: 0x1018F480.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u32c @+0x438 (sub_1000C990).
@@ -1021,12 +1096,15 @@ Fields (read order):
 - u8c  @+0x434 (type).
 - u8c  @+0x43C (sub_101C9AA0).
 type-specific (switch on type-2):
-  - one path reads u64c @+0x448 (sub_100AB5D0) then u16c @+0x43E.
-  - other paths read u16c @+0x43E or no extra fields.
-  - exact case map pending.
+  - type 2: u16c @+0x43E.
+  - type 3: u64c @+0x448 (sub_100AB5D0) + u16c @+0x43E.
+  - type 4: u16c @+0x43E.
+  - type 5: no extra fields.
+  - type 6: no extra fields.
+  - type 7: u16c @+0x43E.
 
 #### Packet_ID_A8 (ID -88) - server->client (name TBD)
-Read: Packet_ID_A8_read @ 0x1014B810; handler: 0x10192690.
+Read: Packet_ID_A8_read @ 0x1014B810 (decomp); handler: 0x10192690.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (sub_101C9AA0).
@@ -1035,25 +1113,27 @@ Fields (read order):
   - 4x lists @+0x43C..@+0x460 via sub_1023D7B0 (u16c count + count*u32c).
 
 #### Packet_ID_A9 (ID -87) - server->client (name TBD)
-Read: Packet_ID_A9_read @ 0x1011AD30; handler: 0x10199050.
+Read: Packet_ID_A9_read @ 0x1011AD30 (decomp); handler: 0x10199050.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type; switch on type-2).
 Type map (type value => extra reads):
 - type 2: Packet_ID_A9_read_structA @+0x43C; Packet_ID_A9_read_structB @+0x528; u32c @+0x58C; u32c @+0x590.
-- type 3: Packet_ID_A9_read_structB @+0x528; u32c @+0x58C.
+- type 3: Packet_ID_A9_read_structB @+0x528; u32c @+0x58C; u32c @+0x590.
 - type 4: Packet_ID_A9_read_structA @+0x43C.
+- type 5: no extra fields (default).
 - type 6: bits(2048) @+0x56C.
 - type 7: u32c @+0x438; bits(2048) @+0x56C.
 - type 8: u32c @+0x438.
 - type 9: bits(2048) @+0x56C.
 - type 10: bits(2048) @+0x56C; u32c @+0x438.
 - type 11: u32c @+0x438; FriendEntry @+0x594 (Packet_ID_PLAYERFILE_read_structA).
+- type 12: no extra fields (default).
 - type 13: Packet_ID_A9_read_structC @+0x6D4.
 - type 14: Packet_ID_A9_read_structA_list @+0x6D8.
 - type 15: u32c @+0x438.
 - type 16: u32c @+0x438.
-- type 17: u32c @+0x438.
+- type 17: u32c @+0x438; u16c @+0x804.
 - type 18: Packet_ID_A9_read_structD @+0x6E8.
 - type 19: bits(2048) @+0x806.
 - type 20: u16c @+0x804.
@@ -1133,8 +1213,9 @@ Packet_ID_A9 helper layouts:
   - u16c @+0x00
   - u32c count; repeat: Packet_ID_A9_read_structD
 
-#### Packet_ID_AA (ID -86) - server->client (name TBD)
-Read: Packet_ID_AA_read @ 0x100CC8E0; handler: 0x10198840.
+#### Packet_ID_PLAYER2PLAYER (ID -86) - server->client
+Read: Packet_ID_PLAYER2PLAYER_read @ 0x100CC8E0 (decomp); handler: 0x10198840.
+RTTI/vtable: .?AVPacket_ID_PLAYER2PLAYER@@ (TypeDescriptor @ 0x103546A0), vtable @ 0x102CA0A0; ctor @ 0x100CC840 sets ID 0xAA.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u32c @+0x434 (sub_1000C990).
@@ -1152,9 +1233,16 @@ Type map (type value => extra reads):
 - type 11: u32c @+0x480.
 - type 14: bit @+0x484.
 Note: types 12 and 13 fall through default (no extra reads observed).
+Handler case map (type => handler actions; HandlePacket_ID_PLAYER2PLAYER @ 0x10198840):
+- type 3: Window id 0x2E via CWindowMgr_GetWindowById; sub_10144C00(window, pkt+0x54C).
+- type 4: Window id 0x2E via CWindowMgr_GetWindowById; sub_10144850(window, pkt+0x54C).
+- type 8: Window id 0x30 via CWindowMgr_GetWindowById; sub_10197C50(tmp, pkt+0x54C) then sub_1015C2B0(window, pkt+0x330).
+- type 13: Window id 0x30 via CWindowMgr_GetWindowById; sub_10193460(window, pkt+0x84).
+- type 15: g_LTClient->vtbl+0x58 (id 3) -> sub_10055A00(pkt+0x60); Window id 0x13 via CWindowMgr_GetWindowById; sub_10169540(window, 6); window vtbl+4 call (args 5,0,0); sub_1005A570(g_103BF6F4, 0x13).
+- default (types 5-7,9-12,14): no extra action beyond cleanup.
 
 #### Packet_ID_AC (ID -84) - server->client (name TBD)
-Read: Packet_ID_AC_read @ 0x100D4960; handler: 0x10195EE0.
+Read: Packet_ID_AC_read @ 0x100D4960 (decomp); handler: 0x10195EE0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type).
@@ -1173,10 +1261,10 @@ Type map (type value => extra reads):
   - case 510: bit @+0x62C; if 0 -> u32c @+0x628.
   - case 511/516: bit @+0x62C.
   - case 512: bit @+0x62C; bit @+0x62D; u32c @+0x628.
-Note: case mapping via tables @0x100D4BD8/@0x100D4BFC; full semantic labels pending.
+Note: case mapping via tables @0x100D4BD8/@0x100D4BFC (u16 opcode minus 501, 16 cases). Only 501/510/511/512/516 are handled; others fall through default.
 
 #### Packet_ID_AF (ID -81) - server->client (name TBD)
-Read: Packet_ID_AF_read @ 0x10144ED0; handler: 0x101994B0.
+Read: Packet_ID_AF_read @ 0x10144ED0 (decomp); handler: 0x101994B0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type; switch on type-3).
@@ -1185,14 +1273,14 @@ Type map (type value => extra reads):
 - type 5: u8c @+0x44C + bit @+0x44D.
 - type 6: u32c @+0x438 + bits(2048) @+0x44E.
 - type 7/10/14/16: u32c @+0x438.
-- type 8: sub_10055080 @+0x658; bits(2048) @+0x456; listA @+0x94C.
+- type 8: sub_10055080 @+0x658; bits(2048) @+0x456; Packet_ID_FACTION_read_listA @+0x94C.
 - type 9: sub_10055080 @+0x658; bits(2048) @+0x456.
 - type 11: u32c @+0x438 + bits(2048) @+0x8F0.
 - type 12/13: sub_100530B0 @+0x904.
 - type 15: ItemsAdded payload @+0x928 (sub_102404E0) + bit @+0x44D.
 
 #### Packet_ID_B0 (ID -80) - server->client (name TBD)
-Read: Packet_ID_B0_read @ 0x10056B80; handler: 0x101996D0.
+Read: Packet_ID_B0_read @ 0x10056B80 (decomp); handler: 0x101996D0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type; switch on type-1).
@@ -1207,24 +1295,24 @@ Type map (type value => extra reads):
 Note: type 7 falls through default (no extra reads observed).
 
 #### Packet_ID_B1 (ID -79) - server->client (name TBD)
-Read: Packet_ID_B1_read @ 0x100B76E0; handler: 0x10198D70.
+Read: Packet_ID_B1_read @ 0x100B76E0 (decomp); handler: 0x10198D70.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type; switch on type-1).
 Type map (type value => extra reads):
 - type 1: u16c @+0x480; bits(2048) @+0x440; bits(2048) @+0x454.
-- type 2: u16c @+0x480; u16c @+0x482.
+- type 2: u16c @+0x480; u16c @+0x482; Packet_ID_B1_read_listA @+0x468.
 - type 3: u32c @+0x43C; bits(2048) @+0x440.
 - type 5/9: Packet_ID_B1_read_listA @+0x468.
 - type 6/7/12: u32c @+0x438.
-- type 10/11: u32c @+0x438.
+- type 10/11: u32c @+0x438 + u32c @+0x43C.
 - type 13: u32c @+0x438 + u32c @+0x43C + u8c @+0x484.
 - type 15/17: Packet_ID_B1_read_listB @+0x488.
 - type 18: u32c @+0x43C.
 Note: types 4,8,14,16 fall through default (no extra reads observed).
 
 #### Packet_ID_B2 (ID -78) - server->client (name TBD)
-Read: Packet_ID_B2_read @ 0x10039780; handler: 0x101901F0.
+Read: Packet_ID_B2_read @ 0x10039780 (decomp); handler: 0x101901F0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type; switch on type-1).
@@ -1313,19 +1401,19 @@ Packet_ID_B1 helper layouts:
   - bit  @+0x28
 
 #### Packet_ID_B5 (ID -75) - server->client (name TBD)
-Read: Packet_ID_B5_read @ 0x101273D0; handler: 0x10199820.
+Read: Packet_ID_B5_read @ 0x101273D0 (decomp); handler: 0x10199820.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type; switch on type-1).
 Type map (type value => extra reads):
-- type 2: Packet_ID_B5_read_list @+0x500.
-- type 3: Packet_ID_B5_read_entry @+0x43C.
-- type 4/8/14: Packet_ID_B5_read_entry_list @+0x0E24.
-- type 5: Packet_ID_B5_read_entry2 @+0x510.
-- type 7/9/10: u32c @+0x438.
-- type 12: Packet_ID_B5_read_entry_list @+0x0E24; sub_101261D0 @+0x0E34.
-- type 13: u32c @+0x438; u8c @+0x0E44.
-Note: types 6 and 11 fall through default (no extra reads observed).
+- type 1: Packet_ID_B5_read_list @+0x500.
+- type 2: Packet_ID_B5_read_entry @+0x43C.
+- type 3/7/13: Packet_ID_B5_read_entry_list @+0x0E24.
+- type 4: Packet_ID_B5_read_entry2 @+0x510.
+- type 6/8/9: u32c @+0x438.
+- type 11: Packet_ID_B5_read_entry_list @+0x0E24; Packet_ID_B5_read_extra_list @+0x0E34.
+- type 12: u32c @+0x438; u8c @+0x0E44.
+Note: other types fall through default (no extra reads observed).
 
 Packet_ID_B5_read_list @ 0x101272E0:
 - u16c count (sub_1000C9F0).
@@ -1377,7 +1465,7 @@ Packet_ID_B5_read_entry2 @ 0x100FD880 (fields in order):
 - bits(2048) @+0x900.
 - bit @+0x8EC, bit @+0x8ED.
 - bits(2048) @+0x0DC.
-- sub_100FD370 @+0x8F0.
+- Packet_ID_B5_read_entry2_map @+0x8F0.
 - u32c count (sub_1000C990) -> loop:
   - read u32 (BitStream_ReadBitsCompressed 0x20 with endian fix via sub_101CA080 if needed).
   - Read_Substruct_10249E10 + Read_Substruct_102550A0.
@@ -1393,6 +1481,22 @@ Packet_ID_B5_read_entry2_subA @ 0x100FCA80 (fields in order):
 - u32c @+0x08 (sub_1000C990).
 - bits(2048) @+0x0C.
 
+Packet_ID_B5_read_entry2_map @ 0x100FD370:
+- u32c count (sub_1000C990).
+- repeat count:
+  - u32c key (BitStream_ReadBitsCompressed 0x20; endian swap if Net_IsBigEndian).
+  - bits(2048) string (vtbl+0x38, max 0x800).
+  - insert/lookup via Packet_ID_B5_entry2_map_get_or_insert @ 0x100FD1A0, then assign string.
+
+Packet_ID_B5_read_extra_list @ 0x101261D0:
+- u32c count (sub_1000C990).
+- repeat count: Packet_ID_B5_read_extra_list_entry @ 0x10125E90.
+
+Packet_ID_B5_read_extra_list_entry @ 0x10125E90 (fields in order):
+- u32c @+0x00 (sub_1000C990).
+- bit  @+0x04.
+- bit  @+0x05.
+
 Read_Substruct_10249E10 @ 0x10249E10 (fields in order):
 - u32c @+0x00.
 - u8  @+0x04 (BitStream_ReadBitsCompressed 8 bits).
@@ -1406,16 +1510,16 @@ Read_Substruct_102550A0 @ 0x102550A0 (fields in order):
 - Packet_ID_MARKET_read_structA @+0x04.
 
 #### Packet_ID_B6 (ID -74) - server->client (name TBD)
-Read: Packet_ID_B6_read @ 0x101491E0; handler: 0x101981F0.
+Read: Packet_ID_B6_read @ 0x101491E0 (decomp); handler: 0x101981F0.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u8c  @+0x434 (type; switch on type-1).
 Type map (type value => extra reads):
-- type 2/4: u32c @+0x438.
-- type 3: Packet_ID_B6_read_structB @+0x4F8; bit @+0x5B4; if u16@+0x4FC == 0x3E0 -> Packet_ID_B6_read_structD @+0x594 + Packet_ID_B6_read_structA @+0x440; if == 0x3E2 -> Packet_ID_B6_read_structA @+0x440.
-- type 5: Packet_ID_B6_read_structB @+0x4F8; bit @+0x5B4; Packet_ID_B6_read_structC @+0x5B8.
-- type 6: Packet_ID_B6_read_structB @+0x4F8.
-- type 7/8/9: u32c @+0x438 + u32c @+0x43C.
+- type 1/3: u32c @+0x438.
+- type 2: Packet_ID_B6_read_structB @+0x4F8; bit @+0x5B4; if u16@+0x4FC == 0x3E0 -> Packet_ID_B6_read_structD @+0x594 + Packet_ID_B6_read_structA @+0x440; if == 0x3E2 -> Packet_ID_B6_read_structA @+0x440.
+- type 4: Packet_ID_B6_read_structB @+0x4F8; bit @+0x5B4; Packet_ID_B6_read_structC @+0x5B8.
+- type 5: Packet_ID_B6_read_structB @+0x4F8.
+- type 6/7/8: u32c @+0x438 + u32c @+0x43C.
 
 Packet_ID_B6_read_structA @ 0x10147C70 (fields in order):
 - u32c @+0x00.
@@ -1462,7 +1566,7 @@ Packet_ID_B6_read_structD_entry @ 0x10148570 (fields in order):
 - u32c count -> list of u32 (BitStream_ReadBitsCompressed 0x20) inserted into vector @+0x24.
 
 #### Packet_ID_FRIENDS (ID -105) - server->client
-Read: Packet_ID_FRIENDS_read @ 0x100AD7D0; handler: 0x10182CC0.
+Read: Packet_ID_FRIENDS_read @ 0x100AD7D0 (decomp); handler: 0x10182CC0.
 Fields (read order):
 - u8c  @+0x438 (type).
 - if type in {3,7}: list via sub_100A7950:
@@ -1490,7 +1594,7 @@ Fields (read order):
   - bits(2048) @+0x439 (raw 256-byte block; string)
 
 #### Packet_ID_STORAGE (ID -103) - server->client
-Read: Packet_ID_STORAGE_read @ 0x10032940; handler: 0x10197F90.
+Read: Packet_ID_STORAGE_read @ 0x10032940 (decomp); handler: 0x10197F90.
 Fields (read order):
 - u32c @+0x430
 - u32c @+0x434 (op)
@@ -1504,29 +1608,29 @@ Fields (read order):
   - 5 or 7:
     - ItemsAdded payload @+0x43C (sub_102404E0).
   - 9:
-    - struct @+0x488 via sub_1023C1E0:
+    - struct @+0x488 via Packet_ID_STORAGE_read_structA @ 0x1023C1E0 (decomp):
       - ItemsAdded payload @+0x00 (sub_102404E0)
-      - sub_10275730 @+0x24
-      - sub_10275480 @+0x264
-      - sub_10275960 @+0x2F8
+      - Packet_ID_STORAGE_structA_read_blockA_12 @ 0x10275730 @+0x24 (12x {bit + ItemEntryWithId}, stride 0x30)
+      - Packet_ID_STORAGE_structA_read_blockB_3 @ 0x10275480 @+0x264 (3x {bit + ItemEntryWithId}, stride 0x30)
+      - Packet_ID_STORAGE_structA_read_blockC_6 @ 0x10275960 @+0x2F8 (6x {bit + ItemEntryWithId}, stride 0x30)
       - ItemsAdded payload @+0x418 (sub_102404E0)
 
 #### Packet_ID_MINING (ID -102) - server->client
-Read: Packet_ID_MINING_read @ 0x101101A0; handler: 0x10195DA0.
+Read: Packet_ID_MINING_read @ 0x101101A0 (decomp); handler: 0x10195DA0.
 Fields (read order):
 - u32c @+0x430
 - u8c  @+0x434 (type)
 - switch type:
   - 0 or 2: u16c @+0x43C
-  - 1: entries via sub_10110040, then u16c @+0x43C
-    - sub_10110040: u32c count; repeat count:
+  - 1: entries via Packet_ID_MINING_read_list @ 0x10110040 (decomp), then u16c @+0x43C
+    - Packet_ID_MINING_read_list: u32c count; repeat count:
       - u16c
       - u16c
       - u32c
   - 3: u32c @+0x438
 
 #### Packet_ID_SPLIT_CONTAINER (ID -94) - server->client
-Read: Packet_ID_SPLIT_CONTAINER_read @ 0x1010ADC0; handler: 0x1018EF60.
+Read: Packet_ID_SPLIT_CONTAINER_read @ 0x1010ADC0 (decomp); handler: 0x1018EF60.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u32c @+0x434 (sub_1000C990).
@@ -1535,19 +1639,30 @@ Fields (read order):
 - u8c  @+0x43A (sub_101C9AA0; read after ItemEntryWithId).
 
 #### Packet_ID_REPAIR_ITEM (ID -83) - server->client
-Read: Packet_ID_REPAIR_ITEM_read @ 0x10167A00; handler: 0x1018FD60.
+Read: Packet_ID_REPAIR_ITEM_read @ 0x10167A00 (decomp); handler: 0x1018FD60.
 Fields (read order):
 - u32c @+0x430 (sub_1000C990).
 - u32c @+0x434 (sub_1000C990).
 - bit  @+0x438 (flag).
 
 #### Packet_ID_RECYCLE_ITEM (ID -82) - server->client
-Read: inline in handler (0x1018FFC0) after sub_1000C6C0.
-Fields (read order):
-- u32c @+0x430 (sub_1000C990); expects == sub_100079B0(91).
-- u32c @+0x434 (sub_1000C990).
+  Read: inline in handler (0x1018FFC0) after sub_1000C6C0.
+  Fields (read order):
+  - u32c @+0x430 (sub_1000C990); expects == sub_100079B0(91).
+  - u32c @+0x434 (sub_1000C990).
+  
+#### Packet_ID_TRANSFER_ITEMS (ID unknown) - status
+  CShell RTTI present but no handler/dispatch/vtable usage found.
+  - TypeDescriptor @ 0x1035465C (name "Packet_ID_TRANSFER_ITEMS").
+  - CompleteObjectLocator @ 0x10329F90; vtable slot @ 0x10329FC8 appears zeroed.
+  - No xrefs to string in CShell; no "TRANSFER_ITEMS" in FoTD/FoM *.dll/*.exe via rg (only in CShell IDB).
+  Next: search in engine/server/CRes IDBs for vtable/ctor or packet ID constant.
 
-#### Outbound weapon packets (client→server)
+#### Packet_ID_GROUP (FoM-only) - status
+  - Not present in FoTD binaries (no "Packet_ID_GROUP" in FoTD *.dll/*.exe).
+  - Present in FoM CShell.dll RTTI strings; treat as FoM baseline only and re-locate/verify in FoTD before reuse.
+
+#### Outbound weapon packets (client->server)
 Note: dispatcher has no inbound cases for -121/-111; only outbound send paths found (Packet_ID_WEAPONFIRE still has read/write vtable methods).
 Packet_ID_WEAPONFIRE (ID -121) send: sub_101A0900.
 - u32c (sub_10031AB0) = sub_100079B0(91).
@@ -1566,6 +1681,25 @@ ItemEntry / ItemStructA (ItemStructA_read @ 0x10254F80):
 - u32c @+0x0C, +0x10, +0x14 (3x u32c via sub_1000C990).
 - u8c  @+0x18, +0x19, +0x1A (read in reverse order).
 - u8c  @+0x1B..+0x1E (4 bytes).
+Tooltip usage (BuildItemTooltip @ 0x1010C330):
+- @+0x04 = itemId (template lookup + display name).
+- @+0x06 = quantity/max ammo (used in ammo/charges strings).
+- @+0x08 (u16) = ammo override id (if 0, fallback to template @+0x30).
+- @+0x0A (u16) = current durability OR effect duration (sec) depending on type.
+- @+0x0C (u8) = durability loss factor (%/100).
+- @+0x0D (u8) = bind state (0 none,1 secured,2 bound,>=3 special bound).
+- @+0x1D (u8) = quality tier (Standard/Custom/Special/Rare/Special Rare).
+- @+0x1E (u8) = variant index used in variant lookup (case 19).
+CRes string IDs used for stat labels (FoTD CRes.dll):
+- 6036 (0x1794) Durability: %1!s!
+- 6037 (0x1795) Damage Radius: %1!u! m
+- 6038 (0x1796) Attack Delay: %1!s! s
+- 6039 (0x1797) Range: %1!u! m
+- 6040 (0x1798) Ammo Count: %1!u!/%2!u!
+- 6041 (0x1799) Required Ammo: %1!s!
+- 6042 (0x179A) %1!u!/%2!u! Bullets
+- 6043 (0x179B) %1!u!/%2!u! Charges
+- 6058 (0x17AA) Durability Loss Factor: x%1!s!
 
 ItemEntryWithId (ItemEntryWithId_read @ 0x102550A0):
 - u32c entryId (sub_1000C990) + ItemEntry/ItemStructA (ItemStructA_read @ 0x10254F80).
@@ -1586,6 +1720,211 @@ ItemsAdded payload (ItemsAdded_payload_read @ 0x102404E0 / ItemsAdded_payload_wr
 | 0x102C116C | 0x002C116C | CGameClientShell_vftable | Vtable for CGameClientShell | RTTI + decomp | high |
 | 0x103BF6F0 | 0x003BF6F0 | g_pGameClientShell | Global pointer set in ctor | decomp + xrefs | high |
 | 0x1035C188 | 0x0035C188 | g_IClientShell_Default_Reg | IClientShell.Default registration struct | decomp + xrefs | high |
+| 0x103C3FA8 | 0x003C3FA8 | g_ItemTemplateById | Item template pointer array (indexed by itemId) | xrefs + disasm | high |
 | 0x102CDEAC | 0x002CDEAC | CInventoryClient_vftable | Vtable for CInventoryClient | RTTI + decomp | high |
 | 0x102CED90 | 0x002CED90 | Packet_ID_UPDATE_vftable | Vtable for Packet_ID_UPDATE (read/write) | RTTI + disasm | med |
 | 0x102CEDA0 | 0x002CEDA0 | Packet_ID_WEAPONFIRE_vftable | Vtable for Packet_ID_WEAPONFIRE (read/write) | RTTI + disasm | med |
+| 0x102CA0A0 | 0x002CA0A0 | Packet_ID_PLAYER2PLAYER_vftable | Vtable for Packet_ID_PLAYER2PLAYER (read/write) | RTTI + disasm | med |
+
+## Object.lto (image base 0x10000000)
+
+### Data (object templates)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1011EBD0 | 0x0011EBD0 | ObjectTemplateTable | 0x80-byte records, u16 id at +0x00; contiguous ids starting at 1 (content does not match weapon stats) | file scan + id sequence | low |
+
+### MasterDatabase / internal DB APIs
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10004D50 | 0x00004D50 | ObjDB_ListInsert | Intrusive list insert helper | bytes + call sites | med |
+| 0x10004D90 | 0x00004D90 | ObjDB_ListRemove | Intrusive list remove helper | bytes + call sites | med |
+| 0x10004FC0 | 0x00004FC0 | ObjDB_ProcessTables | Table iteration/dispatch loop (walks list, calls handlers) | bytes + call pattern | low |
+| 0x10005420 | 0x00005420 | ObjDB_Master_Init | Master DB init/ctor (vtbl=0x10114440, allocs 0x0C) | bytes + field init | med |
+| 0x100054A0 | 0x000054A0 | ObjDB_Master_Dtor | Master DB destructor/clear (frees lists/blocks) | bytes + call sites | med |
+| 0x100054F0 | 0x000054F0 | ObjDB_Master_Build | Master DB setup/dispatch (calls vtbl+0x10 path) | bytes + call pattern | low |
+| 0x10005608 | 0x00005608 | ObjDB_Master_CallSlot0C | Master DB dispatch via vtbl+0x0C | bytes + vtbl call | low |
+| 0x100056B8 | 0x000056B8 | ObjDB_Master_CallSlot08 | Master DB dispatch via vtbl+0x08 | bytes + vtbl call | low |
+| 0x10005840 | 0x00005840 | SetMasterDatabase | Export; installs master DB from server.dll | exports + call sites | high |
+| 0x10005BA0 | 0x00005BA0 | ObjDB_Master_CtorThunk | Sets vptr (0x1011446C) then tail-jumps | bytes (mov vptr + jmp) | low |
+| 0x10114440 | 0x00114440 | ObjDB_Master_vftable | Master DB vtable (vptr set in ObjDB_Master_Init) | bytes (vtbl ptr) | med |
+
+Vtable slots (ObjDB_Master_vftable):
+- +0x00 -> 0x10005A80 ObjDB_Master_Vfn00
+- +0x04 -> 0x10005B80 ObjDB_Master_Vfn04
+- +0x08 -> 0x10004F00 ObjDB_Master_Vfn08
+- +0x0C -> 0x10004E30 ObjDB_Master_Vfn0C
+- +0x10 -> 0x10005280 ObjDB_Master_Vfn10
+- +0x14 -> 0x100048F0 ObjDB_Master_Vfn14
+- +0x18 -> 0x10004890 ObjDB_Master_Vfn18
+- +0x1C -> 0x10004DD0 ObjDB_Master_Vfn1C
+- +0x20 -> 0x10004950 ObjDB_Master_Vfn20
+- +0x24 -> 0x10004250 ObjDB_Master_Vfn24
+- +0x28 -> 0x1018C58C ObjDB_Master_VtblData_28 (data, unknown)
+- +0x2C -> 0x10005BB0 ObjDB_Master_Vfn2C
+- +0x30/+0x34/+0x38 -> 0x10102324 thunk__purecall (IAT thunk -> _purecall)
+- +0x3C -> 0x1018C5A0 ObjDB_Master_VtblData_3C (data, unknown)
+
+IAT thunks near vtable:
+- 0x10102324 thunk__purecall -> [0x10113278] _purecall
+- 0x1010232A thunk__strncpy_s -> [0x1011327C] strncpy_s
+- 0x10102330 thunk__rand -> [0x10113280] rand
+- 0x10102336 thunk___CIatan2 -> [0x10113284] _CIatan2
+- 0x1010233C thunk___CIcos -> [0x10113288] _CIcos
+- 0x10102342 thunk___CIsin -> [0x1011328C] _CIsin
+- 0x10102224 thunk__op_new -> [0x10113268] operator new
+- 0x1010222A thunk__sprintf -> [0x1011326C] sprintf
+- 0x101021F0 thunk__op_delete -> [0x10113250] operator delete
+
+Vtable call graph (IDA callees, no decomp/disasm):
+- Vfn00 (0x10005A80) calls: ObjDB_Array_GetPtr, ObjDB_Array_GetPtr2, ObjDB_Index_GetByIdx, ObjDB_Index_Create, ObjDB_Index_BinSearch, ObjDB_Index_Ensure, ObjDB_Master_RebuildIndexes, thunk__op_new
+- Vfn04 (0x10005B80) calls: ObjDB_Master_Dtor (0x100054A0), thunk__op_delete
+- Vfn08 (0x10004F00) calls: ObjDB_Index_GetByIdx, ObjDB_Index_Create, ObjDB_Index_BinSearch, ObjDB_Index_Ensure, ObjDB_List_CallVfn8, thunk__op_new
+- Vfn0C (0x10004E30) calls: ObjDB_Index_GetByIdx, ObjDB_Index_Create, ObjDB_Index_BinSearch, ObjDB_Index_Ensure, ObjDB_List_ForEachA, thunk__op_new
+- Vfn10 (0x10005280) calls: ObjDB_Index_GetByIdx, ObjDB_Index_Create, ObjDB_Index_BinSearch, ObjDB_Index_Ensure, ObjDB_Master_ProcessTable, thunk__op_new
+- Vfn14 (0x100048F0) calls: ObjDB_Index_GetByIdx, ObjDB_List_Add, ObjDB_Index_Ready, ObjDB_Array_Find
+- Vfn18 (0x10004890) calls: ObjDB_Index_GetByIdx, ObjDB_List_Add2, ObjDB_Index_Ready, ObjDB_Array_Find
+- Vfn1C (0x10004DD0) calls: ObjDB_Index_GetByIdx, ObjDB_Index_Rebuild, ObjDB_Index_Ready, ObjDB_Array_Find
+- Vfn20 (0x10004950) calls: ObjDB_Index_GetByIdx, ObjDB_List_RemoveMaybe
+- Vfn24 (0x10004250) calls: ObjDB_Array_GetPtr
+- Vfn2C (0x10005BB0) calls: ObjDB_Master_CtorThunk (0x10005BA0), thunk__op_delete
+
+Helper cluster (renamed, no decomp/disasm):
+| VA | RVA | Symbol | Purpose (inferred) | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10004720 | 0x00004720 | ObjDB_Index_GetByIdx | Index lookup by id (calls ObjDB_Index_AllocSlots) | bytes + call chain | low |
+| 0x10004300 | 0x00004300 | ObjDB_Index_Create | Create index struct (allocs, sets vtbl 0x10114438) | bytes + alloc pattern | low |
+| 0x10004B90 | 0x00004B90 | ObjDB_Index_BinSearch | Binary search over index entries | bytes + loop pattern | low |
+| 0x100038E0 | 0x000038E0 | ObjDB_Index_Ensure | Ensure list/index allocated (uses memset) | bytes + memset | low |
+| 0x100038A0 | 0x000038A0 | ObjDB_Index_CopyHeader | Copy/init header (memcpy) | bytes + memcpy | low |
+| 0x10004A10 | 0x00004A10 | ObjDB_List_ForEachA | Iterates list + callback | bytes + call chain | low |
+| 0x10004A40 | 0x00004A40 | ObjDB_List_CallVfn8 | Calls vtbl+8 on list items | bytes + vtbl call | low |
+| 0x10004A70 | 0x00004A70 | ObjDB_Index_Rebuild | Rebuilds index (calls Array_* + List_Iterate) | call graph | low |
+| 0x10004470 | 0x00004470 | ObjDB_Index_Ready | Ready check / counts (uses Array_* helpers) | call graph | low |
+| 0x100044C0 | 0x000044C0 | ObjDB_List_Add | Add element to list | call chain | low |
+| 0x100044A0 | 0x000044A0 | ObjDB_List_Add2 | Add element (variant; uses ObjDB_Array_FindIdx) | call chain | low |
+| 0x100044E0 | 0x000044E0 | ObjDB_List_RemoveMaybe | Remove element or status | call chain | low |
+| 0x10003B10 | 0x00003B10 | ObjDB_Array_GetPtr | Array ptr getter | bytes | low |
+| 0x10003B20 | 0x00003B20 | ObjDB_Array_GetPtr2 | Array ptr getter (variant) | bytes | low |
+| 0x10003B40 | 0x00003B40 | ObjDB_Array_Find | Linear/array search | bytes | low |
+| 0x10003C70 | 0x00003C70 | ObjDB_Array_Pop | Pop/decrement helper | bytes | low |
+| 0x10003D40 | 0x00003D40 | ObjDB_Array_GetPtr4 | Array ptr getter (variant) | bytes | low |
+| 0x10003D00 | 0x00003D00 | ObjDB_Array_FindIdx | Linear search returning index | bytes | low |
+| 0x10003BD0 | 0x00003BD0 | ObjDB_StructZero1 | Zero-init helper (memset) | bytes + calls | low |
+| 0x10003CD0 | 0x00003CD0 | ObjDB_StructZero2 | Zero-init helper (memset) | bytes + calls | low |
+| 0x10003DE0 | 0x00003DE0 | ObjDB_StructZero3 | Zero-init helper (memset) | bytes + calls | low |
+| 0x10003EC0 | 0x00003EC0 | ObjDB_Index_AllocSlots | Alloc index slots | bytes | low |
+| 0x10003B90 | 0x00003B90 | ObjDB_Index_Init1 | Index init helper | calls memcpy | low |
+| 0x10003C90 | 0x00003C90 | ObjDB_Index_Init2 | Index init helper | calls memcpy | low |
+| 0x10003DA0 | 0x00003DA0 | ObjDB_Index_Init3 | Index init helper | calls memcpy | low |
+| 0x100047E0 | 0x000047E0 | ObjDB_Index_BinSearchEx | Binsearch variant | calls ObjDB_Index_Sort3 | low |
+| 0x100039E0 | 0x000039E0 | ObjDB_List_Next | Next pointer helper | bytes | low |
+| 0x10004780 | 0x00004780 | ObjDB_Index_Build1 | Builds index (sort) | calls memcpy+memset | low |
+| 0x100047B0 | 0x000047B0 | ObjDB_Index_Build2 | Builds index (sort) | calls memcpy+memset | low |
+| 0x10004830 | 0x00004830 | ObjDB_Index_InsertSorted | Insert into sorted index | bytes + loop | low |
+| 0x10004C70 | 0x00004C70 | ObjDB_Index_InsertMulti | Insert multiple entries (calls InsertSorted) | call graph | low |
+| 0x10003C20 | 0x00003C20 | ObjDB_Array_SetRange | Set array range | bytes | low |
+| 0x10003BF0 | 0x00003BF0 | ObjDB_Array_Clear | Clear array | bytes | low |
+| 0x10003C00 | 0x00003C00 | ObjDB_Array_Set | Set array entry | bytes | low |
+| 0x10004550 | 0x00004550 | ObjDB_List_Iterate1 | List iteration helper | call graph | low |
+| 0x100045A0 | 0x000045A0 | ObjDB_List_Iterate2 | List iteration helper | call graph | low |
+| 0x10003CF0 | 0x00003CF0 | ObjDB_List_Reset | Reset list head | bytes | low |
+| 0x10003E50 | 0x00003E50 | ObjDB_List_FindInsertPos | Find insert pos (sort) | bytes | low |
+| 0x100040C0 | 0x000040C0 | ObjDB_Index_Sort3 | Sort helper (memcpy+memset) | call graph | low |
+| 0x10004000 | 0x00004000 | ObjDB_Index_Sort1 | Sort helper (memcpy+memset) | call graph | low |
+| 0x10004060 | 0x00004060 | ObjDB_Index_Sort2 | Sort helper (memcpy+memset) | call graph | low |
+| 0x10003D80 | 0x00003D80 | ObjDB_List_Count | Count items in list | bytes | low |
+| 0x10003E00 | 0x00003E00 | ObjDB_List_GetHead | Returns head pointer | bytes | low |
+| 0x10003E10 | 0x00003E10 | ObjDB_Array_GetPtr3 | Array ptr getter (variant) | bytes | low |
+| 0x10003EA0 | 0x00003EA0 | ObjDB_Array_GetPtr5 | Array ptr getter (variant) | bytes | low |
+| 0x10004990 | 0x00004990 | ObjDB_Index_Clear | Clears index structs (memset + zero helpers) | call graph | low |
+| 0x10004FD0 | 0x00004FD0 | ObjDB_Index_Dtor | Index destructor (clears + delete) | call graph | low |
+| 0x10114438 | 0x00114438 | ObjDB_Index_vftable | Index vtable (extends Master vtable) | bytes | low |
+| 0x1018C544 | 0x0018C544 | ObjDB_Index_VtblData_04 | Vtable data (unknown) | bytes | low |
+| 0x10005000 | 0x00005000 | ObjDB_Master_ProcessTable | Master vfn helper (uses list iterate + index ops) | call graph | low |
+| 0x100055B0 | 0x000055B0 | ObjDB_Master_AddIndex_A | Alloc + link index list (uses op_new + list ops) | call graph | low |
+| 0x10005660 | 0x00005660 | ObjDB_Master_AddIndex_B | Alloc + link index list (uses op_new + list ops) | call graph | low |
+| 0x10005740 | 0x00005740 | ObjDB_Master_RebuildIndexes | Rebuild indexes for tables | call graph | low |
+
+Vtable slots (ObjDB_Index_vftable):
+- +0x00 -> 0x10004FD0 ObjDB_Index_Dtor
+- +0x04 -> 0x1018C544 ObjDB_Index_VtblData_04 (data)
+- +0x08 -> 0x10005A80 ObjDB_Master_Vfn00
+- +0x0C -> 0x10005B80 ObjDB_Master_Vfn04
+- +0x10 -> 0x10004F00 ObjDB_Master_Vfn08
+- +0x14 -> 0x10004E30 ObjDB_Master_Vfn0C
+- +0x18 -> 0x10005280 ObjDB_Master_Vfn10
+- +0x1C -> 0x100048F0 ObjDB_Master_Vfn14
+- +0x20 -> 0x10004890 ObjDB_Master_Vfn18
+- +0x24 -> 0x10004DD0 ObjDB_Master_Vfn1C
+- +0x28 -> 0x10004950 ObjDB_Master_Vfn20
+- +0x2C -> 0x10004250 ObjDB_Master_Vfn24
+
+CRT thunks:
+- 0x1010231E thunk__memset -> [0x10113270] memset
+- 0x10101F87 thunk__memcpy -> [0x10113298] memcpy
+
+## server.dll (image base 0x10000000)
+
+### Data (command table)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x100AC1D0 | 0x000AC1D0 | g_ServerCmdTable | 8 command entries (name, handler, flags) registered at init | memory read + strings | high |
+| 0x100AFDFC | 0x000AFDFC | g_ObjDB_Master | Global ObjDB master pointer used by Object.lto load/lookup | decomp + xrefs | low |
+
+Command entries (name -> handler, flags):
+- ShowGameVars -> Cmd_ShowGameVars (0x10045F10), 0
+- ShowUsedFiles -> Cmd_ShowUsedFiles (0x10045EC0), 0
+- world -> Cmd_World (0x10045F80), 0
+- objectinfo -> Cmd_ObjectInfo (0x10045FD0), 0
+- DisableWMPhysics -> Cmd_DisableWMPhysics (0x10046280), 0
+- ExhaustMemory -> Cmd_ExhaustMemory (0x100462C0), 0
+- SpawnObject -> Cmd_SpawnObject (0x10046310), 0
+- Mem -> Cmd_Mem (0x1007EC90), 0
+
+### Object DB loader / Object.lto hookup
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x100195DA | 0x000195DA | LoadServerObjects | Loads `object.lto` + calls ObjectDLLSetup chain | string refs + call graph | high |
+| 0x1004AD60 | 0x0004AD60 | ServerObjects_ObjectDLLSetup | Calls LoadObjectDLL_ByName then continues setup | call graph | med |
+| 0x1004AD83 | 0x0004AD83 | ServerObjects_ObjectDLLSetup_Finish | Uses "ObjectDLLSetup" string, finalizes setup | string ref | low |
+| 0x100189B0 | 0x000189B0 | LoadObjectDLL_ByName | Uses Dyn_LoadLibraryA/Dyn_LoadLibraryA_OrMsg | call graph | med |
+| 0x100189DE | 0x000189DE | Resolve_SetMasterDatabase | Resolves `SetMasterDatabase` export (GetProcAddress) | string ref + call graph | high |
+
+Dynamic loader wrappers:
+- 0x1001A5A0 Dyn_LoadLibraryA
+- 0x1001A5A9 Dyn_LoadLibraryA_OrMsg (LoadLibraryA + GetLastError + FormatMessage + MessageBox)
+- 0x1001A627 Dyn_FreeLibrary
+- 0x1001A630 Dyn_GetModuleHandleA
+- 0x1001A670 Dyn_GetProcAddress
+
+### ObjDB file-path + entry helpers (no decomp/disasm)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10018DC0 | 0x00018DC0 | ObjDB_Load_ObjectLTO | Loads Object.lto; direct-path or temp-file extract | decomp + temp-file APIs | high |
+| 0x1003DA10 | 0x0003DA10 | ObjDB_FindDataFile | Scans/locates data file entry by name | decomp + call graph | med |
+| 0x10003B00 | 0x00003B00 | EnumFiles_FindMatch | File enumeration helper (_findfirst/_findnext/_findclose) | import calls | med |
+| 0x10003AE0 | 0x00003AE0 | ObjDB_DataFile_IsDirect | Returns data-file type flag (0=extract, 1=direct) | decomp | med |
+| 0x10003D70 | 0x00003D70 | ObjDB_DataFile_GetPath | Builds output path for direct entry access | decomp | med |
+| 0x10004F70 | 0x00004F70 | File_OpenAndSize | File open/size helper (fopen/ftell) | import calls | med |
+| 0x10004250 | 0x00004250 | ObjDB_File_ExtractToPath | Extracts entry to disk path (returns 0 on success) | decomp | med |
+| 0x1003D9A0 | 0x0003D9A0 | ObjDB_LoadEntryData | Finds entry + extracts to temp file | decomp | med |
+| 0x1003DB10 | 0x0003DB10 | ObjDB_InsertEntry | Inserts entry into DB + notifies instance list | decomp + call graph | med |
+| 0x1003DDB0 | 0x0003DDB0 | ObjDB_FindOrAddEntry | Lookup with optional insert (calls ObjDB_InsertEntry) | decomp + call graph | med |
+| 0x1003DFF0 | 0x0003DFF0 | ObjDB_FindEntryByName | Thin wrapper (calls ObjDB_FindOrAddEntry) | decomp + call graph | med |
+| 0x10018C60 | 0x00018C60 | FormatSystemError | FormatMessage/LoadString wrapper | import calls | med |
+| 0x10003830 | 0x00003830 | FormatString_vsnprintf | vsnprintf wrapper | import call | high |
+
+### Physics/Collision API holders (server-side interfaces)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1008CCF0 | 0x0008CCF0 | Init_ILTPhysics_APIHolder_A | Registers ILTPhysics.Server API holder (A) | inline init stub | low |
+| 0x1008D7C0 | 0x0008D7C0 | Init_ILTPhysics_APIHolder_B | Registers ILTPhysics.Server API holder (B) | inline init stub | low |
+| 0x1008E4A0 | 0x0008E4A0 | Init_ILTCollisionMgr_APIHolder | Registers ILTCollisionMgr.Server API holder | inline init stub | low |
+| 0x100B0248 | 0x000B0248 | g_ILTPhysics_APIHolder_A | ILTPhysics API holder instance (A) | init stub ECX | low |
+| 0x100B01A0 | 0x000B01A0 | g_pILTPhysics_A | ILTPhysics API pointer (A) | init stub arg | low |
+| 0x100B06BC | 0x000B06BC | g_ILTPhysics_APIHolder_B | ILTPhysics API holder instance (B) | init stub ECX | low |
+| 0x100B0698 | 0x000B0698 | g_pILTPhysics_B | ILTPhysics API pointer (B) | init stub arg | low |
+| 0x100B0E48 | 0x000B0E48 | g_ILTCollisionMgr_APIHolder | CollisionMgr API holder instance | init stub ECX | low |
+| 0x100B0D98 | 0x000B0D98 | g_pILTCollisionMgr | CollisionMgr API pointer | init stub arg | low |
+| 0x1002F9C0 | 0x0002F9C0 | Get_ILTPhysics_A | Getter stub (mov eax, g_pILTPhysics_A; ret) | bytes | low |
+

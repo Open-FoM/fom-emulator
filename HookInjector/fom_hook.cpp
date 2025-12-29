@@ -16,17 +16,27 @@
 extern "C" IMAGE_DOS_HEADER __ImageBase;
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+static void LogLine(const char* line);
+
 struct HookConfig {
     bool log_recv = true;
     bool log_send = true;
     bool log_hex = true;
+    bool log_bits = true;
+    bool log_bits_msb = false;
+    bool decode_login6d = true;
     int max_dump = 4096;
+    int max_bits = 0;
+    int login_dump_bits = 2048;
+    int bits_per_line = 128;
     DWORD delay_ms = 15000;
     DWORD rescan_ms = 5000;
     bool overlay = true;
     bool console_enable = true;
     int overlay_key = VK_F1;
     int log_toggle_key = VK_F2;
+    int mark_key = VK_F9;
+    bool capture_after_mark = false;
     bool wrapper_hooks = true;
     bool wrapper_packetproc = false;
     bool ws2_detours = true;
@@ -54,6 +64,334 @@ static uint64_t g_recvCount = 0;
 static uint64_t g_sendCount = 0;
 static int g_lastRecv = 0;
 static int g_lastSend = 0;
+static volatile LONG g_captureActive = 0;
+static const int kLithSampleBytes = 32;
+
+static bool ReadBitsLSB(const uint8_t* data, int totalBits, int* bitPos, int numBits, uint32_t* out) {
+    if (!data || !bitPos || !out || numBits <= 0) {
+        return false;
+    }
+    if (*bitPos + numBits > totalBits) {
+        return false;
+    }
+    uint32_t value = 0;
+    for (int i = 0; i < numBits; ++i) {
+        int idx = *bitPos + i;
+        int byteIndex = idx / 8;
+        int bitIndex = idx % 8;
+        uint8_t bit = (data[byteIndex] >> bitIndex) & 1;
+        value |= (bit << i);
+    }
+    *bitPos += numBits;
+    *out = value;
+    return true;
+}
+
+static bool ReadBitsMSB(const uint8_t* data, int totalBits, int* bitPos, int numBits, uint32_t* out) {
+    if (!data || !bitPos || !out || numBits <= 0) {
+        return false;
+    }
+    if (*bitPos + numBits > totalBits) {
+        return false;
+    }
+    uint32_t value = 0;
+    for (int i = 0; i < numBits; ++i) {
+        int idx = *bitPos + i;
+        int byteIndex = idx / 8;
+        int bitIndex = idx % 8;
+        uint8_t bit = (data[byteIndex] >> (7 - bitIndex)) & 1;
+        value = (value << 1) | bit;
+    }
+    *bitPos += numBits;
+    *out = value;
+    return true;
+}
+
+static bool ReadU8CompressedMSB(const uint8_t* data, int totalBits, int* bitPos, uint8_t* out) {
+    if (!out) {
+        return false;
+    }
+    uint32_t flag = 0;
+    if (!ReadBitsMSB(data, totalBits, bitPos, 1, &flag)) {
+        return false;
+    }
+    uint32_t value = 0;
+    if (flag) {
+        if (!ReadBitsMSB(data, totalBits, bitPos, 4, &value)) {
+            return false;
+        }
+    } else {
+        if (!ReadBitsMSB(data, totalBits, bitPos, 8, &value)) {
+            return false;
+        }
+    }
+    *out = static_cast<uint8_t>(value & 0xFF);
+    return true;
+}
+
+static void FormatHexSample(const uint8_t* data, int bytes, char* out, size_t outSize) {
+    if (!out || outSize == 0) return;
+    out[0] = '\0';
+    if (!data || bytes <= 0) return;
+    int maxBytes = bytes > kLithSampleBytes ? kLithSampleBytes : bytes;
+    size_t pos = 0;
+    for (int i = 0; i < maxBytes; ++i) {
+        int written = _snprintf_s(out + pos, outSize - pos, _TRUNCATE, "%02X ", data[i]);
+        if (written <= 0) break;
+        pos += static_cast<size_t>(written);
+        if (pos >= outSize) break;
+    }
+}
+
+static void LogBitsMSB(const char* tag, const void* data, int len, const sockaddr* addr, int addrlen) {
+    if (!g_cfg.log_bits_msb || !data || len <= 0) {
+        return;
+    }
+    if (!g_logInit) {
+        InitializeCriticalSection(&g_logLock);
+        g_logInit = true;
+    }
+    EnterCriticalSection(&g_logLock);
+    SYSTEMTIME st;
+    GetLocalTime(&st);
+
+    const uint8_t* b = reinterpret_cast<const uint8_t*>(data);
+    int totalBits = len * 8;
+    int maxBits = g_cfg.max_bits > 0 ? g_cfg.max_bits : totalBits;
+    if (maxBits > totalBits) maxBits = totalBits;
+    int bitsPerLine = g_cfg.bits_per_line > 0 ? g_cfg.bits_per_line : 128;
+
+    char addrbuf[64] = {0};
+    int port = 0;
+    if (addr && addrlen >= static_cast<int>(sizeof(sockaddr_in))) {
+        const sockaddr_in* sin = reinterpret_cast<const sockaddr_in*>(addr);
+        inet_ntop(AF_INET, const_cast<in_addr*>(&sin->sin_addr), addrbuf, sizeof(addrbuf));
+        port = ntohs(sin->sin_port);
+    } else {
+        lstrcpyA(addrbuf, "n/a");
+    }
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, g_cfg.log_path, "ab") != 0 || !f) {
+        LeaveCriticalSection(&g_logLock);
+        return;
+    }
+    fprintf(f, "[%02u:%02u:%02u.%03u] %s bits=%d order=msb0 from=%s:%d\r\n",
+            st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, tag, totalBits, addrbuf, port);
+    for (int bit = 0; bit < maxBits; bit += bitsPerLine) {
+        int lineBits = (maxBits - bit < bitsPerLine) ? (maxBits - bit) : bitsPerLine;
+        fprintf(f, "  %04X  ", bit);
+        for (int j = 0; j < lineBits; ++j) {
+            int idx = bit + j;
+            int byteIndex = idx / 8;
+            int bitIndex = idx % 8;
+            int bitVal = (b[byteIndex] >> (7 - bitIndex)) & 1;
+            fputc(bitVal ? '1' : '0', f);
+            if ((j & 7) == 7) {
+                fputc(' ', f);
+            }
+        }
+        fputc('\r', f);
+        fputc('\n', f);
+    }
+    if (maxBits < totalBits) {
+        fprintf(f, "  ... truncated %d bits\r\n", totalBits - maxBits);
+    }
+    fclose(f);
+
+    if (g_consoleEnabled) {
+        fprintf(stdout, "[%02u:%02u:%02u.%03u] %s bits=%d order=msb0 from=%s:%d\r\n",
+                st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, tag, totalBits, addrbuf, port);
+        for (int bit = 0; bit < maxBits; bit += bitsPerLine) {
+            int lineBits = (maxBits - bit < bitsPerLine) ? (maxBits - bit) : bitsPerLine;
+            fprintf(stdout, "  %04X  ", bit);
+            for (int j = 0; j < lineBits; ++j) {
+                int idx = bit + j;
+                int byteIndex = idx / 8;
+                int bitIndex = idx % 8;
+                int bitVal = (b[byteIndex] >> (7 - bitIndex)) & 1;
+                fputc(bitVal ? '1' : '0', stdout);
+                if ((j & 7) == 7) {
+                    fputc(' ', stdout);
+                }
+            }
+            fputc('\r', stdout);
+            fputc('\n', stdout);
+        }
+        if (maxBits < totalBits) {
+            fprintf(stdout, "  ... truncated %d bits\r\n", totalBits - maxBits);
+        }
+    }
+    LeaveCriticalSection(&g_logLock);
+}
+
+static void DecodeMessageGroup(const uint8_t* payload, int payloadBits) {
+    if (!payload || payloadBits <= 0) return;
+    int bitPos = 0;
+    int totalBits = payloadBits;
+    int count = 0;
+    while (bitPos + 8 <= totalBits) {
+        uint32_t lenBits = 0;
+        if (!ReadBitsLSB(payload, totalBits, &bitPos, 8, &lenBits)) break;
+        if (lenBits == 0) break;
+        if (bitPos + 8 > totalBits) break;
+        uint32_t msgId = 0;
+        if (!ReadBitsLSB(payload, totalBits, &bitPos, 8, &msgId)) break;
+        if (bitPos + static_cast<int>(lenBits) > totalBits) break;
+        int payloadBytes = static_cast<int>((lenBits + 7) / 8);
+        std::vector<uint8_t> subPayload(payloadBytes);
+        int bitsLeft = static_cast<int>(lenBits);
+        for (int i = 0; i < payloadBytes; ++i) {
+            uint32_t val = 0;
+            int take = bitsLeft > 8 ? 8 : bitsLeft;
+            if (!ReadBitsLSB(payload, totalBits, &bitPos, take, &val)) {
+                bitsLeft = 0;
+                break;
+            }
+            subPayload[i] = static_cast<uint8_t>(val & 0xFF);
+            bitsLeft -= take;
+        }
+        char sample[256];
+        FormatHexSample(subPayload.data(), payloadBytes, sample, sizeof(sample));
+        char line[512];
+        _snprintf_s(line, sizeof(line), _TRUNCATE, "[LithGrp] msg=0x%02X bits=%u sample=%s", msgId, lenBits, sample);
+        LogLine(line);
+        if (++count >= 8) break;
+    }
+}
+
+static void DecodeLogin6DAtBitpos(const uint8_t* payload, int payloadLen, int bitPosStart, const char* label) {
+    if (!payload || payloadLen <= 0) {
+        return;
+    }
+    int totalBits = payloadLen * 8;
+    int bitPos = bitPosStart;
+    if (bitPos < 0 || bitPos >= totalBits) {
+        return;
+    }
+    uint8_t status = 0;
+    if (!ReadU8CompressedMSB(payload, totalBits, &bitPos, &status)) {
+        char line[160] = {0};
+        _snprintf_s(line, sizeof(line), _TRUNCATE, "[Login6D] %s status decode failed (bitpos=%d totalBits=%d)", label, bitPosStart, totalBits);
+        LogLine(line);
+        return;
+    }
+    int remaining = totalBits - bitPos;
+    int dumpBits = g_cfg.login_dump_bits > 0 ? g_cfg.login_dump_bits : remaining;
+    if (dumpBits > remaining) dumpBits = remaining;
+    int dumpBytes = (dumpBits + 7) / 8;
+    std::vector<uint8_t> dump(static_cast<size_t>(dumpBytes), 0);
+    for (int i = 0; i < dumpBits; ++i) {
+        uint32_t bit = 0;
+        if (!ReadBitsMSB(payload, totalBits, &bitPos, 1, &bit)) {
+            break;
+        }
+        int byteIndex = i / 8;
+        int bitIndex = i % 8;
+        if (bit) {
+            dump[byteIndex] |= static_cast<uint8_t>(1 << (7 - bitIndex));
+        }
+    }
+    char sample[256] = {0};
+    FormatHexSample(dump.data(), dumpBytes, sample, sizeof(sample));
+
+    char line[512] = {0};
+    _snprintf_s(line, sizeof(line), _TRUNCATE,
+                "[Login6D] %s status=%u dumpBits=%d dumpBytes=%d sample=%s",
+                label, static_cast<unsigned>(status), dumpBits, dumpBytes, sample);
+    LogLine(line);
+
+    int nullPos = -1;
+    for (int i = 0; i < dumpBytes; ++i) {
+        if (dump[i] == 0) {
+            nullPos = i;
+            break;
+        }
+    }
+    if (nullPos > 0) {
+        char text[260] = {0};
+        int copyLen = nullPos < 255 ? nullPos : 255;
+        for (int i = 0; i < copyLen; ++i) {
+            char c = static_cast<char>(dump[i]);
+            if (c < 0x20 || c > 0x7E) {
+                c = '.';
+            }
+            text[i] = c;
+        }
+        text[copyLen] = '\0';
+        char line2[320] = {0};
+        _snprintf_s(line2, sizeof(line2), _TRUNCATE, "[Login6D] %s text=\"%s\"", label, text);
+        LogLine(line2);
+    }
+}
+
+static void DecodeLogin6D(const uint8_t* data, int len, const char* tag) {
+    if (!g_cfg.decode_login6d || !data || len <= 0) {
+        return;
+    }
+    const uint8_t* payload = data;
+    int payloadLen = len;
+    if (len > 17 && data[0] == 0x40) {
+        payload = data + 17;
+        payloadLen = len - 17;
+    }
+    if (payloadLen <= 0 || payload[0] != 0x6D) {
+        return;
+    }
+    char header[200] = {0};
+    _snprintf_s(header, sizeof(header), _TRUNCATE, "[Login6D] %s payloadLen=%d", tag ? tag : "recv", payloadLen);
+    LogLine(header);
+    DecodeLogin6DAtBitpos(payload, payloadLen, 8, "skip8");
+    DecodeLogin6DAtBitpos(payload, payloadLen, 0, "skip0");
+}
+
+static void DecodeLithPacket(const uint8_t* data, int len) {
+    if (!data || len < 18) return;
+    if (data[0] != 0x40) return;
+    const uint8_t* inner = data + 17;
+    int innerLen = len - 17;
+    int totalBits = innerLen * 8;
+    int bitPos = 0;
+    uint32_t seq = 0;
+    uint32_t cont = 0;
+    if (!ReadBitsLSB(inner, totalBits, &bitPos, 13, &seq)) return;
+    if (!ReadBitsLSB(inner, totalBits, &bitPos, 1, &cont)) return;
+    char head[256];
+    _snprintf_s(head, sizeof(head), _TRUNCATE, "[LithDec] seq=%u cont=%u innerBytes=%d", seq, cont, innerLen);
+    LogLine(head);
+    int msgCount = 0;
+    while (bitPos + 8 <= totalBits) {
+        uint32_t lenBits = 0;
+        if (!ReadBitsLSB(inner, totalBits, &bitPos, 8, &lenBits)) break;
+        if (lenBits == 0) break;
+        if (bitPos + 8 > totalBits) break;
+        uint32_t msgId = 0;
+        if (!ReadBitsLSB(inner, totalBits, &bitPos, 8, &msgId)) break;
+        if (bitPos + static_cast<int>(lenBits) > totalBits) break;
+        int payloadBytes = static_cast<int>((lenBits + 7) / 8);
+        std::vector<uint8_t> payload(payloadBytes);
+        int bitsLeft = static_cast<int>(lenBits);
+        for (int i = 0; i < payloadBytes; ++i) {
+            uint32_t val = 0;
+            int take = bitsLeft > 8 ? 8 : bitsLeft;
+            if (!ReadBitsLSB(inner, totalBits, &bitPos, take, &val)) {
+                bitsLeft = 0;
+                break;
+            }
+            payload[i] = static_cast<uint8_t>(val & 0xFF);
+            bitsLeft -= take;
+        }
+        char sample[256];
+        FormatHexSample(payload.data(), payloadBytes, sample, sizeof(sample));
+        char line[512];
+        _snprintf_s(line, sizeof(line), _TRUNCATE, "[LithDec] msg=0x%02X bits=%u sample=%s", msgId, lenBits, sample);
+        LogLine(line);
+        if (msgId == 0x0E) {
+            DecodeMessageGroup(payload.data(), static_cast<int>(lenBits));
+        }
+        if (++msgCount >= 8) break;
+    }
+}
 
 using recvfrom_t = int (WSAAPI *)(SOCKET, char*, int, int, sockaddr*, int*);
 using recv_t = int (WSAAPI *)(SOCKET, char*, int, int);
@@ -210,6 +548,41 @@ static void LogLine(const char* line) {
     LeaveCriticalSection(&g_logLock);
 }
 
+static bool ShouldCaptureNetwork() {
+    if (!g_cfg.capture_after_mark) {
+        return true;
+    }
+    return InterlockedCompareExchange(&g_captureActive, 0, 0) != 0;
+}
+
+static void ToggleCaptureMark() {
+    if (!g_cfg.capture_after_mark) {
+        LogLine("[mark] CaptureAfterMark disabled");
+        return;
+    }
+    LONG prev = InterlockedExchangeAdd(&g_captureActive, 0);
+    LONG next = prev ? 0 : 1;
+    InterlockedExchange(&g_captureActive, next);
+    if (next) {
+        LogLine("=== LOGIN_MARK BEGIN ===");
+    } else {
+        LogLine("=== LOGIN_MARK END ===");
+    }
+}
+
+static DWORD WINAPI MarkKeyThread(LPVOID) {
+    for (;;) {
+        if (g_cfg.capture_after_mark) {
+            SHORT state = GetAsyncKeyState(g_cfg.mark_key);
+            if (state & 1) {
+                ToggleCaptureMark();
+            }
+        }
+        Sleep(50);
+    }
+    return 0;
+}
+
 static void LogHex(const char* tag, const void* data, int len, const sockaddr* addr, int addrlen) {
     if (!g_logInit || !data || len <= 0) {
         return;
@@ -277,6 +650,88 @@ static void LogHex(const char* tag, const void* data, int len, const sockaddr* a
     LeaveCriticalSection(&g_logLock);
 }
 
+static void LogBits(const char* tag, const void* data, int len, const sockaddr* addr, int addrlen) {
+    if (!g_cfg.log_bits || !data || len <= 0) {
+        return;
+    }
+    if (!g_logInit) {
+        InitializeCriticalSection(&g_logLock);
+        g_logInit = true;
+    }
+    EnterCriticalSection(&g_logLock);
+    SYSTEMTIME st;
+    GetLocalTime(&st);
+
+    const uint8_t* b = reinterpret_cast<const uint8_t*>(data);
+    int totalBits = len * 8;
+    int maxBits = g_cfg.max_bits > 0 ? g_cfg.max_bits : totalBits;
+    if (maxBits > totalBits) maxBits = totalBits;
+    int bitsPerLine = g_cfg.bits_per_line > 0 ? g_cfg.bits_per_line : 128;
+
+    char addrbuf[64] = {0};
+    int port = 0;
+    if (addr && addrlen >= static_cast<int>(sizeof(sockaddr_in))) {
+        const sockaddr_in* sin = reinterpret_cast<const sockaddr_in*>(addr);
+        inet_ntop(AF_INET, const_cast<in_addr*>(&sin->sin_addr), addrbuf, sizeof(addrbuf));
+        port = ntohs(sin->sin_port);
+    } else {
+        lstrcpyA(addrbuf, "n/a");
+    }
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, g_cfg.log_path, "ab") != 0 || !f) {
+        LeaveCriticalSection(&g_logLock);
+        return;
+    }
+    fprintf(f, "[%02u:%02u:%02u.%03u] %s bits=%d order=lsb0 from=%s:%d\r\n",
+            st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, tag, totalBits, addrbuf, port);
+    for (int bit = 0; bit < maxBits; bit += bitsPerLine) {
+        int lineBits = (maxBits - bit < bitsPerLine) ? (maxBits - bit) : bitsPerLine;
+        fprintf(f, "  %04X  ", bit);
+        for (int j = 0; j < lineBits; ++j) {
+            int idx = bit + j;
+            int byteIndex = idx / 8;
+            int bitIndex = idx % 8;
+            int bitVal = (b[byteIndex] >> bitIndex) & 1;
+            fputc(bitVal ? '1' : '0', f);
+            if ((j & 7) == 7) {
+                fputc(' ', f);
+            }
+        }
+        fputc('\r', f);
+        fputc('\n', f);
+    }
+    if (maxBits < totalBits) {
+        fprintf(f, "  ... truncated %d bits\r\n", totalBits - maxBits);
+    }
+    fclose(f);
+
+    if (g_consoleEnabled) {
+        fprintf(stdout, "[%02u:%02u:%02u.%03u] %s bits=%d order=lsb0 from=%s:%d\r\n",
+                st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, tag, totalBits, addrbuf, port);
+        for (int bit = 0; bit < maxBits; bit += bitsPerLine) {
+            int lineBits = (maxBits - bit < bitsPerLine) ? (maxBits - bit) : bitsPerLine;
+            fprintf(stdout, "  %04X  ", bit);
+            for (int j = 0; j < lineBits; ++j) {
+                int idx = bit + j;
+                int byteIndex = idx / 8;
+                int bitIndex = idx % 8;
+                int bitVal = (b[byteIndex] >> bitIndex) & 1;
+                fputc(bitVal ? '1' : '0', stdout);
+                if ((j & 7) == 7) {
+                    fputc(' ', stdout);
+                }
+            }
+            fputc('\r', stdout);
+            fputc('\n', stdout);
+        }
+        if (maxBits < totalBits) {
+            fprintf(stdout, "  ... truncated %d bits\r\n", totalBits - maxBits);
+        }
+    }
+    LeaveCriticalSection(&g_logLock);
+}
+
 static void BytesToHex(const uint8_t* data, size_t len, char* out, size_t out_len) {
     if (!out || out_len == 0) {
         return;
@@ -310,12 +765,20 @@ static void LoadConfig() {
     g_cfg.log_send = GetPrivateProfileIntA("Logging", "LogSend", 1, ini_path) != 0;
     g_cfg.log_hex = GetPrivateProfileIntA("Logging", "HexDump", 1, ini_path) != 0;
     g_cfg.max_dump = GetPrivateProfileIntA("Logging", "MaxDump", 4096, ini_path);
+    g_cfg.log_bits = GetPrivateProfileIntA("Logging", "BitDump", 1, ini_path) != 0;
+    g_cfg.max_bits = GetPrivateProfileIntA("Logging", "MaxBits", 0, ini_path);
+    g_cfg.bits_per_line = GetPrivateProfileIntA("Logging", "BitsPerLine", 128, ini_path);
+    g_cfg.log_bits_msb = GetPrivateProfileIntA("Logging", "BitDumpMSB", 1, ini_path) != 0;
+    g_cfg.decode_login6d = GetPrivateProfileIntA("Logging", "DecodeLogin6D", 1, ini_path) != 0;
+    g_cfg.login_dump_bits = GetPrivateProfileIntA("Logging", "LoginDumpBits", 2048, ini_path);
     g_cfg.delay_ms = GetPrivateProfileIntA("Hook", "DelayMs", 15000, ini_path);
     g_cfg.rescan_ms = GetPrivateProfileIntA("Hook", "RescanMs", 5000, ini_path);
     g_cfg.overlay = GetPrivateProfileIntA("Overlay", "Enable", 1, ini_path) != 0;
     g_cfg.console_enable = GetPrivateProfileIntA("Console", "Enable", 1, ini_path) != 0;
     g_cfg.overlay_key = GetPrivateProfileIntA("Overlay", "ToggleKey", VK_F1, ini_path);
     g_cfg.log_toggle_key = GetPrivateProfileIntA("Logging", "ToggleKey", VK_F2, ini_path);
+    g_cfg.mark_key = GetPrivateProfileIntA("Logging", "MarkKey", VK_F9, ini_path);
+    g_cfg.capture_after_mark = GetPrivateProfileIntA("Logging", "CaptureAfterMark", 0, ini_path) != 0;
     g_cfg.wrapper_hooks = GetPrivateProfileIntA("WrapperHooks", "Enable", 1, ini_path) != 0;
     g_cfg.wrapper_packetproc = GetPrivateProfileIntA("WrapperHooks", "PacketProc", 0, ini_path) != 0;
     g_cfg.ws2_detours = GetPrivateProfileIntA("Hook", "Ws2Detours", 1, ini_path) != 0;
@@ -698,18 +1161,22 @@ static int WSAAPI Hook_recvfrom(SOCKET s, char* buf, int len, int flags, sockadd
     }
     int ret = g_recvfrom(s, buf, len, flags, from, fromlen);
     int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
-    if (g_cfg.log_recv) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_recv) {
         char line[160] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "recvfrom call ret=%d err=%d len=%d flags=0x%x fromlen=%d",
                     ret, err, len, flags, fromlen ? *fromlen : 0);
         LogLine(line);
     }
-    if (ret > 0 && g_cfg.log_recv) {
+    if (allow && ret > 0 && g_cfg.log_recv) {
         g_recvBytes += static_cast<uint64_t>(ret);
         g_recvCount++;
         g_lastRecv = ret;
         int flen = fromlen ? *fromlen : 0;
         LogHex("recvfrom", buf, ret, from, flen);
+        LogBits("recvfrom.bits", buf, ret, from, flen);
+        LogBitsMSB("recvfrom.bits_msb", buf, ret, from, flen);
+        DecodeLogin6D(reinterpret_cast<const uint8_t*>(buf), ret, "recvfrom");
     }
     return ret;
 }
@@ -724,17 +1191,21 @@ static int WSAAPI Hook_recv(SOCKET s, char* buf, int len, int flags) {
     }
     int ret = g_recv(s, buf, len, flags);
     int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
-    if (g_cfg.log_recv) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_recv) {
         char line[160] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "recv call ret=%d err=%d len=%d flags=0x%x",
                     ret, err, len, flags);
         LogLine(line);
     }
-    if (ret > 0 && g_cfg.log_recv) {
+    if (allow && ret > 0 && g_cfg.log_recv) {
         g_recvBytes += static_cast<uint64_t>(ret);
         g_recvCount++;
         g_lastRecv = ret;
         LogHex("recv", buf, ret, nullptr, 0);
+        LogBits("recv.bits", buf, ret, nullptr, 0);
+        LogBitsMSB("recv.bits_msb", buf, ret, nullptr, 0);
+        DecodeLogin6D(reinterpret_cast<const uint8_t*>(buf), ret, "recv");
     }
     return ret;
 }
@@ -749,17 +1220,19 @@ static int WSAAPI Hook_sendto(SOCKET s, const char* buf, int len, int flags, con
     }
     int ret = g_sendto(s, buf, len, flags, to, tolen);
     int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
-    if (g_cfg.log_send) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_send) {
         char line[160] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "sendto call ret=%d err=%d len=%d flags=0x%x tolen=%d",
                     ret, err, len, flags, tolen);
         LogLine(line);
     }
-    if (ret > 0 && g_cfg.log_send) {
+    if (allow && ret > 0 && g_cfg.log_send) {
         g_sendBytes += static_cast<uint64_t>(ret);
         g_sendCount++;
         g_lastSend = ret;
         LogHex("sendto", buf, ret, to, tolen);
+        LogBits("sendto.bits", buf, ret, to, tolen);
     }
     return ret;
 }
@@ -774,22 +1247,27 @@ static int WSAAPI Hook_send(SOCKET s, const char* buf, int len, int flags) {
     }
     int ret = g_send(s, buf, len, flags);
     int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
-    if (g_cfg.log_send) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_send) {
         char line[160] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "send call ret=%d err=%d len=%d flags=0x%x",
                     ret, err, len, flags);
         LogLine(line);
     }
-    if (ret > 0 && g_cfg.log_send) {
+    if (allow && ret > 0 && g_cfg.log_send) {
         g_sendBytes += static_cast<uint64_t>(ret);
         g_sendCount++;
         g_lastSend = ret;
         LogHex("send", buf, ret, nullptr, 0);
+        LogBits("send.bits", buf, ret, nullptr, 0);
     }
     return ret;
 }
 
 static void LogWsabuf(const char* tag, LPWSABUF buffers, DWORD count, DWORD bytes, const sockaddr* addr, int addrlen) {
+    if (!ShouldCaptureNetwork()) {
+        return;
+    }
     if (!buffers || count == 0 || bytes == 0) {
         return;
     }
@@ -799,6 +1277,15 @@ static void LogWsabuf(const char* tag, LPWSABUF buffers, DWORD count, DWORD byte
     }
     if (to_log > 0 && buffers[0].buf) {
         LogHex(tag, buffers[0].buf, static_cast<int>(to_log), addr, addrlen);
+        char bitTag[64] = {0};
+        _snprintf_s(bitTag, sizeof(bitTag), _TRUNCATE, "%s.bits", tag);
+        LogBits(bitTag, buffers[0].buf, static_cast<int>(to_log), addr, addrlen);
+        char bitTagMsb[64] = {0};
+        _snprintf_s(bitTagMsb, sizeof(bitTagMsb), _TRUNCATE, "%s.bits_msb", tag);
+        LogBitsMSB(bitTagMsb, buffers[0].buf, static_cast<int>(to_log), addr, addrlen);
+        if (_strnicmp(tag, "WSARecv", 7) == 0) {
+            DecodeLogin6D(reinterpret_cast<const uint8_t*>(buffers[0].buf), static_cast<int>(to_log), tag);
+        }
     }
 }
 
@@ -813,14 +1300,15 @@ static int WSAAPI Hook_WSARecvFrom(SOCKET s, LPWSABUF buffers, DWORD count, LPDW
     }
     int ret = g_wsarecvfrom(s, buffers, count, bytes, flags, from, fromlen, ov, cb);
     int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
-    if (g_cfg.log_recv) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_recv) {
         char line[200] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE,
                     "WSARecvFrom call ret=%d err=%d bytes=%lu count=%lu ov=%p flags=0x%lx",
                     ret, err, bytes ? *bytes : 0, count, ov, flags ? *flags : 0);
         LogLine(line);
     }
-    if (ret == 0 && bytes && *bytes > 0 && g_cfg.log_recv) {
+    if (allow && ret == 0 && bytes && *bytes > 0 && g_cfg.log_recv) {
         g_recvBytes += *bytes;
         g_recvCount++;
         g_lastRecv = static_cast<int>(*bytes);
@@ -842,14 +1330,15 @@ static int WSAAPI Hook_WSARecv(SOCKET s, LPWSABUF buffers, DWORD count, LPDWORD 
     }
     int ret = g_wsarecv(s, buffers, count, bytes, flags, ov, cb);
     int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
-    if (g_cfg.log_recv) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_recv) {
         char line[200] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE,
                     "WSARecv call ret=%d err=%d bytes=%lu count=%lu ov=%p flags=0x%lx",
                     ret, err, bytes ? *bytes : 0, count, ov, flags ? *flags : 0);
         LogLine(line);
     }
-    if (ret == 0 && bytes && *bytes > 0 && g_cfg.log_recv) {
+    if (allow && ret == 0 && bytes && *bytes > 0 && g_cfg.log_recv) {
         g_recvBytes += *bytes;
         g_recvCount++;
         g_lastRecv = static_cast<int>(*bytes);
@@ -871,14 +1360,15 @@ static int WSAAPI Hook_WSASendTo(SOCKET s, LPWSABUF buffers, DWORD count, LPDWOR
     }
     int ret = g_wsasendto(s, buffers, count, bytes, flags, to, tolen, ov, cb);
     int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
-    if (g_cfg.log_send) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_send) {
         char line[200] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE,
                     "WSASendTo call ret=%d err=%d bytes=%lu count=%lu ov=%p flags=0x%lx",
                     ret, err, bytes ? *bytes : 0, count, ov, flags);
         LogLine(line);
     }
-    if (ret == 0 && bytes && *bytes > 0 && g_cfg.log_send) {
+    if (allow && ret == 0 && bytes && *bytes > 0 && g_cfg.log_send) {
         g_sendBytes += *bytes;
         g_sendCount++;
         g_lastSend = static_cast<int>(*bytes);
@@ -898,14 +1388,15 @@ static int WSAAPI Hook_WSASend(SOCKET s, LPWSABUF buffers, DWORD count, LPDWORD 
     }
     int ret = g_wsasend(s, buffers, count, bytes, flags, ov, cb);
     int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
-    if (g_cfg.log_send) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_send) {
         char line[200] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE,
                     "WSASend call ret=%d err=%d bytes=%lu count=%lu ov=%p flags=0x%lx",
                     ret, err, bytes ? *bytes : 0, count, ov, flags);
         LogLine(line);
     }
-    if (ret == 0 && bytes && *bytes > 0 && g_cfg.log_send) {
+    if (allow && ret == 0 && bytes && *bytes > 0 && g_cfg.log_send) {
         g_sendBytes += *bytes;
         g_sendCount++;
         g_lastSend = static_cast<int>(*bytes);
@@ -915,6 +1406,9 @@ static int WSAAPI Hook_WSASend(SOCKET s, LPWSABUF buffers, DWORD count, LPDWORD 
 }
 
 static void LogOverlappedCompletion(const char* tag, const OverlappedInfo& info, DWORD bytes) {
+    if (!ShouldCaptureNetwork()) {
+        return;
+    }
     if (!g_cfg.log_recv || bytes == 0 || !info.buffers || info.count == 0) {
         return;
     }
@@ -934,17 +1428,18 @@ static BOOL WINAPI Hook_GetQueuedCompletionStatus(HANDLE port, LPDWORD bytes, PU
         g_GetQueuedCompletionStatus = k32 ? reinterpret_cast<GetQueuedCompletionStatus_t>(GetProcAddress(k32, "GetQueuedCompletionStatus")) : nullptr;
     }
     BOOL ok = g_GetQueuedCompletionStatus ? g_GetQueuedCompletionStatus(port, bytes, key, ov, ms) : FALSE;
+    const bool allow = ShouldCaptureNetwork();
     if (ok && ov && *ov && bytes && *bytes > 0) {
         OverlappedInfo info{};
         if (ConsumeOverlapped(reinterpret_cast<LPWSAOVERLAPPED>(*ov), &info)) {
             LogOverlappedCompletion(info.tag[0] ? info.tag : "IOCP", info, *bytes);
-        } else if (g_cfg.log_recv) {
+        } else if (allow && g_cfg.log_recv) {
             char line[160] = {0};
             _snprintf_s(line, sizeof(line), _TRUNCATE, "IOCP completion bytes=%lu ov=%p (untracked)",
                         *bytes, *ov);
             LogLine(line);
         }
-    } else if (!ok && g_cfg.log_recv) {
+    } else if (!ok && allow && g_cfg.log_recv) {
         DWORD err = GetLastError();
         char line[160] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "GetQueuedCompletionStatus failed err=%lu", err);
@@ -959,6 +1454,7 @@ static BOOL WINAPI Hook_GetQueuedCompletionStatusEx(HANDLE port, LPOVERLAPPED_EN
         g_GetQueuedCompletionStatusEx = k32 ? reinterpret_cast<GetQueuedCompletionStatusEx_t>(GetProcAddress(k32, "GetQueuedCompletionStatusEx")) : nullptr;
     }
     BOOL ok = g_GetQueuedCompletionStatusEx ? g_GetQueuedCompletionStatusEx(port, entries, count, removed, ms, alertable) : FALSE;
+    const bool allow = ShouldCaptureNetwork();
     if (ok && entries && removed && *removed > 0) {
         ULONG n = *removed;
         for (ULONG i = 0; i < n; ++i) {
@@ -968,14 +1464,14 @@ static BOOL WINAPI Hook_GetQueuedCompletionStatusEx(HANDLE port, LPOVERLAPPED_EN
             OverlappedInfo info{};
             if (ConsumeOverlapped(reinterpret_cast<LPWSAOVERLAPPED>(entries[i].lpOverlapped), &info)) {
                 LogOverlappedCompletion(info.tag[0] ? info.tag : "IOCPEx", info, entries[i].dwNumberOfBytesTransferred);
-            } else if (g_cfg.log_recv) {
+            } else if (allow && g_cfg.log_recv) {
                 char line[160] = {0};
                 _snprintf_s(line, sizeof(line), _TRUNCATE, "IOCPEx completion bytes=%lu ov=%p (untracked)",
                             entries[i].dwNumberOfBytesTransferred, entries[i].lpOverlapped);
                 LogLine(line);
             }
         }
-    } else if (!ok && g_cfg.log_recv) {
+    } else if (!ok && allow && g_cfg.log_recv) {
         DWORD err = GetLastError();
         char line[160] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "GetQueuedCompletionStatusEx failed err=%lu", err);
@@ -990,17 +1486,18 @@ static BOOL WSAAPI Hook_WSAGetOverlappedResult(SOCKET s, LPWSAOVERLAPPED ov, LPD
         g_WSAGetOverlappedResult = ws ? reinterpret_cast<WSAGetOverlappedResult_t>(GetProcAddress(ws, "WSAGetOverlappedResult")) : nullptr;
     }
     BOOL ok = g_WSAGetOverlappedResult ? g_WSAGetOverlappedResult(s, ov, bytes, wait, flags) : FALSE;
+    const bool allow = ShouldCaptureNetwork();
     if (ok && ov && bytes && *bytes > 0) {
         OverlappedInfo info{};
         if (ConsumeOverlapped(ov, &info)) {
             LogOverlappedCompletion(info.tag[0] ? info.tag : "WSAGetOverlappedResult", info, *bytes);
-        } else if (g_cfg.log_recv) {
+        } else if (allow && g_cfg.log_recv) {
             char line[160] = {0};
             _snprintf_s(line, sizeof(line), _TRUNCATE, "WSAGetOverlappedResult bytes=%lu ov=%p (untracked)",
                         *bytes, ov);
             LogLine(line);
         }
-    } else if (!ok && g_cfg.log_recv) {
+    } else if (!ok && allow && g_cfg.log_recv) {
         int err = WSAGetLastError();
         char line[160] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "WSAGetOverlappedResult failed err=%d", err);
@@ -1015,7 +1512,8 @@ static int WSAAPI Hook_select(int nfds, fd_set* readfds, fd_set* writefds, fd_se
         g_select = ws ? reinterpret_cast<select_t>(GetProcAddress(ws, "select")) : nullptr;
     }
     int ret = g_select ? g_select(nfds, readfds, writefds, exceptfds, timeout) : SOCKET_ERROR;
-    if (g_cfg.log_recv) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_recv) {
         int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
         char line[160] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "select ret=%d err=%d nfds=%d", ret, err, nfds);
@@ -1030,7 +1528,8 @@ static int WSAAPI Hook_WSAPoll(LPWSAPOLLFD fds, ULONG nfds, INT timeout) {
         g_WSAPoll = ws ? reinterpret_cast<wsapoll_t>(GetProcAddress(ws, "WSAPoll")) : nullptr;
     }
     int ret = g_WSAPoll ? g_WSAPoll(fds, nfds, timeout) : SOCKET_ERROR;
-    if (g_cfg.log_recv) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_recv) {
         int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
         char line[160] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "WSAPoll ret=%d err=%d nfds=%lu timeout=%d", ret, err, nfds, timeout);
@@ -1045,7 +1544,8 @@ static DWORD WSAAPI Hook_WSAWaitForMultipleEvents(DWORD count, const WSAEVENT* e
         g_WSAWaitForMultipleEvents = ws ? reinterpret_cast<wsawaitforme_t>(GetProcAddress(ws, "WSAWaitForMultipleEvents")) : nullptr;
     }
     DWORD ret = g_WSAWaitForMultipleEvents ? g_WSAWaitForMultipleEvents(count, events, waitAll, timeout, alertable) : WSA_WAIT_FAILED;
-    if (g_cfg.log_recv) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_recv) {
         int err = (ret == WSA_WAIT_FAILED) ? WSAGetLastError() : 0;
         char line[180] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "WSAWaitForMultipleEvents ret=%lu err=%d count=%lu timeout=%lu",
@@ -1057,6 +1557,9 @@ static DWORD WSAAPI Hook_WSAWaitForMultipleEvents(DWORD count, const WSAEVENT* e
 
 static void PeekSocket(SOCKET s) {
     if (!g_cfg.peek_on_read || s == INVALID_SOCKET) {
+        return;
+    }
+    if (!ShouldCaptureNetwork()) {
         return;
     }
     if (!g_ioctlsocket) {
@@ -1098,7 +1601,8 @@ static int WSAAPI Hook_WSAEventSelect(SOCKET s, WSAEVENT hEvent, long lNetworkEv
         g_WSAEventSelect = ws ? reinterpret_cast<WSAEventSelect_t>(GetProcAddress(ws, "WSAEventSelect")) : nullptr;
     }
     int ret = g_WSAEventSelect ? g_WSAEventSelect(s, hEvent, lNetworkEvents) : SOCKET_ERROR;
-    if (g_cfg.log_events) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_events) {
         int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
         char line[200] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "WSAEventSelect ret=%d err=%d sock=0x%p events=0x%lx",
@@ -1114,7 +1618,8 @@ static int WSAAPI Hook_WSAEnumNetworkEvents(SOCKET s, WSAEVENT hEvent, LPWSANETW
         g_WSAEnumNetworkEvents = ws ? reinterpret_cast<WSAEnumNetworkEvents_t>(GetProcAddress(ws, "WSAEnumNetworkEvents")) : nullptr;
     }
     int ret = g_WSAEnumNetworkEvents ? g_WSAEnumNetworkEvents(s, hEvent, lpNetworkEvents) : SOCKET_ERROR;
-    if (g_cfg.log_events && lpNetworkEvents) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_events && lpNetworkEvents) {
         char line[256] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "WSAEnumNetworkEvents ret=%d sock=0x%p events=0x%lx errRead=%d errWrite=%d errClose=%d",
                     ret, reinterpret_cast<void*>(s), lpNetworkEvents->lNetworkEvents,
@@ -1135,7 +1640,8 @@ static int WSAAPI Hook_WSAAsyncSelect(SOCKET s, HWND hWnd, u_int wMsg, long lEve
         g_WSAAsyncSelect = ws ? reinterpret_cast<WSAAsyncSelect_t>(GetProcAddress(ws, "WSAAsyncSelect")) : nullptr;
     }
     int ret = g_WSAAsyncSelect ? g_WSAAsyncSelect(s, hWnd, wMsg, lEvent) : SOCKET_ERROR;
-    if (g_cfg.log_events) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_events) {
         int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
         char line[200] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "WSAAsyncSelect ret=%d err=%d sock=0x%p events=0x%lx msg=0x%x",
@@ -1151,7 +1657,8 @@ static int WSAAPI Hook_ioctlsocket(SOCKET s, long cmd, u_long* argp) {
         g_ioctlsocket = ws ? reinterpret_cast<ioctlsocket_t>(GetProcAddress(ws, "ioctlsocket")) : nullptr;
     }
     int ret = g_ioctlsocket ? g_ioctlsocket(s, cmd, argp) : SOCKET_ERROR;
-    if (g_cfg.log_events) {
+    const bool allow = ShouldCaptureNetwork();
+    if (allow && g_cfg.log_events) {
         int err = (ret == SOCKET_ERROR) ? WSAGetLastError() : 0;
         char line[180] = {0};
         _snprintf_s(line, sizeof(line), _TRUNCATE, "ioctlsocket ret=%d err=%d sock=0x%p cmd=0x%lx arg=%lu",
@@ -1167,33 +1674,48 @@ static void LogIpPort(const char* tag, const void* buf, int len, int ip, int por
     sin.sin_addr.s_addr = static_cast<u_long>(ip);
     sin.sin_port = htons(static_cast<u_short>(port));
     LogHex(tag, buf, len, reinterpret_cast<sockaddr*>(&sin), sizeof(sin));
+    char bitTag[64] = {0};
+    _snprintf_s(bitTag, sizeof(bitTag), _TRUNCATE, "%s.bits", tag);
+    LogBits(bitTag, buf, len, reinterpret_cast<sockaddr*>(&sin), sizeof(sin));
+    char bitTagMsb[64] = {0};
+    _snprintf_s(bitTagMsb, sizeof(bitTagMsb), _TRUNCATE, "%s.bits_msb", tag);
+    LogBitsMSB(bitTagMsb, buf, len, reinterpret_cast<sockaddr*>(&sin), sizeof(sin));
 }
 
 static int __fastcall Hook_NetSendTo(void* thisptr, void* edx, SOCKET s, char* buf, int len, int ip, int port) {
-    if (g_cfg.log_send && buf && len > 0) {
+    if (ShouldCaptureNetwork() && g_cfg.log_send && buf && len > 0) {
         LogIpPort("Net_SendTo", buf, len, ip, port);
+        if (g_cfg.log_hex && len > 17) {
+            DecodeLithPacket(reinterpret_cast<const uint8_t*>(buf), len);
+        }
     }
     return g_NetSendTo ? g_NetSendTo(thisptr, edx, s, buf, len, ip, port) : SOCKET_ERROR;
 }
 
 static int __fastcall Hook_NetSend(void* thisptr, void* edx, char* buf, int len) {
-    if (g_cfg.log_send && buf && len > 0) {
+    if (ShouldCaptureNetwork() && g_cfg.log_send && buf && len > 0) {
         LogHex("Net_Send", buf, len, nullptr, 0);
+        LogBits("Net_Send.bits", buf, len, nullptr, 0);
+        LogBitsMSB("Net_Send.bits_msb", buf, len, nullptr, 0);
     }
     return g_NetSend ? g_NetSend(thisptr, edx, buf, len) : SOCKET_ERROR;
 }
 
 static int __fastcall Hook_NetRecv(void* thisptr, void* edx, char* buf, int len) {
     int ret = g_NetRecv ? g_NetRecv(thisptr, edx, buf, len) : SOCKET_ERROR;
-    if (ret > 0 && g_cfg.log_recv && buf) {
+    if (ret > 0 && ShouldCaptureNetwork() && g_cfg.log_recv && buf) {
         LogHex("Net_Recv", buf, ret, nullptr, 0);
+        LogBits("Net_Recv.bits", buf, ret, nullptr, 0);
+        LogBitsMSB("Net_Recv.bits_msb", buf, ret, nullptr, 0);
+        DecodeLogin6D(reinterpret_cast<const uint8_t*>(buf), ret, "Net_Recv");
     }
     return ret;
 }
 
 static int __stdcall Hook_PacketProc(int ip, int port, void* buf, int size, int arg4, int arg5) {
-    if (size > 0 && g_cfg.log_recv && buf) {
+    if (size > 0 && ShouldCaptureNetwork() && g_cfg.log_recv && buf) {
         LogIpPort("PacketProc", buf, size, ip, port);
+        DecodeLogin6D(reinterpret_cast<const uint8_t*>(buf), size, "PacketProc");
     }
     return g_PacketProc ? g_PacketProc(ip, port, buf, size, arg4, arg5) : 0;
 }
@@ -1383,6 +1905,9 @@ static void RenderOverlay() {
         g_cfg.log_recv = !g_cfg.log_recv;
         g_cfg.log_send = !g_cfg.log_send;
     }
+    if (GetAsyncKeyState(g_cfg.mark_key) & 1) {
+        ToggleCaptureMark();
+    }
     if (!g_showOverlay) {
         return;
     }
@@ -1397,6 +1922,7 @@ static void RenderOverlay() {
     ImGui::Checkbox("Log Recv", &g_cfg.log_recv);
     ImGui::Checkbox("Log Send", &g_cfg.log_send);
     ImGui::Checkbox("Hex Dump", &g_cfg.log_hex);
+    ImGui::Text("CaptureAfterMark: %s", g_cfg.capture_after_mark ? (g_captureActive ? "ON" : "OFF") : "DISABLED");
     ImGui::Text("Log: %s", g_cfg.log_path[0] ? g_cfg.log_path : "(default)");
     ImGui::End();
 
@@ -1549,6 +2075,7 @@ static DWORD WINAPI InitThread(LPVOID) {
         DeleteFileA(g_cfg.log_path);
     }
     InitConsole();
+    CreateThread(nullptr, 0, MarkKeyThread, nullptr, 0, nullptr);
     InitializeCriticalSection(&g_ovlLock);
     g_ovlInit = true;
 

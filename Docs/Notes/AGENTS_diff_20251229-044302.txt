@@ -1,0 +1,15 @@
+Comparing files DOCS\NOTES\AGENTS_20251229-044302.md and .\AGENTS.MD
+***** DOCS\NOTES\AGENTS_20251229-044302.md
+***** .\AGENTS.MD
+   56:  
+   57:  # Git Integration (Always-On)
+   58:  - Treat git as the default state tracker; run `git status -sb` before/after each work chunk and before reporting completion.
+   59:  - Avoid redundant work: check `git log --oneline -n 5` (and open PRs/branches if relevant) before re-implementing.
+   60:  - Keep deltas small: stage with `git add -p` or explicit paths; commit at logical checkpoints (<= 1GÇô2 hours) with descriptive
+   61:   messages.
+   62:  - Update `.gitignore` for generated artifacts (logs/builds) early; never delete user files; use `git rm` only with explicit req
+   63:  uest.
+   64:  - When a remote exists, push at milestone end; never force-push unless explicitly asked.
+   65:  - For risky changes, record the intended delta + rollback command in the working log entry.
+*****
+

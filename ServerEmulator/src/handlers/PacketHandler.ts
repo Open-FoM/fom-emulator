@@ -1,7 +1,10 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { Connection, ConnectionState } from '../network/Connection';
 import { BitStreamReader, BitStreamWriter } from '../protocol/BitStream';
 import RakBitStream from '../raknet-js/structures/BitStream';
-import { writeCompressedString } from '../protocol/RakStringCompressor';
+import { writeCompressedString, readCompressedString } from '../protocol/RakStringCompressor';
+import { PacketLogger } from '../utils/PacketLogger';
 import { 
   CONNECTION_MAGIC, 
   ConnectionRequestType,
@@ -11,7 +14,9 @@ import {
   LoginResult,
   WORLD_SERVER_PASSWORD,
   SEQUENCE_MASK,
-  DEFAULT_PORT
+  DEFAULT_PORT,
+  OFFLINE_MESSAGE_ID,
+  OFFLINE_SYSTEM_ADDRESS_BYTES
 } from '../protocol/Constants';
 
 export interface PacketContext {
@@ -45,12 +50,27 @@ export class PacketHandler {
   private worldIp: string;
   private worldPort: number;
   private verbose: boolean;
+  private loginDebug: boolean;
   private logThrottleMs: number;
   private lastLogByKey: Map<string, number>;
   private lithDebugBurst: number;
   private lithDebugTrigger: string;
   private lithDebugHexBytes: number;
+  private lithDebugRaw: boolean;
+  private lithDebugRawBytes: number;
+  private lithDebugRawMin: number;
+  private lithDebugRawMax: number;
+  private lithDebugScan: boolean;
+  private lithDebugScanAny: boolean;
+  private lithDebugScanMax: number;
+  private lithDebugScanPayloadBytes: number;
+  private lithDebugBits: boolean;
+  private lithDebugBitsPerLine: number;
+  private lithDebugBitsMax: number;
+  private lithHasMoreFlag: boolean;
   private forceLoginOnFirstLith: boolean;
+  private lithDebugLogPath: string | null;
+  private lithDebugLogStream: fs.WriteStream | null;
 
   constructor() {
     this.fastLoginEnabled = this.parseBool(process.env.FAST_LOGIN, false);
@@ -58,13 +78,29 @@ export class PacketHandler {
     const port = parseInt(process.env.WORLD_PORT || '', 10);
     this.worldPort = Number.isNaN(port) || port <= 0 ? DEFAULT_PORT : port;
     this.verbose = this.parseBool(process.env.PACKET_HANDLER_VERBOSE, false);
+    this.loginDebug = this.parseBool(process.env.LOGIN_DEBUG, false);
     const throttle = parseInt(process.env.PACKET_HANDLER_LOG_THROTTLE_MS || '5000', 10);
     this.logThrottleMs = Number.isNaN(throttle) ? 5000 : Math.max(0, throttle);
     this.lastLogByKey = new Map();
     this.lithDebugBurst = this.parseInt(process.env.LITH_DEBUG_BURST, 0);
     this.lithDebugTrigger = (process.env.LITH_DEBUG_TRIGGER || 'none').toLowerCase();
     this.lithDebugHexBytes = this.parseInt(process.env.LITH_DEBUG_HEX_BYTES, 48);
+    this.lithDebugRaw = this.parseBool(process.env.LITH_DEBUG_RAW, false);
+    this.lithDebugRawBytes = this.parseInt(process.env.LITH_DEBUG_RAW_BYTES, 512);
+    this.lithDebugRawMin = this.parseInt(process.env.LITH_DEBUG_RAW_MIN, 0);
+    this.lithDebugRawMax = this.parseInt(process.env.LITH_DEBUG_RAW_MAX, 0);
+    this.lithDebugScan = this.parseBool(process.env.LITH_DEBUG_SCAN, false);
+    this.lithDebugScanAny = this.parseBool(process.env.LITH_DEBUG_SCAN_ANY, false);
+    this.lithDebugScanMax = this.parseInt(process.env.LITH_DEBUG_SCAN_MAX, 12);
+    this.lithDebugScanPayloadBytes = this.parseInt(process.env.LITH_DEBUG_SCAN_PAYLOAD_BYTES, 32);
+    this.lithDebugBits = this.parseBool(process.env.LITH_DEBUG_BITS, false);
+    this.lithDebugBitsPerLine = this.parseInt(process.env.LITH_DEBUG_BITS_PER_LINE, 128);
+    this.lithDebugBitsMax = this.parseInt(process.env.LITH_DEBUG_BITS_MAX, 0);
+    this.lithHasMoreFlag = this.parseBool(process.env.LITH_HAS_MORE_FLAG, false);
     this.forceLoginOnFirstLith = this.parseBool(process.env.FORCE_LOGIN_ON_FIRST_LITH, false);
+    this.lithDebugLogPath = null;
+    this.lithDebugLogStream = null;
+    this.initLithDebugLog();
   }
 
   private parseBool(value: string | undefined, defaultValue: boolean): boolean {
@@ -81,16 +117,152 @@ export class PacketHandler {
     return Number.isNaN(parsed) ? defaultValue : parsed;
   }
 
+  private initLithDebugLog(): void {
+    const logEnabled = this.parseBool(process.env.LITH_DEBUG_LOG, false);
+    const logPathEnv = process.env.LITH_DEBUG_LOG_PATH || '';
+    if (!logEnabled && !logPathEnv) return;
+    const logPath = logPathEnv || path.join('logs', 'lithdebug.log');
+    const dir = path.dirname(logPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    this.lithDebugLogPath = logPath;
+    this.lithDebugLogStream = fs.createWriteStream(logPath, { flags: 'a' });
+    const stamp = new Date().toISOString();
+    this.lithDebugLogStream.write(`# LithDebug log started ${stamp}\n`);
+    console.log(`[PacketHandler] LithDebug logging to ${logPath}`);
+  }
+
+  private logLithDebug(line: string): void {
+    console.log(line);
+    if (this.lithDebugLogStream) {
+      this.lithDebugLogStream.write(`${line}\n`);
+    }
+  }
+
   private maybeTriggerLithDebug(connection: Connection, reason: string): void {
     if (this.lithDebugBurst <= 0 || connection.lithDebugTriggered) return;
     connection.lithDebugTriggered = true;
     connection.lithDebugRemaining = this.lithDebugBurst;
-    console.log(`[PacketHandler] LithDebug triggered (${reason}) for ${connection.key}: next ${this.lithDebugBurst} reliable packets`);
+    this.logLithDebug(`[PacketHandler] LithDebug triggered (${reason}) for ${connection.key}: next ${this.lithDebugBurst} reliable packets`);
   }
 
   private formatHex(buffer: Buffer, maxBytes: number): string {
     const slice = buffer.subarray(0, Math.max(0, maxBytes));
     return slice.toString('hex').match(/.{1,2}/g)?.join(' ') || '';
+  }
+
+  private formatHexLines(buffer: Buffer, maxBytes: number, lineBytes: number = 16): string[] {
+    const limit = maxBytes > 0 ? Math.min(buffer.length, maxBytes) : buffer.length;
+    const slice = buffer.subarray(0, limit);
+    const lines: string[] = [];
+    for (let i = 0; i < slice.length; i += lineBytes) {
+      const chunk = slice.subarray(i, i + lineBytes);
+      const hex = chunk.toString('hex').match(/.{1,2}/g)?.join(' ') || '';
+      lines.push(`${i.toString(16).padStart(4, '0')}  ${hex}`);
+    }
+    return lines;
+  }
+
+  private logBits(tag: string, buffer: Buffer, bits: number): void {
+    if (!this.lithDebugBits) return;
+    const totalBits = Math.min(bits, buffer.length * 8);
+    const maxBits = this.lithDebugBitsMax > 0 ? Math.min(totalBits, this.lithDebugBitsMax) : totalBits;
+    const perLine = this.lithDebugBitsPerLine > 0 ? this.lithDebugBitsPerLine : 128;
+    this.logLithDebug(`[Bits] ${tag} bits=${totalBits} order=lsb0`);
+    for (let offset = 0; offset < maxBits; offset += perLine) {
+      const lineBits = Math.min(perLine, maxBits - offset);
+      let line = `  ${offset.toString(16).padStart(4, '0')}  `;
+      for (let i = 0; i < lineBits; i++) {
+        const idx = offset + i;
+        const byteIndex = idx >> 3;
+        const bitIndex = idx & 7;
+        const bitVal = (buffer[byteIndex] >> bitIndex) & 1;
+        line += bitVal ? '1' : '0';
+        if ((i & 7) === 7) {
+          line += ' ';
+        }
+      }
+      this.logLithDebug(line);
+    }
+    if (maxBits < totalBits) {
+      this.logLithDebug(`[Bits] ... truncated ${totalBits - maxBits} bits`);
+    }
+  }
+
+  private logLoginResponse(tag: string, buffer: Buffer): void {
+    const maxBytes = this.lithDebugRawBytes > 0 ? this.lithDebugRawBytes : 512;
+    this.logLithDebug(`[LoginResp] ${tag} bytes=${buffer.length}`);
+    const lines = this.formatHexLines(buffer, maxBytes);
+    for (const line of lines) {
+      this.logLithDebug(`[LoginResp]   ${line}`);
+    }
+    this.logBits(`[LoginResp] ${tag}`, buffer, buffer.length * 8);
+  }
+
+  private shouldLogRaw(length: number): boolean {
+    if (!this.lithDebugRaw) return false;
+    if (this.lithDebugRawMin > 0 && length < this.lithDebugRawMin) return false;
+    if (this.lithDebugRawMax > 0 && length > this.lithDebugRawMax) return false;
+    return true;
+  }
+
+  private scanLithTech(innerData: Buffer): void {
+    if (!this.lithDebugScan) return;
+    const msgIds = new Set<number>([
+      LithTechMessageId.MSG_CYCLECHECK,
+      LithTechMessageId.MSG_UNKNOWN_5,
+      LithTechMessageId.MSG_PROTOCOL_VERSION,
+      LithTechMessageId.MSG_UNKNOWN_7,
+      LithTechMessageId.MSG_UPDATE,
+      LithTechMessageId.MSG_UNKNOWN_10,
+      LithTechMessageId.MSG_ID_PACKET,
+      LithTechMessageId.MSG_UNKNOWN_13,
+      LithTechMessageId.MSG_MESSAGE_GROUP,
+      LithTechMessageId.MSG_UNKNOWN_15,
+      LithTechMessageId.MSG_UNKNOWN_16,
+      LithTechMessageId.MSG_UNKNOWN_17,
+      LithTechMessageId.MSG_UNKNOWN_19,
+      LithTechMessageId.MSG_UNKNOWN_20,
+      LithTechMessageId.MSG_UNKNOWN_21,
+      LithTechMessageId.MSG_UNKNOWN_22,
+      LithTechMessageId.MSG_UNKNOWN_23,
+    ]);
+
+    const lengthBitSizes = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    const preSkips = [0, 8, 16, 24, 32, 40, 48, 56];
+    let logged = 0;
+
+    for (const pre of preSkips) {
+      for (let off = 0; off < 8; off++) {
+        const start = pre + off;
+        for (const lenBitsSize of lengthBitSizes) {
+          if (logged >= this.lithDebugScanMax) return;
+          try {
+            const reader = new BitStreamReader(innerData, start);
+            if (reader.remainingBits < (13 + 1 + lenBitsSize + 8)) continue;
+            const seq = reader.readBits(13);
+            const cont = reader.readBits(1);
+            const lenBits = reader.readBits(lenBitsSize);
+            if (lenBits <= 0 || lenBits > 4096) continue;
+            const msgId = reader.readBits(8);
+            if (!this.lithDebugScanAny && !msgIds.has(msgId)) continue;
+            if (this.lithDebugScanAny && (msgId === 0x00 || msgId === 0xff)) continue;
+            const payloadBytes = Math.ceil(lenBits / 8);
+            if (payloadBytes <= 0 || payloadBytes > (reader.remainingBits / 8)) continue;
+            const toRead = Math.min(payloadBytes, this.lithDebugScanPayloadBytes);
+            const payload = reader.readBytes(toRead);
+            const hex = this.formatHex(payload, toRead);
+            this.logLithDebug(
+              `[LithScan] startBit=${start} lenBits=${lenBitsSize} seq=${seq} cont=${cont} msg=0x${msgId.toString(16)} payloadBits=${lenBits} sample=${hex}`
+            );
+            logged++;
+          } catch {
+            // ignore decode errors
+          }
+        }
+      }
+    }
   }
 
   private logVerbose(message: string): void {
@@ -311,14 +483,44 @@ export class PacketHandler {
     return writer.toBuffer();
   }
 
+  private parseIpv4(ip: string): number[] | null {
+    const parts = ip.split('.');
+    if (parts.length !== 4) return null;
+    const bytes = parts.map((part) => Number.parseInt(part, 10));
+    if (bytes.some((b) => !Number.isInteger(b) || b < 0 || b > 255)) return null;
+    return bytes;
+  }
+
   private handleOpenConnectionRequest(ctx: PacketContext): Buffer | null {
     console.log(`[PacketHandler] ID_OPEN_CONNECTION_REQUEST from ${ctx.connection.key}`);
-    
-    const writer = new BitStreamWriter(64);
-    writer.writeByte(RakNetMessageId.ID_OPEN_CONNECTION_REPLY);
-    
-    this.logVerbose(`[PacketHandler] Sending ID_OPEN_CONNECTION_REPLY`);
-    return writer.toBuffer();
+
+    const replyIp = process.env.REPLY_IP || process.env.BIND_IP || process.env.SERVER_IP || '127.0.0.1';
+    const replyPortRaw = Number.parseInt(process.env.REPLY_PORT || process.env.PORT || String(DEFAULT_PORT), 10);
+    const replyPort = Number.isNaN(replyPortRaw) || replyPortRaw <= 0 ? DEFAULT_PORT : replyPortRaw;
+
+    let ipBytes = this.parseIpv4(replyIp);
+    let resolvedIp = replyIp;
+    if (!ipBytes) {
+      const fallback = this.parseIpv4(ctx.connection.address) || [127, 0, 0, 1];
+      ipBytes = fallback;
+      resolvedIp = fallback.join('.');
+    }
+
+    const payloadLength = 1 + OFFLINE_MESSAGE_ID.length + OFFLINE_SYSTEM_ADDRESS_BYTES.length + 6;
+    const reply = Buffer.alloc(payloadLength);
+    let offset = 0;
+    reply[offset++] = RakNetMessageId.ID_OPEN_CONNECTION_REPLY;
+    OFFLINE_MESSAGE_ID.copy(reply, offset);
+    offset += OFFLINE_MESSAGE_ID.length;
+    OFFLINE_SYSTEM_ADDRESS_BYTES.copy(reply, offset);
+    offset += OFFLINE_SYSTEM_ADDRESS_BYTES.length;
+    for (const b of ipBytes) {
+      reply[offset++] = (~b) & 0xff;
+    }
+    reply.writeUInt16BE(replyPort, offset);
+
+    this.logVerbose(`[PacketHandler] Sending ID_OPEN_CONNECTION_REPLY addr=${resolvedIp}:${replyPort}`);
+    return reply;
   }
 
   private handleReliablePacket(ctx: PacketContext, headerByte: number): Buffer | null {
@@ -342,12 +544,32 @@ export class PacketHandler {
       console.log(`  Header: 0x${headerByte.toString(16)}, MsgNum: ${messageNumber}, Timestamp: ${timestamp}`);
       console.log(`  Inner: ${innerData.length} bytes, FirstByte: 0x${innerMsgId.toString(16)}`);
     }
+    if (this.shouldLogRaw(innerData.length) && innerMsgId !== 0x00) {
+      this.logLithDebug(`[RelRaw] ${connection.key} innerBytes=${innerData.length} first=0x${innerMsgId.toString(16)}`);
+      const lines = this.formatHexLines(innerData, this.lithDebugRawBytes);
+      for (const line of lines) {
+        this.logLithDebug(`[RelRaw]   ${line}`);
+      }
+      this.logBits(`[RelRaw] ${connection.key} inner`, innerData, innerData.length * 8);
+    }
+    if (this.shouldLogRaw(innerData.length)) {
+      this.scanLithTech(innerData);
+    }
 
     connection.lastTimestamp = timestamp;
     connection.lastMessageNumber = messageNumber;
-    
+
     if (innerMsgId === RakNetMessageId.ID_CONNECTION_REQUEST) {
       return this.handleReliableConnectionRequest(ctx, innerData);
+    }
+
+    if (!connection.authenticated && innerData.length > 0 && innerMsgId === 0x6d) {
+      const resp = this.tryParseLoginRequestRak(
+        innerData,
+        connection,
+        `reliable-inner-0x${innerMsgId.toString(16)}`
+      );
+      if (resp) return resp;
     }
     
     if (innerMsgId === RakNetMessageId.ID_NEW_INCOMING_CONNECTION) {
@@ -363,11 +585,16 @@ export class PacketHandler {
     
     // LithTech guaranteed packet format: 13-bit sequence + messages
     // First byte 0x00 often indicates start of LithTech layer
-    if (innerMsgId === 0x00 && innerData.length > 4) {
+    if ((innerMsgId === 0x00 || innerMsgId === 0x40) && innerData.length > 4) {
       const lithResponse = this.handleLithTechGuaranteed(ctx, innerData);
       if (lithResponse) {
         return lithResponse;
       }
+    }
+    // Temporary: scan 0x80 payloads for nested LithTech frames (no functional handling yet).
+    if (innerMsgId === 0x80 && innerData.length > 4) {
+      this.logLithDebug(`[LithScan] ${connection.key} inner=0x80 bytes=${innerData.length}`);
+      this.scanLithTechFrames(innerData, connection);
     }
 
     const fastLogin = this.maybeFastLogin(connection);
@@ -391,9 +618,23 @@ export class PacketHandler {
     const hasContinuation = reader.readBits(1);
     
     this.logVerbose(`[PacketHandler] LithTech guaranteed: seq=${sequenceNum}, cont=${hasContinuation}`);
+    if (this.shouldLogRaw(innerData.length)) {
+      this.logLithDebug(`[LithRaw] ${connection.key} seq=${sequenceNum} cont=${hasContinuation} innerBytes=${innerData.length}`);
+      const lines = this.formatHexLines(innerData, this.lithDebugRawBytes);
+      for (const line of lines) {
+        this.logLithDebug(`[LithRaw]   ${line}`);
+      }
+    }
     
-    // Parse sub-messages
-    const messages = this.parseLithTechSubMessages(reader);
+    // Byte-aligned pattern scan (helps detect structured frames)
+    this.scanLithTechFrames(innerData, connection);
+
+    // Parse sub-messages (probe offsets to avoid misalignment)
+    const probe = this.parseLithTechSubMessagesProbe(innerData);
+    const messages = probe.messages;
+    if (this.shouldLogRaw(innerData.length) || this.lithDebugRaw || this.verbose) {
+      this.logLithDebug(`[LithProbe] ${connection.key} offsetBits=${probe.startBit} msgs=${probe.messages.length} invalid=${probe.invalidCount}`);
+    }
     this.logVerbose(`[PacketHandler] Parsed ${messages.length} LithTech sub-messages`);
 
     if (this.lithDebugTrigger === 'first_lith') {
@@ -401,35 +642,35 @@ export class PacketHandler {
     }
 
     if (connection.lithDebugRemaining > 0) {
-      console.log(`[LithDebug] ${connection.key} seq=${sequenceNum} cont=${hasContinuation} innerBytes=${innerData.length} msgs=${messages.length}`);
+      this.logLithDebug(`[LithDebug] ${connection.key} seq=${sequenceNum} cont=${hasContinuation} innerBytes=${innerData.length} msgs=${messages.length}`);
       for (const msg of messages) {
         const hex = this.formatHex(msg.payload, this.lithDebugHexBytes);
-        console.log(`[LithDebug]   MSG_ID=0x${msg.msgId.toString(16)} bits=${msg.payloadBits} payload=${hex}`);
+        this.logLithDebug(`[LithDebug]   MSG_ID=0x${msg.msgId.toString(16)} bits=${msg.payloadBits} payload=${hex}`);
       }
       connection.lithDebugRemaining = Math.max(0, connection.lithDebugRemaining - 1);
-      console.log(`[LithDebug] Remaining packets: ${connection.lithDebugRemaining}`);
+      this.logLithDebug(`[LithDebug] Remaining packets: ${connection.lithDebugRemaining}`);
     }
-    
+
     for (const msg of messages) {
       this.logVerbose(`  MSG_ID ${msg.msgId}: ${msg.payloadBits} bits`);
-      this.handleLithTechSubMessage(ctx, msg);
+      this.logBits(`[LithMsg] ${connection.key} msg=0x${msg.msgId.toString(16)}`, msg.payload, msg.payloadBits);
+      const resp = this.handleLithTechSubMessage(ctx, msg);
+      if (resp) return resp;
     }
     
-    if (connection.state === ConnectionState.CONNECTED) {
-      if (!connection.lithTechProtocolSent) {
-        connection.lithTechProtocolSent = true;
-        return this.buildProtocolVersionPacket(connection);
-      }
-      if (!connection.lithTechIdSent) {
-        connection.lithTechIdSent = true;
-        return this.buildLithTechIdPacket(connection);
-      }
-      if (this.forceLoginOnFirstLith && !connection.forcedLoginSent) {
-        connection.forcedLoginSent = true;
-        console.log(`[PacketHandler] FORCE_LOGIN_ON_FIRST_LITH sending login response to ${connection.key}`);
-        const login = this.buildLoginResponse(true, this.worldIp, this.worldPort);
-        return this.wrapReliable(login, connection);
-      }
+    if (!connection.lithTechProtocolSent) {
+      connection.lithTechProtocolSent = true;
+      return this.buildProtocolVersionPacket(connection);
+    }
+    if (!connection.lithTechIdSent) {
+      connection.lithTechIdSent = true;
+      return this.buildLithTechIdPacket(connection);
+    }
+    if (this.forceLoginOnFirstLith && !connection.forcedLoginSent) {
+      connection.forcedLoginSent = true;
+      console.log(`[PacketHandler] FORCE_LOGIN_ON_FIRST_LITH sending login response to ${connection.key}`);
+      const login = this.buildLoginResponse(true, this.worldIp, this.worldPort);
+      return this.wrapReliable(login, connection);
     }
     
     return null;
@@ -467,8 +708,7 @@ export class PacketHandler {
         }
         
         messages.push({ msgId, payload, payloadBits: lengthBits });
-        
-        if (reader.remainingBits >= 1) {
+        if (this.lithHasMoreFlag && reader.remainingBits >= 1) {
           const hasMore = reader.readBits(1);
           if (!hasMore) break;
         }
@@ -479,21 +719,256 @@ export class PacketHandler {
     
     return messages;
   }
+
+  private parseLithTechSubMessagesProbe(buffer: Buffer): { messages: LithTechSubMessage[]; startBit: number; invalidCount: number } {
+    const offsets = [0, 8, 16, 24, 32, 40];
+    let bestMessages: LithTechSubMessage[] = [];
+    let bestInvalid = Number.MAX_SAFE_INTEGER;
+    let bestOffset = 0;
+    let bestScore = -1;
+
+    for (const offset of offsets) {
+      const result = this.parseLithTechSubMessagesTolerant(buffer, offset);
+      const score = (result.messages.length * 10) - result.invalidCount;
+      if (this.lithDebugRaw || this.verbose) {
+        this.logLithDebug(`[LithProbe] try offset=${offset} msgs=${result.messages.length} invalid=${result.invalidCount}`);
+      }
+      if (score > bestScore) {
+        bestScore = score;
+        bestMessages = result.messages;
+        bestInvalid = result.invalidCount;
+        bestOffset = offset;
+      }
+    }
+
+    return { messages: bestMessages, startBit: bestOffset, invalidCount: bestInvalid };
+  }
+
+  private scanLithTechFrames(buffer: Buffer, connection: Connection): void {
+    if (!this.lithDebugRaw && !this.verbose && !this.shouldLogRaw(buffer.length)) return;
+    const targets = [0x6c, 0x6d];
+    const maxHits = 6;
+    let hits = 0;
+
+    for (let i = 0; i < buffer.length; i += 1) {
+      if (!targets.includes(buffer[i])) continue;
+      const start = Math.max(0, i - 12);
+      const end = Math.min(buffer.length, i + 20);
+      const slice = buffer.subarray(start, end);
+      this.logLithDebug(`[FrameScan] ${connection.key} hit=0x${buffer[i].toString(16)} @${i} window=${slice.toString('hex')}`);
+      hits += 1;
+      if (hits >= maxHits) break;
+    }
+
+    // Try structured decoders near buffer start
+    this.decodeFrameLen32(buffer, connection);
+    this.decodeFrameLen16(buffer, connection);
+    this.decodeFrameIdLen16(buffer, connection);
+  }
+
+  private decodeFrameLen32(buffer: Buffer, connection: Connection): void {
+    // format: [len32le][msgId8][payload...]
+    if (buffer.length < 6) return;
+    const maxFrames = 6;
+    let offset = 0;
+    let frames = 0;
+    while (offset + 5 <= buffer.length && frames < maxFrames) {
+      const len = buffer.readUInt32LE(offset);
+      if (len === 0 || len > buffer.length) break;
+      const msgId = buffer[offset + 4];
+      const payloadStart = offset + 5;
+      const payloadEnd = Math.min(buffer.length, payloadStart + len);
+      const payload = buffer.subarray(payloadStart, payloadEnd);
+      this.logLithDebug(`[Frame32] ${connection.key} off=${offset} len=${len} msgId=0x${msgId.toString(16)} payload=${this.formatHex(payload, this.lithDebugHexBytes)}`);
+      frames += 1;
+      offset = payloadEnd;
+    }
+  }
+
+  private decodeFrameLen16(buffer: Buffer, connection: Connection): void {
+    // format: [len16le][msgId8][payload...]
+    if (buffer.length < 4) return;
+    const maxFrames = 8;
+    let offset = 0;
+    let frames = 0;
+    while (offset + 3 <= buffer.length && frames < maxFrames) {
+      const len = buffer.readUInt16LE(offset);
+      if (len === 0 || len > buffer.length) break;
+      const msgId = buffer[offset + 2];
+      const payloadStart = offset + 3;
+      const payloadEnd = Math.min(buffer.length, payloadStart + len);
+      const payload = buffer.subarray(payloadStart, payloadEnd);
+      this.logLithDebug(`[Frame16] ${connection.key} off=${offset} len=${len} msgId=0x${msgId.toString(16)} payload=${this.formatHex(payload, this.lithDebugHexBytes)}`);
+      this.scanNestedFrames(payload, connection, `frame16@${offset}`);
+      frames += 1;
+      offset = payloadEnd;
+    }
+  }
+
+  private decodeFrameIdLen16(buffer: Buffer, connection: Connection): void {
+    // format: [msgId8][len16le][payload...]
+    if (buffer.length < 4) return;
+    const maxFrames = 8;
+    let offset = 0;
+    let frames = 0;
+    while (offset + 3 <= buffer.length && frames < maxFrames) {
+      const msgId = buffer[offset];
+      const len = buffer.readUInt16LE(offset + 1);
+      if (len === 0 || len > buffer.length) break;
+      const payloadStart = offset + 3;
+      const payloadEnd = Math.min(buffer.length, payloadStart + len);
+      const payload = buffer.subarray(payloadStart, payloadEnd);
+      this.logLithDebug(`[FrameId16] ${connection.key} off=${offset} len=${len} msgId=0x${msgId.toString(16)} payload=${this.formatHex(payload, this.lithDebugHexBytes)}`);
+      this.scanNestedFrames(payload, connection, `frameId16@${offset}`);
+      frames += 1;
+      offset = payloadEnd;
+    }
+  }
+
+  private scanNestedFrames(payload: Buffer, connection: Connection, tag: string): void {
+    // Look for 0x6c/0x6d inside payload and attempt nested decode from that offset.
+    const targets = [0x6c, 0x6d];
+    for (let i = 0; i < payload.length; i += 1) {
+      if (!targets.includes(payload[i])) continue;
+      const start = Math.max(0, i - 8);
+      const end = Math.min(payload.length, i + 24);
+      const window = payload.subarray(start, end);
+      this.logLithDebug(`[NestedScan] ${connection.key} ${tag} hit=0x${payload[i].toString(16)} @${i} window=${window.toString('hex')}`);
+
+      // Try nested decodes starting at this offset
+      const slice = payload.subarray(i);
+      this.decodeFrameLen32(slice, connection);
+      this.decodeFrameLen16(slice, connection);
+      this.decodeFrameIdLen16(slice, connection);
+    }
+  }
+
+  private parseLithTechSubMessagesTolerant(buffer: Buffer, startBit: number): { messages: LithTechSubMessage[]; invalidCount: number } {
+    const messages: LithTechSubMessage[] = [];
+    const reader = new BitStreamReader(buffer, startBit);
+    let invalid = 0;
+    let steps = 0;
+    const maxSteps = Math.max(64, buffer.length * 2);
+
+    try {
+      while (reader.remainingBits >= 8 && steps < maxSteps) {
+        const lengthBits = reader.readBits(8);
+        steps += 1;
+
+        if (lengthBits === 0) {
+          invalid += 1;
+          continue;
+        }
+        if (reader.remainingBits < 8) {
+          invalid += 1;
+          break;
+        }
+
+        const msgId = reader.readBits(8);
+        if (lengthBits > reader.remainingBits) {
+          invalid += 1;
+          continue;
+        }
+
+        const payloadBytes = Math.ceil(lengthBits / 8);
+        const payload = Buffer.alloc(payloadBytes);
+        let bitsLeft = lengthBits;
+        for (let i = 0; i < payloadBytes; i++) {
+          const take = Math.min(8, bitsLeft);
+          payload[i] = reader.readBits(take);
+          bitsLeft -= take;
+        }
+
+        messages.push({ msgId, payload, payloadBits: lengthBits });
+
+        if (this.lithHasMoreFlag && reader.remainingBits >= 1) {
+          const hasMore = reader.readBits(1);
+          if (!hasMore) break;
+        }
+      }
+    } catch (e) {
+      console.log(`[PacketHandler] Error parsing LithTech messages (tolerant): ${e}`);
+    }
+
+    return { messages, invalidCount: invalid };
+  }
   
-  private handleLithTechSubMessage(ctx: PacketContext, msg: LithTechSubMessage): void {
+  private handleLithTechSubMessage(ctx: PacketContext, msg: LithTechSubMessage): Buffer | null {
     switch (msg.msgId) {
       case LithTechMessageId.MSG_PROTOCOL_VERSION:
         this.logVerbose(`[PacketHandler] Protocol version check`);
-        break;
+        return null;
       case LithTechMessageId.MSG_ID_PACKET:
         this.logVerbose(`[PacketHandler] ID packet received`);
-        break;
+        return null;
       case LithTechMessageId.MSG_MESSAGE_GROUP:
-        this.logVerbose(`[PacketHandler] Message group - need to unpack`);
-        break;
+        this.logVerbose(`[PacketHandler] Message group - unpacking`);
+        const groupMessages = this.parseMessageGroup(msg.payload, msg.payloadBits);
+        if (groupMessages.length > 0) {
+          if (this.lithDebugRaw || this.verbose) {
+            this.logLithDebug(`[Group] ${ctx.connection.key} subMessages=${groupMessages.length} bits=${msg.payloadBits}`);
+            for (const sub of groupMessages) {
+              const hex = this.formatHex(sub.payload, this.lithDebugHexBytes);
+              this.logLithDebug(`[Group]   MSG_ID=0x${sub.msgId.toString(16)} bits=${sub.payloadBits} payload=${hex}`);
+            }
+          }
+          for (const sub of groupMessages) {
+            const resp = this.handleLithTechSubMessage(ctx, sub);
+            if (resp) return resp;
+          }
+        } else if (this.lithDebugRaw || this.verbose) {
+          this.logLithDebug(`[Group] ${ctx.connection.key} no sub-messages parsed (bits=${msg.payloadBits})`);
+        }
+        return null;
       default:
         this.logThrottled(`lithtech-unknown-${msg.msgId}`, `[PacketHandler] Unknown LithTech MSG_ID ${msg.msgId}`);
+        if (!ctx.connection.authenticated && msg.payload.length > 0 && msg.msgId === 0x6d) {
+          const resp = this.tryParseLoginRequestRak(
+            msg.payload,
+            ctx.connection,
+            `lith-msg-0x${msg.msgId.toString(16)}`
+          );
+          if (resp) return resp;
+        }
+        return null;
     }
+    return null;
+  }
+
+  private parseMessageGroup(payload: Buffer, payloadBits: number): LithTechSubMessage[] {
+    const messages: LithTechSubMessage[] = [];
+    if (payloadBits <= 0) return messages;
+
+    const reader = new BitStreamReader(payload);
+    const maxBits = Math.min(payloadBits, payload.length * 8);
+
+    try {
+      while (reader.position + 8 <= maxBits) {
+        const lengthBits = reader.readBits(8);
+        if (lengthBits === 0) break;
+        if (reader.position + 8 > maxBits) break;
+        const msgId = reader.readBits(8);
+        if (reader.position + lengthBits > maxBits) {
+          this.logLithDebug(`[Group] invalid length: want=${lengthBits} remaining=${maxBits - reader.position}`);
+          break;
+        }
+
+        const payloadBytes = Math.ceil(lengthBits / 8);
+        const subPayload = Buffer.alloc(payloadBytes);
+        let bitsLeft = lengthBits;
+        for (let i = 0; i < payloadBytes; i++) {
+          const take = Math.min(8, bitsLeft);
+          subPayload[i] = reader.readBits(take);
+          bitsLeft -= take;
+        }
+
+        messages.push({ msgId, payload: subPayload, payloadBits: lengthBits });
+      }
+    } catch (e) {
+      this.logLithDebug(`[Group] parse error: ${e}`);
+    }
+
+    return messages;
   }
   
   private buildLithTechIdPacket(connection: Connection): Buffer {
@@ -564,11 +1039,17 @@ export class PacketHandler {
     
     response[offset++] = RakNetMessageId.ID_CONNECTION_REQUEST_ACCEPTED;
     
-    // Server external IP (BE) - 127.0.0.1
-    response.writeUInt32BE(0x7F000001, offset); offset += 4;
+    const replyIp = process.env.REPLY_IP || process.env.BIND_IP || process.env.SERVER_IP || '127.0.0.1';
+    const replyPortRaw = Number.parseInt(process.env.REPLY_PORT || process.env.PORT || String(DEFAULT_PORT), 10);
+    const replyPort = Number.isNaN(replyPortRaw) || replyPortRaw <= 0 ? DEFAULT_PORT : replyPortRaw;
+    const ipBytes = this.parseIpv4(replyIp) || [127, 0, 0, 1];
+    const ipValue = (ipBytes[0] << 24) | (ipBytes[1] << 16) | (ipBytes[2] << 8) | ipBytes[3];
+
+    // Server external IP (BE)
+    response.writeUInt32BE(ipValue >>> 0, offset); offset += 4;
     
     // Server port (BE)
-    response.writeUInt16BE(27888, offset); offset += 2;
+    response.writeUInt16BE(replyPort, offset); offset += 2;
     
     // Client index (LE)
     response.writeUInt16LE(connection.id, offset); offset += 2;
@@ -614,6 +1095,8 @@ export class PacketHandler {
       connection.lastLoginResponseMsgNum = ourMsgNum;
       connection.lastLoginResponseSentAt = Date.now();
       this.logVerbose(`[LoginTrace] LOGIN_RESPONSE reliable #${ourMsgNum} sendCount=${connection.loginResponseSendCount} bytes=${innerData.length} bits=${innerData.length * 8}`);
+      this.logLoginResponse(`inner msg=${ourMsgNum}`, innerData);
+      this.logLoginResponse(`wrapped msg=${ourMsgNum}`, packet);
     }
 
     this.logVerbose(`[PacketHandler] Wrapped reliable #${ourMsgNum}: ${packet.toString('hex')}`);
@@ -659,7 +1142,8 @@ export class PacketHandler {
     this.logVerbose(`[PacketHandler] Game packet 0x${packetId.toString(16).padStart(2, '0')} (${data.length} bytes)`);
     
     if (packetId >= 0x80 && packetId <= 0xFF) {
-      return this.tryParseLoginRequest(ctx);
+      const login = this.tryParseLoginRequest(ctx);
+      if (login) return login;
     }
     
     if (packetId >= LithTechMessageId.MSG_CYCLECHECK && 
@@ -673,42 +1157,75 @@ export class PacketHandler {
   }
   
   private tryParseLoginRequest(ctx: PacketContext): Buffer | null {
-    const { data, connection, reader } = ctx;
-    
-    if (this.verbose) {
-      console.log(`[PacketHandler] Attempting to parse as LOGIN_REQUEST...`);
-      console.log(`[LoginTrace] LOGIN_REQUEST raw bits=${data.length * 8} bytes=${data.length}`);
-      console.log(`[LoginTrace] LOGIN_REQUEST raw hex=${data.toString('hex')}`);
+    const { data, connection } = ctx;
+    const packetId = data.length > 0 ? data[0] : -1;
+    return this.tryParseLoginRequestRak(data, connection, `game-0x${packetId.toString(16)}`);
+  }
+
+  private isPrintableAscii(value: string): boolean {
+    for (let i = 0; i < value.length; i += 1) {
+      const c = value.charCodeAt(i);
+      if (c < 0x20 || c > 0x7e) return false;
     }
-    
-    if (data.length < 10) {
-      console.log(`[PacketHandler] Packet too short for login request`);
+    return true;
+  }
+
+  private logPacketNote(message: string): void {
+    PacketLogger.globalNote(message);
+  }
+
+  private tryParseLoginRequestRak(buffer: Buffer, connection: Connection, source: string): Buffer | null {
+    if (buffer.length < 2) return null;
+
+    this.logPacketNote(`[LoginParse] ${connection.key} src=${source} len=${buffer.length} bits=${buffer.length * 8}`);
+    if (this.loginDebug || this.verbose) {
+      const hex = buffer.toString('hex');
+      console.log(`[LoginParse] raw hex=${hex}`);
+      this.logPacketNote(`[LoginParse] raw hex=${hex}`);
+    }
+    if (this.lithDebugBits) {
+      this.logBits(`[LoginReq] ${connection.key} src=${source}`, buffer, buffer.length * 8);
+    }
+
+    const stream = new RakBitStream(buffer);
+    const packetId = stream.readByte();
+    if (this.loginDebug || this.verbose) {
+      const idStr = `0x${packetId.toString(16)}`;
+      console.log(`[LoginParse] packetId=${idStr}`);
+      this.logPacketNote(`[LoginParse] packetId=${idStr}`);
+    }
+    if (packetId !== 0x6d) {
+      this.logPacketNote(`[LoginParse] skip packetId=0x${packetId.toString(16)} (not login 0x6D)`);
       return null;
     }
-    
-    const packetId = reader.readByte();
-    
+
     try {
-      const possibleUsername = this.tryReadString(data, 1, 64);
-      const possiblePassword = this.tryReadString(data, 65, 64);
-      
-      if (possibleUsername && possibleUsername.length > 0) {
-        console.log(`[PacketHandler] Possible LOGIN_REQUEST detected:`);
-        console.log(`  Packet ID: 0x${packetId.toString(16)}`);
-        console.log(`  Username: "${possibleUsername}"`);
-        console.log(`  Password: "${possiblePassword ? '***' : '(empty)'}"`);
-        
-        connection.username = possibleUsername;
-        connection.authenticated = true;
-        
-        const login = this.buildLoginResponse(true, this.worldIp, this.worldPort);
-        return this.wrapReliable(login, connection);
+      const username = readCompressedString(stream, 64);
+      const password = readCompressedString(stream, 64);
+
+      if (!username || !this.isPrintableAscii(username)) {
+        this.logPacketNote(`[LoginParse] invalid username from ${source} id=0x${packetId.toString(16)}`);
+        return null;
       }
+      if (password && !this.isPrintableAscii(password)) {
+        this.logPacketNote(`[LoginParse] invalid password from ${source} id=0x${packetId.toString(16)}`);
+        return null;
+      }
+
+      console.log(`[LoginParse] LOGIN_REQUEST parsed from ${source}: user="${username}" passLen=${password.length} id=0x${packetId.toString(16)}`);
+      this.logPacketNote(`[LoginParse] parsed src=${source} id=0x${packetId.toString(16)} user="${username}" passLen=${password.length}`);
+      if (this.loginDebug) {
+        this.logPacketNote(`[LoginParse] parsed src=${source} password="${password}"`);
+      }
+      connection.username = username;
+      connection.authenticated = true;
+
+      const login = this.buildLoginResponse(true, this.worldIp, this.worldPort);
+      return this.wrapReliable(login, connection);
     } catch (e) {
-      this.logVerbose(`[PacketHandler] Not a valid login request format`);
+      this.logPacketNote(`[LoginParse] parse failed src=${source} id=0x${packetId.toString(16)} err=${e}`);
+      return null;
     }
-    
-    return null;
   }
   
   private tryReadString(buffer: Buffer, offset: number, maxLen: number): string | null {
@@ -745,6 +1262,7 @@ export class PacketHandler {
 
     this.logVerbose(`[LoginTrace] LOGIN_RESPONSE encoded bits=${writer.bits()} bytes=${writer.data.length} success=${success}`);
     this.logVerbose(`[LoginTrace] LOGIN_RESPONSE encoded hex=${writer.data.toString('hex')}`);
+    this.logLoginResponse(`encoded success=${success}`, writer.data);
 
     return writer.data;
   }

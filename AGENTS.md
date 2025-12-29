@@ -51,3 +51,11 @@
   - [features] rmcp_client = true
   - [mcp_servers.ida] url = "http://127.0.0.1:13337/mcp"
 - Verify: `codex mcp list` and `/mcp` in Codex TUI.
+
+# Git Integration (Always-On)
+- Treat git as the default state tracker; run `git status -sb` before/after each work chunk and before reporting completion.
+- Avoid redundant work: check `git log --oneline -n 5` (and open PRs/branches if relevant) before re-implementing.
+- Keep deltas small: stage with `git add -p` or explicit paths; commit at logical checkpoints (<= 1–2 hours) with descriptive messages.
+- Update `.gitignore` for generated artifacts (logs/builds) early; never delete user files; use `git rm` only with explicit request.
+- When a remote exists, push at milestone end; never force-push unless explicitly asked.
+- For risky changes, record the intended delta + rollback command in the working log entry.

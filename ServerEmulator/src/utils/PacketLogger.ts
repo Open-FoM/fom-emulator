@@ -16,6 +16,7 @@ export interface LoggedPacket {
 }
 
 export class PacketLogger {
+  private static globalInstance: PacketLogger | null = null;
   private logFile: fs.WriteStream | null = null;
   private logToConsole: boolean;
   private logToFile: boolean;
@@ -45,6 +46,25 @@ export class PacketLogger {
     
     if (this.logToFile) {
       this.initLogFile();
+    }
+  }
+
+  static setGlobal(logger: PacketLogger): void {
+    PacketLogger.globalInstance = logger;
+  }
+
+  static globalNote(message: string, toConsole: boolean = false): void {
+    PacketLogger.globalInstance?.logNote(message, toConsole);
+  }
+
+  logNote(message: string, toConsole: boolean = false): void {
+    const time = new Date().toISOString();
+    const line = `[NOTE] ${time} ${message}`;
+    if (this.logToFile && this.logFile) {
+      this.logFile.write(line + '\n');
+    }
+    if (toConsole && this.logToConsole) {
+      console.log(line);
     }
   }
 

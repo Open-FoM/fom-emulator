@@ -27,6 +27,7 @@ const HUFFMAN_FREQUENCIES: number[] = [
 ];
 
 let cachedCodes: HuffmanCode[] | null = null;
+let cachedDecodeTree: HuffmanNode | null = null;
 
 function loadRuntimeCodes(): HuffmanCode[] | null {
   const tablePath = process.env.FOM_HUFFMAN_TABLE
@@ -122,6 +123,37 @@ function getCodes(): HuffmanCode[] {
   return cachedCodes;
 }
 
+function buildDecodeTree(): HuffmanNode {
+  const root: HuffmanNode = { symbol: null, weight: 0 };
+  const codes = getCodes();
+  for (let sym = 0; sym < codes.length; sym += 1) {
+    const code = codes[sym];
+    if (!code || code.bitLength <= 0) {
+      continue;
+    }
+    let node = root;
+    for (let i = 0; i < code.bitLength; i += 1) {
+      const bit = code.bits[i] ? 1 : 0;
+      if (bit === 0) {
+        if (!node.left) node.left = { symbol: null, weight: 0, parent: node };
+        node = node.left;
+      } else {
+        if (!node.right) node.right = { symbol: null, weight: 0, parent: node };
+        node = node.right;
+      }
+    }
+    node.symbol = sym;
+  }
+  return root;
+}
+
+function getDecodeTree(): HuffmanNode {
+  if (!cachedDecodeTree) {
+    cachedDecodeTree = buildDecodeTree();
+  }
+  return cachedDecodeTree;
+}
+
 function writeCode(stream: RakBitStream, code: HuffmanCode, bitLimit?: number): void {
   const limit = bitLimit ?? code.bitLength;
   for (let i = 0; i < limit; i += 1) {
@@ -167,4 +199,30 @@ export function writeCompressedString(stream: RakBitStream, value: string, maxLe
   if (bitCount === 0) return;
   temp.resetRead();
   stream.writeBitStream(temp);
+}
+
+export function readCompressedString(stream: RakBitStream, maxLen: number = 2048): string {
+  const countStream = stream.readCompressed(4);
+  const bitCount = countStream.readLong();
+  if (bitCount <= 0) return '';
+
+  const root = getDecodeTree();
+  let node: HuffmanNode | undefined = root;
+  const out: number[] = [];
+
+  for (let i = 0; i < bitCount; i += 1) {
+    const bit = stream.readBit();
+    node = bit ? node?.right : node?.left;
+    if (!node) {
+      throw new Error('Huffman decode failed: invalid prefix');
+    }
+    if (node.symbol !== null && node.symbol !== undefined) {
+      if (maxLen <= 0 || out.length < maxLen) {
+        out.push(node.symbol & 0xff);
+      }
+      node = root;
+    }
+  }
+
+  return Buffer.from(out).toString('latin1');
 }
