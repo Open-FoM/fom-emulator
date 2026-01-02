@@ -4,7 +4,7 @@ export type WorldInfo = {
     display: string;
 };
 
-// Synced to FoTD/Resources/Worlds. If folder is null, the file is missing/unknown in current assets.
+// Synced to Client/Resources/Worlds. If folder is null, the file is missing/unknown in current assets.
 export const WORLD_TABLE: ReadonlyArray<WorldInfo> = [
     { id: 1, folder: 'NY_Manhattan', display: 'NYC-Manhattan' },
     { id: 2, folder: 'NY_Brooklyn', display: 'NYC-Brooklyn' },

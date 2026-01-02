@@ -48,7 +48,7 @@ Legend:
 - `lenbits(max=N)` = length encoded in `ceil(log2(N))+1` bits, then **raw bytes** (not null-terminated).
 - `huffman(<=2048)` = RakNet StringCompressor Huffman string, max 2048 bytes. Length is a **raw u32 bit-count (big-endian)**.
 
-## Encode/Decode Paths (FoTD IDB)
+## Encode/Decode Paths (Client IDB)
 
 - Deserialize: `sub_F1C3B0` @ `0xF1C3B0`
 - Serialize: `sub_F1B820` @ `0xF1B820`

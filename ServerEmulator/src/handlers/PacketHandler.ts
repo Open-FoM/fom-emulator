@@ -280,7 +280,7 @@ export class PacketHandler {
         this.worldUnguaranteedSendVel = this.parseBool(
             process.env.FOM_WORLD_UNGUARANTEED_SEND_VEL ??
                 process.env.WORLD_UNGUARANTEED_SEND_VEL,
-            false,
+            true,
         );
         this.worldUnguaranteedHasVelBit = this.parseBool(
             process.env.FOM_WORLD_UNGUARANTEED_HAS_VEL_BIT ??

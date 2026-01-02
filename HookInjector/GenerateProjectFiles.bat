@@ -19,10 +19,6 @@ if not exist "%SLN%" (
 
 powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT%\\TrimSolution.ps1" -Solution "%SLN%"
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT%\\WriteRootSolution.ps1" -BuildSolution "%SLN%" -RootSolution "%ROOT%\\FoMHook.sln"
-
-if exist "%SLN%" del /q "%SLN%"
-
 if exist "%BUILD%\\ALL_BUILD.vcxproj" del /q "%BUILD%\\ALL_BUILD.vcxproj"
 if exist "%BUILD%\\ALL_BUILD.vcxproj.filters" del /q "%BUILD%\\ALL_BUILD.vcxproj.filters"
 if exist "%BUILD%\\ZERO_CHECK.vcxproj" del /q "%BUILD%\\ZERO_CHECK.vcxproj"

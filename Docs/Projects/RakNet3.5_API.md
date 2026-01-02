@@ -1,37 +1,47 @@
-# RakNet3.5 API Documentation
+# RakNet3.5 API Documentation Spec
 
-## Scope
-- Markdown documentation for External/RakNet3.5 Source headers.
-- Unreal-style class references with signatures and summaries.
-- Navigation pages and focused guides for core workflows.
+## Problem
+External/RakNet3.5 ships a large C++ API surface without Markdown documentation. Developers need a de-glossed, Unreal-style reference to understand the full API and how to use it.
 
-## Success Metrics
-- 100% Source/*.h reference pages present.
-- Class index covers all classes/structs.
-- Guides cover peer lifecycle, serialization, plugins, security, replication.
+## Goals
+- Document the public API for all Source headers in External/RakNet3.5.
+- Provide Unreal-style class references with clear summaries and signatures.
+- Add navigation: README, module map, and class index.
+- Add focused usage guides for core workflows (peer lifecycle, serialization, plugins, security, replication).
 
-## Timeline
-- Milestone 1: Inventory + scaffolding.
-- Milestone 2: Reference pages generated.
-- Milestone 3: Guides + QA pass.
+## Non-goals
+- No changes to RakNet source code or behavior.
+- No FoM-specific reverse engineering beyond referencing RakNet APIs.
+- No HTML output (Markdown only).
 
-## Dependencies
-- External/RakNet3.5/Source headers.
-- Existing Doxygen comments in headers.
+## Solution Sketch
+- Parse Source headers to extract classes, structs, enums, free functions, macros, and Doxygen comments.
+- Generate per-header reference pages under Docs/External/RakNet3.5/Reference.
+- Write curated guides and top-level navigation pages.
 
-## Milestones
-1) Inventory + Scaffolding
-- Spec sections: Problem, Goals, Architecture.
-- Deliver README, Modules, ClassIndex.
+## Architecture
+- Docs/External/RakNet3.5/README.md
+- Docs/External/RakNet3.5/Modules.md
+- Docs/External/RakNet3.5/ClassIndex.md
+- Docs/External/RakNet3.5/Guides/*.md
+- Docs/External/RakNet3.5/Reference/*.md
 
-2) Reference Pages
-- Spec sections: Solution Sketch, Architecture.
-- Generate per-header API references with signatures and summaries.
+## Risks
+- Parser misses complex declarations or conditional APIs.
+- Reference pages become too dense for quick scanning.
 
-3) Guides + QA
-- Spec sections: Goals, Risks, Mitigations, Metrics.
-- Write guides and spot-check accuracy.
+## Mitigations
+- Spot-check critical headers (RakPeerInterface, BitStream, ReliabilityLayer, MessageIdentifiers).
+- Keep consistent formatting and linkable indexes.
 
-## Decision Log
-- 12/30/25: Store docs under Docs/External/RakNet3.5 for repo-wide discovery.
-- 12/30/25: Use header-derived Doxygen comments as primary source of truth.
+## Alternatives
+- Use Help/ HTML or Doxygen output as-is (rejected: Markdown requirement).
+
+## Rollout
+- Phase 1: RakNet3.5 documentation only.
+- Phase 2: Extend to other External modules.
+
+## Metrics
+- Coverage: 100% of Source/*.h reference pages created.
+- Accuracy: Spot-check at least 5 critical headers.
+- Usability: Navigation paths from README to class pages.

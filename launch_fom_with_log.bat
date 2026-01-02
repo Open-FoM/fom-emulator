@@ -6,7 +6,7 @@ if not %errorlevel%==0 (
   exit /b
 )
 set ROOT=%~dp0
-set CLIENT=%ROOT%FoTD
+set CLIENT=%ROOT%Client
 
 if not exist "%CLIENT%\fom_client.exe" (
   echo Missing client: "%CLIENT%\fom_client.exe"

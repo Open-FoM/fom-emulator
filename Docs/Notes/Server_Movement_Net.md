@@ -120,7 +120,7 @@ To mirror movement send cadence:
 ## Approximate values (client‑inferred, no server config)
 These are safe defaults to emulate FoM behavior when server config is unknown.
 - Base interval (server update target): **200 ms** (5 Hz). Matches NetConn_ctor default and
-  aligns with observed unguaranteed update pacing in FoTD logs.
+  aligns with observed unguaranteed update pacing in Client logs.
 - Effective interval: **200 ms**, adaptive off by default.
 - Adaptive interval: **disabled** unless explicit evidence from client indicates otherwise.
 - Flow rate (bytes/sec): **0x7FFFFFFF** (effectively unlimited) from NetConn_ctor default.

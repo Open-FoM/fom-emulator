@@ -1,4 +1,4 @@
-# Item Data Injection Notes (FoTD / CShell)
+# Item Data Injection Notes (Client / CShell)
 
 Purpose
 - Provide all information needed to inject/override item base stats on the client.
@@ -207,7 +207,7 @@ Display CSV (for humans):
 - Use item_stats_client_display.csv for readable values.
 - Use a converter to map back to raw integers (reverse of Item_FormatStatLine).
 
-Known display mismatch example (FoTD vs FoM wiki)
+Known display mismatch example (Client vs FoM wiki)
 - Linner PP7 raw base in CShell:
   - Energy Damage 159 -> 15.9
   - Xeno Damage 111 -> 11.1
@@ -215,7 +215,7 @@ Known display mismatch example (FoTD vs FoM wiki)
   - Weapon Recoil 1000 -> 33.3%
   - Range 2000 -> 20m
   - Fire Delay 800 -> 0.80s
-- This is not a scaling bug; the FoTD binaries contain different raw values.
+- This is not a scaling bug; the Client binaries contain different raw values.
 
 Existing exports
 - Docs/Exports/item_base_stats_raw.csv (authoritative raw table)
@@ -269,7 +269,7 @@ References (addresses)
 # Handoff Report (2025-12-31)
 
 Current Goal
-- Document everything needed to inject custom item data into FoTD client (CShell.dll), including raw table formats, variant handling, quality scaling, stat modifiers, and display formatting rules. The doc should be complete so a new session can implement hooks without re?reverse?engineering.
+- Document everything needed to inject custom item data into Client client (CShell.dll), including raw table formats, variant handling, quality scaling, stat modifiers, and display formatting rules. The doc should be complete so a new session can implement hooks without re?reverse?engineering.
 
 Tasks Completed (this session)
 1) Confirmed CShell.dll is loaded in IDA MCP (13337).
@@ -311,7 +311,7 @@ Tasks Completed (this session)
 9) Produced display CSVs from actual base table + formatter:
    - Docs/Exports/item_stats_client_display.csv
    - Docs/Exports/item_stats_client_display_variants.csv
-   - Confirms mismatch vs FoM wiki is due to different raw base values in FoTD binaries, not scaling error.
+   - Confirms mismatch vs FoM wiki is due to different raw base values in Client binaries, not scaling error.
 
 Files Edited / Created
 - Updated: Docs/Notes/ItemData_Injection.md
@@ -333,7 +333,7 @@ Key Evidence / Facts (for next agent)
   - Fire Delay (0x24) -> seconds = raw/1000
   - Recoil (0x11) -> % of scale table[0x11] (3000)
   - Weight (0x27) -> grams = raw
-- Example mismatch: PP7 raw base values in FoTD are different than FoM wiki; the formatter makes them 15.9, 11.1, 6.7, 33.3%, etc.
+- Example mismatch: PP7 raw base values in Client are different than FoM wiki; the formatter makes them 15.9, 11.1, 6.7, 33.3%, etc.
 
 What I Was Going To Do Next
 - If asked to implement hooks:
@@ -349,4 +349,4 @@ Current Doc Location
 - Docs/Notes/ItemData_Injection.md (this is the complete injection guide as requested).
 
 Stop State
-- No further actions pending. All required documentation is already written and updated.
+- No further actions pending. All required documentation is already written and updated.

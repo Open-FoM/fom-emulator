@@ -1,6 +1,6 @@
 # FoM Client Login Flow (CShell.dll)
 Generated: 2025-12-31
-IDB: C:\FoM_Decompilation\FoTD\Resources\CShell.dll
+IDB: Client\Resources\CShell.dll
 ImageBase: 0x10000000
 
 ## Overview

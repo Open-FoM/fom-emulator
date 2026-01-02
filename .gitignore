@@ -14,6 +14,9 @@
 !/catalog/**
 !/Docs/
 !/Docs/**
+# keep Logs local-only
+/Docs/Logs/
+/Docs/Logs/**
 # AGENTS backup/diff artifacts (keep change_log.md tracked unless requested)
 /Docs/Notes/AGENTS_*.md
 /Docs/Notes/AGENTS_*.sha256*
@@ -25,20 +28,16 @@
 /HookInjector/build/**
 !/ServerEmulator/
 !/ServerEmulator/**
+!/Client/
+!/Client/**/
+!/Client/**/*.i64
+!/Client/**/*.idb
+!/Client/**/*.id0
+!/Client/**/*.id1
+!/Client/**/*.id2
+!/Client/**/*.nam
+!/Client/**/*.til
 
-# allow FoTD subtree for IDA files only
-!/FoTD/
-!/FoTD/**/
-!/FoTD/**/*.i64
-!/FoTD/**/*.idb
-!/FoTD/**/*.id0
-!/FoTD/**/*.id1
-!/FoTD/**/*.id2
-!/FoTD/**/*.nam
-!/FoTD/**/*.til
-# ignore timestamped IDA database snapshots
-/FoTD/**/fom_client.exe_*.i64
-/FoTD/**/server.dll_*.i64
 
 # optional root files to ignore for now
 /launch_with_log.out.txt

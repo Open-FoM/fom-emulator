@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\FoM_Decompilation\HookInjector\CMakeFiles\4.2.1\Debug\VCTargetsPath</FullPath>
+      <FullPath>HookInjector\CMakeFiles\4.2.1\Debug\VCTargetsPath</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

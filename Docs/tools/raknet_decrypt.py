@@ -1,5 +1,5 @@
 """
-Quick RakNet DataBlockEncryptor decryptor for FoTD captures.
+Quick RakNet DataBlockEncryptor decryptor for Client captures.
 
 Algorithm per RakNet 3.5 DataBlockEncryptor (reverse-chained AES-128 ECB + pad/checksum).
 Inputs:

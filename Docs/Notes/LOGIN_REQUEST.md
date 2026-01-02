@@ -87,7 +87,7 @@ Helpers:
 - Header is optional: if the first byte is `0x19`, a u64 timestamp is read before packet_id.
 - The two 2048-bit blobs are written via `g_LTClient` vtbl+0x34/0x38; treat as opaque until we map contents.
 - Presence bits gate the optional u32s. If absent, the client zeroes the field.
-- RSA public key is loaded from `FoTD\fom_public.key` (68 bytes: e + 64-byte modulus). Key rotation details in `Docs\Notes\ClientNetworking.md` (private key stored at `ServerEmulator\fom_private_key.env`).
+- RSA public key is loaded from `Client\fom_public.key` (68 bytes: e + 64-byte modulus). Key rotation details in `Docs\Notes\ClientNetworking.md` (private key stored at `ServerEmulator\fom_private_key.env`).
 
 ---
 

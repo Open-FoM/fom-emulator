@@ -1,9 +1,9 @@
 # CMake generation dependency list for this directory.
-C:/FoM_Decompilation/HookInjector/CMakeFiles/4.2.1/CMakeCXXCompiler.cmake
-C:/FoM_Decompilation/HookInjector/CMakeFiles/4.2.1/CMakeRCCompiler.cmake
-C:/FoM_Decompilation/HookInjector/CMakeFiles/4.2.1/CMakeSystem.cmake
-C:/FoM_Decompilation/HookInjector/CMakeFiles/cmake.verify_globs
-C:/FoM_Decompilation/HookInjector/CMakeLists.txt
+HookInjector/CMakeFiles/4.2.1/CMakeCXXCompiler.cmake
+HookInjector/CMakeFiles/4.2.1/CMakeRCCompiler.cmake
+HookInjector/CMakeFiles/4.2.1/CMakeSystem.cmake
+HookInjector/CMakeFiles/cmake.verify_globs
+HookInjector/CMakeLists.txt
 C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeCXXCompiler.cmake.in
 C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeCXXCompilerABI.cpp
 C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeCXXInformation.cmake

@@ -2,9 +2,8 @@
 
 # Purpose
 - We are reverse engineering this game, which no longer exists, for `research/preservation`; legal concerns are explicitly disregarded by project scope.
-- Primary focus: `FoM` behavior, network flow, packet formats, and hook points used for server redirection and custom code injection.
+- Primary focus: `Client/` behavior, network flow, packet formats, and hook points used for server redirection and custom code injection.
 - Item/catalog reverse engineering is in scope; treat `CRes.dll` as the likely item/resource handler until verified.
-- Treat legacy artifacts as baseline only; re-locate/verify in `FoM` before reuse.
 - Stay read-only first; only rename/add comments/types after validating with `xrefs` or decomp.
 
 # Deep Context
@@ -12,7 +11,6 @@
 - Protocol drill-downs live flat in `Docs\Notes\` (files: `LOGIN*.md`, `CShell_Gameplay_Packets.md`, `CUDPDriver.md`, `ClientNetworking.md`, `MSG_ID_*`).
 - `Login_Request.md`, `Docs\Login_Request.md`, `Docs\Login_Request_*.md` (login handshake notes and captures; use newest dated file)
 - `RakNet_LithTech_DeepDive.md` (RakNet/LithTech integration notes and assumptions)
-- `Protocol_AddressWatch.md` (legacy-derived anchors to relocate in `FoM`; verify before reuse)
 - `ServerEmulator_Findings.md` (TS emulator analysis, reliability formats, known mismatches)
 - `Docs\Projects\Emulator.md` (milestones + decision log)
 - `Docs\Logs\Emulator.md` (active task checklist; update with progress)
@@ -48,7 +46,7 @@
 # Runtime Artifacts
 - Server logs: `ServerEmulator\logs\` (authoritative emulator output)
 - Client logs: repo root `fom_hook.log` (hook/injector output)
-- Client dumps: `FoTD\` or `Client\` (crash dumps for `fom_client.exe`)
+- Client dumps: `Client\` or `Client\` (crash dumps for `fom_client.exe`)
 - Config: both client and server use `.ini` files for env vars + quick behavior toggles
 - Validation/launch: `start_server.bat` (server) and `launch_fom_with_log.bat` (client)
 

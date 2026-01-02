@@ -160,10 +160,10 @@ function buildPayloads(
 
 export function resolveDefaultFileRoot(cwd: string): string | null {
     const candidates = [
-        path.resolve(cwd, 'FoTD', 'Resources'),
+        path.resolve(cwd, 'Client', 'Resources'),
         path.resolve(cwd, 'Client', 'Resources'),
         path.resolve(cwd, 'Resources'),
-        path.resolve(cwd, '..', 'FoTD', 'Resources'),
+        path.resolve(cwd, '..', 'Client', 'Resources'),
         path.resolve(cwd, '..', 'Client', 'Resources'),
         path.resolve(cwd, '..', 'Resources'),
     ];

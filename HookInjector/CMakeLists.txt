@@ -30,9 +30,6 @@ set(EXCLUDED_SOURCES
     ${SOURCE_DIR}/ProxyDInput8/DInput8Proxy.cpp
 )
 list(REMOVE_ITEM SOURCE_CPP ${EXCLUDED_SOURCES})
-file(GLOB_RECURSE SOURCE_ALL CONFIGURE_DEPENDS "${SOURCE_DIR}/*")
-file(GLOB_RECURSE THIRDPARTY_ALL CONFIGURE_DEPENDS "${THIRDPARTY_DIR}/*")
-
 set(IMGUI_SOURCES
     ${IMGUI_DIR}/imgui.cpp
     ${IMGUI_DIR}/imgui_draw.cpp
@@ -41,23 +38,6 @@ set(IMGUI_SOURCES
     ${IMGUI_DIR}/imgui_demo.cpp
     ${IMGUI_DIR}/backends/imgui_impl_win32.cpp
     ${IMGUI_DIR}/backends/imgui_impl_dx9.cpp
-)
-
-add_library(FoMHook SHARED
-    ${SOURCE_CPP}
-    ${IMGUI_SOURCES}
-)
-
-add_executable(FoMInjector WIN32
-    ${SOURCE_DIR}/FoMInjector/Injector.cpp
-)
-target_sources(FoMInjector PRIVATE
-    ${SOURCE_DIR}/FoMInjector/Injector.h
-)
-target_link_libraries(FoMInjector PRIVATE shell32)
-set_target_properties(FoMInjector PROPERTIES OUTPUT_NAME "injector")
-add_custom_command(TARGET FoMInjector POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:FoMInjector>" "${OUTPUT_ROOT}/injector.exe"
 )
 
 set(D3D9_DEF ${SOURCE_DIR}/ProxyD3D9/D3D9Proxy.def)
@@ -96,24 +76,4 @@ set_property(TARGET FoMProxyDInput8 PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded
 set_target_properties(FoMProxyDInput8 PROPERTIES OUTPUT_NAME "dinput8")
 add_custom_command(TARGET FoMProxyDInput8 POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:FoMProxyDInput8>" "${OUTPUT_ROOT}/dinput8.dll"
-)
-
-# Make all files visible in the IDE without compiling extra third-party sources.
-set(IDE_FILES ${SOURCE_ALL} ${THIRDPARTY_ALL})
-list(REMOVE_ITEM IDE_FILES ${SOURCE_CPP} ${IMGUI_SOURCES})
-list(REMOVE_ITEM IDE_FILES ${EXCLUDED_SOURCES})
-if(IDE_FILES)
-    set_source_files_properties(${IDE_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
-    target_sources(FoMHook PRIVATE ${IDE_FILES})
-endif()
-target_compile_definitions(FoMHook PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX)
-target_include_directories(FoMHook PRIVATE
-    ${SOURCE_DIR}
-    ${IMGUI_DIR}
-    ${IMGUI_DIR}/backends
-)
-target_link_libraries(FoMHook PRIVATE ws2_32 d3d9)
-set_target_properties(FoMHook PROPERTIES OUTPUT_NAME "fom_hook")
-add_custom_command(TARGET FoMHook POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:FoMHook>" "${OUTPUT_ROOT}/fom_hook.dll"
 )
