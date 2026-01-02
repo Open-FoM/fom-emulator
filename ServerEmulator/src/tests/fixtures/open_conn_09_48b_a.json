@@ -1,0 +1,12 @@
+{
+  "name": "open_conn_09_48b_a",
+  "msg_id": 9,
+  "wrapper": "raw",
+  "bit_order": "msb",
+  "hex": "09 06 04 a2 f4 bf 8b ea 53 69 fe 1d 1c 03 99 e7 9f e3 7c 95 4a 05 f7 eb 62 be ff 00 ff 00 fe fe fe fe fd fd fd fd 12 34 56 78 80 ff ff fe ee 48",
+  "expected": {
+    "payload_len": 47
+  },
+  "source_log": "fom_hook.log",
+  "source_timestamp": "2025.12.30-10.06.52:558"
+}

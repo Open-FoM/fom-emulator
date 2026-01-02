@@ -1,0 +1,91 @@
+Ambiguous or expanded mappings:
+('Dilatant 50b - Helmet', 'multiple ids', ['140', '152'], 'Dilatant 50b Helmet')
+('Firstborn Powered - Helmet', 'multiple ids', ['132', '150'], 'Firstborn Powered Helmet')
+('Locans Defense - Gloves', 'gloves missing one gender', ['414'], [])
+('Locans Patrol - Helmet', 'multiple ids', ['116', '146'], 'Locans Patrol Helmet')
+('PreMet Collision - Helmet', 'multiple ids', ['136', '151'], 'PreMet Collision Helmet')
+('Venom - Helmet', 'multiple ids', ['128', '149'], 'Venom Helmet')
+('XenoTech Expeditionary - Gloves', 'gloves missing one gender', ['482'], [])
+('Envirotech Gloves', 'gloves missing one gender', ['411'], [])
+('Infostyle Gloves', 'gloves missing one gender', ['413'], [])
+('Infusion Gloves', 'gloves missing one gender', ['412'], [])
+
+Expanded gloves (base name -> gendered name):
+('Aramid Basic - Gloves', 'Aramid Basic Gloves (Male)', ['441'])
+('Aramid Basic - Gloves', 'Aramid Basic Gloves (Female)', ['476'])
+('Aramid Modified - Gloves', 'Aramid Modified Gloves (Male)', ['439'])
+('Aramid Modified - Gloves', 'Aramid Modified Gloves (Female)', ['474'])
+('Delta Powered - Gloves', 'Delta Powered Gloves (Male)', ['430'])
+('Delta Powered - Gloves', 'Delta Powered Gloves (Female)', ['465'])
+('Detox Combat - Gloves', 'Detox Combat Gloves (Male)', ['429'])
+('Detox Combat - Gloves', 'Detox Combat Gloves (Female)', ['464'])
+('Dilatant 50b - Gloves', 'Dilatant 50b Gloves (Male)', ['440'])
+('Dilatant 50b - Gloves', 'Dilatant 50b Gloves (Female)', ['475'])
+('Firstborn Powered - Gloves', 'Firstborn Powered Gloves (Male)', ['432'])
+('Firstborn Powered - Gloves', 'Firstborn Powered Gloves (Female)', ['467'])
+('Havoc Powered - Gloves', 'Havoc Powered Gloves (Male)', ['431'])
+('Havoc Powered - Gloves', 'Havoc Powered Gloves (Female)', ['466'])
+('Hypobaric - Gloves', 'Hypobaric Gloves (Male)', ['426'])
+('Hypobaric - Gloves', 'Hypobaric Gloves (Female)', ['461'])
+('Infensus Heavy - Gloves', 'Infensus Heavy Gloves (Male)', ['445'])
+('Infensus Heavy - Gloves', 'Infensus Heavy Gloves (Female)', ['480'])
+('Infensus Minimalist - Gloves', 'Infensus Minimalist Gloves (Male)', ['442'])
+('Infensus Minimalist - Gloves', 'Infensus Minimalist Gloves (Female)', ['477'])
+('Infensus Shock - Gloves', 'Infensus Shock Gloves (Male)', ['443'])
+('Infensus Shock - Gloves', 'Infensus Shock Gloves (Female)', ['478'])
+('Infensus X1 Assault - Gloves', 'Infensus X1 Assault Gloves (Male)', ['444'])
+('Infensus X1 Assault - Gloves', 'Infensus X1 Assault Gloves (Female)', ['479'])
+('Legionnaire Powered - Gloves', 'Legionnaire Powered Gloves (Male)', ['433'])
+('Legionnaire Powered - Gloves', 'Legionnaire Powered Gloves (Female)', ['468'])
+('Locans Defense - Gloves', 'Locans Defense Gloves (Male)', ['414'])
+('Locans Ethereal - Gloves', 'Locans Ethereal Gloves (Male)', ['415'])
+('Locans Ethereal - Gloves', 'Locans Ethereal Gloves (Female)', ['450'])
+('Locans Patrol - Gloves', 'Locans Patrol Gloves (Male)', ['416'])
+('Locans Patrol - Gloves', 'Locans Patrol Gloves (Female)', ['451'])
+('Locans Pressured - Gloves', 'Locans Pressured Gloves (Male)', ['417'])
+('Locans Pressured - Gloves', 'Locans Pressured Gloves (Female)', ['452'])
+('Metabolic - Gloves', 'Metabolic Gloves (Male)', ['427'])
+('Metabolic - Gloves', 'Metabolic Gloves (Female)', ['462'])
+('NanoTech Cognizant - Gloves', 'NanoTech Cognizant Gloves (Male)', ['425'])
+('NanoTech Cognizant - Gloves', 'NanoTech Cognizant Gloves (Female)', ['460'])
+('NanoTech Scout - Gloves', 'NanoTech Scout Gloves (Male)', ['423'])
+('NanoTech Scout - Gloves', 'NanoTech Scout Gloves (Female)', ['458'])
+('NanoTech Trauma - Gloves', 'NanoTech Trauma Gloves (Male)', ['422'])
+('NanoTech Trauma - Gloves', 'NanoTech Trauma Gloves (Female)', ['457'])
+('PreMet Buffer - Gloves', 'PreMet Buffer Gloves (Male)', ['434'])
+('PreMet Buffer - Gloves', 'PreMet Buffer Gloves (Female)', ['469'])
+('PreMet Collision - Gloves', 'PreMet Collision Gloves (Male)', ['436'])
+('PreMet Collision - Gloves', 'PreMet Collision Gloves (Female)', ['471'])
+('PreMet Contact - Gloves', 'PreMet Contact Gloves (Male)', ['435'])
+('PreMet Contact - Gloves', 'PreMet Contact Gloves (Female)', ['470'])
+('PreMet Impact - Gloves', 'PreMet Impact Gloves (Male)', ['437'])
+('PreMet Impact - Gloves', 'PreMet Impact Gloves (Female)', ['472'])
+('Pythica Mobile Infantry - Gloves', 'Pythica Mobile Infantry Gloves (Male)', ['419'])
+('Pythica Mobile Infantry - Gloves', 'Pythica Mobile Infantry Gloves (Female)', ['454'])
+('Pythica S1 - Gloves', 'Pythica S1 Gloves (Male)', ['420'])
+('Pythica S1 - Gloves', 'Pythica S1 Gloves (Female)', ['455'])
+('Pythica Special Operations - Gloves', 'Pythica Special Operations Gloves (Male)', ['418'])
+('Pythica Special Operations - Gloves', 'Pythica Special Operations Gloves (Female)', ['453'])
+('Pythica Sustained Battle - Gloves', 'Pythica Sustained Battle Gloves (Male)', ['421'])
+('Pythica Sustained Battle - Gloves', 'Pythica Sustained Battle Gloves (Female)', ['456'])
+('Venom - Gloves', 'Venom Gloves (Male)', ['428'])
+('Venom - Gloves', 'Venom Gloves (Female)', ['463'])
+('XenoTech Expeditionary - Gloves', 'XenoTech Expeditionary Gloves (Male)', ['482'])
+('Envirotech Gloves', 'Envirotech Gloves (Male)', ['411'])
+('Infostyle Gloves', 'Infostyle Gloves (Male)', ['413'])
+('Infusion Gloves', 'Infusion Gloves (Male)', ['412'])
+
+Unmatched items:
+Dilatant 50b - Legs
+Dilitant 46b - Helmet
+Dilitant 46b - Shoulders
+Dilitant 46b - Torso
+Dilitant 46b - Arms
+Dilitant 46b - Legs
+Dilitant 46b - Gloves
+NanoTech Voitaic - Helmet
+NanoTech Voitaic - Shoulders
+NanoTech Voitaic - Torso
+NanoTech Voitaic - Arms
+NanoTech Voitaic - Legs
+NanoTech Voitaic - Gloves

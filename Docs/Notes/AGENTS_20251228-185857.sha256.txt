@@ -1,5 +1,0 @@
-
-Algorithm       Hash                                                                   Path
----------       ----                                                                   ----
-SHA256          2EA8CCFB550D07432B540C37F635363740708A28496563820FF96914100DF51B       C:\FoM_Decompilation\AGENTS.md
-

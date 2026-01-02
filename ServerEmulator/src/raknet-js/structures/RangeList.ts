@@ -14,14 +14,14 @@ export class RangeList {
      *
      * @param {BitStream} data
      */
-    deserialize(data : BitStream) : void {
+    deserialize(data: BitStream): void {
         let count = data.readCompressed(2).readShort();
         let maxEqualToMin = false;
-        for (let i = 0; i < count; i ++) {
+        for (let i = 0; i < count; i++) {
             maxEqualToMin = data.readBit() == 1;
             let min = data.readLong();
             let max = min;
-            if(!maxEqualToMin) {
+            if (!maxEqualToMin) {
                 max = data.readLong();
             }
             this.ranges.push(new RangeListRange(min, max));
@@ -32,13 +32,13 @@ export class RangeList {
      * Serializes this Rangelist to a stream
      * @returns {BitStream}
      */
-    serialize() : BitStream {
+    serialize(): BitStream {
         let stream = new BitStream();
         stream.writeCompressedShort(this.ranges.length);
-        for(let i = 0; i < this.ranges.length; i++) {
+        for (let i = 0; i < this.ranges.length; i++) {
             stream.writeBit(this.ranges[i].min === this.ranges[i].max);
             stream.writeLong(this.ranges[i].min);
-            if(this.ranges[i].min !== this.ranges[i].max) {
+            if (this.ranges[i].min !== this.ranges[i].max) {
                 stream.writeLong(this.ranges[i].max);
             }
         }
@@ -49,14 +49,14 @@ export class RangeList {
      * Returns if this Rangelist is empty or not
      * @returns {boolean}
      */
-    isEmpty() : boolean {
+    isEmpty(): boolean {
         return this.ranges.length === 0;
     }
 
     /**
      * Clears this Rangelist
      */
-    empty() : void {
+    empty(): void {
         this.ranges = [];
     }
 
@@ -64,23 +64,23 @@ export class RangeList {
      * Adds a number to this Ranglist
      * @param {number} n
      */
-    add(n:number) : void {
-        for(let i = 0; i < this.ranges.length; i ++) {
+    add(n: number): void {
+        for (let i = 0; i < this.ranges.length; i++) {
             let range = this.ranges[i];
 
-            if(range.isInRange(n)) {
+            if (range.isInRange(n)) {
                 // We don't have to worry about it because it is already in here
                 return;
             }
 
-            if(range.canExtendMin(n)) {
+            if (range.canExtendMin(n)) {
                 // It can decrement the min by one
                 range.min--;
                 this.updateOverlap();
-                return
+                return;
             }
 
-            if(range.canExtendMax(n)) {
+            if (range.canExtendMax(n)) {
                 // It can increment the max by one
                 range.max++;
                 this.updateOverlap();
@@ -95,23 +95,22 @@ export class RangeList {
     /**
      * Updates ranges if there is an overlap and merges them where needed
      */
-    updateOverlap() : void {
-        for(let i = 0; i < this.ranges.length; i ++) {
+    updateOverlap(): void {
+        for (let i = 0; i < this.ranges.length; i++) {
             let range = this.ranges[i];
-            for(let j = 0; j < this.ranges.length; j ++) {
-                if(j === i) continue;
+            for (let j = 0; j < this.ranges.length; j++) {
+                if (j === i) continue;
                 let nextRange = this.ranges[j];
 
-                if(range.max === nextRange.min - 1) {
+                if (range.max === nextRange.min - 1) {
                     //they are right next to each other and need to be merged
                     this.ranges.push(new RangeListRange(range.min, nextRange.max));
                     this.ranges.splice(i, 1);
 
                     // Logic for removing j after I has been removed
-                    if(i < j) {
+                    if (i < j) {
                         this.ranges.splice(j - 1, 1);
-                    }
-                    else  {
+                    } else {
                         this.ranges.splice(j, 1);
                     }
                 }
@@ -123,10 +122,10 @@ export class RangeList {
      * Converts this object into an Array
      * @returns {Array<Number>}
      */
-    toArray() : Array<number> {
-        let ret = [];
-        for(let i = 0; i < this.ranges.length; i ++) {
-            ret.concat(this.ranges[i].toArray()).sort(function(a,b) {
+    toArray(): Array<number> {
+        const ret: number[] = [];
+        for (let i = 0; i < this.ranges.length; i++) {
+            ret.concat(this.ranges[i].toArray()).sort(function (a, b) {
                 return a - b;
             });
         }
@@ -143,7 +142,7 @@ export class RangeListRange {
      * @param {number} min
      * @param {number} max
      */
-    constructor(min:number, max:number) {
+    constructor(min: number, max: number) {
         this.min = min;
         this.max = max;
     }
@@ -153,8 +152,8 @@ export class RangeListRange {
      * @returns {Array<number>}
      */
     toArray() {
-        let ret = [];
-        for(let i:number = this.min; i <= this.max; i++) {
+        const ret: number[] = [];
+        for (let i: number = this.min; i <= this.max; i++) {
             ret.push(i);
         }
         return ret;
@@ -165,7 +164,7 @@ export class RangeListRange {
      * @param {number} n
      * @returns {boolean}
      */
-    isInRange(n:number) {
+    isInRange(n: number) {
         return n >= this.min && n <= this.max;
     }
 
@@ -174,7 +173,7 @@ export class RangeListRange {
      * @param {number} n
      * @returns {boolean}
      */
-    canExtendMax(n:number) {
+    canExtendMax(n: number) {
         return n === this.max + 1;
     }
 
@@ -183,7 +182,7 @@ export class RangeListRange {
      * @param {number} n
      * @returns {boolean}
      */
-    canExtendMin(n:number) {
+    canExtendMin(n: number) {
         return n === this.min - 1;
     }
 }

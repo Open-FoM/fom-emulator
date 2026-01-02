@@ -7,107 +7,71 @@ if not exist node_modules (
   npm install
 )
 
-if "%LOG_ALL%"=="" set LOG_ALL=1
+set MODE=
+set PORT=
+set WORLD_PORT=
+set WORLD_IP=
 
-if "%~1"=="" (
-  set PORT=61000
-) else (
-  set PORT=%~1
-)
+:parseargs
+if "%~1"=="" goto parsedargs
+set ARG=%~1
 
-if "%~2"=="" (
-  set MODE=normal
-) else (
-  set MODE=%~2
-)
+if /I "%ARG:~0,6%"=="-mode=" set MODE=%ARG:~6%& shift & goto parseargs
+if /I "%ARG:~0,7%"=="--mode=" set MODE=%ARG:~7%& shift & goto parseargs
+if /I "%ARG%"=="-mode" goto :read_mode
+if /I "%ARG%"=="--mode" goto :read_mode
 
-if /I "%MODE%"=="login" (
-  set FAST_LOGIN=1
-  set PACKET_LOG=full
-  set PACKET_LOG_IDS=0x6D
-  set PACKET_LOG_INTERVAL_MS=0
-  set PACKET_LOG_REPEAT_SUPPRESS_MS=0
-  set PACKET_LOG_ANALYSIS=1
-  set PACKET_HANDLER_VERBOSE=0
-) else if /I "%MODE%"=="lithdebug" (
-  set PACKET_LOG=summary
-  set PACKET_LOG_IDS=0x40
-  set PACKET_LOG_INTERVAL_MS=5000
-  set PACKET_LOG_REPEAT_SUPPRESS_MS=2000
-  set PACKET_LOG_ANALYSIS=1
-  set PACKET_HANDLER_VERBOSE=0
-  set LITH_DEBUG_BURST=10
-  set LITH_DEBUG_TRIGGER=first_lith
-  set LITH_DEBUG_HEX_BYTES=64
-  set LITH_DEBUG_RAW=1
-  set LITH_DEBUG_RAW_BYTES=512
-  set LITH_DEBUG_RAW_MIN=160
-  set LITH_DEBUG_RAW_MAX=256
-  set LITH_DEBUG_SCAN=1
-  set LITH_DEBUG_SCAN_ANY=1
-  set LITH_DEBUG_SCAN_MAX=20
-  set LITH_DEBUG_SCAN_PAYLOAD_BYTES=32
-  set LITH_HAS_MORE_FLAG=0
-  set LITH_DEBUG_BITS=1
-  set LITH_DEBUG_BITS_PER_LINE=128
-  set LITH_DEBUG_BITS_MAX=0
-  set LITH_DEBUG_LOG=1
-  set LITH_DEBUG_LOG_PATH=logs\lithdebug.log
-  set FORCE_LOGIN_ON_FIRST_LITH=0
-) else if /I "%MODE%"=="forcelogin" (
-  set PACKET_LOG=summary
-  set PACKET_LOG_IDS=0x40
-  set PACKET_LOG_INTERVAL_MS=5000
-  set PACKET_LOG_REPEAT_SUPPRESS_MS=2000
-  set PACKET_LOG_ANALYSIS=1
-  set PACKET_HANDLER_VERBOSE=0
-  set LITH_DEBUG_BURST=0
-  set LITH_DEBUG_TRIGGER=none
-  set LITH_DEBUG_HEX_BYTES=64
-  set LITH_DEBUG_LOG=0
-  set FORCE_LOGIN_ON_FIRST_LITH=1
-) else (
-  set PACKET_LOG=summary
-  set PACKET_LOG_IDS=0x40
-  set PACKET_LOG_INTERVAL_MS=5000
-  set PACKET_LOG_REPEAT_SUPPRESS_MS=2000
-  set PACKET_LOG_ANALYSIS=1
-  set PACKET_HANDLER_VERBOSE=0
-  set LITH_DEBUG_BURST=0
-  set LITH_DEBUG_TRIGGER=none
-  set LITH_DEBUG_HEX_BYTES=64
-  set LITH_DEBUG_LOG=0
-  set FORCE_LOGIN_ON_FIRST_LITH=0
-)
+if /I "%ARG:~0,6%"=="-port=" set PORT=%ARG:~6%& shift & goto parseargs
+if /I "%ARG:~0,7%"=="--port=" set PORT=%ARG:~7%& shift & goto parseargs
+if /I "%ARG%"=="-port" goto :read_port
+if /I "%ARG%"=="--port" goto :read_port
 
-if /I "%LOG_ALL%"=="1" (
-  set PACKET_LOG=full
-  set PACKET_LOG_IDS=
-  set PACKET_LOG_INTERVAL_MS=0
-  set PACKET_LOG_REPEAT_SUPPRESS_MS=0
-  set PACKET_LOG_ANALYSIS=1
-  set PACKET_HANDLER_VERBOSE=1
-  set LOGIN_DEBUG=1
-  set LITH_DEBUG_RAW=1
-  set LITH_DEBUG_RAW_BYTES=1400
-  set LITH_DEBUG_RAW_MIN=1
-  set LITH_DEBUG_RAW_MAX=1400
-  set LITH_DEBUG_SCAN=1
-  set LITH_DEBUG_SCAN_ANY=1
-  set LITH_DEBUG_SCAN_MAX=0
-  set LITH_DEBUG_BITS=1
-  set LITH_DEBUG_BITS_PER_LINE=128
-  set LITH_DEBUG_BITS_MAX=0
-  set LITH_DEBUG_LOG=1
-  set LITH_DEBUG_LOG_PATH=logs\lithdebug.log
-)
+if /I "%ARG:~0,12%"=="-world-port=" set WORLD_PORT=%ARG:~12%& shift & goto parseargs
+if /I "%ARG:~0,13%"=="--world-port=" set WORLD_PORT=%ARG:~13%& shift & goto parseargs
+if /I "%ARG%"=="-world-port" goto :read_world_port
+if /I "%ARG%"=="--world-port" goto :read_world_port
 
-set PACKET_HANDLER_LOG_THROTTLE_MS=0
-set WORLD_IP=127.0.0.1
-set WORLD_PORT=61000
+if /I "%ARG:~0,10%"=="-world-ip=" set WORLD_IP=%ARG:~10%& shift & goto parseargs
+if /I "%ARG:~0,11%"=="--world-ip=" set WORLD_IP=%ARG:~11%& shift & goto parseargs
+if /I "%ARG%"=="-world-ip" goto :read_world_ip
+if /I "%ARG%"=="--world-ip" goto :read_world_ip
 
-echo [ServerEmulator] Starting server on UDP port %PORT%...
-echo [ServerEmulator] Mode=%MODE%
-echo [ServerEmulator] Packet log: %PACKET_LOG% interval=%PACKET_LOG_INTERVAL_MS% ids=%PACKET_LOG_IDS%
-echo [ServerEmulator] FAST_LOGIN=%FAST_LOGIN% WORLD=%WORLD_IP%:%WORLD_PORT%
+shift
+goto parseargs
+
+:read_mode
+shift
+set MODE=%~1
+shift
+goto parseargs
+
+:read_port
+shift
+set PORT=%~1
+shift
+goto parseargs
+
+:read_world_port
+shift
+set WORLD_PORT=%~1
+shift
+goto parseargs
+
+:read_world_ip
+shift
+set WORLD_IP=%~1
+shift
+goto parseargs
+
+:parsedargs
+
+if "%PORT%"=="" set PORT=61000
+if "%MODE%"=="" set MODE=master
+
+set SERVER_MODE=%MODE%
+if not "%WORLD_PORT%"=="" set WORLD_PORT=%WORLD_PORT%
+if not "%WORLD_IP%"=="" set WORLD_IP=%WORLD_IP%
+
+echo [ServerEmulator] Starting server mode=%SERVER_MODE% on UDP port %PORT%...
+echo [ServerEmulator] Config: ServerEmulator\fom_server.ini (or FOM_INI override)
 npm run dev

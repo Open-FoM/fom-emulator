@@ -14,6 +14,11 @@
 !/catalog/**
 !/Docs/
 !/Docs/**
+# AGENTS backup/diff artifacts (keep change_log.md tracked unless requested)
+/Docs/Notes/AGENTS_*.md
+/Docs/Notes/AGENTS_*.sha256*
+/Docs/Notes/AGENTS_diff_*.txt
+/Docs/Notes/AGENTS-*.diff.txt
 !/HookInjector/
 !/HookInjector/**
 /HookInjector/build/
@@ -31,8 +36,12 @@
 !/FoTD/**/*.id2
 !/FoTD/**/*.nam
 !/FoTD/**/*.til
+# ignore timestamped IDA database snapshots
+/FoTD/**/fom_client.exe_*.i64
+/FoTD/**/server.dll_*.i64
 
 # optional root files to ignore for now
 /launch_with_log.out.txt
 /start_server_forcelogin.bat
 /start_server_lithdebug.bat
+/Docs/Notes/AGENTS_change_log.md

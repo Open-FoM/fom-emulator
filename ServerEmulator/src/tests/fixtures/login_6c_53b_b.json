@@ -1,0 +1,15 @@
+{
+  "name": "login_6c_53b_b",
+  "msg_id": 108,
+  "wrapper": "reliable",
+  "bit_order": "msb",
+  "hex": "40 00 00 00 00 dc d5 8c c0 00 00 01 18 00 00 00 00 40 00 00 0f 20 6c 00 00 00 5c 2a e5 58 ab 19 2a d8 d5 aa b5 56 aa d5 5b 17 cb f7 cb f7 cb f7 cb f5 01 cf 40",
+  "expected": {
+    "username": "USER_YYYY_9999",
+    "token": 1853,
+    "preFlag": 0,
+    "postFlag": 0
+  },
+  "source_log": "fom_hook.log",
+  "source_timestamp": "2025.12.30-08.35.51:911"
+}

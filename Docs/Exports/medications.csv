@@ -1,0 +1,9 @@
+Item,Health Boost (Total),Health Boost,Stamina Boost (Total),Stamina Boost,Bio-Energy Boost (Total),Bio-Energy Boost,Protection Reduction,Effect Duration,Medkit Cooldown Increase,Cooldown
+Small MediKit,,2.7%/s,,,,,,,,
+Standard MediKit,,3.3%/s,,,,,,,,
+Battle MediKit,,3.5%/s,,,,,,,,
+Emergency MediKit,,4.0%/s,,,,,,,0.01s,
+Nanomachine Autoinjector,,5.0%/s,,,,,,,0.01s,
+Nanomachine Autoinjector Mk2,,,,,,,,,,
+Adrenaline Autoinjector,,,,,,15.0%/s,,,,
+Medical Unit,,,,,,,,,,

@@ -27,7 +27,7 @@ ServerEmulator/
 │   ├── utils/
 │   │   └── PacketLogger.ts   # Hex dump and packet logging
 │   └── tools/
-│       └── TestClient.ts     # Test client for debugging
+│       └── (moved)           # Client tools live in ClientEmulator/
 ├── logs/                     # Packet log files (gitignored)
 ├── package.json
 └── tsconfig.json
@@ -39,15 +39,14 @@ ServerEmulator/
 |---------|-------------|
 | `npm run dev` | Start server with auto-reload |
 | `npm run server` | Start server once |
-| `npm run client:connect` | Send test connection request |
-| `npm run client:query` | Send test server query |
 | `npm run build` | Compile TypeScript |
 
 ## Packet Logging
 
 All packets are logged to:
 - **Console**: Color-coded hex dumps with analysis
-- **File**: `logs/packets_<timestamp>.log`
+- **File (latest)**: `logs/fom_server.log`
+- **File (rotated)**: `logs/packets_YYYY.MM.DD-HH.mm.ss.mmm.log`
 
 ### Logging Controls (Env)
 
@@ -61,11 +60,22 @@ PACKET_LOG_INTERVAL_MS=1000
 Options:
 - `PACKET_LOG=off|summary|full` (default: `summary`)
 - `PACKET_LOG_INTERVAL_MS=0` (no throttling)
-- `PACKET_LOG_IDS=0x6D,0x04` (log only these packet IDs)
+- `PACKET_LOG_IDS=0x6B,0x6D` (console allowlist; matches inner ID for reliable packets)
+- `PACKET_LOG_FILE_IDS=0x6B,0x6D` (file allowlist; matches inner ID for reliable packets)
+- `PACKET_LOG_IGNORE_IDS=0x00,0x01,0x03,0x80` (drop noisy packet IDs like pings/acks)
 - `PACKET_LOG_FILE=0` (disable file logging)
 - `PACKET_LOG_ANALYSIS=0` (disable analysis lines)
-- `FAST_LOGIN=1` (auto-accept login after handshake)
 - `WORLD_IP=127.0.0.1`, `WORLD_PORT=61000` (login response target)
+- RSA env (auto-loaded if `ServerEmulator/fom_private_key.env` exists):
+  - `FOM_RSA_PRIVATE_P_HEX`, `FOM_RSA_PRIVATE_Q_HEX` (or `FOM_RSA_PRIVATE_N_HEX` + `FOM_RSA_PRIVATE_D_HEX`)
+  - `FOM_RSA_PUBLIC_E_HEX` (defaults to 0x10001)
+  - `FOM_RSA_MODULUS_BYTES=64`, `FOM_RSA_ENDIAN=little`
+- INI config (auto-loaded if present):
+  - `ServerEmulator/fom_server.ini` (preferred), or `ServerEmulator/server.ini`, `ServerEmulator/config.ini`
+  - Override with `FOM_INI=path\to\file.ini` or `FOM_CONFIG_INI=...`
+  - Keys are applied as env vars (INI values override existing env vars when non-empty)
+  - On startup, the server writes a snapshot of the effective config to the INI path (only if missing)
+  - Set `FOM_CONFIG_OVERWRITE=1` to refresh the file with current values
 
 ### Log Format
 
@@ -86,7 +96,7 @@ Options:
 
 ## Testing
 
-### With Test Client
+### With Test FoM
 
 Terminal 1:
 ```bash
@@ -95,10 +105,9 @@ npm run dev
 
 Terminal 2:
 ```bash
-npm run client:connect
 ```
 
-### With Real Game Client (Windows)
+### With Real Game FoM (Windows)
 
 #### Step 1: Redirect DNS
 
@@ -154,3 +163,4 @@ Check `logs/packets_*.log` for full packet captures. The server logs:
 ## Protocol Reference
 
 See `../PROTOCOL_SPECIFICATION.md` for full protocol documentation.
+

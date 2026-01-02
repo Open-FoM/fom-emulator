@@ -1,0 +1,6 @@
+dist/
+node_modules/
+logs/
+*.log
+package-lock.json
+bun.lock

@@ -1,0 +1,41 @@
+Item,Clip Size,Range,Attack Delay,Damage Radius,Damage Type,Health Damage,Xeno Damage,Stamina Damage,Aura Damage,Bio-Energy Damage,Destruction,Agility,Weapon Recoil,Health Regeneration,DPS
+- Unspecified Item -,,10m,0.4s,,Destruction,6.4,6.4,,,,7.4,,23.3%,,50.5
+Zanathid 5 Inflex,,8.5m,0.34s,,Energy,,3.3,5.5,,,3.9,,16.7%,,37.9
+Ryx 7 Streamline,,22m,0.47s,,Ballistic,8.0,4.6,,,,5.4,,30.0%,,38.3
+RGI-9,,12.5m,0.55s,,Energy,,5.5,9.1,,,6.2,,33.3%,,37.8
+Orbit XB Infineon,,1.0m,2.0s,,Ballistic,36.0,25.0,,,,,,,,30.5
+Armalite Survival,,1.0m,2.0s,,Aura,,,,23.0,,,,,,11.5
+Enfield Life Protector,,10.2m,5.0s,,Aura,,,,38.4,,,,,,7.7
+FGz-78,,10.2m,5.0s,,Bio,,,,,43.2,,,,,8.6
+Militek EMP,,6.2m,0.2s,,Ballistic,3.6,2.7,,,,2.3,,16.7%,,43
+Techtronic 6x6,,9.0m,0.34s,,Energy,,5.8,6.6,,,4.0,,16.7%,,49
+HR420,,22m,0.7s,,Ballistic,12.4,7.0,,,,5.6,,30.0%,,35.7
+Linner PP7,,20m,0.8s,,Energy,,11.1,15.9,,,6.7,,33.3%,,42.1
+DOA 187,,5.1m,5.0s,,Ballistic,34.0,30.0,,,,,,,,12.8
+Salvotec HP220,,10.2m,5.0s,,Destruction,,,,,,350.0,,,,70
+EMP-Rv3,,4.0m,0.2s,,Xeno,3.8,4.1,,,,2.4,,16.7%,,51.5
+Gakk MG6,,50m,3.0s,,Ballistic,29.7,15.6,,,,19.2,,43.3%,,21.5
+Hallem TAR7 Tactical Assault Rifle,,10m,0.4s,,Aura,,,,16.6,,,,20.0%,,41.5
+Protonix Barracuda,,10m,0.3s,,Destruction,,,,,5.7,12.5,,16.7%,,60.7
+Chrono Enervon Pistol EP24,,37.5m,0.55s,,Destruction,,,,,12.0,25.1,,33.3%,,67.5
+Aurelian Technologies Dominator,,37.5m,0.47s,,Aura,,,,20.0,,,,33.3%,,42.6
+Enfield Incapacitator Rifle ER-X,,7.5m,2.0s,,,,,,,,,,13.3%,,0
+CryoTech Medigun CM2,,,,,Energy,,,10.0,,,,,,,
+Personal Turret,,30m,0.67s,,Xeno,,28.3,,,,,,33.3%,,42.2
+Experimental X-01 Gun,,37.5m,1.6s,,,,,,,,,,26.7%,,0
+RK 2a7 Mining Tool,,37.5m,1.6s,,,,,,,,,,26.7%,,0
+Arachnid Explosive,,50m,3.5s,,Energy,,16.8,40.8,,,23.4,,43.3%,,23.1
+Hallem IX-78 Precision Energy Rifle,,7.5m,0.34s,,,,,,,,,,13.3%,,0
+CryoTech Medigun CM1,,30m,0.67s,,Xeno,,9.7,,,,,,33.3%,,14.5
+Frostbite,,37.5m,1.6s,,,,,,,,,,26.7%,,0
+U-V890 Hyper Advanced Mining Tool,,25m,0.55s,,Xeno,,5.0,,,,,,26.7%,,9.1
+Linner PP-X,,50m,3.0s,,Ballistic,38.4,31.2,,,,21.6,,43.3%,,30.4
+Hawk-72,,10m,0.6s,,Ballistic,11.5,6.3,,,,4.9,,26.7%,,37.8
+Zanathid 5.5 CopKiller,,22m,0.47s,,Ballistic,7.6,4.6,,,,5.4,,30.0%,,37.4
+Backer Rifle,,,,,Energy,,,10.0,,,,,,,
+Territory Turret,,10m,0.4s,,Destruction,6.4,6.4,,,,7.4,,23.3%,,50.5
+Portable Vortex Particle Emitter,,0.0m,,,,,,,,,,,,,
+Mystical Cola,,,,,,,,,,,,,143165571.5%,,
+Polydichloric Euthemal,,,,,,,,,,,,,143165569.9%,,
+Ritalin,,,,,,,,,,,,,1.7%,,
+Territory Controller,,5.1m,,,Destruction,100.0,,,,,7000.0,,,,
