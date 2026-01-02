@@ -109,7 +109,7 @@ launch_fom_with_log.bat
   Build: `build_hookinjector.bat`
 
 - `Docs/`  
-  Reverse‑engineering notes, packet layouts, and project logs.
+  Reverse-engineering notes, packet layouts, and project logs.
   - `Docs/Notes/` protocol + packet notes
   - `Docs/Logs/` work logs / checklists
   - `Docs/Projects/` milestones & decisions
@@ -119,6 +119,9 @@ launch_fom_with_log.bat
 
 - `AddressMap.md`  
   Canonical address map of named symbols and findings.
+
+- `Client/*.i64` (IDA databases)  
+  IDA Pro databases for `fom_client.exe`, `CShell.dll`, and `CRes.dll`. Open the `.i64` beside the matching binary to get all renames, types, and comments.
 
 ## Common Tasks
 
