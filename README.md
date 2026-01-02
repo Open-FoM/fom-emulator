@@ -129,8 +129,6 @@ start_client_world.bat -host 127.0.0.1 -port 62000 -world-id 1 -world-inst 1 -wo
 
 - **Project tracking**
   - `Docs/Projects/Emulator.md` (milestones + decisions)
-  - `Docs/Logs/Emulator.md` (active checklist)
-  - `Docs/Logs/FoM Reverse Engineering.md` (active RE log)
 
 - **Tables & compression**
   - `Docs/Notes/cvar_bind_table.csv`
