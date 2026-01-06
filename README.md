@@ -1,5 +1,5 @@
 # Face of Mankind Reverse Engineering Toolkit
-
+TEST
 ## Disclaimer (Read First)
 
 This repo is intentionally **AI-first** and currently **messy**. Most notes, labels, and mappings are
