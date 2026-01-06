@@ -208,7 +208,7 @@ Server/Master_TS/
 │   ├── bindings/
 │   │   └── raknet.ts     # Bun FFI bindings
 │   └── index.ts          # Main entry point
-ÃÄÄ fom_server.ini        # Optional INI config
+├── fom_server.ini        # Optional INI config
 ├── package.json
 ├── tsconfig.json
 └── README.md
