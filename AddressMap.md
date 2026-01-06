@@ -239,7 +239,7 @@ Notes:
 
 
 
-| 0x00969730 | 0x00099730 | Packet_ID_LOGIN_REQUEST_Ctor | Ctor sets `messageType = 0x6C` (client legacy; Docs/Packets says ID_LOGIN_REQUEST is 0x6B) | disasm | high |
+| 0x00969730 | 0x00099730 | Packet_ID_LOGIN_REQUEST_Ctor | Ctor sets `messageType = 0x6C` (ID_LOGIN_REQUEST) | disasm | high |
 | 0x00969780 | 0x00099780 | Packet_ID_LOGIN_REQUEST_Dtor | Dtor for Packet_ID_LOGIN_REQUEST | disasm | low |
 
 | 0x00969790 | 0x00099790 | Packet_ID_LOGIN_REQUEST_RETURN_Ctor | Ctor sets `messageType = 0x6D` (ID_LOGIN_REQUEST_RETURN) | disasm | high |
@@ -296,7 +296,7 @@ Notes:
 
 | 0x00B4A74A | 0x0027A74A | ClientNetworking_HandleLoginRequestReturn_SEH | SEH wrapper for login-request-return handler | disasm | low |
 
-| 0x0096D090 | 0x0009D090 | ClientNetworking_SubmitLoginRequest | Builds/sends ID_LOGIN_REQUEST from UI input; captures fileCRCs + optional Steam ticket (client sends 0x6C; Docs/Packets says 0x6B) | decomp | med |
+| 0x0096D090 | 0x0009D090 | ClientNetworking_SubmitLoginRequest | Builds/sends ID_LOGIN_REQUEST from UI input; captures fileCRCs + optional Steam ticket (client sends 0x6C) | decomp | med |
 | 0x00987E60 | 0x000B7E60 | Login_Invoke | Global wrapper calling ClientNetworking_SubmitLoginRequest on g_pClientNetworking | disasm | med |
 
 
@@ -305,7 +305,7 @@ Notes:
 
 Login packet dependency chains (fom_client.exe):
 
-- ID 0x6B (Docs/Packets): Login_Invoke -> ClientNetworking_SubmitLoginRequest -> Packet_ID_LOGIN_REQUEST_Write -> SendPacket_LogMasterWorld (client currently sends 0x6C; mismatch).
+- ID 0x6C: Login_Invoke -> ClientNetworking_SubmitLoginRequest -> Packet_ID_LOGIN_REQUEST_Write -> SendPacket_LogMasterWorld.
 - ID 0x6D: RakPeer recv -> ClientNetworking_HandleIncomingPacket -> ClientNetworking_DispatchPacket -> ClientNetworking_HandleLoginRequestReturn -> Packet_ID_LOGIN_REQUEST_RETURN_Read_Stub (legacy/mismatch).
 
 - ID 0x6E: ClientNetworking_HandleLoginRequestReturn -> Packet_ID_LOGIN_Write -> SendPacket_LogMasterWorld.
@@ -8717,8 +8717,8 @@ Notes:
 
 
 
-| 0x00499730 | 0x00099730 | Packet_ID_LOGIN_REQUEST_Ctor | Sets packet id 0x6C (client legacy; Docs/Packets says 0x6B); clears fields | decomp | high |
-| 0x0049A7F0 | 0x0009A7F0 | Packet_WriteHeader_OptionalTimestamp | Writes optional 0x19 timestamp + packet id byte from +0x428 (login request + login; Docs/Packets says 0x6B/0x6E, client still uses 0x6C/0x6E) | decomp + disasm | high |
+| 0x00499730 | 0x00099730 | Packet_ID_LOGIN_REQUEST_Ctor | Sets packet id 0x6C (ID_LOGIN_REQUEST); clears fields | decomp | high |
+| 0x0049A7F0 | 0x0009A7F0 | Packet_WriteHeader_OptionalTimestamp | Writes optional 0x19 timestamp + packet id byte from +0x428 (login request + login; client uses 0x6C/0x6E) | decomp + disasm | high |
 | 0x0049B720 | 0x0009B720 | Packet_ID_LOGIN_REQUEST_Serialize | Writes Huffman username + u16 clientVersion (byte-swap gated by ShouldByteSwap) | decomp | high |
 | 0x0049B3A0 | 0x0009B3A0 | BitStream_WriteCompressed_U16 | Writes 16-bit clientVersion via bitstream; byte-swap if ShouldByteSwap (0x004E3620) | decomp | med |
 | 0x0049D090 | 0x0009D090 | LoginButton_OnClick | Builds Packet_ID_LOGIN_REQUEST and sends to master | decomp | high |

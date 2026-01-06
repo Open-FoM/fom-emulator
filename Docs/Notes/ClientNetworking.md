@@ -55,9 +55,9 @@ void Init(const char* masterHost, uint16_t localPort);
 Reason: original server private key is unavailable; we generated a new keypair so the emulator can decrypt login blobs and complete RakNet secure handshake.
 
 Files:
-- Public key (active): `Client\fom_public.key` (68 bytes)
-- Public key backup: `Client\fom_public_copy.key`
-- Private key/env: `ServerEmulator\fom_private_key.env` (P/Q/N/D + endian hints)
+- Public key (active): `Client\Client_FoM\fom_public.key` (68 bytes)
+- Public key backup: `Client\Client_FoM\fom_public_copy.key`
+- Private key/env: `Server\Master_TS\fom_private_key.env` (P/Q/N/D + endian hints)
 
 Format (exact 68 bytes):
 - Bytes 0..3: exponent, **little-endian** (0x10001 -> `01 00 01 00`)
@@ -65,7 +65,7 @@ Format (exact 68 bytes):
 
 Rollback:
 ```
-copy Client\fom_public_copy.key Client\fom_public.key
+copy Client\Client_FoM\fom_public_copy.key Client\Client_FoM\fom_public.key
 ```
 
 ### ClientNetworking_InitMasterConnection (0x004E03C0)

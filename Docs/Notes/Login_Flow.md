@@ -2,7 +2,7 @@
 
 ## Overview (packet sequence)
 
-CLIENT (fom_client.exe + CShell)          MASTER (ServerEmulator)             WORLD (world server)
+CLIENT (fom_client.exe + CShell)          MASTER (Server)             WORLD (world server)
 -----------------------------------------------------------------------------------------------
 [UI] Login_OnSubmit
   -> build 0x6C LOGIN_REQUEST (user + token)  ------------------------------>
@@ -13,7 +13,7 @@ ClientNetworking_HandleLoginRequestReturn_6D
   -> build 0x6E LOGIN (auth packet; session_str + client fields) ---------->
                                                      validate / route
   <------------------------------- 0x7B WORLD_SELECT (type=4 worldId/worldInst)
-  <------------------------------- 0x6B Packet_Id107 subId (world select alt path)
+  <------------------------------- Packet_Id107 subId (world select alt path, unconfirmed)
   <------------------------------- 0x73 WORLD_LOGIN_RETURN (code + worldIp + worldPort)
 
 CShell HandlePacket_ID_WORLD_LOGIN_RETURN_73
@@ -94,7 +94,7 @@ RakNet peer list is empty. Reliable frames from unknown peers are rejected befor
 - CShell.dll:
   - HandlePacket_ID_WORLD_SELECT_7B @ 0x10199270 (type=4 sets worldId/worldInst; sets SharedMem[0x1EEC0]=1)
   - Packet_ID_7B_Read @ 0x10106590
-- CShell.dll (alternate path via 0x6B):
+- CShell.dll (alternate path via Packet_Id107, unconfirmed):
   - Packet_Id107_DispatchSubId @ 0x101A3550
     - subId 231/270: worldId=4 (apartments) + SharedMem[0x77]/[0x78], set 0x1EEC0=1
     - subId 269: worldId=optA (non-apartment), set 0x1EEC0=1

@@ -1,101 +1,48 @@
-# ID_LOGIN_REQUEST_RETURN
+# ID_LOGIN_REQUEST_RETURN (0x6D)
 
-Server response to `ID_LOGIN_REQUEST`. Contains the status of the login request and echoes back the username.
+## Summary
+- Direction: master -> client
+- Purpose: status + username echo for login request
 
-## Structure
-
-### `Packet_ID_LOGIN_REQUEST_RETURN`
-
-| Field    | Type                       | Offset | Size  |
-|----------|----------------------------|--------|-------|
-| base     | `VariableSizedPacket`      | 0x0    | 0x430 |
-| status   | `LoginRequestReturnStatus` | 0x430  | 0x1   |
-| username | `uint8_t[64]`              | 0x431  | 0x40  |
-
-**Length:** 0x471
-
-### `LoginRequestReturnStatus`
-
-A `uint8_t` enum indicating the result of the login request.
-
-| Name                                   | Value |
-|----------------------------------------|-------|
-| LOGIN_REQUEST_RETURN_INVALID_INFO      | 0     |
-| LOGIN_REQUEST_RETURN_SUCCESS           | 1     |
-| LOGIN_REQUEST_RETURN_OUTDATED_CLIENT   | 2     |
-| LOGIN_REQUEST_RETURN_ALREADY_LOGGED_IN | 3     |
-
-## Constructor
-
-```c
-Packet_ID_LOGIN_REQUEST_RETURN *__thiscall FOM::Packets::Packet_ID_LOGIN_REQUEST_RETURN::Packet_ID_LOGIN_REQUEST_RETURN(Packet_ID_LOGIN_REQUEST_RETURN *this)
-{
-  (this->base).vftable = &VariableSizedPacket::vftable;
-  *(undefined1 *)&(this->base).bitStream.numberOfBitsUsed = 0;
-  RakNet::BitStream::BitStream((BitStream *)&(this->base).bitStream.numberOfBitsAllocated);
-  *(undefined4 *)&(this->base).timestamp = 0;
-  *(undefined4 *)((int)&(this->base).timestamp + 4) = 0;
-  this->status = INVALID_INFO;
-  this->username[0] = '\0';
-  (this->base).messageType = ID_LOGIN_REQUEST_RETURN;
-  (this->base).vftable = &vftable;
-  return this;
-}
+## On-wire encoding (source of truth)
 ```
-
-## Read
-
-```c
-bool __thiscall FOM::Packets::Packet_ID_LOGIN_REQUEST_RETURN::Read(Packet_ID_LOGIN_REQUEST_RETURN *this, Packet *packet)
-{
-  bool bVar1;
-  StringCompressor *this_00;
-  uint8_t *output;
-  int maxCharsToWrite;
-  BitStream *this_01;
-  int languageID;
-
-  bVar1 = VariableSizedPacket::Read(&this->base, packet);
-  if (!bVar1) {
-    return false;
-  }
-  this_01 = (BitStream *)&(this->base).bitStream.numberOfBitsAllocated;
-  RakNet::BitStream::ReadCompressed(this_01, &this->status, 8, true);
-  languageID = 0;
-  maxCharsToWrite = 0x800;
-  output = this->username;
-  this_00 = (StringCompressor *)RakNet::RakNet::StringCompressor::Instance();
-  bVar1 = RakNet::StringCompressor::DecodeString(this_00, (char *)output, maxCharsToWrite, this_01, languageID);
-  return bVar1;
-}
+ID_LOGIN_REQUEST_RETURN (0x6D)
+u8   msgId           = 0x6D
+u8   status          = BitStream_WriteByteArrayCompressed (bitLength=8)
+u32  huffmanBitCount = BitStream_WriteCompressed_U32 (byte-array compressed)
+bits huffmanBits     = Huffman(username), bit-aligned, length = bitCount
 ```
+Key points:
+- The client write path uses `BitStream_WriteByteArrayCompressed` for `status`.
+- CShell read path uses `RakNet::BitStream::ReadCompressed` for 8 bits (matches 8-bit value but naming differs).
 
-## Write
+## Field Table
+| Offset | Field | Type | Encoding | Notes |
+|---|---|---|---|---|
+| 0x00 | msgId | u8 | raw | 0x6D |
+| 0x01 | status | u8 | LT BitStream byte-array compressed | See note above |
+| 0x.. | huffmanBitCount | u32 | LT BitStream compressed | |
+| 0x.. | huffmanBits | bits | Huffman | Bit-aligned |
 
-```c
-void __thiscall FOM::Packets::Packet_ID_LOGIN_REQUEST_RETURN::Write(Packet_ID_LOGIN_REQUEST_RETURN *this)
-{
-  char extraout_AL;
-  StringCompressor *this_00;
-  uint8_t *input;
-  int maxCharsToWrite;
-  BitStream *this_01;
-  int languageID;
-  Packet_ID_LOGIN_REQUEST_RETURN *local_8;
+## Read/Write (decomp)
+- Write: `fom_client.exe` @ `0x0049B7C0` (WriteByteArrayCompressed + Huffman_WriteString)
+- Read: `CShell.dll` @ `0x6588DCE0` (ReadCompressed(8) + LTClient DecodeString)
 
-  local_8 = this;
-  VariableSizedPacket::Write(&this->base);
-  if (extraout_AL == '\0') {
-    return;
-  }
-  this_01 = (BitStream *)&(this->base).bitStream.numberOfBitsAllocated;
-  local_8 = (Packet_ID_LOGIN_REQUEST_RETURN *)CONCAT31(local_8._1_3_, this->status);
-  RakNet::BitStream::WriteCompressed(this_01, (uchar *)&local_8, 8, true);
-  languageID = 0;
-  maxCharsToWrite = 0x800;
-  input = this->username;
-  this_00 = (StringCompressor *)RakNet::RakNet::StringCompressor::Instance();
-  RakNet::StringCompressor::EncodeString(this_00, (char *)input, maxCharsToWrite, this_01, languageID);
-  return;
-}
-```
+## IDA Anchors
+- ida: `Packet_ID_LOGIN_REQUEST_RETURN_Write` `0x0049B7C0`
+- ida2: `Packet_ID_LOGIN_REQUEST_RETURN_Read` `0x6588DCE0` (base-adjusted)
+
+## Validation
+- ida: verified 01/05/26 (decompile)
+- ida2: verified 01/05/26 (decompile)
+
+## Notes / Edge Cases
+- Mixed naming (`WriteByteArrayCompressed` vs `ReadCompressed`) suggests a thin wrapper; keep server encoding aligned to client write path.
+
+## Status Enum
+| Name | Value |
+|---|---|
+| LOGIN_REQUEST_RETURN_INVALID_INFO | 0 |
+| LOGIN_REQUEST_RETURN_SUCCESS | 1 |
+| LOGIN_REQUEST_RETURN_OUTDATED_CLIENT | 2 |
+| LOGIN_REQUEST_RETURN_ALREADY_LOGGED_IN | 3 |

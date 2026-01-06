@@ -1,8 +1,26 @@
-# ID_LOGIN_RETURN
+# ID_LOGIN_RETURN (0x6F)
+
+## Summary
+- Direction: master -> client
+- Purpose: login result + account/world payload
+
+## On-wire encoding (source of truth)
 
 Server response to `ID_LOGIN`. Contains the authentication result, player information, account type, ban status, and when `playerID != 0`, extended character/world data.
 
-## Wire Format
+## Read/Write (decomp)
+- Read: `CShell.dll` @ `0x658935F0`
+- Write: `CShell.dll` @ `0x65896400` (rarely used by client)
+
+## IDA Anchors
+- ida: n/a
+- ida2: `Packet_ID_LOGIN_RETURN_Read` `0x658935F0`, `Packet_ID_LOGIN_RETURN_Write` `0x65896400`, `Packet_ID_LOGIN_RETURN_Ctor` `0x65896320`
+
+## Validation
+- ida: n/a
+- ida2: verified 01/05/26 (decompile)
+
+### Wire Format
 
 ```
 Packet_ID_LOGIN_RETURN
@@ -238,6 +256,29 @@ Entry in the `allowedRanks` vector.
 - `allowedFactions` uses faction IDs as keys mapped to faction display names
 - `allowedRanks` controls which faction ranks can enter (if faction matches `ownerFactionID`)
 - The `Allow Factionless` checkbox (string 941) is stored as a special entry in `allowedFactions`
+
+## UI Message Mapping (CShell)
+
+These are the UI strings shown for 0x6F status values (string IDs from CRes.dll).
+
+| Status | Name | UI String ID | UI Text |
+|---|---|---|---|
+| 0 | LOGIN_RETURN_INVALID_LOGIN | 1711 | You have entered invalid login information. Please check your username and try again! |
+| 1 | LOGIN_RETURN_SUCCESS | — | (no error message) |
+| 2 | LOGIN_RETURN_UNKNOWN_USERNAME | 1708 | This username is unknown. Please try again! |
+| 3 | LOGIN_RETURN_3 | — | (no error message) |
+| 4 | LOGIN_RETURN_INCORRECT_PASSWORD | 1709 | Incorrect password. Please try again! |
+| 5 | LOGIN_RETURN_CREATE_CHARACTER | — | (enters character creation flow) |
+| 6 | LOGIN_RETURN_CREATE_CHARACTER_ERROR | 1706 | We're sorry, but an error occurred while trying to create your avatar. Please try again later! |
+| 7 | LOGIN_RETURN_TEMP_BANNED | 1718 | Your account has been temporarily banned, %1!s! hours remaining. |
+| 8 | LOGIN_RETURN_PERM_BANNED | 1719 | Your account has been permanently banned. |
+| 9 | LOGIN_RETURN_DUPLICATE_IP | 1732 | Your account has been locked as our systems have detected multiple accounts originating from your IP address. Please contact Face of Mankind Support if you believe this is a mistake. |
+| 10 | LOGIN_RETURN_INTEGRITY_CHECK_FAILED | 1707 | Integrity check failed! You are using a wrong client version. |
+| 11 | LOGIN_RETURN_RUN_AS_ADMIN | 1700 | Please make sure to run the game client with admin privileges! |
+| 12 | LOGIN_RETURN_ACCOUNT_LOCKED | 1699 | Your account is locked. |
+| 13 | LOGIN_RETURN_NOT_PURCHASED | 1741 | Please visit https://www.faceofmankind.com/account/detail and purchase the game to log in! |
+
+**ClientVersion check (success path):** On status 1/5, the handler compares the `clientVersion` field against `0x073D`. If the field is greater, it shows the outdated-client message (ID 1720). Keep this in mind when populating `clientVersion` in the 0x6F payload.
 
 ## Constructor
 
