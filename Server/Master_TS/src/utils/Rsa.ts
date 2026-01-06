@@ -1,3 +1,9 @@
+/**
+ * RSA Decryption for FoM login blobs
+ * 
+ * Ported from legacy TS emulator
+ */
+
 export type RsaEndian = 'little' | 'big';
 
 export interface RsaKey {
@@ -68,7 +74,7 @@ export function bufferToBigInt(buffer: Buffer, endian: RsaEndian): bigint {
 export function bigIntToBuffer(value: bigint, size: number, endian: RsaEndian): Buffer {
     const out = Buffer.alloc(size);
     let v = value;
-    for (let i = 0; i < size; i += 1) {
+    for (let i = 0; i < size; i++) {
         const byte = Number(v & 0xffn);
         const idx = endian === 'little' ? i : size - 1 - i;
         out[idx] = byte;
@@ -126,7 +132,7 @@ export function rsaDecryptBlocks(blob: Buffer, key: RsaKey, blockBytes?: number)
     const remainder = blob.length % size;
     const chunks: Buffer[] = [];
 
-    for (let i = 0; i < fullBlocks; i += 1) {
+    for (let i = 0; i < fullBlocks; i++) {
         const block = blob.subarray(i * size, (i + 1) * size);
         const c = bufferToBigInt(block, key.endian);
         const m = modPow(c, key.d, key.n);
@@ -138,4 +144,22 @@ export function rsaDecryptBlocks(blob: Buffer, key: RsaKey, blockBytes?: number)
     }
 
     return Buffer.concat(chunks);
+}
+
+/**
+ * Load RSA key from .env file if it exists
+ */
+export function loadRsaKeyFromFile(envPath: string): RsaKey | null {
+    try {
+        const content = require('fs').readFileSync(envPath, 'utf8');
+        for (const line of content.split('\n')) {
+            const match = line.match(/^([A-Z_]+)=(.*)$/);
+            if (match) {
+                process.env[match[1]] = match[2].trim();
+            }
+        }
+        return loadRsaKeyFromEnv();
+    } catch {
+        return null;
+    }
 }

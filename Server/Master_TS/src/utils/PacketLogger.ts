@@ -42,6 +42,7 @@ export class PacketLogger {
     private consoleRepeatSuppressMs: number;
     private repeatState: Map<string, { lastLoggedMs: number; suppressed: number }>;
     private flushMode: 'off' | 'login' | 'always';
+    private assumePayload: boolean;
 
     constructor(
         options: {
@@ -56,6 +57,7 @@ export class PacketLogger {
             analysis?: boolean;
             consoleRepeatSuppressMs?: number;
             flushMode?: 'off' | 'login' | 'always';
+            assumePayload?: boolean;
         } = {},
     ) {
         this.logToConsole = options.console ?? true;
@@ -79,6 +81,7 @@ export class PacketLogger {
         this.consoleRepeatSuppressMs = Math.max(0, options.consoleRepeatSuppressMs ?? 2000);
         this.repeatState = new Map();
         this.flushMode = options.flushMode ?? 'off';
+        this.assumePayload = options.assumePayload ?? false;
         if (this.consoleMode === 'off') {
             this.logToConsole = false;
         }
@@ -173,7 +176,6 @@ export class PacketLogger {
 
         this.logFile = fs.createWriteStream(latestName, { flags: 'w' });
         this.logFile.on('error', (err) => {
-            // Keep this loud; log failures make debugging impossible.
             console.error(`[PacketLogger] Log file error: ${err.message}`);
         });
 
@@ -348,7 +350,7 @@ export class PacketLogger {
         const effectiveId = this.getEffectiveId(packet);
         const forceLogin =
             this.containsLoginMarker(packet.data) ||
-            effectiveId === 0x6b ||
+            effectiveId === 0x6c ||
             effectiveId === 0x6d ||
             effectiveId === 0x6e ||
             effectiveId === 0x6f ||
@@ -412,7 +414,7 @@ export class PacketLogger {
         for (let i = 0; i < buffer.length; i += 1) {
             const b = buffer[i];
             if (
-                b === 0x6b ||
+                b === 0x6c ||
                 b === 0x6d ||
                 b === 0x6e ||
                 b === 0x6f ||
@@ -449,6 +451,9 @@ export class PacketLogger {
     private getEffectiveId(packet: LoggedPacket): number | null {
         if (packet.data.length === 0) return null;
         const firstByte = packet.data[0];
+        if (this.assumePayload) {
+            return firstByte;
+        }
         if ((firstByte & 0x40) === 0x40 && (firstByte & 0x80) === 0 && packet.data.length >= 18) {
             return packet.data[17];
         }
@@ -514,10 +519,37 @@ export class PacketLogger {
     logAnalysis(packet: LoggedPacket, consoleLogged: boolean = true): void {
         if (!this.analysisEnabled || !this.logToConsole || !consoleLogged) return;
         const data = packet.data;
-        if (data.length < 4) return;
+        if (data.length < 1) return;
 
         const analysis: string[] = [];
         const firstByte = data[0];
+
+        if (this.assumePayload) {
+            const packetId = firstByte;
+            const knownPackets: Record<number, string> = {
+                0x00: 'ID_INTERNAL_PING',
+                0x01: 'ID_PING',
+                0x03: 'ID_CONNECTED_PONG',
+                0x04: 'ID_CONNECTION_REQUEST',
+                0x09: 'ID_OPEN_CONNECTION_REQUEST',
+                0x0a: 'ID_OPEN_CONNECTION_REPLY',
+                0x0e: 'ID_CONNECTION_REQUEST_ACCEPTED',
+                0x13: 'ID_DISCONNECTION_NOTIFICATION',
+                0x14: 'ID_CONNECTION_LOST',
+                0x6c: 'ID_LOGIN_REQUEST',
+                0x6d: 'ID_LOGIN_REQUEST_RETURN',
+                0x6e: 'ID_LOGIN',
+                0x6f: 'ID_LOGIN_RETURN',
+                0x70: 'ID_LOGIN_TOKEN_CHECK',
+                0x72: 'ID_WORLD_LOGIN',
+                0x73: 'ID_WORLD_LOGIN_RETURN',
+                0x7b: 'ID_WORLD_SELECT',
+            };
+            const packetName = knownPackets[packetId] || `UNKNOWN (0x${packetId.toString(16)})`;
+            analysis.push(`  \x1b[35m→ Packet ID: ${packetName}\x1b[0m`);
+            console.log(analysis.join('\n'));
+            return;
+        }
 
         const firstDword = data.readUInt32LE(0);
         if (firstDword === 0x9919d9c7) {
@@ -574,8 +606,7 @@ export class PacketLogger {
                 0x0e: 'ID_CONNECTION_REQUEST_ACCEPTED',
                 0x13: 'ID_DISCONNECTION_NOTIFICATION',
                 0x14: 'ID_CONNECTION_LOST',
-                0x6b: 'ID_LOGIN_REQUEST',
-                0x6c: 'ID_LOGIN_REQUEST_TEXT (legacy)',
+                0x6c: 'ID_LOGIN_REQUEST',
                 0x6d: 'ID_LOGIN_REQUEST_RETURN',
                 0x6e: 'ID_LOGIN',
                 0x6f: 'ID_LOGIN_RETURN',

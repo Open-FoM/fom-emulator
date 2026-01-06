@@ -1,7 +1,7 @@
 /**
  * Protocol Constants - Values discovered through reverse engineering
  *
- * Reference: PROTOCOL_SPECIFICATION.md
+ * Ported from legacy TS emulator + Docs/Packets specifications
  */
 
 // Connection constants
@@ -31,6 +31,9 @@ export const MAX_PACKET_SIZE = 1400;
 
 /**
  * RakNet Message IDs (Transport Layer)
+ *
+ * Note: In V2, internal RakNet messages (0x00-0x1b) are handled by native RakNet.
+ * The values here are for reference and game-specific message handling.
  */
 export enum RakNetMessageId {
     // Internal RakNet messages
@@ -62,20 +65,20 @@ export enum RakNetMessageId {
     ID_TIMESTAMP = 0x19,
     ID_PONG = 0x1a,
     ID_ADVERTISE_SYSTEM = 0x1b,
+
     // FoM file list transfer (client file mgr / FTClient)
     ID_FILE_LIST_TRANSFER_HEADER = 0x32,
     ID_FILE_LIST_TRANSFER_RESPONSE = 0x36,
 
-    // Game-specific (FoM)
-    ID_LOGIN_REQUEST = 0x6b, // 107
-    ID_LOGIN_REQUEST_TEXT = 0x6c, // 108 (legacy; superseded by ID_LOGIN_REQUEST)
-    ID_LOGIN_REQUEST_RETURN = 0x6d, // 109
-    ID_LOGIN = 0x6e, // 110
-    ID_LOGIN_RETURN = 0x6f, // 111
-    ID_LOGIN_TOKEN_CHECK = 0x70, // 112
-    ID_WORLD_LOGIN = 0x72, // 114
-    ID_WORLD_LOGIN_RETURN = 0x73, // 115
-    ID_WORLD_SELECT = 0x7b, // 123
+    // Game-specific (FoM) - Login flow
+    ID_LOGIN_REQUEST = 0x6c,        // 108 - Login request (username + version)
+    ID_LOGIN_REQUEST_RETURN = 0x6d, // 109 - Server response to login request
+    ID_LOGIN = 0x6e,                // 110 - Full login auth packet
+    ID_LOGIN_RETURN = 0x6f,         // 111 - Server response to login auth
+    ID_LOGIN_TOKEN_CHECK = 0x70,    // 112 - Token validation (bidirectional)
+    ID_WORLD_LOGIN = 0x72,          // 114 - World server login
+    ID_WORLD_LOGIN_RETURN = 0x73,   // 115 - World server response
+    ID_WORLD_SELECT = 0x7b,         // 123 - World selection
 
     // User packets start here
     ID_USER_PACKET_ENUM = 0x86,
@@ -87,25 +90,25 @@ export enum RakNetMessageId {
  * These are dispatched via the handler table at 0x006FAB50
  */
 export enum LithTechMessageId {
-  MSG_CYCLECHECK = 4,
-  MSG_UNKNOWN_5 = 5,
-  // Alias: SMSG_NETPROTOCOLVERSION
-  MSG_NETPROTOCOLVERSION = 4,
-  MSG_PROTOCOL_VERSION = 6,
-  // Alias: SMSG_LOADWORLD
-  MSG_LOADWORLD = 6,
-  MSG_UNKNOWN_7 = 7,
-  // Alias: SMSG_CLIENTOBJECTID
-  MSG_CLIENTOBJECTID = 7,
-  MSG_UPDATE = 8,
-  // Alias: CMSG_CONNECTSTAGE
-  MSG_CONNECTSTAGE = 9,
-  // Alias: SMSG_UNGUARANTEEDUPDATE
-  MSG_UNGUARANTEEDUPDATE = 10,
-  MSG_UNKNOWN_10 = 10,
-  MSG_ID_PACKET = 12,
-  // Alias: SMSG_YOURID
-  MSG_YOURID = 12,
+    MSG_CYCLECHECK = 4,
+    MSG_UNKNOWN_5 = 5,
+    // Alias: SMSG_NETPROTOCOLVERSION
+    MSG_NETPROTOCOLVERSION = 4,
+    MSG_PROTOCOL_VERSION = 6,
+    // Alias: SMSG_LOADWORLD
+    MSG_LOADWORLD = 6,
+    MSG_UNKNOWN_7 = 7,
+    // Alias: SMSG_CLIENTOBJECTID
+    MSG_CLIENTOBJECTID = 7,
+    MSG_UPDATE = 8,
+    // Alias: CMSG_CONNECTSTAGE
+    MSG_CONNECTSTAGE = 9,
+    // Alias: SMSG_UNGUARANTEEDUPDATE
+    MSG_UNGUARANTEEDUPDATE = 10,
+    MSG_UNKNOWN_10 = 10,
+    MSG_ID_PACKET = 12,
+    // Alias: SMSG_YOURID
+    MSG_YOURID = 12,
     MSG_UNKNOWN_13 = 13,
     MSG_MESSAGE_GROUP = 14,
     MSG_UNKNOWN_15 = 15,
@@ -140,7 +143,8 @@ export const ConnectionResponseFlag = {
 } as const;
 
 /**
- * Login result codes
+ * Login request return status codes (0x6D response)
+ * See: Docs/Packets/ID_LOGIN_REQUEST_RETURN.md
  */
 export enum LoginRequestReturnStatus {
     INVALID_INFO = 0,
@@ -149,6 +153,10 @@ export enum LoginRequestReturnStatus {
     ALREADY_LOGGED_IN = 3,
 }
 
+/**
+ * Login return status codes (0x6F response)
+ * See: Docs/Packets/ID_LOGIN_RETURN.md
+ */
 export enum LoginReturnStatus {
     INVALID_LOGIN = 0,
     SUCCESS = 1,
@@ -164,4 +172,82 @@ export enum LoginReturnStatus {
     RUN_AS_ADMIN = 11,
     ACCOUNT_LOCKED = 12,
     NOT_PURCHASED = 13,
+}
+
+/**
+ * Account type enum (0x6F payload)
+ */
+export enum AccountType {
+    FREE = 0,
+    BASIC = 1,
+    PREMIUM = 2,
+    ADMIN = 3,
+}
+
+/**
+ * Item type enum - binding/security status
+ * See: Docs/Packets/ID_LOGIN_RETURN.md
+ */
+export enum ItemType {
+    NORMAL = 0,
+    SECURED = 1,
+    BOUND = 2,
+    SPECIAL = 3,
+}
+
+/**
+ * Item quality enum - affects display color
+ * See: Docs/Packets/ID_LOGIN_RETURN.md
+ */
+export enum ItemQuality {
+    STANDARD = 0,   // White
+    CUSTOM = 1,     // Blue
+    SPECIAL = 2,    // Orange
+    RARE = 3,       // Yellow
+    SPECIAL_RARE = 4, // Red
+}
+
+/**
+ * Apartment type enum
+ * String ID = 10500 + type
+ * See: Docs/Packets/ID_LOGIN_RETURN.md
+ */
+export enum ApartmentType {
+    ALL = 0,
+    CITY_FLAT = 1,
+    RATHOLE = 2,
+    COLONIAL_FLAT = 3,
+    FRENCH_FLAT = 4,
+    JAPANESE_FLAT = 5,
+    UNDERWATER_FLAT = 6,
+    CITY_APARTMENT = 7,
+    CELLAR = 8,
+    COLONIAL_APARTMENT = 9,
+    FRENCH_APARTMENT = 10,
+    JAPANESE_APARTMENT = 11,
+    UNDERWATER_APARTMENT = 12,
+    CITY_SUITE = 13,
+    RAMSHACKLE_HUT = 14,
+    COLONIAL_SUITE = 15,
+    FRENCH_PENTHOUSE = 16,
+    JAPANESE_PENTHOUSE = 17,
+    UNDERWATER_SUITE = 18,
+    UNDERGROUND_HQ = 19,
+    TACTICAL_HQ = 20,
+    CITY_TOWER_OFFICES = 21,
+    ARCTURUS_FREIGHTER = 22,
+    PRISON_DUEL_ARENA = 23,
+    BACKER_SAFEHOUSE = 24,
+}
+
+/**
+ * Legacy LoginResult enum for backwards compatibility
+ * @deprecated Use LoginRequestReturnStatus or LoginReturnStatus instead
+ */
+export enum LoginResult {
+    SUCCESS = 0x01,
+    FAILURE = 0x00,
+    INVALID_CREDENTIALS = 0x02,
+    BANNED = 0x03,
+    SERVER_FULL = 0x04,
 }

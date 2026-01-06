@@ -1,10 +1,10 @@
 @echo off
 setlocal
-cd /d "%~dp0ServerEmulator"
+cd /d "%~dp0Server\\Master_TS"
 
 if not exist node_modules (
-  echo [ServerEmulator] Installing dependencies...
-  npm install
+  echo [Server] Installing dependencies...
+  bun install
 )
 
 set MODE=
@@ -72,6 +72,6 @@ set SERVER_MODE=%MODE%
 if not "%WORLD_PORT%"=="" set WORLD_PORT=%WORLD_PORT%
 if not "%WORLD_IP%"=="" set WORLD_IP=%WORLD_IP%
 
-echo [ServerEmulator] Starting server mode=%SERVER_MODE% on UDP port %PORT%...
-echo [ServerEmulator] Config: ServerEmulator\fom_server.ini (or FOM_INI override)
-npm run dev
+echo [Server] Starting server mode=%SERVER_MODE% on UDP port %PORT%...
+echo [Server] Config: Server\\Master_TS\\fom_server.ini (or FOM_INI override)
+bun run dev
