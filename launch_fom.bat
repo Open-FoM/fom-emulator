@@ -1,5 +1,5 @@
 @echo off
-cd /d "%~dp0Client"
+cd /d "%~dp0Client\\Client_FoM"
 
 echo === FoM Launcher ===
 echo.

@@ -6,7 +6,7 @@ if not %errorlevel%==0 (
   exit /b
 )
 set ROOT=%~dp0
-set CLIENT=%ROOT%Client
+set CLIENT=%ROOT%Client\\Client_FoM
 
 if not exist "%CLIENT%\fom_client.exe" (
   echo Missing client: "%CLIENT%\fom_client.exe"
@@ -14,7 +14,7 @@ if not exist "%CLIENT%\fom_client.exe" (
 )
 
 cd /d "%CLIENT%"
-"%CLIENT%\fom_client.exe" -rez Resources -config master.cfg -dpsmagic 1234 +windowed 0 +EnableTripBuf 1 +ScreenWidth 1024 +ScreenHeight 768 +ConsoleEnable 1 +windowed 1 +LoginToken 1234
+"%CLIENT%\fom_client.exe" -rez Resources -config master.cfg -dpsmagic 1234 +windowed 0 +EnableTripBuf 1 +ScreenWidth 1024 +ScreenHeight 768 +ConsoleEnable 1 +windowed 1
 
 if not %errorlevel%==0 (
   echo.

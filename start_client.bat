@@ -1,9 +1,9 @@
 @echo off
 setlocal
-cd /d "%~dp0ClientEmulator"
+cd /d "%~dp0Client\\Client_TS"
 
 if not exist node_modules (
-  echo [ClientEmulator] Installing dependencies...
+  echo [Client_TS] Installing dependencies...
   npm install
 )
 
@@ -80,7 +80,7 @@ if not "%LOGIN_DELAY%"=="" (
   set LOGIN_ARG=
 )
 
-echo [ClientEmulator] Starting client: %MODE% %HOST%:%PORT%
+echo [Client_TS] Starting client: %MODE% %HOST%:%PORT%
 
 if /I "%MODE%"=="open" (
   npx tsx src\tools\TestClient.ts open %HOST% %PORT% %LOGIN_ARG%

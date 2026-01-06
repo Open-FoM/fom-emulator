@@ -1,9 +1,9 @@
 @echo off
 setlocal
-cd /d "%~dp0ClientEmulator"
+cd /d "%~dp0Client\\Client_TS"
 
 if not exist node_modules (
-  echo [ClientEmulator] Installing dependencies...
+  echo [Client_TS] Installing dependencies...
   npm install
 )
 
@@ -92,7 +92,7 @@ goto parseargs
 if "%HOST%"=="" set HOST=127.0.0.1
 if "%PORT%"=="" set PORT=62000
 
-echo [ClientEmulator] Starting world client: %HOST%:%PORT% worldId=%WORLD_ID% inst=%WORLD_INST% player=%PLAYER_ID%
+echo [Client_TS] Starting world client: %HOST%:%PORT% worldId=%WORLD_ID% inst=%WORLD_INST% player=%PLAYER_ID%
 
 set FOM_LOGIN_AUTH=false
 set FOM_WORLD_IP=%HOST%
