@@ -5,8 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # RakNet 3.611 source directory (exact version used by FoM)
-set(RAKNET_SRC_DIR "${CMAKE_SOURCE_DIR}/../../External/raknet/src")
-set(RAKNET_INC_DIR "${CMAKE_SOURCE_DIR}/../../External/raknet/include")
+# native/ is nested under Server/Master_TS, so we need to go up three levels.
+set(RAKNET_SRC_DIR "${CMAKE_SOURCE_DIR}/../../../External/raknet/src")
+set(RAKNET_INC_DIR "${CMAKE_SOURCE_DIR}/../../../External/raknet/include")
 
 # Collect RakNet sources
 file(GLOB RAKNET_SOURCES "${RAKNET_SRC_DIR}/*.cpp")
