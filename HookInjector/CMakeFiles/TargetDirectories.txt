@@ -1,2 +1,0 @@
-HookInjector/CMakeFiles/FoMHook.dir
-HookInjector/CMakeFiles/ALL_BUILD.dir
