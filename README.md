@@ -100,6 +100,8 @@ launch_fom_with_log.bat
 - Spawn path is mapped in `AddressMap.md` (SMSG_UPDATE GroupObjUpdate -> `Update_ReadObjectDefBlock` -> `World_AddObjectFromUpdate`/`CreateObjectFromDef`, plus CF_* flags like `MODELINFO`/`RENDERINFO`/`ATTACHMENTS`/`DIMS`).
 - RSA key swap is in place so the emulator can decrypt login blobs (`Client/Client_FoM/fom_public.key` must match `Server/Master_TS/fom_private_key.env`).
 
+<img width="1296" height="746" alt="image" src="https://github.com/user-attachments/assets/c7b53c71-b748-494b-b099-6985f450fc72" />
+
 ## Repo Layout
 
 - `Server/`  
