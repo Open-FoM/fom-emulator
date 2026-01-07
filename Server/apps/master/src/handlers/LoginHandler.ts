@@ -19,16 +19,21 @@
 import {
     RakMessageId,
     type RakSystemAddress,
-    NativeBitStream,
-    encodeString,
-    decodeString,
     buildWorldLoginBurst,
 } from '@openfom/networking';
 import {
     RakNetMessageId,
     LoginRequestReturnStatus,
     LoginReturnStatus,
-    AccountType,
+    IdLoginRequestPacket,
+    IdLoginRequestReturnPacket,
+    IdLoginPacket,
+    IdLoginReturnPacket,
+    IdLoginTokenCheckPacket,
+    IdWorldLoginPacket,
+    IdWorldLoginReturnPacket,
+    WorldLoginReturnCode,
+    IdWorldSelectPacket,
 } from '@openfom/packets';
 import { Connection, LoginPhase } from '../network/Connection';
 import { APARTMENT_WORLD_TABLE } from '../world/WorldRegistry';
@@ -126,124 +131,77 @@ export class LoginHandler {
         );
     }
 
-    /**
-     * Handle a login-related packet
-     */
     handle(
         packetId: number,
         data: Uint8Array,
         connection: Connection,
     ): LoginResponse | LoginResponse[] | null {
-        switch (packetId) {
-            case RakNetMessageId.ID_LOGIN_REQUEST:
-                return this.handleLoginRequest(data, connection);
-            case RakNetMessageId.ID_LOGIN:
-                return this.handleLoginAuth(data, connection);
-            case RakNetMessageId.ID_LOGIN_TOKEN_CHECK:
-                return this.handleLoginTokenCheck(data, connection);
-            case RakNetMessageId.ID_WORLD_LOGIN:
-                return this.handleWorldLogin(data, connection);
-            default:
-                return null;
+        const buffer = Buffer.from(data);
+        try {
+            switch (packetId) {
+                case RakNetMessageId.ID_LOGIN_REQUEST: {
+                    const packet = IdLoginRequestPacket.decode(buffer);
+                    return this.handleLoginRequest(packet, connection);
+                }
+                case RakNetMessageId.ID_LOGIN: {
+                    const packet = IdLoginPacket.decode(buffer);
+                    return this.handleLoginAuth(packet, connection);
+                }
+                case RakNetMessageId.ID_LOGIN_TOKEN_CHECK: {
+                    const packet = IdLoginTokenCheckPacket.decode(buffer);
+                    return this.handleLoginTokenCheck(packet, connection);
+                }
+                case RakNetMessageId.ID_WORLD_LOGIN: {
+                    const packet = IdWorldLoginPacket.decode(buffer);
+                    return this.handleWorldLogin(packet, connection);
+                }
+                default:
+                    return null;
+            }
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            this.log(`[Login] Packet decode error: ${msg}`);
+            return null;
         }
     }
 
-    // =========================================================================
-    // 0x6C - Login Request
-    // =========================================================================
-
-    /**
-     * Handle 0x6C - Login request with username
-     *
-     * Packet format (ID_LOGIN_REQUEST 0x6C):
-     *   - username (Huffman with raw u32 BE bit count prefix)
-     *   - clientVersion (raw u16, 16 bits)
-     *
-     * See: Docs/Packets/ID_LOGIN_REQUEST.md
-     */
-    private handleLoginRequest(data: Uint8Array, connection: Connection) {
-        const packetId = data[0];
-        this.log(`[Login] 0x${packetId.toString(16)} from ${connection.key} (${data.length} bytes)`);
-
-        // Debug: dump raw bytes
-        if (this.config.debug) {
-            const hex = Array.from(data.slice(0, Math.min(32, data.length)))
-                .map(b => b.toString(16).padStart(2, '0'))
-                .join(' ');
-            this.log(`[Login] raw: ${hex}`);
-        }
-
-        let username = '';
-        let clientVersion = 0;
-        let parseSuccess = false;
-
-        // Handle timestamp prefix first (RakNet optional ID_TIMESTAMP wrapper).
-        let actualPacketId = packetId;
-        let dataOffset = 0;
-        if (packetId === RakNetMessageId.ID_TIMESTAMP && data.length > 9) {
-            // Skip timestamp header: 1 byte (0x19) + 8 bytes (u64 timestamp)
-            dataOffset = 9;
-            actualPacketId = data[9];
-        }
-
-        // Parse 0x6C packet
-        if (actualPacketId === RakNetMessageId.ID_LOGIN_REQUEST) {
-            const bs = new NativeBitStream(Buffer.from(data.slice(dataOffset)), true);
-            try {
-                bs.readU8(); // Skip packet ID (0x6C)
-
-                // Decode Huffman-encoded username
-                username = decodeString(bs, 2048);
-                this.log(`[Login6C] Huffman decoded: user="${username}"`);
-
-                // Read u16 token/version (16 bits, MSB-first)
-                clientVersion = bs.readCompressedU16();
-                parseSuccess = true;
-                this.log(`[Login6C] Raw U32BE format: user="${username}" ver=${clientVersion}`);
-            } catch (err) {
-                const msg = err instanceof Error ? err.message : String(err);
-                this.log(`[Login6C] Parse failed: ${msg}`);
-            } finally {
-                bs.destroy();
-            }
-        }
+    private handleLoginRequest(packet: IdLoginRequestPacket, connection: Connection) {
+        const { username, clientVersion } = packet;
+        this.log(`[Login6C] user="${username}" ver=${clientVersion} from ${connection.key}`);
 
         const strictLogin = this.config.loginStrict ?? false;
 
-        if (!parseSuccess || !username || username.length < 3) {
-            this.log(`[Login] Failed to parse username from packet`);
+        if (!username || username.length < 3) {
+            this.log(`[Login] Invalid username`);
             if (strictLogin) {
                 return {
-                    data: this.buildLoginRequestReturn(LoginRequestReturnStatus.INVALID_INFO, ''),
+                    data: new IdLoginRequestReturnPacket({ status: LoginRequestReturnStatus.INVALID_INFO, username: '' }).encode(),
                     address: connection.address,
                 };
             }
             return null;
         }
 
-        // Validate username shape and length.
         const maxUserLen = strictLogin ? 32 : 64;
         if (!this.isPrintableAscii(username) || username.length > maxUserLen) {
             this.log(`[Login] reject invalid username len=${username.length}`);
             if (strictLogin) {
                 return {
-                    data: this.buildLoginRequestReturn(LoginRequestReturnStatus.INVALID_INFO, ''),
+                    data: new IdLoginRequestReturnPacket({ status: LoginRequestReturnStatus.INVALID_INFO, username: '' }).encode(),
                     address: connection.address,
                 };
             }
             return null;
         }
 
-        // Validate client version if strict mode is enabled.
         if (strictLogin && !this.isClientVersionAllowed(clientVersion)) {
             this.log(`[Login] reject clientVersion=${clientVersion}`);
             return {
-                data: this.buildLoginRequestReturn(LoginRequestReturnStatus.OUTDATED_CLIENT, username),
+                data: new IdLoginRequestReturnPacket({ status: LoginRequestReturnStatus.OUTDATED_CLIENT, username }).encode(),
                 address: connection.address,
             };
         }
 
-        // Check cooldown to avoid rapid duplicate 0x6D responses.
         const now = Date.now();
         const cooldownMs = 2000;
         if (connection.lastLoginResponseSentAt && now - connection.lastLoginResponseSentAt < cooldownMs) {
@@ -251,22 +209,20 @@ export class LoginHandler {
             return null;
         }
 
-        // Check if already authenticated.
         if (connection.loginPhase === LoginPhase.AUTHENTICATED) {
             this.log(`[Login] already authenticated user="${username}"`);
             if (strictLogin) {
                 return {
-                    data: this.buildLoginRequestReturn(
-                        LoginRequestReturnStatus.ALREADY_LOGGED_IN,
-                        connection.username || username,
-                    ),
+                    data: new IdLoginRequestReturnPacket({
+                        status: LoginRequestReturnStatus.ALREADY_LOGGED_IN,
+                        username: connection.username || username,
+                    }).encode(),
                     address: connection.address,
                 };
             }
             return null;
         }
 
-        // Handle duplicate pending request.
         if (connection.loginPhase === LoginPhase.USER_SENT && connection.pendingLoginUser === username) {
             if (!this.config.resendDuplicateLogin6D) {
                 this.log(`[Login] duplicate pending -> skip resend`);
@@ -275,7 +231,6 @@ export class LoginHandler {
             this.log(`[Login] duplicate pending -> resend 0x6D`);
         }
 
-        // Store pending login info for the 0x6E auth step.
         connection.pendingLoginUser = username;
         connection.pendingLoginClientVersion = clientVersion;
         connection.pendingLoginAt = Date.now();
@@ -283,12 +238,9 @@ export class LoginHandler {
 
         this.log(`[Login] Success: user="${username}" ver=${clientVersion}`);
 
-        // Build 0x6D response.
-        const response = this.buildLoginRequestReturn(LoginRequestReturnStatus.SUCCESS, username);
         connection.lastLoginResponseSentAt = Date.now();
-
         return {
-            data: response,
+            data: new IdLoginRequestReturnPacket({ status: LoginRequestReturnStatus.SUCCESS, username }).encode(),
             address: connection.address,
         };
     }
@@ -329,136 +281,15 @@ export class LoginHandler {
         return LoginReturnStatus.SUCCESS;
     }
 
-    /**
-     * Build 0x6D LOGIN_REQUEST_RETURN response using native RakNet BitStream
-     *
-     * Packet format:
-     *   - status (compressed u8)
-     *   - username (StringCompressor, max 2048)
-     *
-     * See: Docs/Packets/ID_LOGIN_REQUEST_RETURN.md
-     */
-    private buildLoginRequestReturn(status: LoginRequestReturnStatus, username: string): Buffer {
-        const bs = new NativeBitStream();
-
-        try {
-            bs.writeU8(RakNetMessageId.ID_LOGIN_REQUEST_RETURN);
-            bs.writeCompressedU8(status & 0xff);
-            encodeString(username ?? '', bs, 2048);
-
-            const payload = bs.getData();
-
-            // Debug: dump raw bytes
-            if (this.config.debug) {
-                const hex = Array.from(payload.slice(0, Math.min(32, payload.length)))
-                    .map(b => b.toString(16).padStart(2, '0'))
-                    .join(' ');
-                this.log(`[Login6D] raw: ${hex}`);
-            }
-
-            this.log(`[Login6D] build status=${status} user="${username}" len=${payload.length}`);
-            return payload;
-        } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
-            this.log(`[Login6D] build exception: ${msg}`);
-            return Buffer.alloc(0);
-        } finally {
-            bs.destroy();
-        }
-    }
-
-
-    // =========================================================================
-    // 0x6E - Login Authentication
-    // =========================================================================
-
-    /**
-     * Handle 0x6E - Login authentication packet
-     *
-     * Packet format (ID_LOGIN 0x6E):
-     *   - username (StringCompressor)
-     *   - passwordHash (bounded string, 64 bytes)
-     *   - fileCRCs[3] (compressed u32)
-     *   - macAddress (StringCompressor)
-     *   - driveModels[4] (bounded string, 64 bytes each)
-     *   - driveSerialNumbers[4] (bounded string, 32 bytes each)
-     *   - loginToken (bounded string, 64 bytes)
-     *   - computerName (StringCompressor)
-     *   - hasSteamTicket (bit)
-     *   - [if hasSteamTicket] steamTicket (1024 compressed bytes) + steamTicketLength (compressed u32)
-     *
-     * See: Docs/Packets/ID_LOGIN.md
-     */
-    private handleLoginAuth(data: Uint8Array, connection: Connection) {
-        this.log(`[Login] 0x6E from ${connection.key} (${data.length} bytes)`);
-
+    private handleLoginAuth(packet: IdLoginPacket, connection: Connection) {
         if (connection.loginPhase !== LoginPhase.USER_SENT && !this.config.acceptLoginAuthWithoutUser) {
             this.log(`[Login6E] unexpected - phase=${connection.loginPhase}`);
             return null;
         }
 
-        let username = '';
-        let computerName = '';
-        let macAddress = '';
-        let loginToken = '';
-        let passwordHash = '';
-        const fileCRCs: number[] = [];
-        const driveModels: string[] = [];
-        const driveSerials: string[] = [];
-        let hasSteamTicket = false;
-        let steamTicketLength = 0;
+        let username = packet.username || connection.pendingLoginUser || '';
+        const { passwordHash, fileCRCs, macAddress, driveModels, driveSerials, loginToken, computerName, hasSteamTicket, steamTicketLength } = packet;
 
-        let bs: NativeBitStream | null = null;
-        try {
-            bs = new NativeBitStream(Buffer.from(data), true);
-            let packetId = bs.readU8(); // Skip packet ID
-
-            // Handle timestamp prefix if present
-            if (packetId === RakNetMessageId.ID_TIMESTAMP) {
-                bs.readBytes(8); // Skip 8-byte timestamp
-                packetId = bs.readU8(); // Read actual packet ID
-            }
-
-            // Parse according to Docs/Packets/ID_LOGIN.md
-            username = decodeString(bs, 2048);
-            passwordHash = bs.readString(64, 'hex')
-
-            // Read 3 file CRCs
-            for (let i = 0; i < 3; i++) {
-                fileCRCs.push(bs.readCompressedU32());
-            }
-
-            macAddress = decodeString(bs, 2048);
-
-            // Read 4 drive models and serial numbers
-            for (let i = 0; i < 4; i++) {
-                driveModels.push(bs.readString(64));
-                driveSerials.push(bs.readString(32));
-            }
-
-            loginToken = bs.readString(64);
-            computerName = decodeString(bs, 2048);
-
-            hasSteamTicket = bs.readBit();
-            if (hasSteamTicket) {
-                // Read 1024 compressed bytes
-                for (let i = 0; i < 1024; i++) {
-                    bs.readCompressedU8();
-                }
-                steamTicketLength = bs.readCompressedU32();
-            }
-        } catch {
-            // Best-effort parse - continue with what we got
-        } finally {
-            bs?.destroy();
-        }
-
-        // Fall back to pending username if not parsed
-        if (!username && connection.pendingLoginUser) {
-            username = connection.pendingLoginUser;
-        }
-
-        // Store auth details
         connection.loginAuthUsername = username;
         connection.loginAuthComputer = computerName;
         connection.loginAuthPasswordHash = passwordHash;
@@ -475,9 +306,7 @@ export class LoginHandler {
         const loginClientVersion = connection.pendingLoginClientVersion || 0;
 
         const crcNote = fileCRCs.length > 0 ? fileCRCs.map((v) => `0x${v.toString(16)}`).join(',') : 'none';
-        this.log(
-            `[Login6E] auth status=${status} user="${username}" hash="${passwordHash.slice(0,16)}..." mac="${macAddress}" crcs=[${crcNote}] token="${loginToken}" macAddress=[${macAddress}] drives=[${driveModels},${driveSerials}]`,
-        );
+        this.log(`[Login6E] user="${username}" hash="${passwordHash.slice(0,16)}..." mac="${macAddress}" crcs=[${crcNote}]`);
 
         if (status === LoginReturnStatus.SUCCESS) {
             connection.username = username;
@@ -492,7 +321,6 @@ export class LoginHandler {
             connection.loginPhase = LoginPhase.USER_SENT;
         }
 
-        // In master mode, send 0x6F after authentication decision (+ 0x7B world select on success).
         if (this.config.serverMode === 'master') {
             const playerId = status === LoginReturnStatus.SUCCESS
                 ? this.resolveWorldSelectPlayerId(connection)
@@ -502,28 +330,20 @@ export class LoginHandler {
             connection.worldSelectWorldId = worldId;
             connection.worldSelectWorldInst = worldInst;
 
-            const loginReturn = this.buildLoginReturn({
+            const loginReturn = new IdLoginReturnPacket({
                 status,
                 playerId,
                 clientVersion: loginClientVersion,
-            });
+            }).encode();
 
             this.log(`[Login6E] -> 0x6F status=${status} playerId=${playerId} world=${worldId}:${worldInst}`);
-            const responses: LoginResponse[] = [
-                {
-                    data: loginReturn,
-                    address: connection.address,
-                },
-            ];
+            const responses: LoginResponse[] = [{ data: loginReturn, address: connection.address }];
 
             if (status === LoginReturnStatus.SUCCESS) {
-                const worldSelect = this.buildWorldSelect(playerId, worldId, worldInst);
+                const worldSelect = IdWorldSelectPacket.createWorldSelect(playerId, worldId, worldInst).encode();
                 connection.worldSelectSent = true;
                 this.log(`[Login6E] -> 0x7B subId=4 playerId=${playerId} world=${worldId}:${worldInst}`);
-                responses.push({
-                    data: worldSelect,
-                    address: connection.address,
-                });
+                responses.push({ data: worldSelect, address: connection.address });
             }
 
             return responses;
@@ -532,354 +352,93 @@ export class LoginHandler {
         return null;
     }
 
-    /**
-     * Build 0x6F LOGIN_RETURN response
-     *
-     * See: Docs/Packets/ID_LOGIN_RETURN.md
-     */
-    private buildLoginReturn(options: {
-        status: LoginReturnStatus;
-        playerId: number;
-        clientVersion: number;
-        accountType?: AccountType;
-        field4?: boolean;
-        field5?: boolean;
-        isBanned?: boolean;
-    }): Buffer {
-        // 0x6F payload uses native BitStream for exact RakNet compatibility.
-        const bs = new NativeBitStream();
-        bs.writeU8(RakNetMessageId.ID_LOGIN_RETURN);
-        bs.writeCompressedU8(options.status & 0xff);
-        bs.writeCompressedU32(options.playerId >>> 0);
+    private handleLoginTokenCheck(packet: IdLoginTokenCheckPacket, connection: Connection): LoginResponse | null {
+        this.log(`[Login] 0x70 from ${connection.key}`);
 
-        if (options.playerId !== 0) {
-            const accountType = options.accountType ?? AccountType.FREE;
-            bs.writeCompressedU8(accountType & 0xff);
-            bs.writeBit(Boolean(options.field4));
-            bs.writeBit(Boolean(options.field5));
-            bs.writeCompressedU16(options.clientVersion & 0xffff);
-
-            const isBanned = Boolean(options.isBanned);
-            bs.writeBit(isBanned);
-            if (isBanned) {
-                encodeString('0', bs, 2048, 0); // banLength
-                encodeString('', bs, 2048, 0); // banReason
-            }
-
-            // worldIDs vector (count + ids)
-            bs.writeCompressedU8(0);
-            // factionMOTD
-            encodeString('', bs, 2048, 0);
-            // apartment (minimal stub)
-            this.writeApartmentStubNative(bs);
-            // field_final1, field_final2
-            bs.writeCompressedU8(0);
-            bs.writeCompressedU8(0);
+        if (packet.fromServer) {
+            // Server -> Client (we received this - shouldn't happen on server)
+            this.log(`[Login70] recv server->client success=${packet.success} user="${packet.username}"`);
+            return null;
         }
 
-        const payload = bs.getData();
-        if (this.config.debug) {
-            this.debugDecodeLoginReturn(payload);
-        }
-        bs.destroy();
-        return payload;
+        // Client -> Server
+        const username = connection.pendingLoginUser || connection.username || '';
+        this.log(`[Login70] token="${packet.requestToken}" -> respond with user="${username}"`);
+
+        const response = IdLoginTokenCheckPacket.createServerResponse(true, username);
+        return {
+            data: response.encode(),
+            address: connection.address,
+        };
     }
 
-    private debugDecodeLoginReturn(payload: Buffer): void {
-        // Debug-only round-trip decode to verify the encoder.
-        try {
-            const bs = new NativeBitStream(payload, true);
-            const packetId = bs.readU8();
-            if (packetId !== RakNetMessageId.ID_LOGIN_RETURN) {
-                this.log(`[Login6F] decode failed: bad id=0x${packetId.toString(16)}`);
-                bs.destroy();
-                return;
-            }
-            const status = bs.readCompressedU8();
-            const playerId = bs.readCompressedU32();
-            let accountType = 0;
-            let clientVersion = 0;
-            let field4 = false;
-            let field5 = false;
-            let isBanned = false;
-            if (playerId !== 0) {
-                accountType = bs.readCompressedU8();
-                field4 = bs.readBit();
-                field5 = bs.readBit();
-                clientVersion = bs.readCompressedU16();
-                isBanned = bs.readBit();
-            }
-            bs.destroy();
-            this.log(
-                `[Login6F] decode status=${status} playerId=${playerId} accountType=${accountType} field4=${field4} field5=${field5} clientVersion=${clientVersion} banned=${isBanned}`,
-            );
-        } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
-            this.log(`[Login6F] decode exception: ${msg}`);
-        }
-    }
+    private handleWorldLogin(packet: IdWorldLoginPacket, connection: Connection): LoginResponse | LoginResponse[] | null {
+        this.log(`[Login] 0x72 from ${connection.key}`);
 
-    private writeApartmentStubNative(writer: NativeBitStream): void {
-        writer.writeCompressedU32(0); // id
-        writer.writeCompressedU8(0); // type
-        writer.writeCompressedU32(0); // ownerPlayerID
-        writer.writeCompressedU32(0); // ownerFactionID
-        writer.writeCompressedU8(0); // allowedRanks vector count
-        writer.writeBit(false); // isOpen
-        encodeString('', writer, 2048, 0); // ownerName
-        encodeString('', writer, 2048, 0); // entryCode
-        // storage ItemList (minimal)
-        writer.writeCompressedU16(0); // capacity
-        writer.writeCompressedU32(0); // field_14
-        writer.writeCompressedU32(0); // field_18
-        writer.writeCompressedU32(0); // field_1C
-        writer.writeCompressedU16(0); // itemCount
-        writer.writeBit(false); // hasPublicInfo
-        writer.writeCompressedU32(0); // entryPrice
-        encodeString('', writer, 2048, 0); // publicName
-        encodeString('', writer, 2048, 0); // publicDescription
-        writer.writeCompressedU32(0); // allowedFactions map count
-        writer.writeBit(false); // isDefault
-        writer.writeBit(false); // isFeatured
-        writer.writeCompressedU32(0); // occupancy
-    }
+        const { worldId, worldInst, playerId, worldConst } = packet;
 
-    // =========================================================================
-    // 0x70 - Login Token Check
-    // =========================================================================
+        connection.worldId = worldId;
+        connection.worldInst = worldInst;
+        connection.playerId = playerId;
+        connection.worldLoginWorldId = worldId;
+        connection.worldLoginWorldInst = worldInst;
+        connection.worldLoginPlayerId = playerId;
+        connection.worldLoginWorldConst = worldConst;
 
-    /**
-     * Handle 0x70 - Login token check (bidirectional)
-     *
-     * Packet format:
-     *   - fromServer (bit)
-     *   - [if fromServer] success (bit) + username (bounded string, 32 bytes)
-     *   - [if !fromServer] requestToken (bounded string, 32 bytes)
-     *
-     * See: Docs/Packets/ID_LOGIN_TOKEN_CHECK.md
-     */
-    private handleLoginTokenCheck(data: Uint8Array, connection: Connection): LoginResponse | null {
-        this.log(`[Login] 0x70 from ${connection.key} (${data.length} bytes)`);
+        this.log(`[Login72] worldId=${worldId} inst=${worldInst} playerId=${playerId} const=0x${worldConst.toString(16)}`);
 
-        const bs = new NativeBitStream(Buffer.from(data), true);
-        try {
-            bs.readU8(); // Skip packet ID
-
-            const fromServer = bs.readBit();
-            if (fromServer) {
-                // Server -> Client (we received this - shouldn't happen on server)
-                const success = bs.readBit();
-                const username = bs.readString(32);
-                this.log(`[Login70] recv server->client success=${success} user="${username}"`);
+        if (this.config.serverMode === 'master') {
+            if (!connection.authenticated) {
+                this.log(`[Login72] ignore unauth`);
                 return null;
             }
 
-            // Client -> Server
-            const requestToken = bs.readString(32);
-            const username = connection.pendingLoginUser || connection.username || '';
-
-            this.log(`[Login70] token="${requestToken}" -> respond with user="${username}"`);
-
-            // Build response
-            const response = this.buildLoginTokenCheckResponse(true, username);
+            const code = this.resolveWorldLoginReturnCode(connection);
+            const response = new IdWorldLoginReturnPacket({
+                code: code as WorldLoginReturnCode,
+                flag: 0xff,
+                worldIp: this.config.worldIp,
+                worldPort: this.config.worldPort,
+            });
+            this.log(`[Login72] -> 0x73 code=${code} world=${this.config.worldIp}:${this.config.worldPort}`);
             return {
-                data: response,
+                data: response.encode(),
                 address: connection.address,
             };
-        } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
-            this.log(`[Login70] parse error: ${msg}`);
-            return null;
-        } finally {
-            bs.destroy();
         }
-    }
 
-    private buildLoginTokenCheckResponse(success: boolean, username: string): Buffer {
-        const bs = new NativeBitStream();
-        try {
-            bs.writeU8(RakNetMessageId.ID_LOGIN_TOKEN_CHECK);
-            bs.writeBit(true); // fromServer
-            bs.writeBit(Boolean(success));
-            bs.writeString(username ?? '', 32);
-            return bs.getData();
-        } finally {
-            bs.destroy();
+        connection.authenticated = true;
+        connection.loginPhase = LoginPhase.IN_WORLD;
+        if (!connection.worldTimeOrigin) {
+            connection.worldTimeOrigin = Date.now();
         }
-    }
+        connection.worldLastHeartbeatAt = 0;
 
-    // =========================================================================
-    // 0x72 - World Login
-    // =========================================================================
+        const responses: LoginResponse[] = [];
 
-    /**
-     * Handle 0x72 - World login
-     */
-    private handleWorldLogin(data: Uint8Array, connection: Connection): LoginResponse | LoginResponse[] | null {
-        this.log(`[Login] 0x72 from ${connection.key} (${data.length} bytes)`);
+        const response = IdWorldLoginReturnPacket.createSuccess(this.config.worldIp, this.config.worldPort);
+        responses.push({
+            data: response.encode(),
+            address: connection.address,
+        });
 
-        const bs = new NativeBitStream(Buffer.from(data), true);
-        try {
-            bs.readU8(); // Skip packet ID
+        const seq = connection.lithTechOutSeq;
+        connection.lithTechOutSeq = (seq + 1) & 0x1fff;
 
-            const worldId = bs.readCompressedU8();
-            const worldInst = bs.readCompressedU8();
-            const playerId = bs.readCompressedU32();
-            const worldConst = bs.readCompressedU32();
+        const clientId = connection.id;
+        const objectId = playerId || connection.id;
+        const lithWorldId = worldId || 16;
 
-            connection.worldId = worldId;
-            connection.worldInst = worldInst;
-            connection.playerId = playerId;
-            connection.worldLoginWorldId = worldId;
-            connection.worldLoginWorldInst = worldInst;
-            connection.worldLoginPlayerId = playerId;
-            connection.worldLoginWorldConst = worldConst;
+        const lithBurst = buildWorldLoginBurst(seq, clientId, objectId, lithWorldId);
+        const wrappedBurst = Buffer.concat([Buffer.from([RakMessageId.USER_PACKET_ENUM]), lithBurst]);
+        this.log(`[Login72] -> LithTech burst (${lithBurst.length} bytes)`);
 
-            this.log(`[Login72] worldId=${worldId} inst=${worldInst} playerId=${playerId} const=0x${worldConst.toString(16)}`);
+        responses.push({
+            data: wrappedBurst,
+            address: connection.address,
+        });
 
-            // In master mode, send world redirect (0x73).
-            if (this.config.serverMode === 'master') {
-                if (!connection.authenticated) {
-                    this.log(`[Login72] ignore unauth`);
-                    return null;
-                }
-
-                // 0x73 codes -> UI messages (see Docs/Packets/ID_WORLD_LOGIN_RETURN.md)
-                // 1: success (connect to world)
-                // 2: server unavailable
-                // 3: faction not available
-                // 4: world full
-                // 6: faction privileges revoked
-                // 7: vortex gate range error
-                // 8: retry later
-                // TODO: This is where the DB read will happen to retrieve account details.
-                const code = this.resolveWorldLoginReturnCode(connection);
-                switch (code) {
-                    case 1:
-                        // success
-                        break;
-                    case 2:
-                        // server unavailable
-                        break;
-                    case 3:
-                        // faction not available
-                        break;
-                    case 4:
-                        // world full
-                        break;
-                    case 6:
-                        // faction privileges revoked
-                        break;
-                    case 7:
-                        // vortex gate range error
-                        break;
-                    case 8:
-                        // retry later
-                        break;
-                    default:
-                        // unknown error
-                        break;
-                }
-                const response = this.buildWorldLoginReturn(
-                    code === 1,
-                    this.config.worldIp,
-                    this.config.worldPort,
-                    { code, flag: 0xff },
-                );
-                this.log(`[Login72] -> 0x73 code=${code} world=${this.config.worldIp}:${this.config.worldPort}`);
-                return {
-                    data: response,
-                    address: connection.address,
-                };
-            }
-
-            // In world mode, accept and send LithTech burst.
-            connection.authenticated = true;
-            connection.loginPhase = LoginPhase.IN_WORLD;
-            if (!connection.worldTimeOrigin) {
-                connection.worldTimeOrigin = Date.now();
-            }
-            connection.worldLastHeartbeatAt = 0;
-
-            const responses: LoginResponse[] = [];
-
-            // Build 0x73 response.
-            const response = this.buildWorldLoginReturn(true, this.config.worldIp, this.config.worldPort, {
-                code: 1,
-                flag: 0xff,
-            });
-            responses.push({
-                data: response,
-                address: connection.address,
-            });
-
-            // Send LithTech burst (NETPROTOCOLVERSION + YOURID + CLIENTOBJECTID + LOADWORLD).
-            const seq = connection.lithTechOutSeq;
-            connection.lithTechOutSeq = (seq + 1) & 0x1fff;
-
-            const clientId = connection.id;
-            const objectId = playerId || connection.id;
-            const lithWorldId = worldId || 16;
-
-            const lithBurst = buildWorldLoginBurst(seq, clientId, objectId, lithWorldId);
-            const wrappedBurst = Buffer.concat([Buffer.from([RakMessageId.USER_PACKET_ENUM]), lithBurst]);
-            this.log(`[Login72] -> LithTech burst (${lithBurst.length} bytes)`);
-
-            responses.push({
-                data: wrappedBurst,
-                address: connection.address,
-            });
-
-            return responses;
-        } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
-            this.log(`[Login72] parse error: ${msg}`);
-            return null;
-        } finally {
-            bs.destroy();
-        }
-    }
-
-    /**
-     * Build 0x73 WORLD_LOGIN_RETURN response
-     */
-    private buildWorldLoginReturn(
-        success: boolean,
-        worldIp: string,
-        worldPort: number,
-        options?: { code?: number; flag?: number },
-    ): Buffer {
-        const bs = new NativeBitStream();
-        try {
-            bs.writeU8(RakNetMessageId.ID_WORLD_LOGIN_RETURN);
-            const code = options?.code ?? (success ? 1 : 0);
-            const flag = options?.flag ?? 0xff;
-            bs.writeCompressedU8(code & 0xff);
-            bs.writeCompressedU8(flag & 0xff);
-            const ipU32 = this.ipv4ToU32BE(worldIp);
-            bs.writeCompressedU32(ipU32 >>> 0);
-            bs.writeCompressedU16(worldPort & 0xffff);
-            return bs.getData();
-        } finally {
-            bs.destroy();
-        }
-    }
-
-    /**
-     * Build 0x7B WORLD_SELECT packet
-     */
-    buildWorldSelect(playerId: number, worldId: number, worldInst: number): Buffer {
-        const bs = new NativeBitStream();
-        try {
-            bs.writeU8(RakNetMessageId.ID_WORLD_SELECT);
-            bs.writeCompressedU32(playerId >>> 0);
-            bs.writeCompressedU8(4); // subId=4 -> worldId/worldInst
-            bs.writeCompressedU8(worldId & 0xff);
-            bs.writeCompressedU8(worldInst & 0xff);
-            return bs.getData();
-        } finally {
-            bs.destroy();
-        }
+        return responses;
     }
 
     private resolveWorldLoginReturnCode(connection: Connection): number {
@@ -906,10 +465,6 @@ export class LoginHandler {
         }
         return 1;
     }
-
-    // =========================================================================
-    // Utility Methods
-    // =========================================================================
 
     private resolveWorldSelectPlayerId(connection: Connection): number {
         if (this.config.worldSelectPlayerId && this.config.worldSelectPlayerId > 0) {
@@ -958,14 +513,6 @@ export class LoginHandler {
             return connection.worldSelectWorldInst;
         }
         return 0;
-    }
-
-    private ipv4ToU32BE(value: string): number {
-        const parts = value.split('.');
-        if (parts.length !== 4) return 0;
-        const bytes = parts.map((part) => Number.parseInt(part, 10));
-        if (bytes.some((b) => !Number.isInteger(b) || b < 0 || b > 255)) return 0;
-        return ((bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3]) >>> 0;
     }
 
     private log(message: string): void {

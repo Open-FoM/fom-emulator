@@ -20,10 +20,10 @@ import {
     addressToString,
     BitStreamWriter,
     buildLithTechGuaranteedPacket,
-    LithTechMessageId,
     PacketLogger,
     PacketDirection,
 } from '@openfom/networking';
+import { LithTechMessageId } from '@openfom/packets';
 import { configureLogger, debug as logDebug, error as logError, info as logInfo, warn as logWarn } from '@openfom/utils';
 import { loadRuntimeConfig } from './config';
 import { ConnectionManager, LoginPhase } from './network/Connection';

@@ -1,5 +1,6 @@
 import type { RakPacket, RakSystemAddress } from '@openfom/networking';
-import { addressToString, RakNetMessageId } from '@openfom/networking';
+import { addressToString } from '@openfom/networking';
+import { RakNetMessageId } from '@openfom/packets';
 import { info } from '@openfom/utils';
 import { ConnectionManager, LoginPhase } from '../network/Connection';
 import { LoginHandler } from './LoginHandler';
