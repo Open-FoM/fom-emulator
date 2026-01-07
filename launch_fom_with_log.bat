@@ -14,9 +14,5 @@ if not exist "%CLIENT%\fom_client.exe" (
 )
 
 cd /d "%CLIENT%"
-"%CLIENT%\fom_client.exe" -rez Resources -config master.cfg -dpsmagic 1234 +windowed 0 +EnableTripBuf 1 +ScreenWidth 1024 +ScreenHeight 768 +ConsoleEnable 1 +windowed 1
-
-if not %errorlevel%==0 (
-  echo.
-  echo Launch failed (ExitCode=%errorlevel%). If this is 740, run as Administrator.
-)
+start "" "%CLIENT%\fom_client.exe" -rez Resources -config master.cfg -dpsmagic 1234 +windowed 0 +EnableTripBuf 1 +ScreenWidth 1024 +ScreenHeight 768 +ConsoleEnable 1 +windowed 1
+exit /b 0

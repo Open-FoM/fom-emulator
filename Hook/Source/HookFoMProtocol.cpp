@@ -8,8 +8,6 @@
 using FNetSendToFn = int (__fastcall *)(void* ThisPtr, void* Edx, SOCKET Socket, char* Buffer, int Length, int Ip, int Port);
 using FNetSendFn = int (__fastcall *)(void* ThisPtr, void* Edx, char* Buffer, int Length);
 using FNetRecvFn = int (__fastcall *)(void* ThisPtr, void* Edx, char* Buffer, int Length);
-using FPacketProcFn = bool (__thiscall *)(void* ThisPtr, int TravelDir, void* OutPacket, void* OutSender);
-using FGetPacketIdFn = uint8_t (__fastcall *)(void* Packet, void* Edx, int Size);
 using FHuffmanGenFn = int (__thiscall *)(void* ThisPtr, void* FreqTable);
 using FHuffmanEncodeFn = void* (__thiscall *)(void* ThisPtr, int a2, unsigned int a3, void* a4);
 using FFomLogPrintfFn = void* (__cdecl *)(const char* Format, ...);
@@ -17,8 +15,6 @@ using FFomLogPrintfFn = void* (__cdecl *)(const char* Format, ...);
 static FNetSendToFn NetSendToFn = nullptr;
 static FNetSendFn NetSendFn = nullptr;
 static FNetRecvFn NetRecvFn = nullptr;
-static FPacketProcFn PacketProcFn = nullptr;
-static FGetPacketIdFn GetPacketIdFn = nullptr;
 static FHuffmanGenFn HuffmanGenFn = nullptr;
 static FHuffmanEncodeFn HuffmanEncodeFn = nullptr;
 static FFomLogPrintfFn FomLogPrintfFn = nullptr;
@@ -29,7 +25,6 @@ static volatile LONG FoMHooksInstalled = 0;
 static int __fastcall HookNetSendTo(void* ThisPtr, void* Edx, SOCKET Socket, char* Buffer, int Length, int Ip, int Port);
 static int __fastcall HookNetSend(void* ThisPtr, void* Edx, char* Buffer, int Length);
 static int __fastcall HookNetRecv(void* ThisPtr, void* Edx, char* Buffer, int Length);
-static bool __fastcall HookPacketProc(void* ThisPtr, void* Edx, int TravelDir, void* OutPacket, void* OutSender);
 static int __fastcall HookHuffmanGenerate(void* ThisPtr, void* Edx, void* FreqTable);
 static void* __fastcall HookHuffmanEncode(void* ThisPtr, void* Edx, int a2, unsigned int a3, void* a4);
 
@@ -45,26 +40,6 @@ struct HuffmanEncodingTree
     void* Root;
     HuffmanEncodingEntry Table[256];
 };
-
-static void EnsureDirectoryForPath(const char* Path)
-{
-    if (!Path || !Path[0])
-    {
-        return;
-    }
-    char Buffer[MAX_PATH] = {0};
-    lstrcpynA(Buffer, Path, MAX_PATH);
-    for (char* p = Buffer + 1; *p; ++p)
-    {
-        if (*p == '\\' || *p == '/')
-        {
-            char Saved = *p;
-            *p = '\0';
-            CreateDirectoryA(Buffer, nullptr);
-            *p = Saved;
-        }
-    }
-}
 
 static bool ExtractPacketBytes(void* Packet, const uint8_t** OutData, uint32_t* OutBytes, uint32_t* OutBits)
 {
@@ -420,146 +395,6 @@ static int __fastcall HookNetRecv(void* ThisPtr, void* Edx, char* Buffer, int Le
     return Result;
 }
 
-static bool __fastcall HookPacketProc(void* ThisPtr, void* Edx, int TravelDir, void* OutPacket, void* OutSender)
-{
-    (void)Edx;
-    bool Result = PacketProcFn ? PacketProcFn(ThisPtr, TravelDir, OutPacket, OutSender) : false;
-    if (!Result || !ShouldCaptureNetwork() || !GConfig.bLogRecv || !OutPacket)
-    {
-        return Result;
-    }
-    void* Packet = nullptr;
-    __try
-    {
-        Packet = *reinterpret_cast<void**>(OutPacket);
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-        Packet = nullptr;
-    }
-    if (!Packet)
-    {
-        return Result;
-    }
-    struct CPacketDataRef
-    {
-        uint8_t* Data;
-        uint32_t ByteCount;
-        volatile LONG RefCount;
-    };
-    // Packet layout from sub_EBA580: [0]=DataRef, [4]=BitOffset, [8]=BitCount, [0xC]=BitLimit
-    struct CPacketView
-    {
-        CPacketDataRef* DataRef;
-        uint32_t BitOffset;
-        uint32_t BitCount;
-        uint32_t BitLimit;
-    };
-    const CPacketView* View = reinterpret_cast<const CPacketView*>(Packet);
-    const CPacketDataRef* DataRef = nullptr;
-    const uint8_t* DataPtr = nullptr;
-    uint32_t BitOffset = 0;
-    uint32_t BitCount = 0;
-    uint32_t BitLimit = 0;
-    __try
-    {
-        DataRef = View ? View->DataRef : nullptr;
-        BitOffset = View ? View->BitOffset : 0;
-        BitCount = View ? View->BitCount : 0;
-        BitLimit = View ? View->BitLimit : 0;
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-        DataRef = nullptr;
-        BitOffset = 0;
-        BitCount = 0;
-        BitLimit = 0;
-    }
-    if (DataRef)
-    {
-        __try
-        {
-            DataPtr = DataRef->Data;
-        }
-        __except (EXCEPTION_EXECUTE_HANDLER)
-        {
-            DataPtr = nullptr;
-        }
-    }
-    uint32_t BytesFromBits = 0;
-    if (BitLimit && BitCount > BitLimit)
-    {
-        BitCount = BitLimit;
-    }
-    if (BitCount)
-    {
-        BytesFromBits = (BitCount + 7u) / 8u;
-    }
-    uint32_t Bytes = BytesFromBits;
-    uint32_t ByteCount = 0;
-    if (DataRef)
-    {
-        __try
-        {
-            ByteCount = DataRef->ByteCount;
-        }
-        __except (EXCEPTION_EXECUTE_HANDLER)
-        {
-            ByteCount = 0;
-        }
-    }
-    if (ByteCount && (!Bytes || ByteCount > Bytes))
-    {
-        Bytes = ByteCount;
-    }
-    if (Bytes > static_cast<uint32_t>(GConfig.MaxDump) && GConfig.MaxDump > 0)
-    {
-        Bytes = static_cast<uint32_t>(GConfig.MaxDump);
-    }
-    char Extra[160] = {0};
-    _snprintf_s(Extra, sizeof(Extra), _TRUNCATE, "src=PacketProc bits=%u bytes=%u dir=%d", BitCount, Bytes, TravelDir);
-    int PacketId = -1;
-    if (DataPtr)
-    {
-        __try
-        {
-            PacketId = DataPtr[0];
-        }
-        __except (EXCEPTION_EXECUTE_HANDLER)
-        {
-            PacketId = -1;
-        }
-    }
-    const char* LithTag = "Lith][Net_Recv";
-    if (TravelDir == 2)
-    {
-        LithTag = "Lith][Net_SendTo";
-    }
-    if (DataPtr && Bytes > 0 && PacketId >= 0)
-    {
-        volatile uint8_t Probe = 0;
-        bool bReadable = false;
-        __try
-        {
-            Probe = DataPtr[0];
-            bReadable = true;
-        }
-        __except (EXCEPTION_EXECUTE_HANDLER)
-        {
-            bReadable = false;
-        }
-        if (bReadable)
-        {
-            LogHexExId(LithTag, DataPtr, static_cast<int>(Bytes), nullptr, 0, Extra, PacketId);
-        }
-        else
-        {
-            Logf(LithTag, "skip dump: invalid data ptr=0x%p", DataPtr);
-        }
-    }
-    return Result;
-}
-
 static void InstallFoMProtocolHooks()
 {
     if (!GExeBase)
@@ -576,29 +411,20 @@ static void InstallFoMProtocolHooks()
     const uint8_t NetSendToPrologue[6] = {0x55, 0x8B, 0xEC, 0x83, 0xEC, 0x18};
     const uint8_t NetSendPrologue[7] = {0x55, 0x8B, 0xEC, 0x51, 0x89, 0x4D, 0xFC};
     const uint8_t NetRecvPrologue[7] = {0x55, 0x8B, 0xEC, 0x51, 0x89, 0x4D, 0xFC};
-    const uint8_t PacketProcPrologue[10] = {0x55, 0x8B, 0xEC, 0x6A, 0xFF, 0x68, 0xF8, 0x74, 0xB4, 0x00};
 
-    InstallDetourChecked("Net_SendTo", 0x000E5E30, sizeof(NetSendToPrologue),
-                         NetSendToPrologue, reinterpret_cast<void*>(&HookNetSendTo),
-                         reinterpret_cast<void**>(&NetSendToFn));
-    InstallDetourChecked("Net_Send", 0x001230F0, sizeof(NetSendPrologue),
-                         NetSendPrologue, reinterpret_cast<void*>(&HookNetSend),
-                         reinterpret_cast<void**>(&NetSendFn));
-    InstallDetourChecked("Net_Recv", 0x00123120, sizeof(NetRecvPrologue),
-                         NetRecvPrologue, reinterpret_cast<void*>(&HookNetRecv),
-                         reinterpret_cast<void**>(&NetRecvFn));
-    if (GConfig.bWrapperPacketProc)
-    {
-        GetPacketIdFn = reinterpret_cast<FGetPacketIdFn>(GExeBase + 0x0003A580);
-        InstallDetourChecked("PacketProc", 0x0003AFD0, sizeof(PacketProcPrologue),
-                             PacketProcPrologue, reinterpret_cast<void*>(&HookPacketProc),
-                             reinterpret_cast<void**>(&PacketProcFn));
-    }
-    else
-    {
-        LOG("PacketProc detour disabled");
-    }
-    LOG("FoM protocol hooks installed");
+    const bool SendToOk = InstallDetourChecked("Net_SendTo", 0x000E5E30, sizeof(NetSendToPrologue),
+                                               NetSendToPrologue, reinterpret_cast<void*>(&HookNetSendTo),
+                                               reinterpret_cast<void**>(&NetSendToFn));
+    const bool SendOk = InstallDetourChecked("Net_Send", 0x001230F0, sizeof(NetSendPrologue),
+                                             NetSendPrologue, reinterpret_cast<void*>(&HookNetSend),
+                                             reinterpret_cast<void**>(&NetSendFn));
+    const bool RecvOk = InstallDetourChecked("Net_Recv", 0x00123120, sizeof(NetRecvPrologue),
+                                             NetRecvPrologue, reinterpret_cast<void*>(&HookNetRecv),
+                                             reinterpret_cast<void**>(&NetRecvFn));
+    LOG("FoM protocol hooks: sendto=%s send=%s recv=%s",
+        SendToOk ? "ok" : "fail",
+        SendOk ? "ok" : "fail",
+        RecvOk ? "ok" : "fail");
 }
 
 void EnsureFoMProtocolHooks()

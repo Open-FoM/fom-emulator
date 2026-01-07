@@ -24,6 +24,8 @@ file(GLOB_RECURSE SOURCE_CPP CONFIGURE_DEPENDS
 )
 set(EXCLUDED_SOURCES
     ${SOURCE_DIR}/HookNetwork.cpp
+    ${SOURCE_DIR}/HookSharedMem.cpp
+    ${SOURCE_DIR}/HookWinsock.cpp
     ${SOURCE_DIR}/FoMInjector/Injector.cpp
     ${SOURCE_DIR}/FoMInjector/Injector.h
     ${SOURCE_DIR}/ProxyD3D9/D3D9Proxy.cpp
