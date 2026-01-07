@@ -4,5 +4,5 @@
 #include "HookDetours.h"
 #include "HookDecode.h"
 
-/** Schedules FoM protocol hooks (Net_Send/Recv/SendTo, PacketProc, Login6C). */
+/** Schedules FoM protocol hooks (Net_Send/Recv/SendTo, Login6C). */
 void EnsureFoMProtocolHooks();

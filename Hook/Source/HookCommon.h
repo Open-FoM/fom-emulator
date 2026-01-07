@@ -21,3 +21,23 @@
 #include <vector>
 
 extern "C" IMAGE_DOS_HEADER __ImageBase;
+
+static inline void EnsureDirectoryForPath(const char* Path)
+{
+    if (!Path || !Path[0])
+    {
+        return;
+    }
+    char Buffer[MAX_PATH] = {0};
+    lstrcpynA(Buffer, Path, MAX_PATH);
+    for (char* p = Buffer + 1; *p; ++p)
+    {
+        if (*p == '\\' || *p == '/')
+        {
+            char Saved = *p;
+            *p = '\0';
+            CreateDirectoryA(Buffer, nullptr);
+            *p = Saved;
+        }
+    }
+}

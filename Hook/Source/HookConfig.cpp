@@ -1,20 +1,83 @@
 /** Hook configuration loader implementation. */
 #include "HookConfig.h"
+#include "HookLogging.h"
+
+namespace
+{
+bool IsAbsolutePath(const char* Path)
+{
+    return Path && ((Path[1] == ':' && (Path[2] == '\\' || Path[2] == '/')) ||
+                    (Path[0] == '\\' && Path[1] == '\\'));
+}
+
+void CopyModuleDir(char* Out, size_t OutSize)
+{
+    if (!Out || OutSize == 0)
+    {
+        return;
+    }
+    Out[0] = '\0';
+    char ModulePath[MAX_PATH] = {0};
+    HMODULE SelfModule = reinterpret_cast<HMODULE>(&__ImageBase);
+    DWORD Length = GetModuleFileNameA(SelfModule, ModulePath, MAX_PATH);
+    if (Length == 0 || Length >= MAX_PATH)
+    {
+        return;
+    }
+    char* Slash = strrchr(ModulePath, '\\');
+    if (!Slash)
+    {
+        return;
+    }
+    Slash[1] = '\0';
+    lstrcpynA(Out, ModulePath, static_cast<int>(OutSize));
+}
+
+void ResolvePathRelativeTo(const char* InPath, const char* BaseDir, char* OutPath, size_t OutSize)
+{
+    if (!InPath || !InPath[0] || !OutPath || OutSize == 0)
+    {
+        return;
+    }
+    if (IsAbsolutePath(InPath) || !BaseDir || !BaseDir[0])
+    {
+        lstrcpynA(OutPath, InPath, static_cast<int>(OutSize));
+        return;
+    }
+    _snprintf_s(OutPath, OutSize, _TRUNCATE, "%s%s", BaseDir, InPath);
+}
+
+int ClampConfigInt(const char* Name, int Value, int MinValue, int MaxValue)
+{
+    if (Value < MinValue)
+    {
+        LOG("[Config] %s=%d < %d, clamping", Name, Value, MinValue);
+        return MinValue;
+    }
+    if (Value > MaxValue)
+    {
+        LOG("[Config] %s=%d > %d, clamping", Name, Value, MaxValue);
+        return MaxValue;
+    }
+    return Value;
+}
+} // namespace
 
 void LoadConfig()
 {
-    char ExePath[MAX_PATH] = {0};
-    HMODULE SelfModule = reinterpret_cast<HMODULE>(&__ImageBase);
-    GetModuleFileNameA(SelfModule, ExePath, MAX_PATH);
-    char* Slash = strrchr(ExePath, '\\');
-    if (Slash)
+    char ModuleDir[MAX_PATH] = {0};
+    CopyModuleDir(ModuleDir, sizeof(ModuleDir));
+    if (ModuleDir[0])
     {
-        Slash[1] = '\0';
+        _snprintf_s(GConfig.IniPath, MAX_PATH, _TRUNCATE, "%sfom_hook.ini", ModuleDir);
     }
-    char IniPath[MAX_PATH] = {0};
-    lstrcpyA(IniPath, ExePath);
-    lstrcatA(IniPath, "fom_hook.ini");
+    else
+    {
+        lstrcpyA(GConfig.IniPath, "fom_hook.ini");
+    }
+    GConfig.bIniFound = GetFileAttributesA(GConfig.IniPath) != INVALID_FILE_ATTRIBUTES;
 
+    const char* IniPath = GConfig.IniPath;
     GConfig.bLogRecv = GetPrivateProfileIntA("Logging", "LogRecv", 1, IniPath) != 0;
     GConfig.bLogSend = GetPrivateProfileIntA("Logging", "LogSend", 1, IniPath) != 0;
     GConfig.bLogHex = GetPrivateProfileIntA("Logging", "HexDump", 1, IniPath) != 0;
@@ -34,8 +97,6 @@ void LoadConfig()
     GConfig.OverlayKey = GetPrivateProfileIntA("Overlay", "ToggleKey", VK_F1, IniPath);
     GConfig.LogToggleKey = GetPrivateProfileIntA("Logging", "ToggleKey", VK_F2, IniPath);
     GConfig.bWrapperHooks = GetPrivateProfileIntA("WrapperHooks", "Enable", 1, IniPath) != 0;
-    GConfig.bWrapperPacketProc = GetPrivateProfileIntA("WrapperHooks", "PacketProc", 1, IniPath) != 0;
-    GConfig.bWs2Detours = GetPrivateProfileIntA("Hook", "Ws2Detours", 1, IniPath) != 0;
     GConfig.bLogEvents = GetPrivateProfileIntA("Events", "Log", 1, IniPath) != 0;
     GConfig.bPeekOnRead = GetPrivateProfileIntA("Events", "PeekOnRead", 1, IniPath) != 0;
     GConfig.bRakNetHooks = GetPrivateProfileIntA("RakNet", "Enable", 1, IniPath) != 0;
@@ -49,127 +110,38 @@ void LoadConfig()
     GetPrivateProfileStringA("Logging", "LogPath", "", LogPath, MAX_PATH, IniPath);
     if (LogPath[0])
     {
-        const bool IsAbs = ((LogPath[1] == ':' && (LogPath[2] == '\\' || LogPath[2] == '/')) ||
-                            (LogPath[0] == '\\' && LogPath[1] == '\\'));
-        if (IsAbs)
-        {
-            lstrcpynA(GConfig.LogPath, LogPath, MAX_PATH);
-        }
-        else
-        {
-            char ModulePath[MAX_PATH] = {0};
-            HMODULE SelfModule = reinterpret_cast<HMODULE>(&__ImageBase);
-            DWORD Length = GetModuleFileNameA(SelfModule, ModulePath, MAX_PATH);
-            if (Length > 0 && Length < MAX_PATH)
-            {
-                char* Slash = strrchr(ModulePath, '\\');
-                if (Slash)
-                {
-                    Slash[1] = '\0';
-                }
-                _snprintf_s(GConfig.LogPath, MAX_PATH, _TRUNCATE, "%s%s", ModulePath, LogPath);
-            }
-            else
-            {
-                lstrcpynA(GConfig.LogPath, LogPath, MAX_PATH);
-            }
-        }
+        ResolvePathRelativeTo(LogPath, ModuleDir, GConfig.LogPath, MAX_PATH);
     }
 
     char HuffmanPath[MAX_PATH] = {0};
     GetPrivateProfileStringA("Huffman", "TablePath", "..\\Server\\Master_TS\\huffman_table_runtime.json", HuffmanPath, MAX_PATH, IniPath);
-    if (HuffmanPath[0])
-    {
-        const bool IsAbs = ((HuffmanPath[1] == ':' && (HuffmanPath[2] == '\\' || HuffmanPath[2] == '/')) ||
-                            (HuffmanPath[0] == '\\' && HuffmanPath[1] == '\\'));
-        if (IsAbs)
-        {
-            lstrcpynA(GConfig.HuffmanTablePath, HuffmanPath, MAX_PATH);
-        }
-        else
-        {
-            char ModulePath[MAX_PATH] = {0};
-            HMODULE SelfModule = reinterpret_cast<HMODULE>(&__ImageBase);
-            DWORD Length = GetModuleFileNameA(SelfModule, ModulePath, MAX_PATH);
-            if (Length > 0 && Length < MAX_PATH)
-            {
-                char* Slash = strrchr(ModulePath, '\\');
-                if (Slash)
-                {
-                    Slash[1] = '\0';
-                }
-                _snprintf_s(GConfig.HuffmanTablePath, MAX_PATH, _TRUNCATE, "%s%s", ModulePath, HuffmanPath);
-            }
-            else
-            {
-                lstrcpynA(GConfig.HuffmanTablePath, HuffmanPath, MAX_PATH);
-            }
-        }
-    }
+    ResolvePathRelativeTo(HuffmanPath, ModuleDir, GConfig.HuffmanTablePath, MAX_PATH);
 
     char ItemPath[MAX_PATH] = {0};
     GetPrivateProfileStringA("Items", "OverridesPath", "item_overrides.csv", ItemPath, MAX_PATH, IniPath);
-    if (ItemPath[0])
-    {
-        const bool IsAbs = ((ItemPath[1] == ':' && (ItemPath[2] == '\\' || ItemPath[2] == '/')) ||
-                            (ItemPath[0] == '\\' && ItemPath[1] == '\\'));
-        if (IsAbs)
-        {
-            lstrcpynA(GConfig.ItemOverridesPath, ItemPath, MAX_PATH);
-        }
-        else
-        {
-            char ModulePath[MAX_PATH] = {0};
-            HMODULE SelfModule = reinterpret_cast<HMODULE>(&__ImageBase);
-            DWORD Length = GetModuleFileNameA(SelfModule, ModulePath, MAX_PATH);
-            if (Length > 0 && Length < MAX_PATH)
-            {
-                char* Slash = strrchr(ModulePath, '\\');
-                if (Slash)
-                {
-                    Slash[1] = '\0';
-                }
-                _snprintf_s(GConfig.ItemOverridesPath, MAX_PATH, _TRUNCATE, "%s%s", ModulePath, ItemPath);
-            }
-            else
-            {
-                lstrcpynA(GConfig.ItemOverridesPath, ItemPath, MAX_PATH);
-            }
-        }
-    }
+    ResolvePathRelativeTo(ItemPath, ModuleDir, GConfig.ItemOverridesPath, MAX_PATH);
 
     char ItemTemplatePath[MAX_PATH] = {0};
     GetPrivateProfileStringA("Items", "TemplateDumpPath", "..\\Docs\\Exports\\item_templates_raw.csv",
                              ItemTemplatePath, MAX_PATH, IniPath);
-    if (ItemTemplatePath[0])
-    {
-        const bool IsAbs = ((ItemTemplatePath[1] == ':' && (ItemTemplatePath[2] == '\\' || ItemTemplatePath[2] == '/')) ||
-                            (ItemTemplatePath[0] == '\\' && ItemTemplatePath[1] == '\\'));
-        if (IsAbs)
-        {
-            lstrcpynA(GConfig.ItemTemplateDumpPath, ItemTemplatePath, MAX_PATH);
-        }
-        else
-        {
-            char ModulePath[MAX_PATH] = {0};
-            HMODULE SelfModule = reinterpret_cast<HMODULE>(&__ImageBase);
-            DWORD Length = GetModuleFileNameA(SelfModule, ModulePath, MAX_PATH);
-            if (Length > 0 && Length < MAX_PATH)
-            {
-                char* Slash = strrchr(ModulePath, '\\');
-                if (Slash)
-                {
-                    Slash[1] = '\0';
-                }
-                _snprintf_s(GConfig.ItemTemplateDumpPath, MAX_PATH, _TRUNCATE, "%s%s", ModulePath, ItemTemplatePath);
-            }
-            else
-            {
-                lstrcpynA(GConfig.ItemTemplateDumpPath, ItemTemplatePath, MAX_PATH);
-            }
-        }
-    }
+    ResolvePathRelativeTo(ItemTemplatePath, ModuleDir, GConfig.ItemTemplateDumpPath, MAX_PATH);
 }
 
-
-
+void ValidateConfig()
+{
+    if (!GConfig.bIniFound)
+    {
+        LOG("[Config] ini missing: %s (defaults active)", GConfig.IniPath);
+    }
+    GConfig.MaxDump = ClampConfigInt("MaxDump", GConfig.MaxDump, 0, 65535);
+    GConfig.MaxBits = ClampConfigInt("MaxBits", GConfig.MaxBits, 0, 262144);
+    GConfig.BitsPerLine = ClampConfigInt("BitsPerLine", GConfig.BitsPerLine, 32, 512);
+    GConfig.LoginDumpBits = ClampConfigInt("LoginDumpBits", GConfig.LoginDumpBits, 0, 65535);
+    GConfig.LogMinIntervalMs = ClampConfigInt("MinIntervalMs", GConfig.LogMinIntervalMs, 0, 60000);
+    GConfig.LogRepeatSuppressMs = ClampConfigInt("RepeatSuppressMs", GConfig.LogRepeatSuppressMs, 0, 60000);
+    GConfig.RescanMs = ClampConfigInt("RescanMs", static_cast<int>(GConfig.RescanMs), 250, 60000);
+    if (!GConfig.LogPath[0])
+    {
+        InitLogPath();
+    }
+}

@@ -152,12 +152,20 @@ void EnsureD3D9Hooks()
         GD3D9MgrHookInstalled.store(true);
         LOG("[Hook] D3D9Mgr_Init detoured");
     }
+    else
+    {
+        LOG("[Hook] D3D9Mgr_Init detour failed");
+    }
 
     if (PatchIat(GetModuleHandleA(nullptr), "d3d9.dll", "Direct3DCreate9",
                  reinterpret_cast<void*>(&HookDirect3DCreate9),
                  reinterpret_cast<void**>(&Direct3DCreate9_Orig)))
     {
         LOG("[Hook] Direct3DCreate9 IAT hooked");
+    }
+    else
+    {
+        LOG("[Hook] Direct3DCreate9 IAT hook failed");
     }
 
     if (!GD3D9RescanStarted.exchange(true))

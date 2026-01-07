@@ -12,5 +12,8 @@ bool InstallDetourChecked(const char* Name, uint32_t Rva, size_t Length, const u
 /** Installs a detour and fixes a single rel32 CALL/JMP inside the copied prologue. */
 bool InstallDetourCheckedRel32(const char* Name, uint32_t Rva, size_t Length, const uint8_t* Expected,
                                void* Hook, void** OriginalOut, size_t RelOffset);
+/** Installs a detour at an absolute address after verifying the expected prologue bytes. */
+bool InstallDetourCheckedAt(const char* Name, void* TargetPtr, size_t Length, const uint8_t* Expected,
+                            void* Hook, void** OriginalOut);
 /** Patches an IAT entry and returns the original function. */
 bool PatchIat(HMODULE Module, const char* DllName, const char* FuncName, void* NewFunc, void** OriginalOut);

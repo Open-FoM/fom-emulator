@@ -9,6 +9,37 @@ static CRITICAL_SECTION LogLock;
 static bool bLogInit = false;
 static bool bConsoleEnabled = false;
 static ULONGLONG GLastPacketLogMs = 0;
+static HANDLE GConsoleOut = nullptr;
+static HANDLE GConsoleMutex = nullptr;
+
+static void ConsoleWrite(const char* Text)
+{
+    if (!bConsoleEnabled || !Text)
+    {
+        return;
+    }
+    if (GConsoleOut && GConsoleOut != INVALID_HANDLE_VALUE)
+    {
+        DWORD Written = 0;
+        WriteConsoleA(GConsoleOut, Text, static_cast<DWORD>(strlen(Text)), &Written, nullptr);
+        return;
+    }
+    fputs(Text, stdout);
+}
+
+static void ConsolePrintf(const char* Format, ...)
+{
+    if (!bConsoleEnabled || !Format)
+    {
+        return;
+    }
+    char Buffer[2048] = {0};
+    va_list Args;
+    va_start(Args, Format);
+    _vsnprintf_s(Buffer, sizeof(Buffer), _TRUNCATE, Format, Args);
+    va_end(Args);
+    ConsoleWrite(Buffer);
+}
 
 struct FRepeatState
 {
@@ -110,6 +141,7 @@ void InitLogPath()
 {
     if (GConfig.LogPath[0])
     {
+        EnsureDirectoryForPath(GConfig.LogPath);
         return;
     }
     char ExePath[MAX_PATH] = {0};
@@ -130,6 +162,7 @@ void InitLogPath()
     {
         lstrcpyA(GConfig.LogPath, "fom_hook.log");
     }
+    EnsureDirectoryForPath(GConfig.LogPath);
 }
 
 void Logf(const char* FuncName, const char* Format, ...)
@@ -163,7 +196,7 @@ void Logf(const char* FuncName, const char* Format, ...)
     }
     if (bConsoleEnabled)
     {
-        fprintf(stdout, "%s%s\r\n", Header, Message);
+        ConsolePrintf("%s%s\r\n", Header, Message);
     }
     LeaveCriticalSection(&LogLock);
 }
@@ -236,7 +269,7 @@ void LogHexExId(const char* Tag, const void* Data, int Length, const sockaddr* A
         fprintf(File, "%sSuppressed %d repeats of %s\r\n", SuppHeader, Suppressed, Signature.c_str());
         if (bConsoleEnabled)
         {
-            fprintf(stdout, "%sSuppressed %d repeats of %s\r\n", SuppHeader, Suppressed, Signature.c_str());
+            ConsolePrintf("%sSuppressed %d repeats of %s\r\n", SuppHeader, Suppressed, Signature.c_str());
         }
     }
 
@@ -305,53 +338,53 @@ void LogHexExId(const char* Tag, const void* Data, int Length, const sockaddr* A
     fclose(File);
     if (bConsoleEnabled)
     {
-        fprintf(stdout, "%slen=%d from=%s:%d\r\n", Header, Length, AddressBuffer, Port);
+        ConsolePrintf("%slen=%d from=%s:%d\r\n", Header, Length, AddressBuffer, Port);
         for (int Offset = 0; Offset < DumpLength; Offset += 16)
         {
             const int LineLength = (DumpLength - Offset < 16) ? (DumpLength - Offset) : 16;
-            fprintf(stdout, "  \x1b[36m%04x\x1b[0m  ", Offset);
+            ConsolePrintf("  \x1b[36m%04x\x1b[0m  ", Offset);
             for (int Index = 0; Index < LineLength; ++Index)
             {
                 const uint8_t Value = Bytes[Offset + Index];
                 if (Value == 0x00)
                 {
-                    fprintf(stdout, "\x1b[90m%02x\x1b[0m ", Value);
+                    ConsolePrintf("\x1b[90m%02x\x1b[0m ", Value);
                 }
                 else if (Value >= 0x20 && Value <= 0x7e)
                 {
-                    fprintf(stdout, "\x1b[33m%02x\x1b[0m ", Value);
+                    ConsolePrintf("\x1b[33m%02x\x1b[0m ", Value);
                 }
                 else
                 {
-                    fprintf(stdout, "%02x ", Value);
+                    ConsolePrintf("%02x ", Value);
                 }
             }
             for (int Index = LineLength; Index < 16; ++Index)
             {
-                fprintf(stdout, "   ");
+                ConsolePrintf("   ");
             }
-            fprintf(stdout, " |");
+            ConsolePrintf(" |");
             for (int Index = 0; Index < LineLength; ++Index)
             {
                 const uint8_t Value = Bytes[Offset + Index];
                 if (Value == 0x00)
                 {
-                    fprintf(stdout, "\x1b[90m.\x1b[0m");
+                    ConsolePrintf("\x1b[90m.\x1b[0m");
                 }
                 else if (Value >= 0x20 && Value <= 0x7e)
                 {
-                    fprintf(stdout, "\x1b[33m%c\x1b[0m", static_cast<char>(Value));
+                    ConsolePrintf("\x1b[33m%c\x1b[0m", static_cast<char>(Value));
                 }
                 else
                 {
-                    fprintf(stdout, ".");
+                    ConsolePrintf(".");
                 }
             }
-            fprintf(stdout, "|\r\n");
+            ConsolePrintf("|\r\n");
         }
         if (DumpLength < Length)
         {
-            fprintf(stdout, "  ... truncated %d bytes\r\n", Length - DumpLength);
+            ConsolePrintf("  ... truncated %d bytes\r\n", Length - DumpLength);
         }
     }
     LeaveCriticalSection(&LogLock);
@@ -369,6 +402,7 @@ void LogBits(const char* Tag, const void* Data, int Length, const sockaddr* Addr
         bLogInit = true;
     }
     EnterCriticalSection(&LogLock);
+    InitLogPath();
     SYSTEMTIME Time;
     GetLocalTime(&Time);
     LONG Frame = InterlockedIncrement(&GLogFrame);
@@ -433,29 +467,28 @@ void LogBits(const char* Tag, const void* Data, int Length, const sockaddr* Addr
 
     if (bConsoleEnabled)
     {
-        fprintf(stdout, "%sbits=%d order=lsb0 from=%s:%d\r\n", Header, TotalBits, AddressBuffer, Port);
+        ConsolePrintf("%sbits=%d order=lsb0 from=%s:%d\r\n", Header, TotalBits, AddressBuffer, Port);
         for (int BitOffset = 0; BitOffset < MaxBits; BitOffset += BitsPerLine)
         {
             int LineBits = (MaxBits - BitOffset < BitsPerLine) ? (MaxBits - BitOffset) : BitsPerLine;
-            fprintf(stdout, "  %04X  ", BitOffset);
+            ConsolePrintf("  %04X  ", BitOffset);
             for (int LineBitIndex = 0; LineBitIndex < LineBits; ++LineBitIndex)
             {
                 int Index = BitOffset + LineBitIndex;
                 int ByteIndex = Index / 8;
                 int BitIndex = Index % 8;
                 int BitValue = (Bytes[ByteIndex] >> BitIndex) & 1;
-                fputc(BitValue ? '1' : '0', stdout);
+                ConsolePrintf("%c", BitValue ? '1' : '0');
                 if ((LineBitIndex & 7) == 7)
                 {
-                    fputc(' ', stdout);
+                    ConsolePrintf(" ");
                 }
             }
-            fputc('\r', stdout);
-            fputc('\n', stdout);
+            ConsolePrintf("\r\n");
         }
         if (MaxBits < TotalBits)
         {
-            fprintf(stdout, "  ... truncated %d bits\r\n", TotalBits - MaxBits);
+            ConsolePrintf("  ... truncated %d bits\r\n", TotalBits - MaxBits);
         }
     }
     LeaveCriticalSection(&LogLock);
@@ -473,6 +506,7 @@ void LogBitsMsb(const char* Tag, const void* Data, int Length, const sockaddr* A
         bLogInit = true;
     }
     EnterCriticalSection(&LogLock);
+    InitLogPath();
     SYSTEMTIME Time;
     GetLocalTime(&Time);
     LONG Frame = InterlockedIncrement(&GLogFrame);
@@ -537,29 +571,28 @@ void LogBitsMsb(const char* Tag, const void* Data, int Length, const sockaddr* A
 
     if (bConsoleEnabled)
     {
-        fprintf(stdout, "%sbits=%d order=msb0 from=%s:%d\r\n", Header, TotalBits, AddressBuffer, Port);
+        ConsolePrintf("%sbits=%d order=msb0 from=%s:%d\r\n", Header, TotalBits, AddressBuffer, Port);
         for (int BitOffset = 0; BitOffset < MaxBits; BitOffset += BitsPerLine)
         {
             int LineBits = (MaxBits - BitOffset < BitsPerLine) ? (MaxBits - BitOffset) : BitsPerLine;
-            fprintf(stdout, "  %04X  ", BitOffset);
+            ConsolePrintf("  %04X  ", BitOffset);
             for (int LineBitIndex = 0; LineBitIndex < LineBits; ++LineBitIndex)
             {
                 int Index = BitOffset + LineBitIndex;
                 int ByteIndex = Index / 8;
                 int BitIndex = Index % 8;
                 int BitValue = (Bytes[ByteIndex] >> (7 - BitIndex)) & 1;
-                fputc(BitValue ? '1' : '0', stdout);
+                ConsolePrintf("%c", BitValue ? '1' : '0');
                 if ((LineBitIndex & 7) == 7)
                 {
-                    fputc(' ', stdout);
+                    ConsolePrintf(" ");
                 }
             }
-            fputc('\r', stdout);
-            fputc('\n', stdout);
+            ConsolePrintf("\r\n");
         }
         if (MaxBits < TotalBits)
         {
-            fprintf(stdout, "  ... truncated %d bits\r\n", TotalBits - MaxBits);
+            ConsolePrintf("  ... truncated %d bits\r\n", TotalBits - MaxBits);
         }
     }
     LeaveCriticalSection(&LogLock);
@@ -594,16 +627,69 @@ void InitConsole()
     {
         return;
     }
-    if (!AttachConsole(ATTACH_PARENT_PROCESS))
+    InitLogPath();
+    if (!GConsoleMutex)
     {
-        AllocConsole();
+        GConsoleMutex = CreateMutexA(nullptr, FALSE, "FoMHookLogConsole");
+    }
+    if (!GConsoleMutex)
+    {
+        if (bLogInit)
+        {
+            Logf("InitConsole", "console mutex create failed (err=%lu)", GetLastError());
+        }
+        return;
+    }
+    if (GetLastError() == ERROR_ALREADY_EXISTS)
+    {
+        return;
+    }
+    const bool HadConsole = GetConsoleWindow() != nullptr;
+    bool Attached = false;
+    bool Allocated = false;
+    if (!HadConsole)
+    {
+        Attached = AttachConsole(ATTACH_PARENT_PROCESS) != 0;
+        if (!Attached)
+        {
+            Allocated = AllocConsole() != 0;
+            if (!Allocated)
+            {
+                const DWORD AllocErr = GetLastError();
+                if (bLogInit)
+                {
+                    Logf("InitConsole", "console attach/alloc failed (err=%lu)", AllocErr);
+                }
+                return;
+            }
+        }
     }
     FILE* File = nullptr;
-    freopen_s(&File, "CONOUT$", "w", stdout);
-    freopen_s(&File, "CONOUT$", "w", stderr);
+    const errno_t StdoutErr = freopen_s(&File, "CONOUT$", "w", stdout);
+    const errno_t StderrErr = freopen_s(&File, "CONOUT$", "w", stderr);
+    if (StdoutErr != 0 || StderrErr != 0)
+    {
+        if (bLogInit)
+        {
+            Logf("InitConsole", "console stream attach failed (stdoutErr=%d stderrErr=%d)", StdoutErr, StderrErr);
+        }
+    }
+    GConsoleOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (!GConsoleOut || GConsoleOut == INVALID_HANDLE_VALUE)
+    {
+        GConsoleOut = CreateFileA("CONOUT$", GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+    }
+    if (!GConsoleOut || GConsoleOut == INVALID_HANDLE_VALUE)
+    {
+        if (bLogInit)
+        {
+            Logf("InitConsole", "console handle invalid");
+        }
+        return;
+    }
     setvbuf(stdout, nullptr, _IONBF, 0);
     setvbuf(stderr, nullptr, _IONBF, 0);
-    const HANDLE StdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    const HANDLE StdOut = GConsoleOut;
     if (StdOut && StdOut != INVALID_HANDLE_VALUE)
     {
         DWORD Mode = 0;
@@ -623,5 +709,7 @@ void InitConsole()
     }
     SetConsoleTitleA("FoM Hook Log");
     bConsoleEnabled = true;
+    Logf("InitConsole", "console ready (attached=%d allocated=%d prev=%d)",
+         Attached ? 1 : 0, Allocated ? 1 : 0, HadConsole ? 1 : 0);
 }
 

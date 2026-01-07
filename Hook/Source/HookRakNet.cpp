@@ -3,43 +3,6 @@
 
 static void* RakDecryptTrampoline = nullptr;
 
-static void LogRakNetKey(void* Self, const void* Key)
-{
-    if (!GConfig.bLogRakNetKey)
-    {
-        return;
-    }
-    const uint8_t* KeyBytes = nullptr;
-    if (Key)
-    {
-        KeyBytes = reinterpret_cast<const uint8_t*>(Key);
-    }
-    else if (Self)
-    {
-        KeyBytes = reinterpret_cast<const uint8_t*>(Self) + 0x1408;
-    }
-    if (!KeyBytes)
-    {
-        return;
-    }
-    char Hex[33] = {0};
-    __try
-    {
-        for (int Index = 0; Index < 16; ++Index)
-        {
-            _snprintf_s(Hex + Index * 2, sizeof(Hex) - Index * 2, _TRUNCATE, "%02X", KeyBytes[Index]);
-        }
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-        LOG("RakNet SetEncryptionKey key unreadable self=%p key=%p", Self, Key);
-        return;
-    }
-    char Line[256];
-    _snprintf_s(Line, sizeof(Line), _TRUNCATE, "RakNet SetEncryptionKey self=%p key=%s", Self, Hex);
-    LOG("%s", Line);
-}
-
 static void LogRakNetDecrypt(const void* Peer, const uint8_t* Buffer, int Length, const uint8_t* Plain, int PlainLength)
 {
     if (!GConfig.bLogRakNetDecrypt)
@@ -91,20 +54,6 @@ static void LogRakNetDecrypt(const void* Peer, const uint8_t* Buffer, int Length
     CloseHandle(FileHandle);
 }
 
-/** RakNet detours. */
-typedef void(__thiscall* FRakSetKeyFn)(void* Self, const void* Key);
-static FRakSetKeyFn RakSetKeyFn = nullptr;
-
-static void __fastcall HookRakSetEncryptionKeyCall(void* Self, void* Edx, const void* Key)
-{
-    (void)Edx;
-    LogRakNetKey(Self, Key);
-    if (RakSetKeyFn)
-    {
-        RakSetKeyFn(Self, Key);
-    }
-}
-
 typedef int(__thiscall* FRakDecryptFn)(void* Self, uint8_t* Buffer, int Length, void* Arg4, void* Arg5);
 static FRakDecryptFn RakDecryptFn = nullptr;
 
@@ -128,67 +77,8 @@ void InstallRakNetDetours()
         LOG("RakNet hooks disabled");
         return;
     }
-    /** RVA 0x004113C0 ReliabilityLayer_SetEncryptionKey (client base assumed 0x400000). */
-    const uint32_t RvaSetKey = 0x0113C0;
     /** RVA 0x004F41B0 RakNet_DecryptEntry. */
     const uint32_t RvaDecrypt = 0x0F41B0;
-    if (GConfig.bLogRakNetKey)
-    {
-        RakSetKeyFn = reinterpret_cast<FRakSetKeyFn>(GExeBase + RvaSetKey);
-        if (!RakSetKeyFn)
-        {
-            LOG("RakNet_SetEncryptionKey address missing");
-        }
-        else
-        {
-            int Patched = 0;
-            uint8_t* Base = GExeBase;
-            auto* Dos = reinterpret_cast<PIMAGE_DOS_HEADER>(Base);
-            auto* Nt = reinterpret_cast<PIMAGE_NT_HEADERS>(Base + Dos->e_lfanew);
-            auto* Section = IMAGE_FIRST_SECTION(Nt);
-            for (unsigned int Index = 0; Index < Nt->FileHeader.NumberOfSections; ++Index, ++Section)
-            {
-                if (memcmp(Section->Name, ".text", 5) != 0)
-                {
-                    continue;
-                }
-                uint8_t* Start = Base + Section->VirtualAddress;
-                uint8_t* End = Start + Section->Misc.VirtualSize;
-                for (uint8_t* Cursor = Start; Cursor + 5 <= End; ++Cursor)
-                {
-                    if (Cursor[0] != 0xE8)
-                    {
-                        continue;
-                    }
-                    int32_t Rel = *reinterpret_cast<int32_t*>(Cursor + 1);
-                    uint8_t* Target = Cursor + 5 + Rel;
-                    if (Target != Base + RvaSetKey)
-                    {
-                        continue;
-                    }
-                    DWORD OldProt = 0;
-                    if (!VirtualProtect(Cursor + 1, sizeof(int32_t), PAGE_EXECUTE_READWRITE, &OldProt))
-                    {
-                        continue;
-                    }
-                    int32_t NewRel = static_cast<int32_t>(reinterpret_cast<uint8_t*>(&HookRakSetEncryptionKeyCall) - (Cursor + 5));
-                    *reinterpret_cast<int32_t*>(Cursor + 1) = NewRel;
-                    VirtualProtect(Cursor + 1, sizeof(int32_t), OldProt, &OldProt);
-                    FlushInstructionCache(GetCurrentProcess(), Cursor, 5);
-                    Patched++;
-                }
-                break;
-            }
-            if (Patched > 0)
-            {
-                LOG("RakNet_SetEncryptionKey callsites patched=%d", Patched);
-            }
-            else
-            {
-                LOG("RakNet_SetEncryptionKey callsites NOT patched");
-            }
-        }
-    }
     if (GConfig.bLogRakNetDecrypt)
     {
         if (InstallDetour(RvaDecrypt, 5, reinterpret_cast<void*>(&HookRakDecryptEntry), &RakDecryptTrampoline))

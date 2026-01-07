@@ -48,16 +48,10 @@ struct FHookConfig
     int LogToggleKey = VK_F2;
     /** Enable wrapper hooks. */
     bool bWrapperHooks = true;
-    /** Enable packet processor hook. */
-    bool bWrapperPacketProc = false;
-    /** Enable Winsock detours. */
-    bool bWs2Detours = true;
     /** Log network events. */
     bool bLogEvents = true;
     /** Enable peek on read events. */
     bool bPeekOnRead = true;
-    /** Log RakNet encryption keys. */
-    bool bLogRakNetKey = true;
     /** Log RakNet decrypt output (off by default). */
     bool bLogRakNetDecrypt = false;
     /** Enable RakNet detours. */
@@ -74,6 +68,10 @@ struct FHookConfig
     bool bItemTemplateDump = false;
     /** Override log file path. */
     char LogPath[MAX_PATH] = {0};
+    /** Resolved ini path for logging and diagnostics. */
+    char IniPath[MAX_PATH] = {0};
+    /** True if the ini file exists on disk. */
+    bool bIniFound = false;
     /** Output path for Huffman table dump. */
     char HuffmanTablePath[MAX_PATH] = {0};
     /** Item override CSV path. */

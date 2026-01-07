@@ -184,7 +184,29 @@ static bool CheckPrologue(uint32_t Rva, const uint8_t* Expected, size_t Length, 
     _snprintf_s(Line, sizeof(Line), _TRUNCATE,
                 "%s prologue mismatch (exp: %s, got: %s) - skipping",
                 Name, ExpectedHex, ActualHex);
-    (void)Line;
+    LOG("%s", Line);
+    return false;
+}
+
+static bool CheckPrologueAt(void* TargetPtr, const uint8_t* Expected, size_t Length, const char* Name)
+{
+    if (!TargetPtr || !Expected || Length == 0 || !Name)
+    {
+        return false;
+    }
+    if (memcmp(TargetPtr, Expected, Length) == 0)
+    {
+        return true;
+    }
+    char ExpectedHex[128] = {0};
+    char ActualHex[128] = {0};
+    BytesToHex(Expected, Length, ExpectedHex, sizeof(ExpectedHex));
+    BytesToHex(reinterpret_cast<const uint8_t*>(TargetPtr), Length, ActualHex, sizeof(ActualHex));
+    char Line[256] = {0};
+    _snprintf_s(Line, sizeof(Line), _TRUNCATE,
+                "%s prologue mismatch (exp: %s, got: %s) - skipping",
+                Name, ExpectedHex, ActualHex);
+    LOG("%s", Line);
     return false;
 }
 
@@ -196,7 +218,10 @@ bool InstallDetourChecked(const char* Name, uint32_t Rva, size_t Length, const u
         return false;
     }
     bool bOk = InstallDetour(Rva, Length, Hook, OriginalOut);
-    (void)bOk;
+    if (!bOk && Name)
+    {
+        LOG("%s detour install failed", Name);
+    }
     return bOk;
 }
 
@@ -208,7 +233,25 @@ bool InstallDetourCheckedRel32(const char* Name, uint32_t Rva, size_t Length, co
         return false;
     }
     bool bOk = InstallDetourRel32(Rva, Length, Hook, OriginalOut, RelOffset);
-    (void)bOk;
+    if (!bOk && Name)
+    {
+        LOG("%s detour install failed", Name);
+    }
+    return bOk;
+}
+
+bool InstallDetourCheckedAt(const char* Name, void* TargetPtr, size_t Length, const uint8_t* Expected,
+                            void* Hook, void** OriginalOut)
+{
+    if (!CheckPrologueAt(TargetPtr, Expected, Length, Name))
+    {
+        return false;
+    }
+    bool bOk = InstallDetourAt(TargetPtr, Length, Hook, OriginalOut, Name);
+    if (!bOk && Name)
+    {
+        LOG("%s detour install failed", Name);
+    }
     return bOk;
 }
 
