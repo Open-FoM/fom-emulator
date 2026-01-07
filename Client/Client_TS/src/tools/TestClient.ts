@@ -1,28 +1,32 @@
-import dgram from 'dgram';
 import os from 'os';
 import path from 'path';
-import { BitStreamReader, BitStreamWriter } from '../protocol/BitStream';
 import {
-  CONNECTION_MAGIC,
-  ConnectionRequestType,
+  RakPeer,
+  RakPriority,
+  RakReliability,
+  NativeBitStream,
+  BitStreamReader,
+  BitStreamWriter,
+  addressFromString,
+  addressToIp,
+  addressToString,
+  decodeString,
+  type RakSystemAddress,
+} from '@openfom/networking';
+import {
   DEFAULT_PORT,
   LithTechMessageId,
-  OPEN_CONNECTION_PROTOCOL_VERSION,
   RakNetMessageId,
-  RETRY_INTERVAL,
   SEQUENCE_MASK,
+  WORLD_SERVER_PASSWORD,
 } from '../protocol/Constants';
 import {
-  buildOpenConnectionRequest,
   buildLoginAuth,
   buildLoginAuthSession,
-  buildLoginRequestInner,
+  buildLoginRequest,
   buildWorldLogin,
-  wrapFomReliablePacket,
-  buildRakPeerGuidSeed,
 } from '../protocol/FoMPacketBuilder';
-import RakBitStream from '../raknet-js/structures/BitStream';
-import { readCompressedString } from '../protocol/RakStringCompressor';
+import type { LoginAuthOptions } from '../protocol/FoMPacketBuilder';
 import { PacketDirection, PacketLogger } from '../utils/PacketLogger';
 import {
   loadEnvCandidates,
@@ -32,240 +36,11 @@ import {
   parsePacketIds,
 } from '../config/ConfigLoader';
 
-const DEFAULT_GUID_SEED = buildRakPeerGuidSeed();
-
-type ParsedReliablePacket = { innerData: Buffer; reliability: number };
-
-const RELIABILITY = {
-  UNRELIABLE: 0,
-  UNRELIABLE_SEQUENCED: 1,
-  RELIABLE: 2,
-  RELIABLE_ORDERED: 3,
-  RELIABLE_SEQUENCED: 4,
-};
-
-const RELIABLE_SCORE_IDS = [
-  RakNetMessageId.ID_FILE_LIST_TRANSFER_HEADER,
-  RakNetMessageId.ID_FILE_LIST_TRANSFER_RESPONSE,
-  RakNetMessageId.ID_LOGIN_REQUEST,
-  RakNetMessageId.ID_LOGIN_REQUEST_RETURN,
-  RakNetMessageId.ID_LOGIN,
-  RakNetMessageId.ID_LOGIN_RETURN,
-  RakNetMessageId.ID_LOGIN_TOKEN_CHECK,
-  RakNetMessageId.ID_WORLD_SELECT,
-  RakNetMessageId.ID_WORLD_LOGIN,
-  RakNetMessageId.ID_WORLD_LOGIN_RETURN,
-];
-
-class SafeBitReader {
-  private data: Buffer;
-  private bytePos: number;
-  private bitPos: number;
-
-  constructor(data: Buffer) {
-    this.data = data;
-    this.bytePos = 0;
-    this.bitPos = 7;
-  }
-
-  remainingBits(): number {
-    if (this.bytePos >= this.data.length) return 0;
-    return (this.data.length - this.bytePos - 1) * 8 + (this.bitPos + 1);
-  }
-
-  readBit(): number | null {
-    if (this.bytePos >= this.data.length) return null;
-    const byte = this.data[this.bytePos];
-    const bit = (byte >> this.bitPos) & 0x01;
-    this.bitPos -= 1;
-    if (this.bitPos < 0) {
-      this.bitPos = 7;
-      this.bytePos += 1;
-    }
-    return bit;
-  }
-
-  readBits(count: number): number | null {
-    let value = 0;
-    for (let i = 0; i < count; i += 1) {
-      const bit = this.readBit();
-      if (bit === null) return null;
-      value = (value << 1) | bit;
-    }
-    return value >>> 0;
-  }
-
-  readByte(): number | null {
-    const bits = this.readBits(8);
-    return bits === null ? null : bits;
-  }
-
-  readLong(): number | null {
-    const b0 = this.readByte();
-    const b1 = this.readByte();
-    const b2 = this.readByte();
-    const b3 = this.readByte();
-    if (b0 === null || b1 === null || b2 === null || b3 === null) return null;
-    return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24)) >>> 0;
-  }
-
-  readShort(): number | null {
-    const b0 = this.readByte();
-    const b1 = this.readByte();
-    if (b0 === null || b1 === null) return null;
-    return (b0 + (b1 << 8)) >>> 0;
-  }
-
-  alignRead(): void {
-    if (this.bitPos !== 7) {
-      this.bitPos = 7;
-      this.bytePos += 1;
-    }
-  }
-
-  readCompressedUnsigned(sizeBytes: number): number | null {
-    let currentByte = sizeBytes - 1;
-
-    while (currentByte > 0) {
-      const b = this.readBit();
-      if (b === null) return null;
-      if (b === 1) {
-        currentByte -= 1;
-      } else {
-        let value = 0;
-        for (let i = 0; i <= currentByte; i += 1) {
-          const byte = this.readByte();
-          if (byte === null) return null;
-          value |= byte << (i * 8);
-        }
-        return value >>> 0;
-      }
-    }
-
-    const b = this.readBit();
-    if (b === null) return null;
-    if (b === 1) {
-      const low = this.readBits(4);
-      if (low === null) return null;
-      return low;
-    }
-    const byte = this.readByte();
-    if (byte === null) return null;
-    return byte;
-  }
-}
-
-const scoreInnerPayload = (inner: Buffer): number => {
-  if (!inner || inner.length === 0) return 0;
-  let score = 1;
-  const first = inner[0];
-  if (RELIABLE_SCORE_IDS.includes(first)) {
-    score += 8;
-  }
-  for (const id of RELIABLE_SCORE_IDS) {
-    if (inner.includes(id)) score += 2;
-  }
-  return score;
-};
-
-const bestScore = (packets: ParsedReliablePacket[]): number => {
-  let best = 0;
-  for (const pkt of packets) {
-    const score = scoreInnerPayload(pkt.innerData);
-    if (score > best) best = score;
-  }
-  return best;
-};
-
-const parseLegacyReliable = (data: Buffer): ParsedReliablePacket[] | null => {
-  if (!data || data.length <= 17) return null;
-  if ((data[0] & 0x40) !== 0x40) return null;
-  return [{ innerData: data.subarray(17), reliability: RELIABILITY.RELIABLE }];
-};
-
-const parseRakNetBitAligned = (data: Buffer): ParsedReliablePacket[] | null => {
-  if (!data || data.length === 0) return null;
-  const stream = new SafeBitReader(data);
-  const hasAcksBit = stream.readBit();
-  if (hasAcksBit === null) return null;
-  const hasAcks = hasAcksBit === 1;
-  if (hasAcks) {
-    const ackRemoteTime = stream.readLong();
-    if (ackRemoteTime === null) return null;
-    const count = stream.readCompressedUnsigned(2);
-    if (count === null) return null;
-    for (let i = 0; i < count; i += 1) {
-      const equalBit = stream.readBit();
-      const min = stream.readLong();
-      if (equalBit === null || min === null) return null;
-      if (equalBit === 0) {
-        const maxVal = stream.readLong();
-        if (maxVal === null) return null;
-      }
-    }
-    if (stream.remainingBits() === 0) {
-      return null;
-    }
-  }
-
-  const hasRemoteBit = stream.readBit();
-  if (hasRemoteBit === null) return null;
-  if (hasRemoteBit === 1) {
-    const remoteTime = stream.readLong();
-    if (remoteTime === null) return null;
-  }
-
-  const packets: ParsedReliablePacket[] = [];
-  while (stream.remainingBits() >= 8) {
-    const messageNumber = stream.readLong();
-    const reliabilityBits = stream.readBits(3);
-    if (messageNumber === null || reliabilityBits === null) return null;
-    const reliability = reliabilityBits;
-
-    if (
-      reliability === RELIABILITY.UNRELIABLE_SEQUENCED ||
-      reliability === RELIABILITY.RELIABLE_ORDERED ||
-      reliability === RELIABILITY.RELIABLE_SEQUENCED
-    ) {
-      const channelBits = stream.readBits(5);
-      const orderingVal = stream.readLong();
-      if (channelBits === null || orderingVal === null) return null;
-    }
-
-    const splitBit = stream.readBit();
-    if (splitBit === null) return null;
-    const isSplit = splitBit === 1;
-    if (isSplit) {
-      const splitId = stream.readShort();
-      const splitIndex = stream.readCompressedUnsigned(4);
-      const splitCount = stream.readCompressedUnsigned(4);
-      if (splitId === null || splitIndex === null || splitCount === null) return null;
-    }
-
-    const lengthBits = stream.readCompressedUnsigned(2);
-    if (lengthBits === null) return null;
-    stream.alignRead();
-    if (lengthBits > stream.remainingBits()) {
-      return null;
-    }
-
-    const innerStream = new RakBitStream();
-    for (let i = 0; i < lengthBits; i += 1) {
-      const bit = stream.readBit();
-      if (bit === null) return null;
-      innerStream.writeBit(bit === 1);
-    }
-
-    const innerBytes = Math.ceil(lengthBits / 8);
-    const innerData = innerStream.data.subarray(0, innerBytes);
-    packets.push({ innerData, reliability });
-  }
-
-  return packets.length > 0 ? packets : null;
-};
-
 class TestClient {
-  private socket: dgram.Socket;
+  private masterPeer: RakPeer;
+  private masterAddress: RakSystemAddress;
+  private masterPollTimer?: NodeJS.Timeout;
+  private masterConnected: boolean;
   private serverAddress: string;
   private serverPort: number;
   private packetLogger: PacketLogger;
@@ -281,10 +56,10 @@ class TestClient {
   private loginAuthFileCRCs: [number, number, number];
   private loginAuthSteamTicket?: Buffer;
   private loginAuthSteamTicketLength?: number;
-  private loginAuthWrapReliable: boolean;
-  private loginAuthReliable?: { timestamp?: number; messageNumber?: number; orderingFlags?: number; lengthInfo?: number };
   private loginAuthSent: boolean;
   private loginAuthPass: string;
+  private pendingLoginRequest?: { username: string; clientVersion: number };
+  private pendingLoginAuth?: LoginAuthOptions;
   private worldLoginWorldId: number;
   private worldLoginWorldInst: number;
   private worldLoginPlayerId: number;
@@ -293,15 +68,13 @@ class TestClient {
   private worldLoginPending: boolean;
   private worldLoginLastSelectKey?: string;
   private worldLoginRetryTimer?: NodeJS.Timeout;
-  private worldSocket?: dgram.Socket;
+  private worldPeer?: RakPeer;
+  private worldAddress?: RakSystemAddress;
+  private worldPollTimer?: NodeJS.Timeout;
+  private worldConnected: boolean;
   private worldConnectionId: number;
   private worldConnectActive: boolean;
-  private worldOpenSent: boolean;
   private worldLoginSentToWorld: boolean;
-  private worldConnectTimer?: NodeJS.Timeout;
-  private worldGuid: Buffer;
-  private worldSeed: Buffer;
-  private worldProtocolVersion: number;
   private worldLithOutSeq: number;
   private worldConnectStageSent: boolean;
   private worldPingTimer?: NodeJS.Timeout;
@@ -330,8 +103,6 @@ class TestClient {
       fileCRCs?: [number, number, number];
       steamTicket?: Buffer;
       steamTicketLength?: number;
-      wrapReliable?: boolean;
-      reliable?: { timestamp?: number; messageNumber?: number; orderingFlags?: number; lengthInfo?: number };
     },
     worldLogin?: {
       worldId?: number;
@@ -340,13 +111,13 @@ class TestClient {
       worldConst?: number;
     },
     worldNet?: {
-      guid?: Buffer;
-      seed?: Buffer;
-      protocolVersion?: number;
       connectionId?: number;
     },
   ) {
-    this.socket = dgram.createSocket('udp4');
+    this.masterPeer = new RakPeer();
+    this.masterPeer.startup(1, 0, 0);
+    this.masterAddress = addressFromString(serverAddress, serverPort);
+    this.masterConnected = false;
     this.serverAddress = serverAddress;
     this.serverPort = serverPort;
     this.packetLogger = packetLogger;
@@ -362,10 +133,10 @@ class TestClient {
     this.loginAuthFileCRCs = loginAuth?.fileCRCs ?? [0, 0, 0];
     this.loginAuthSteamTicket = loginAuth?.steamTicket;
     this.loginAuthSteamTicketLength = loginAuth?.steamTicketLength;
-    this.loginAuthWrapReliable = loginAuth?.wrapReliable ?? true;
-    this.loginAuthReliable = loginAuth?.reliable;
     this.loginAuthSent = false;
     this.loginAuthPass = loginAuth?.password ?? '';
+    this.pendingLoginRequest = undefined;
+    this.pendingLoginAuth = undefined;
     this.worldLoginWorldId = worldLogin?.worldId ?? 0;
     this.worldLoginWorldInst = worldLogin?.worldInst ?? 0;
     this.worldLoginPlayerId = worldLogin?.playerId ?? 0;
@@ -373,11 +144,8 @@ class TestClient {
     this.worldLoginPending = false;
     this.worldConnectionId = worldNet?.connectionId ?? (this.connectionId + 1);
     this.worldConnectActive = false;
-    this.worldOpenSent = false;
     this.worldLoginSentToWorld = false;
-    this.worldGuid = worldNet?.guid ?? DEFAULT_GUID_SEED.guid;
-    this.worldSeed = worldNet?.seed ?? DEFAULT_GUID_SEED.seed;
-    this.worldProtocolVersion = worldNet?.protocolVersion ?? OPEN_CONNECTION_PROTOCOL_VERSION;
+    this.worldConnected = false;
     this.worldLithOutSeq = 0;
     this.worldConnectStageSent = false;
     this.worldYourId = null;
@@ -397,17 +165,10 @@ class TestClient {
       ) || 5000,
     );
     this.worldUnguaranteedLogLast = 0;
-    
-    this.socket.on('message', (msg, rinfo) => {
-      this.logIncoming(msg, rinfo.address, rinfo.port, this.connectionId);
-      this.tryAutoLoginAuth(msg);
-      this.tryAutoWorldLogin(msg);
-    });
 
-    this.socket.on('error', (err) => {
-      PacketLogger.globalNote(`[Error] client socket ${err.message}`);
-      console.error('Socket error:', err);
-    });
+    this.masterPollTimer = setInterval(() => {
+      this.pollMasterPeer();
+    }, 10);
   }
 
   private logIncoming(data: Buffer, address: string, port: number, connectionId: number): void {
@@ -436,6 +197,96 @@ class TestClient {
     this.packetLogger.logAnalysis(outgoing, logged);
   }
 
+  private sendPacket(
+    peer: RakPeer,
+    address: RakSystemAddress,
+    data: Buffer,
+    connectionId: number,
+    priority: RakPriority = RakPriority.HIGH,
+    reliability: RakReliability = RakReliability.RELIABLE,
+  ): void {
+    const ip = addressToIp(address);
+    this.logOutgoing(data, ip, address.port, connectionId);
+    const ok = peer.send(
+      data,
+      priority,
+      reliability,
+      0,
+      address,
+      false,
+    );
+    if (!ok) {
+      const addr = addressToString(address);
+      PacketLogger.globalNote(`[Send] failed to ${addr} len=${data.length}`, true);
+    }
+  }
+
+  private pollMasterPeer(): void {
+    let packet = this.masterPeer.receive();
+    while (packet) {
+      const data = Buffer.from(packet.data);
+      const ip = addressToIp(packet.systemAddress);
+      this.logIncoming(data, ip, packet.systemAddress.port, this.connectionId);
+      this.handleMasterMessage(data, packet.systemAddress);
+      packet = this.masterPeer.receive();
+    }
+  }
+
+  private pollWorldPeer(): void {
+    if (!this.worldPeer) return;
+    let packet = this.worldPeer.receive();
+    while (packet) {
+      const data = Buffer.from(packet.data);
+      const ip = addressToIp(packet.systemAddress);
+      this.logIncoming(data, ip, packet.systemAddress.port, this.worldConnectionId);
+      this.handleWorldMessage(data, packet.systemAddress);
+      packet = this.worldPeer.receive();
+    }
+  }
+
+  private handleMasterMessage(data: Buffer, address: RakSystemAddress): void {
+    if (data.length === 0) return;
+    const msgId = data[0];
+
+    if (
+      msgId === RakNetMessageId.ID_CONNECTION_REQUEST_ACCEPTED ||
+      msgId === RakNetMessageId.ID_NEW_INCOMING_CONNECTION
+    ) {
+      if (!this.masterConnected) {
+        this.masterConnected = true;
+        PacketLogger.globalNote(`[Master] Connected ${addressToString(address)}`, true);
+      }
+      if (this.pendingLoginRequest) {
+        const pending = this.pendingLoginRequest;
+        this.pendingLoginRequest = undefined;
+        this.sendLoginRequest(pending);
+      }
+      if (this.pendingLoginAuth) {
+        const pending = this.pendingLoginAuth;
+        this.pendingLoginAuth = undefined;
+        this.sendLoginAuth(pending);
+      }
+      if (this.worldLoginPending) {
+        this.sendWorldLogin();
+      }
+      return;
+    }
+
+    if (
+      msgId === RakNetMessageId.ID_CONNECTION_ATTEMPT_FAILED ||
+      msgId === RakNetMessageId.ID_CONNECTION_LOST ||
+      msgId === RakNetMessageId.ID_DISCONNECTION_NOTIFICATION
+    ) {
+      this.masterConnected = false;
+      const addr = addressToString(address);
+      PacketLogger.globalNote(`[Master] Disconnected msg=0x${msgId.toString(16)} ${addr}`, true);
+      return;
+    }
+
+    this.tryAutoLoginAuth(data);
+    this.tryAutoWorldLogin(data);
+  }
+
   private hexDump(buffer: Buffer): void {
     const bytesPerLine = 16;
     for (let offset = 0; offset < buffer.length; offset += bytesPerLine) {
@@ -446,117 +297,41 @@ class TestClient {
     }
   }
 
-  private analyzeResponse(data: Buffer): void {
-    if (data.length < 4) return;
-    
-    const firstDword = data.readUInt32LE(0);
-    if (firstDword === CONNECTION_MAGIC) {
-      console.log('\n  → Response contains Connection Magic');
-      if (data.length > 4) {
-        const typeBits = data[4] & 0x07;
-        console.log(`  → Response Type: ${typeBits}`);
-      }
-    }
-  }
-
-  private extractLoginPayload(data: Buffer): Buffer | null {
-    if (data.length === 0) return null;
-    const first = data[0];
-    if ((first & 0x80) === 0x80 && (first & 0x40) === 0) {
-      return null;
-    }
-    if ((first & 0x40) === 0x40) {
-      if (data.length <= 17) return null;
-      return data.subarray(17);
-    }
-    return data;
-  }
-
   private decodeLoginRequestReturnPayload(inner: Buffer): { status: number; username: string } | null {
     if (!inner || inner.length === 0) return null;
     try {
-      const stream = new RakBitStream(inner);
-      let packetId = stream.readByte();
+      const stream = new NativeBitStream(inner, true);
+      let packetId = stream.readU8();
       if (packetId === RakNetMessageId.ID_TIMESTAMP) {
-        if (stream.remainingReadBits() < 64) return null;
-        stream.readLongLong();
-        packetId = stream.readByte();
+        stream.readBytes(8);
+        packetId = stream.readU8();
       }
       if (packetId !== RakNetMessageId.ID_LOGIN_REQUEST_RETURN) return null;
 
-      const statusStream = stream.readCompressed(1);
-      const status = statusStream.readByte();
-      const username = readCompressedString(stream, 2048);
+      const status = stream.readCompressedU8() & 0xff;
+      const username = decodeString(stream, 2048);
       return { status, username };
     } catch {
       return null;
     }
   }
 
-  private scanForLoginRequestReturn(inner: Buffer, maxHits: number = 2): { status: number; username: string } | null {
-    if (!inner || inner.length === 0) return null;
-    let hits = 0;
-    for (let i = 0; i < inner.length; i += 1) {
-      if (inner[i] !== RakNetMessageId.ID_LOGIN_REQUEST_RETURN) continue;
-      const decoded = this.decodeLoginRequestReturnPayload(inner.subarray(i));
-      if (decoded) return decoded;
-      hits += 1;
-      if (hits >= maxHits) break;
-    }
-    return null;
-  }
-
   private decodeLoginRequestReturn(data: Buffer): { status: number; username: string } | null {
-    const payload = this.extractLoginPayload(data);
-    if (payload && payload.length > 0) {
-      let inner = payload;
-      if (inner[0] === 0x80 && inner.length > 5) {
-        inner = inner.subarray(5);
-      }
-      const direct = this.decodeLoginRequestReturnPayload(inner);
-      if (direct) return direct;
-    }
-
-    const inners = this.extractReliablePackets(data);
-    if (inners) {
-      for (const buf of inners) {
-        if (!buf || buf.length === 0) continue;
-        const innerPayload = this.extractLoginPayload(buf) ?? buf;
-        let inner = innerPayload;
-        if (inner[0] === 0x80 && inner.length > 5) {
-          inner = inner.subarray(5);
-        }
-        const decoded = this.decodeLoginRequestReturnPayload(inner);
-        if (decoded) return decoded;
-      }
-    }
-
-    if (payload && payload.length > 0) {
-      let inner = payload;
-      if (inner[0] === 0x80 && inner.length > 5) {
-        inner = inner.subarray(5);
-      }
-      const scanned = this.scanForLoginRequestReturn(inner);
-      if (scanned) return scanned;
-    }
-
-    return null;
+    return this.decodeLoginRequestReturnPayload(data);
   }
 
   private decodeLoginReturnPayload(inner: Buffer): { status: number; playerId: number } | null {
     if (!inner || inner.length === 0) return null;
     try {
-      const stream = new RakBitStream(inner);
-      let packetId = stream.readByte();
+      const stream = new NativeBitStream(inner, true);
+      let packetId = stream.readU8();
       if (packetId === RakNetMessageId.ID_TIMESTAMP) {
-        if (stream.remainingReadBits() < 64) return null;
-        stream.readLongLong();
-        packetId = stream.readByte();
+        stream.readBytes(8);
+        packetId = stream.readU8();
       }
       if (packetId !== RakNetMessageId.ID_LOGIN_RETURN) return null;
 
-      const statusStream = stream.readCompressed(1);
-      const status = statusStream.readByte();
+      const status = stream.readCompressedU8() & 0xff;
       const playerId = this.readCompressedUInt(stream, 4);
       return { status, playerId };
     } catch {
@@ -564,65 +339,21 @@ class TestClient {
     }
   }
 
-  private scanForLoginReturn(inner: Buffer, maxHits: number = 2): { status: number; playerId: number } | null {
-    if (!inner || inner.length === 0) return null;
-    let hits = 0;
-    for (let i = 0; i < inner.length; i += 1) {
-      if (inner[i] !== RakNetMessageId.ID_LOGIN_RETURN) continue;
-      const decoded = this.decodeLoginReturnPayload(inner.subarray(i));
-      if (decoded) return decoded;
-      hits += 1;
-      if (hits >= maxHits) break;
-    }
-    return null;
-  }
-
   private decodeLoginReturn(data: Buffer): { status: number; playerId: number } | null {
-    const payload = this.extractLoginPayload(data);
-    if (payload && payload.length > 0) {
-      let inner = payload;
-      if (inner[0] === 0x80 && inner.length > 5) {
-        inner = inner.subarray(5);
-      }
-      const direct = this.decodeLoginReturnPayload(inner);
-      if (direct) return direct;
-    }
-
-    const inners = this.extractReliablePackets(data);
-    if (inners) {
-      for (const buf of inners) {
-        if (!buf || buf.length === 0) continue;
-        const innerPayload = this.extractLoginPayload(buf) ?? buf;
-        let inner = innerPayload;
-        if (inner[0] === 0x80 && inner.length > 5) {
-          inner = inner.subarray(5);
-        }
-        const decoded = this.decodeLoginReturnPayload(inner);
-        if (decoded) return decoded;
-      }
-    }
-
-    if (payload && payload.length > 0) {
-      let inner = payload;
-      if (inner[0] === 0x80 && inner.length > 5) {
-        inner = inner.subarray(5);
-      }
-      const scanned = this.scanForLoginReturn(inner);
-      if (scanned) return scanned;
-    }
-
-    return null;
+    return this.decodeLoginReturnPayload(data);
   }
 
-  private readCompressedUInt(stream: RakBitStream, size: number): number {
-    const comp = stream.readCompressed(size);
-    let value = 0;
-    let factor = 1;
-    for (let i = 0; i < size; i += 1) {
-      value += comp.readByte() * factor;
-      factor *= 256;
+  private readCompressedUInt(stream: NativeBitStream, size: number): number {
+    switch (size) {
+      case 1:
+        return stream.readCompressedU8() >>> 0;
+      case 2:
+        return stream.readCompressedU16() >>> 0;
+      case 4:
+        return stream.readCompressedU32() >>> 0;
+      default:
+        throw new Error(`Unsupported compressed int size ${size}`);
     }
-    return value >>> 0;
   }
 
   private ipv4FromU32BE(value: number): string {
@@ -634,20 +365,12 @@ class TestClient {
   }
 
   private decodeWorldSelect(data: Buffer): { subId: number; playerId: number; worldId?: number; worldInst?: number } | null {
-    const payload = this.extractLoginPayload(data);
-    if (!payload || payload.length === 0) return null;
-
-    let inner = payload;
-    if (inner[0] === 0x80 && inner.length > 5) {
-      inner = inner.subarray(5);
-    }
-
-    const stream = new RakBitStream(inner);
-    let packetId = stream.readByte();
+    if (!data || data.length === 0) return null;
+    const stream = new NativeBitStream(data, true);
+    let packetId = stream.readU8();
     if (packetId === RakNetMessageId.ID_TIMESTAMP) {
-      if (stream.remainingReadBits() < 64) return null;
-      stream.readLongLong();
-      packetId = stream.readByte();
+      stream.readBytes(8);
+      packetId = stream.readU8();
     }
     if (packetId !== 0x7b) return null;
 
@@ -662,20 +385,12 @@ class TestClient {
   }
 
   private decodeWorldLoginReturn(data: Buffer): { code: number; flag: number; worldIp: string; worldPort: number } | null {
-    const payload = this.extractLoginPayload(data);
-    if (!payload || payload.length === 0) return null;
-
-    let inner = payload;
-    if (inner[0] === 0x80 && inner.length > 5) {
-      inner = inner.subarray(5);
-    }
-
-    const stream = new RakBitStream(inner);
-    let packetId = stream.readByte();
+    if (!data || data.length === 0) return null;
+    const stream = new NativeBitStream(data, true);
+    let packetId = stream.readU8();
     if (packetId === RakNetMessageId.ID_TIMESTAMP) {
-      if (stream.remainingReadBits() < 64) return null;
-      stream.readLongLong();
-      packetId = stream.readByte();
+      stream.readBytes(8);
+      packetId = stream.readU8();
     }
     if (packetId !== RakNetMessageId.ID_WORLD_LOGIN_RETURN) return null;
 
@@ -685,32 +400,6 @@ class TestClient {
     const worldPort = this.readCompressedUInt(stream, 2) & 0xffff;
     const worldIp = this.ipv4FromU32BE(worldIpU32);
     return { code, flag, worldIp, worldPort };
-  }
-
-  private extractReliablePackets(data: Buffer): Buffer[] | null {
-    const legacyPackets = parseLegacyReliable(data) ?? [];
-    const raknetPackets = parseRakNetBitAligned(data) ?? [];
-    if (legacyPackets.length === 0 && raknetPackets.length === 0) return null;
-
-    if (legacyPackets.length === 0) {
-      return raknetPackets.map((pkt) => pkt.innerData).filter((buf) => buf.length > 0);
-    }
-    if (raknetPackets.length === 0) {
-      return legacyPackets.map((pkt) => pkt.innerData).filter((buf) => buf.length > 0);
-    }
-
-    const legacyScore = bestScore(legacyPackets);
-    const raknetScore = bestScore(raknetPackets);
-    const preferLegacy = (data[0] & 0x40) === 0x40;
-    const chosen =
-      raknetScore > legacyScore + 2
-        ? raknetPackets
-        : legacyScore > raknetScore + 2
-          ? legacyPackets
-          : preferLegacy
-            ? legacyPackets
-            : raknetPackets;
-    return chosen.map((pkt) => pkt.innerData).filter((buf) => buf.length > 0);
   }
 
   private readLithSizeIndicator(reader: BitStreamReader): number {
@@ -869,11 +558,12 @@ class TestClient {
       writer.writeBits(hasMore ? 1 : 0, 1);
     }
     writer.writeBits(0, 8);
-    return writer.toBuffer();
+    const payload = writer.toBuffer();
+    return Buffer.concat([Buffer.from([RakNetMessageId.ID_USER_PACKET_ENUM]), payload]);
   }
 
   private sendConnectStage(stage: number): void {
-    if (!this.worldSocket || !this.worldLoginTarget) return;
+    if (!this.worldPeer || !this.worldAddress) return;
     if (this.worldConnectStageSent) return;
     this.worldConnectStageSent = true;
     const payloadWriter = new BitStreamWriter(16);
@@ -882,125 +572,158 @@ class TestClient {
     const lith = this.buildLithTechGuaranteedPacket([
       { msgId: LithTechMessageId.MSG_CONNECTSTAGE, payload, payloadBits: 16 },
     ]);
-    const packet = wrapFomReliablePacket(lith);
-    this.logOutgoing(packet, this.worldLoginTarget.address, this.worldLoginTarget.port, this.worldConnectionId);
-    this.worldSocket.send(packet, this.worldLoginTarget.port, this.worldLoginTarget.address, (err) => {
-      if (err) console.error('Send error:', err);
-    });
+    this.sendPacket(
+      this.worldPeer,
+      this.worldAddress,
+      lith,
+      this.worldConnectionId,
+      RakPriority.HIGH,
+      RakReliability.RELIABLE,
+    );
   }
 
   private startWorldHeartbeat(): void {
-    if (!this.worldSocket || !this.worldLoginTarget) return;
+    if (!this.worldPeer || !this.worldAddress) return;
     if (this.worldPingTimer) return;
     this.worldPingTimer = setInterval(() => {
-      if (!this.worldSocket || !this.worldLoginTarget) return;
+      if (!this.worldPeer || !this.worldAddress) return;
       const ping = Buffer.alloc(5);
       ping[0] = RakNetMessageId.ID_PING;
       ping.writeUInt32BE((Date.now() >>> 0), 1);
-      this.logOutgoing(ping, this.worldLoginTarget.address, this.worldLoginTarget.port, this.worldConnectionId);
-      this.worldSocket.send(ping, this.worldLoginTarget.port, this.worldLoginTarget.address, (err) => {
-        if (err) console.error('Send error:', err);
-      });
+      this.sendPacket(
+        this.worldPeer,
+        this.worldAddress,
+        ping,
+        this.worldConnectionId,
+        RakPriority.LOW,
+        RakReliability.UNRELIABLE,
+      );
     }, 3000);
   }
 
-  private initWorldSocket(): void {
-    if (this.worldSocket) return;
-    this.worldSocket = dgram.createSocket('udp4');
-    this.worldSocket.on('message', (msg, rinfo) => {
-      this.logIncoming(msg, rinfo.address, rinfo.port, this.worldConnectionId);
-      this.handleWorldMessage(msg, rinfo.address, rinfo.port);
-    });
-    this.worldSocket.on('error', (err) => {
-      PacketLogger.globalNote(`[Error] world socket ${err.message}`);
-      console.error('World socket error:', err);
-    });
+  private initWorldPeer(): void {
+    if (this.worldPeer) return;
+    this.worldPeer = new RakPeer();
+    this.worldPeer.startup(1, 0, 0);
+    this.worldConnected = false;
+    this.worldPollTimer = setInterval(() => {
+      this.pollWorldPeer();
+    }, 10);
   }
 
-  private handleWorldMessage(data: Buffer, address: string, port: number): void {
+  private handleWorldMessage(data: Buffer, address: RakSystemAddress): void {
     if (data.length === 0) return;
-    const first = data[0];
-    if (first === RakNetMessageId.ID_OPEN_CONNECTION_REPLY) {
+    let payload = data;
+    let msgId = data[0];
+    if (msgId === RakNetMessageId.ID_TIMESTAMP && data.length > 9) {
+      payload = data.subarray(9);
+      msgId = payload[0];
+    }
+    if (msgId >= RakNetMessageId.ID_USER_PACKET_ENUM && payload.length > 1) {
+      // World packets carry LithTech data inside the RakNet user packet wrapper.
+      payload = payload.subarray(1);
+      msgId = payload[0];
+    }
+
+    if (
+      msgId === RakNetMessageId.ID_CONNECTION_REQUEST_ACCEPTED ||
+      msgId === RakNetMessageId.ID_NEW_INCOMING_CONNECTION
+    ) {
+      if (!this.worldConnected) {
+        this.worldConnected = true;
+        PacketLogger.globalNote(`[World] Connected ${addressToString(address)}`, true);
+      }
       this.sendWorldLoginToWorld();
       this.startWorldHeartbeat();
       return;
     }
-    const inners = this.extractReliablePackets(data);
-    if (!inners) return;
-    for (const inner of inners) {
-      if (inner.length === 0) continue;
-      if (inner[0] === RakNetMessageId.ID_FILE_LIST_TRANSFER_HEADER) {
-        const parsed = this.parseFileListTransfer(inner);
-        if (parsed) {
-          const preview = parsed.names.length > 0 ? ` preview=${parsed.names.join(',')}` : '';
+
+    if (
+      msgId === RakNetMessageId.ID_CONNECTION_ATTEMPT_FAILED ||
+      msgId === RakNetMessageId.ID_CONNECTION_LOST ||
+      msgId === RakNetMessageId.ID_DISCONNECTION_NOTIFICATION
+    ) {
+      this.worldConnected = false;
+      this.worldConnectActive = false;
+      PacketLogger.globalNote(
+        `[World] Disconnected msg=0x${msgId.toString(16)} ${addressToString(address)}`,
+        true,
+      );
+      return;
+    }
+
+    if (msgId === RakNetMessageId.ID_FILE_LIST_TRANSFER_HEADER) {
+      const parsed = this.parseFileListTransfer(payload);
+      if (parsed) {
+        const preview = parsed.names.length > 0 ? ` preview=${parsed.names.join(',')}` : '';
+        PacketLogger.globalNote(
+          `[World] FileList 0x32 entries=${parsed.ids.length}${preview}`,
+          true,
+        );
+        this.sendFileListAck(parsed.ids, address);
+        return;
+      }
+    }
+
+    const messages = this.parseLithTechGuaranteedSubMessages(payload);
+    for (const msg of messages) {
+      if (msg.msgId === LithTechMessageId.MSG_NETPROTOCOLVERSION) {
+        const decoded = this.decodeNetProtocolPayload(msg.payload);
+        if (decoded) {
+          this.worldNetProtocol = decoded;
           PacketLogger.globalNote(
-            `[World] FileList 0x32 entries=${parsed.ids.length}${preview}`,
+            `[World] SMSG_NETPROTOCOLVERSION version=${decoded.version} extra=${decoded.extra}`,
             true,
           );
-          this.sendFileListAck(parsed.ids, address, port);
-          continue;
         }
+        continue;
       }
-      const messages = this.parseLithTechGuaranteedSubMessages(inner);
-      for (const msg of messages) {
-        if (msg.msgId === LithTechMessageId.MSG_NETPROTOCOLVERSION) {
-          const decoded = this.decodeNetProtocolPayload(msg.payload);
-          if (decoded) {
-            this.worldNetProtocol = decoded;
-            PacketLogger.globalNote(
-              `[World] SMSG_NETPROTOCOLVERSION version=${decoded.version} extra=${decoded.extra}`,
-              true,
-            );
-          }
-          continue;
+      if (msg.msgId === LithTechMessageId.MSG_YOURID) {
+        const decoded = this.decodeYourIdPayload(msg.payload);
+        if (decoded) {
+          this.worldYourId = decoded.id;
+          PacketLogger.globalNote(
+            `[World] SMSG_YOURID id=${decoded.id} flags=${decoded.flags}`,
+            true,
+          );
         }
-        if (msg.msgId === LithTechMessageId.MSG_YOURID) {
-          const decoded = this.decodeYourIdPayload(msg.payload);
-          if (decoded) {
-            this.worldYourId = decoded.id;
-            PacketLogger.globalNote(
-              `[World] SMSG_YOURID id=${decoded.id} flags=${decoded.flags}`,
-              true,
-            );
-          }
-          continue;
+        continue;
+      }
+      if (msg.msgId === LithTechMessageId.MSG_CLIENTOBJECTID) {
+        const decoded = this.decodeClientObjectIdPayload(msg.payload);
+        if (decoded) {
+          this.worldClientObjectId = decoded.id;
+          PacketLogger.globalNote(
+            `[World] SMSG_CLIENTOBJECTID id=${decoded.id}`,
+            true,
+          );
         }
-        if (msg.msgId === LithTechMessageId.MSG_CLIENTOBJECTID) {
-          const decoded = this.decodeClientObjectIdPayload(msg.payload);
-          if (decoded) {
-            this.worldClientObjectId = decoded.id;
-            PacketLogger.globalNote(
-              `[World] SMSG_CLIENTOBJECTID id=${decoded.id}`,
-              true,
-            );
-          }
-          continue;
+        continue;
+      }
+      if (msg.msgId === LithTechMessageId.MSG_LOADWORLD) {
+        const decoded = this.decodeLoadWorldPayload(msg.payload);
+        if (decoded) {
+          PacketLogger.globalNote(
+            `[World] SMSG_LOADWORLD worldId=${decoded.worldId} gameTime=${decoded.gameTime}`,
+            true,
+          );
         }
-        if (msg.msgId === LithTechMessageId.MSG_LOADWORLD) {
-          const decoded = this.decodeLoadWorldPayload(msg.payload);
-          if (decoded) {
-            PacketLogger.globalNote(
-              `[World] SMSG_LOADWORLD worldId=${decoded.worldId} gameTime=${decoded.gameTime}`,
-              true,
-            );
-          }
-          this.sendConnectStage(0);
-          continue;
-        }
-        if (msg.msgId === LithTechMessageId.MSG_UNGUARANTEEDUPDATE) {
-          const decoded = this.decodeUnguaranteedUpdatePayload(msg.payload);
-          if (decoded && this.shouldLogWorldUnguaranteed(Date.now())) {
-            const timeNote =
-              decoded.terminator && typeof decoded.gameTime === 'number'
-                ? ` time=${decoded.gameTime.toFixed(3)}`
-                : '';
-            PacketLogger.globalNote(
-              `[World] SMSG_UNGUARANTEEDUPDATE end=${decoded.terminator ? 1 : 0} flags=0x${decoded.flags.toString(
-                16,
-              )}${timeNote}`,
-              true,
-            );
-          }
+        this.sendConnectStage(0);
+        continue;
+      }
+      if (msg.msgId === LithTechMessageId.MSG_UNGUARANTEEDUPDATE) {
+        const decoded = this.decodeUnguaranteedUpdatePayload(msg.payload);
+        if (decoded && this.shouldLogWorldUnguaranteed(Date.now())) {
+          const timeNote =
+            decoded.terminator && typeof decoded.gameTime === 'number'
+              ? ` time=${decoded.gameTime.toFixed(3)}`
+              : '';
+          PacketLogger.globalNote(
+            `[World] SMSG_UNGUARANTEEDUPDATE end=${decoded.terminator ? 1 : 0} flags=0x${decoded.flags.toString(
+              16,
+            )}${timeNote}`,
+            true,
+          );
         }
       }
     }
@@ -1037,61 +760,41 @@ class TestClient {
     return ids.length > 0 ? { ids, names } : null;
   }
 
-  private sendFileListAck(ids: number[], address: string, port: number): void {
-    if (!this.worldSocket) return;
+  private sendFileListAck(ids: number[], address: RakSystemAddress): void {
+    if (!this.worldPeer) return;
     const writer = new BitStreamWriter(Math.max(8, 1 + ids.length * 2));
     writer.writeByte(RakNetMessageId.ID_FILE_LIST_TRANSFER_RESPONSE);
     for (const id of ids) {
       writer.writeUInt16(id & 0x7fff);
     }
     const payload = writer.toBuffer();
-    const packet = wrapFomReliablePacket(payload);
-    this.logOutgoing(packet, address, port, this.worldConnectionId);
-    this.worldSocket.send(packet, port, address, (err) => {
-      if (err) console.error('Send error:', err);
-    });
-  }
-
-  private sendOpenConnectionRequestTo(
-    address: string,
-    port: number,
-    socket: dgram.Socket,
-    connectionId: number,
-  ): void {
-    const packet = buildOpenConnectionRequest({
-      targetIp: address,
-      targetPort: port,
-      guid: this.worldGuid,
-      seed: this.worldSeed,
-      protocolVersion: this.worldProtocolVersion,
-    });
-    this.logOutgoing(packet, address, port, connectionId);
-    socket.send(packet, port, address, (err) => {
-      if (err) console.error('Send error:', err);
-    });
-  }
-
-  private sendWorldLoginTo(
-    address: string,
-    port: number,
-    socket: dgram.Socket,
-    connectionId: number,
-  ): void {
-    const payload = buildWorldLogin({
-      worldId: this.worldLoginWorldId,
-      worldInst: this.worldLoginWorldInst,
-      playerId: this.worldLoginPlayerId,
-      worldConst: this.worldLoginWorldConst,
-    });
-    const packet = wrapFomReliablePacket(payload);
-    this.logOutgoing(packet, address, port, connectionId);
-    socket.send(packet, port, address, (err) => {
-      if (err) console.error('Send error:', err);
-    });
+    this.sendPacket(
+      this.worldPeer,
+      address,
+      payload,
+      this.worldConnectionId,
+      RakPriority.HIGH,
+      RakReliability.RELIABLE,
+    );
   }
 
   connectWorldDirect(address: string, port: number): void {
     this.startWorldConnection({ address, port });
+  }
+
+  private connectMaster(): void {
+    if (this.masterConnected) return;
+    const ok = this.masterPeer.connect(this.serverAddress, this.serverPort, WORLD_SERVER_PASSWORD);
+    if (!ok) {
+      PacketLogger.globalNote(
+        `[Master] Connect failed ${this.serverAddress}:${this.serverPort}`,
+        true,
+      );
+    }
+  }
+
+  connect(): void {
+    this.connectMaster();
   }
 
   sendLoginAuth(options: {
@@ -1105,10 +808,8 @@ class TestClient {
     computerName?: string;
     steamTicket?: Buffer;
     steamTicketLength?: number;
-    wrapReliable?: boolean;
-    reliable?: { timestamp?: number; messageNumber?: number; orderingFlags?: number; lengthInfo?: number };
   }): void {
-    const payload = buildLoginAuth({
+    const payloadOptions: LoginAuthOptions = {
       username: options.username ?? '',
       passwordHash: options.passwordHash,
       fileCRCs: options.fileCRCs,
@@ -1119,16 +820,43 @@ class TestClient {
       computerName: options.computerName,
       steamTicket: options.steamTicket,
       steamTicketLength: options.steamTicketLength,
-    });
-    const packet = options.wrapReliable === false ? payload : wrapFomReliablePacket(payload, options.reliable);
-    this.logOutgoing(packet, this.serverAddress, this.serverPort);
-    this.socket.send(packet, this.serverPort, this.serverAddress, (err) => {
-      if (err) console.error('Send error:', err);
-    });
+    };
+    const payload = buildLoginAuth(payloadOptions);
+    if (!this.masterConnected) {
+      this.pendingLoginAuth = payloadOptions;
+      this.connectMaster();
+      return;
+    }
+    this.pendingLoginAuth = undefined;
+    this.sendPacket(
+      this.masterPeer,
+      this.masterAddress,
+      payload,
+      this.connectionId,
+      RakPriority.HIGH,
+      RakReliability.RELIABLE,
+    );
   }
 
   private sendWorldLogin(): void {
-    this.sendWorldLoginTo(this.serverAddress, this.serverPort, this.socket, this.connectionId);
+    if (!this.masterConnected) {
+      this.connectMaster();
+      return;
+    }
+    const payload = buildWorldLogin({
+      worldId: this.worldLoginWorldId,
+      worldInst: this.worldLoginWorldInst,
+      playerId: this.worldLoginPlayerId,
+      worldConst: this.worldLoginWorldConst,
+    });
+    this.sendPacket(
+      this.masterPeer,
+      this.masterAddress,
+      payload,
+      this.connectionId,
+      RakPriority.HIGH,
+      RakReliability.RELIABLE,
+    );
   }
 
   private scheduleWorldLoginRetry(delayMs: number): void {
@@ -1142,30 +870,29 @@ class TestClient {
     }, delayMs);
   }
 
-  private scheduleWorldLoginToWorld(delayMs: number): void {
-    if (this.worldConnectTimer) {
-      clearTimeout(this.worldConnectTimer);
-    }
-    this.worldConnectTimer = setTimeout(() => {
-      this.sendWorldLoginToWorld();
-    }, delayMs);
-  }
-
   private sendWorldLoginToWorld(): void {
-    if (!this.worldSocket || !this.worldLoginTarget) return;
+    if (!this.worldPeer || !this.worldAddress) return;
     if (this.worldLoginSentToWorld) return;
     this.worldLoginSentToWorld = true;
-    this.sendWorldLoginTo(
-      this.worldLoginTarget.address,
-      this.worldLoginTarget.port,
-      this.worldSocket,
+    const payload = buildWorldLogin({
+      worldId: this.worldLoginWorldId,
+      worldInst: this.worldLoginWorldInst,
+      playerId: this.worldLoginPlayerId,
+      worldConst: this.worldLoginWorldConst,
+    });
+    this.sendPacket(
+      this.worldPeer,
+      this.worldAddress,
+      payload,
       this.worldConnectionId,
+      RakPriority.HIGH,
+      RakReliability.RELIABLE,
     );
   }
 
   private startWorldConnection(target: { address: string; port: number }): void {
-    this.initWorldSocket();
-    if (!this.worldSocket) return;
+    this.initWorldPeer();
+    if (!this.worldPeer) return;
     if (this.worldConnectActive && this.worldLoginTarget) {
       if (
         this.worldLoginTarget.address === target.address &&
@@ -1176,19 +903,19 @@ class TestClient {
     }
     this.worldLoginTarget = target;
     this.worldConnectActive = true;
-    this.worldOpenSent = false;
     this.worldLoginSentToWorld = false;
     this.worldConnectStageSent = false;
     this.worldLithOutSeq = 0;
-    PacketLogger.globalNote(`[WorldConnect] open ${target.address}:${target.port}`, true);
-    this.sendOpenConnectionRequestTo(
-      target.address,
-      target.port,
-      this.worldSocket,
-      this.worldConnectionId,
-    );
-    this.worldOpenSent = true;
-    this.scheduleWorldLoginToWorld(500);
+    this.worldConnected = false;
+    this.worldAddress = addressFromString(target.address, target.port);
+    PacketLogger.globalNote(`[WorldConnect] connect ${target.address}:${target.port}`, true);
+    const ok = this.worldPeer.connect(target.address, target.port, WORLD_SERVER_PASSWORD);
+    if (!ok) {
+      PacketLogger.globalNote(
+        `[WorldConnect] connect failed ${target.address}:${target.port}`,
+        true,
+      );
+    }
   }
 
   private tryAutoLoginAuth(data: Buffer): void {
@@ -1211,8 +938,6 @@ class TestClient {
       fileCRCs: this.loginAuthFileCRCs,
       steamTicket: this.loginAuthSteamTicket,
       steamTicketLength: this.loginAuthSteamTicketLength,
-      wrapReliable: this.loginAuthWrapReliable,
-      reliable: this.loginAuthReliable,
     });
   }
 
@@ -1265,91 +990,63 @@ class TestClient {
     }
   }
 
-  sendConnectionRequest(): void {
-    const writer = new BitStreamWriter(256);
-    
-    writer.writeUInt32(CONNECTION_MAGIC);
-    writer.writeBits(ConnectionRequestType.CONNECT, 3);
-    
-    const fakeGuid = Buffer.alloc(16);
-    for (let i = 0; i < 16; i++) {
-      writer.writeByte(fakeGuid[i]);
-    }
-    
-    const packet = writer.toBuffer();
-    this.logOutgoing(packet, this.serverAddress, this.serverPort);
-    
-    this.socket.send(packet, this.serverPort, this.serverAddress, (err) => {
-      if (err) console.error('Send error:', err);
-    });
-  }
-
-  sendQuery(): void {
-    const writer = new BitStreamWriter(64);
-    writer.writeUInt32(CONNECTION_MAGIC);
-    writer.writeBits(ConnectionRequestType.QUERY, 3);
-    
-    const packet = writer.toBuffer();
-    this.logOutgoing(packet, this.serverAddress, this.serverPort);
-    
-    this.socket.send(packet, this.serverPort, this.serverAddress, (err) => {
-      if (err) console.error('Send error:', err);
-    });
-  }
-
-  sendOpenConnectionRequest(options: {
-    targetIp: string;
-    targetPort: number;
-    guid: Buffer;
-    seed: Buffer;
-    protocolVersion: number;
-  }): void {
-    const packet = buildOpenConnectionRequest(options);
-    this.logOutgoing(packet, this.serverAddress, this.serverPort, this.connectionId);
-
-    this.socket.send(packet, this.serverPort, this.serverAddress, (err) => {
-      if (err) console.error('Send error:', err);
-    });
-  }
-
   sendLoginRequest(options: {
     username: string;
     clientVersion: number;
-    wrapReliable?: boolean;
-    reliable?: { timestamp?: number; messageNumber?: number; orderingFlags?: number; lengthInfo?: number };
   }): void {
     this.loginAuthSent = false;
-    const payload = buildLoginRequestInner(options);
-    const packet = options.wrapReliable === false ? payload : wrapFomReliablePacket(payload, options.reliable);
-    this.logOutgoing(packet, this.serverAddress, this.serverPort);
-
-    this.socket.send(packet, this.serverPort, this.serverAddress, (err) => {
-      if (err) console.error('Send error:', err);
-    });
+    const payload = buildLoginRequest(options);
+    if (!this.masterConnected) {
+      this.pendingLoginRequest = options;
+      this.connectMaster();
+      return;
+    }
+    this.pendingLoginRequest = undefined;
+    this.sendPacket(
+      this.masterPeer,
+      this.masterAddress,
+      payload,
+      this.connectionId,
+      RakPriority.HIGH,
+      RakReliability.RELIABLE,
+    );
   }
 
   sendRawPacket(data: Buffer): void {
-    this.logOutgoing(data, this.serverAddress, this.serverPort);
-    
-    this.socket.send(data, this.serverPort, this.serverAddress, (err) => {
-      if (err) console.error('Send error:', err);
-    });
+    if (!this.masterConnected) {
+      this.connectMaster();
+      return;
+    }
+    this.sendPacket(
+      this.masterPeer,
+      this.masterAddress,
+      data,
+      this.connectionId,
+      RakPriority.HIGH,
+      RakReliability.RELIABLE,
+    );
   }
 
   close(): void {
     this.packetLogger.close();
-    this.socket.close();
-    if (this.worldSocket) {
-      this.worldSocket.close();
-      this.worldSocket = undefined;
+    if (this.masterPollTimer) {
+      clearInterval(this.masterPollTimer);
+      this.masterPollTimer = undefined;
+    }
+    this.masterPeer.shutdown(200);
+    this.masterPeer.destroy();
+    if (this.worldPollTimer) {
+      clearInterval(this.worldPollTimer);
+      this.worldPollTimer = undefined;
+    }
+    if (this.worldPeer) {
+      this.worldPeer.shutdown(200);
+      this.worldPeer.destroy();
+      this.worldPeer = undefined;
     }
     if (this.worldLoginRetryTimer) {
       clearTimeout(this.worldLoginRetryTimer);
       this.worldLoginRetryTimer = undefined;
-    }
-    if (this.worldConnectTimer) {
-      clearTimeout(this.worldConnectTimer);
-      this.worldConnectTimer = undefined;
     }
     if (this.worldPingTimer) {
       clearInterval(this.worldPingTimer);
@@ -1370,15 +1067,6 @@ async function main() {
     const prefix = `--${name}=`;
     const hit = flags.find((arg) => arg.startsWith(prefix));
     return hit ? hit.slice(prefix.length) : undefined;
-  };
-
-  const parseHex = (value: string | undefined, expectedBytes: number, label: string, fallback: Buffer): Buffer => {
-    const raw = (value && value.length > 0) ? value : fallback.toString('hex');
-    const cleaned = raw.replace(/[^a-fA-F0-9]/g, '');
-    if (cleaned.length !== expectedBytes * 2) {
-      throw new Error(`${label} hex must be ${expectedBytes} bytes (${expectedBytes * 2} hex chars)`);
-    }
-    return Buffer.from(cleaned, 'hex');
   };
 
   const parseCsv = (value: string | undefined): string[] => {
@@ -1413,14 +1101,6 @@ async function main() {
     return Buffer.from(cleaned, 'hex');
   };
 
-  const protocolRaw = parseInt(getFlag('protocol') || `${OPEN_CONNECTION_PROTOCOL_VERSION}`, 10);
-  const protocolVersion = Number.isNaN(protocolRaw) ? OPEN_CONNECTION_PROTOCOL_VERSION : protocolRaw;
-  const defaultGuid = DEFAULT_GUID_SEED.guid;
-  const defaultSeed = DEFAULT_GUID_SEED.seed;
-  const guid = parseHex(getFlag('guid'), 16, 'guid', defaultGuid);
-  const seed = parseHex(getFlag('seed'), 8, 'seed', defaultSeed);
-  const intervalRaw = parseInt(getFlag('interval-ms') || `${RETRY_INTERVAL}`, 10);
-    const intervalMs = Number.isNaN(intervalRaw) ? RETRY_INTERVAL : intervalRaw;
   const user = getFlag('user') || process.env.FOM_LOGIN_USER || 'test';
   const clientVersionRaw =
     getFlag('client-version') ||
@@ -1436,7 +1116,6 @@ async function main() {
   const loginDelayRaw = getFlag('login') || getFlag('login-delay');
   const loginDelaySec = loginDelayRaw !== undefined ? Number.parseFloat(loginDelayRaw) : NaN;
   const loginDelayMs = Number.isFinite(loginDelaySec) && loginDelaySec > 0 ? Math.round(loginDelaySec * 1000) : 0;
-  const loginRaw = parseBool(getFlag('login-raw') || process.env.FOM_LOGIN_RAW, false);
   const loginAuth = parseBool(getFlag('login-auth') || process.env.FOM_LOGIN_AUTH, true);
   const loginPass = getFlag('login-pass') || process.env.FOM_LOGIN_PASS || '';
   const loginUsername =
@@ -1466,20 +1145,6 @@ async function main() {
   const loginSteamTicketLength = parseU32(
     getFlag('login-ticket-len') || getFlag('login-blob-u32') || process.env.FOM_LOGIN_BLOB_U32,
   );
-  const relMsgRaw = getFlag('rel-msg') || process.env.FOM_RELIABLE_MSG_NUM;
-  const relFlagsRaw = getFlag('rel-flags') || process.env.FOM_RELIABLE_FLAGS;
-  const relLenRaw = getFlag('rel-len') || process.env.FOM_RELIABLE_LEN;
-  const relTsRaw = getFlag('rel-ts') || process.env.FOM_RELIABLE_TS;
-  const relMsgValue = relMsgRaw ? Number.parseInt(relMsgRaw, relMsgRaw.startsWith('0x') ? 16 : 10) : NaN;
-  const relFlagsValue = relFlagsRaw ? Number.parseInt(relFlagsRaw, relFlagsRaw.startsWith('0x') ? 16 : 10) : NaN;
-  const relLenValue = relLenRaw ? Number.parseInt(relLenRaw, relLenRaw.startsWith('0x') ? 16 : 10) : NaN;
-  const relTsValue = relTsRaw ? Number.parseInt(relTsRaw, relTsRaw.startsWith('0x') ? 16 : 10) : NaN;
-  const reliableOptions = {
-    messageNumber: Number.isNaN(relMsgValue) ? undefined : relMsgValue,
-    orderingFlags: Number.isNaN(relFlagsValue) ? undefined : relFlagsValue,
-    lengthInfo: Number.isNaN(relLenValue) ? undefined : relLenValue,
-    timestamp: Number.isNaN(relTsValue) ? undefined : relTsValue,
-  };
 
   const worldId =
     parseU32(getFlag('world-id') || process.env.FOM_WORLD_ID || process.env.WORLD_ID);
@@ -1544,34 +1209,16 @@ async function main() {
     fileCRCs: loginFileCRCs,
     steamTicket: loginSteamTicket,
     steamTicketLength: loginSteamTicketLength,
-    wrapReliable: !loginRaw,
-    reliable: reliableOptions,
   }, {
     worldId: worldId ?? 0,
     worldInst: worldInst ?? 0,
     playerId: playerId ?? 0,
     worldConst: worldConst ?? 0x13bc52,
-  }, {
-    guid,
-    seed,
-    protocolVersion,
   });
 
   switch (command) {
     case 'connect':
-      client.sendConnectionRequest();
-      break;
-    case 'query':
-      client.sendQuery();
-      break;
-    case 'open':
-      client.sendOpenConnectionRequest({
-        targetIp: address,
-        targetPort: port,
-        guid,
-        seed,
-        protocolVersion,
-      });
+      client.connect();
       break;
     case 'world':
     case 'world-connect': {
@@ -1586,13 +1233,9 @@ async function main() {
       break;
     }
     case 'login':
-    case 'login6b':
-    case 'login6c': // legacy alias
       client.sendLoginRequest({
         username: user,
         clientVersion,
-        wrapReliable: !loginRaw,
-        reliable: reliableOptions,
       });
       break;
     case 'login6e':
@@ -1612,23 +1255,19 @@ async function main() {
         fileCRCs: loginFileCRCs,
         steamTicket: loginSteamTicket,
         steamTicketLength: loginSteamTicketLength,
-        wrapReliable: !loginRaw,
-        reliable: reliableOptions,
       });
       break;
     default:
-      console.log('Usage: npx tsx src/tools/TestClient.ts [connect|query|open|login|login6b|login6e|world|world-connect] [address] [port] [--guid=HEX] [--seed=HEX] [--protocol=N] [--interval-ms=N] [--user=NAME] [--client-version=N] [--login-user=NAME] [--login-pass=TEXT] [--login-hash=TEXT] [--login-token=TEXT] [--login-mac=TEXT] [--login-computer=TEXT] [--login-crc=v1,v2,v3] [--login-drives=a,b,c,d] [--login-serials=a,b,c,d] [--login-ticket=HEX] [--login-ticket-len=N] [--login=SECONDS] [--login-raw] [--login-auth=BOOL] [--rel-msg=N] [--rel-flags=HEX] [--rel-len=HEX] [--rel-ts=HEX] [--world-ip=IP] [--world-port=N] [--world-id=N] [--world-inst=N] [--world-player=N] [--world-const=N]');
+      console.log('Usage: bun src/tools/TestClient.ts [connect|login|login6e|world|world-connect] [address] [port] [--user=NAME] [--client-version=N] [--login-user=NAME] [--login-pass=TEXT] [--login-hash=TEXT] [--login-token=TEXT] [--login-mac=TEXT] [--login-computer=TEXT] [--login-crc=v1,v2,v3] [--login-drives=a,b,c,d] [--login-serials=a,b,c,d] [--login-ticket=HEX] [--login-ticket-len=N] [--login=SECONDS] [--login-auth=BOOL] [--world-ip=IP] [--world-port=N] [--world-id=N] [--world-inst=N] [--world-player=N] [--world-const=N]');
       client.close();
       return;
   }
 
-  if (loginDelayMs > 0 && command !== 'login' && command !== 'login6b' && command !== 'world' && command !== 'world-connect') {
+  if (loginDelayMs > 0 && command !== 'login' && command !== 'world' && command !== 'world-connect') {
     setTimeout(() => {
       client.sendLoginRequest({
         username: user,
         clientVersion,
-        wrapReliable: !loginRaw,
-        reliable: reliableOptions,
       });
     }, loginDelayMs);
   }

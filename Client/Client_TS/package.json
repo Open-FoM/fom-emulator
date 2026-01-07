@@ -3,15 +3,16 @@
   "version": "0.1.0",
   "description": "Face of Mankind Client Emulator",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
-    "client": "tsx src/tools/TestClient.ts",
-    "client:connect": "tsx src/tools/TestClient.ts connect",
-    "client:query": "tsx src/tools/TestClient.ts query",
-    "client:open": "tsx src/tools/TestClient.ts open",
-    "client:open-spam": "tsx src/tools/TestClient.ts open-spam",
-    "client:login": "tsx src/tools/TestClient.ts login",
-    "test": "tsx src/tests/login_auth_builder.test.ts && tsx src/tests/raknet_compressed.test.ts"
+    "client": "bun src/tools/TestClient.ts",
+    "client:connect": "bun src/tools/TestClient.ts connect",
+    "client:login": "bun src/tools/TestClient.ts login",
+    "client:login6e": "bun src/tools/TestClient.ts login6e",
+    "client:world": "bun src/tools/TestClient.ts world",
+    "test": "bun src/tests/login_auth_builder.test.ts && bun src/tests/raknet_compressed.test.ts",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "fom",
@@ -20,9 +21,13 @@
     "preservation"
   ],
   "license": "MIT",
+  "dependencies": {
+    "@openfom/networking": "file:../../Server/packages/networking",
+    "@openfom/utils": "file:../../Server/packages/utils"
+  },
   "devDependencies": {
-    "@types/node": "^20.10.0",
-    "tsx": "^4.7.0",
+    "@types/bun": "latest",
+    "@types/node": "latest",
     "typescript": "^5.3.0"
   }
 }

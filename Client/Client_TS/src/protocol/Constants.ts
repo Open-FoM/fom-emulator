@@ -5,18 +5,9 @@
  */
 
 // Connection constants
-export const CONNECTION_MAGIC = 0x9919D9C7;
 export const DEFAULT_PORT = 61000;
 export const WORLD_SERVER_PASSWORD = '37eG87Ph';
 export const MTU_SIZE = 1400;
-export const OFFLINE_MESSAGE_ID = Buffer.from([
-  0xff, 0x00, 0xff, 0x00,
-  0xfe, 0xfe, 0xfe, 0xfe,
-  0xfd, 0xfd, 0xfd, 0xfd,
-  0x12, 0x34, 0x56, 0x78,
-]);
-export const OFFLINE_SYSTEM_ADDRESS_BYTES = Buffer.alloc(24, 0xff);
-export const OPEN_CONNECTION_PROTOCOL_VERSION = 6;
 
 // Sequence number handling
 export const SEQUENCE_BITS = 13;
@@ -71,17 +62,17 @@ export enum RakNetMessageId {
     ID_FILE_LIST_TRANSFER_RESPONSE = 0x36,
   
   // Game-specific (FoM)
-  ID_LOGIN_REQUEST = 0x6B, // 107
-  ID_LOGIN_REQUEST_TEXT = 0x6C, // 108 (legacy; superseded by ID_LOGIN_REQUEST)
+  ID_LOGIN_REQUEST = 0x6C, // 108
   ID_LOGIN_REQUEST_RETURN = 0x6D, // 109
   ID_LOGIN = 0x6E, // 110
   ID_LOGIN_RETURN = 0x6F, // 111
   ID_LOGIN_TOKEN_CHECK = 0x70, // 112
   ID_WORLD_LOGIN = 0x72, // 114
   ID_WORLD_LOGIN_RETURN = 0x73, // 115
+  ID_WORLD_SELECT = 0x7B, // 123
   
-  // User packets start here
-  ID_USER_PACKET_ENUM = 0x86,
+  // User packets start here (RakNet default)
+  ID_USER_PACKET_ENUM = 0x4B,
 }
 
 /**
@@ -120,27 +111,6 @@ export enum LithTechMessageId {
   MSG_UNKNOWN_22 = 22,
   MSG_UNKNOWN_23 = 23,
 }
-
-/**
- * Connection request types (3-bit field after magic)
- * From Ghidra CUDPDriver_JoinSession analysis
- */
-export enum ConnectionRequestType {
-  QUERY = 1,
-  CONNECT = 2,
-  CONNECT_RESPONSE = 3,
-}
-
-/**
- * Connection response flags (1-bit fields)
- * From Ghidra CUDPDriver_JoinSession analysis
- */
-export const ConnectionResponseFlag = {
-  ACCEPTED: 1,
-  REJECTED: 0,
-  SKIP_GUID_CHECK: 1,
-  GUID_MISMATCH: 0,
-} as const;
 
 /**
  * Login result codes

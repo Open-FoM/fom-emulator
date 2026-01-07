@@ -1,22 +1,37 @@
 import assert from 'node:assert/strict';
-import RakBitStream from '../raknet-js/structures/BitStream';
-
-const readLE = (stream: RakBitStream, size: number): number => {
-  let value = 0;
-  let shift = 0;
-  for (let i = 0; i < size; i += 1) {
-    value |= (stream.readByte() << shift) >>> 0;
-    shift += 8;
-  }
-  return value >>> 0;
-};
+import { NativeBitStream } from '@openfom/networking';
 
 const roundTrip = (value: number, size: number): number => {
-  const writer = new RakBitStream();
-  writer.writeCompressed(value >>> 0, size);
-  const reader = new RakBitStream(writer.data);
-  const comp = reader.readCompressed(size);
-  return readLE(comp, size);
+  const writer = new NativeBitStream();
+  try {
+    switch (size) {
+      case 1:
+        writer.writeCompressedU8(value >>> 0);
+        break;
+      case 2:
+        writer.writeCompressedU16(value >>> 0);
+        break;
+      case 4:
+        writer.writeCompressedU32(value >>> 0);
+        break;
+      default:
+        throw new Error(`unsupported size ${size}`);
+    }
+    const data = writer.getData();
+    const reader = new NativeBitStream(data, true);
+    switch (size) {
+      case 1:
+        return reader.readCompressedU8() >>> 0;
+      case 2:
+        return reader.readCompressedU16() >>> 0;
+      case 4:
+        return reader.readCompressedU32() >>> 0;
+      default:
+        throw new Error(`unsupported size ${size}`);
+    }
+  } finally {
+    writer.destroy();
+  }
 };
 
 const cases: Array<{ size: number; values: number[] }> = [
