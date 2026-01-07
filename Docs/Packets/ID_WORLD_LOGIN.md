@@ -1,8 +1,8 @@
 # ID_WORLD_LOGIN (0x72)
 
 ## Summary
-- Direction: client -> world
-- Purpose: finalize world login after `ID_WORLD_LOGIN_RETURN`
+- Direction: client -> master
+- Purpose: finalize world login after `ID_WORLD_LOGIN_RETURN` (world address/slot selection)
 
 ## On-wire encoding (source of truth)
 ```
