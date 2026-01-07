@@ -35,3 +35,5 @@ u32c worldConst (= 0x13BC52)
 
 ## Notes / Edge Cases
 - Built and sent by `WorldLogin_StateMachineTick` when SharedMem[0x1EEC0]==1.
+- Tick sets SharedMem[0x1EEC0]=2 before send; fields sourced from SharedMem[0x1EEC1/0x1EEC2] and `g_pPlayerStats[0x5B]`.
+- Send path uses `LTClient_SendPacket_BuildIfNeeded(pkt, 1, 1, 3, 0)` (queued if not yet connected).

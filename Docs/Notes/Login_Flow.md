@@ -15,6 +15,7 @@ ClientNetworking_HandleLoginRequestReturn_6D
   <------------------------------- 0x7B WORLD_SELECT (type=4 worldId/worldInst)
   <------------------------------- Packet_Id107 subId (world select alt path, unconfirmed)
   <------------------------------- 0x73 WORLD_LOGIN_RETURN (code + worldIp + worldPort)
+  [Emulator: 0x73 is currently sent after 0x72; see note below]
 
 CShell HandlePacket_ID_WORLD_LOGIN_RETURN_73
   -> WorldLoginReturn_HandleAddress(worldIp:port)
@@ -179,7 +180,7 @@ Code handling (HandlePacket_ID_WORLD_LOGIN_RETURN_73):
 - default: LoginUI_SetMessageText(1722, "FF000000") + logs unknown return code.
 Notes:
 - worldIp is read as u32c from big-endian bitstream; encode IP as 0x7F000001 for 127.0.0.1.
-- In emulator traces, 0x73 arrives from master immediately after 0x6D/0x6E; treat it as the world-connect instruction.
+- Emulator note: current master implementation sends 0x73 only after receiving 0x72 (world login), not immediately after 0x6E/0x7B.
 
 ## World login state machine (CShell WorldLogin_StateMachineTick)
 SharedMem[0x1EEC0] values:

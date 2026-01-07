@@ -35,4 +35,16 @@ u16c worldPort
 
 ## Notes / Edge Cases
 - On code==1, handler calls `WorldLoginReturn_HandleAddress` -> `g_LTClient->Connect`.
+- `WorldLoginReturn_HandleAddress` rejects unassigned SystemAddress and shows msg 1722.
+- `g_LTClient->Connect` nonzero return logs "Failed to connect to world!" (success appears to be 0).
+- On success path, handler sets world login state `SharedMem[0x1EEC0]=2` (wait-for-connect).
 - Code==8 schedules retry; other codes display UI error.
+
+## Client UI Message Mapping (CRes strings)
+| Code | Msg ID | Text |
+|---|---|---|
+| 2 | 1723 | World login failed: Server unavailable! |
+| 3 | 1734 | This world is not available to your faction! |
+| 4 | 1724 | World login failed: World is full! |
+| 6 | 1735 | As your faction privileges have been revoked, access to this world is not granted to you at this moment! |
+| 7 | 1739 | World outside the range of this world's Vortex Gate connection! |

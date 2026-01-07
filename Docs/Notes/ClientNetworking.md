@@ -57,7 +57,7 @@ Reason: original server private key is unavailable; we generated a new keypair s
 Files:
 - Public key (active): `Client\Client_FoM\fom_public.key` (68 bytes)
 - Public key backup: `Client\Client_FoM\fom_public_copy.key`
-- Private key/env: `Server\Master_TS\fom_private_key.env` (P/Q/N/D + endian hints)
+- Private key: `Server\apps\master\src\fom_private_key.json` (fields: endian/e/n/d/modulusBytes)
 
 Format (exact 68 bytes):
 - Bytes 0..3: exponent, **little-endian** (0x10001 -> `01 00 01 00`)

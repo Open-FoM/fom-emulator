@@ -13,7 +13,7 @@
 - `RakNet_LithTech_DeepDive.md` (RakNet/LithTech integration notes and assumptions)
 - `Docs\Projects\Emulator.md` (milestones + decision log)
 - `Docs\Logs\Emulator.md` (active task checklist; update with progress)
-- `Server\Master_TS\` (active server emulator)
+- `Server\apps\master\` (active server emulator)
 - `Hook\` (DLL injector + hook points + packet decode/logging helpers)
 - `Docs\Logs\FoM Reverse Engineering.md` (active RE task log for packet/layout work)
 - `AddressMap.md` (working FoM map; add confirmed addresses continuously)
@@ -33,7 +33,7 @@
 - `External\LithTech\` (`LithTech` source used by the binaries; use for struct names, class layouts, and behavior baselines).
 - `Server\packagers\networking\native\raknet` (`RakNet` 3.5 source used by the binaries; use for reliability, packet layout, and net layer flow).
 - `Docs\External\LithTech\README.md` (Markdown API docs + guides for LithTech; start here for external reference context).
-- `Docs\External\RakNet3.5\README.md` (Markdown API docs + guides for RakNet 3.5; start here for external reference context).
+- `Server\packagers\networking\native\raknet` (RakNet 3.611 source root; start here for external reference context).
 
 # AddressMap
 - On session start, open `AddressMap.md`.
@@ -46,7 +46,7 @@
 - `Client\Client_FoM\Resources\CShell.dll` (network bitstream parsing + packet read/write)
 
 # Runtime Artifacts
-- Server logs: `Server\Master_TS\logs\` (authoritative emulator output)
+- Server logs: `Server\apps\master\logs\` (authoritative emulator output)
 - Client logs: repo root `fom_hook.log` (hook/injector output)
 - Client dumps: `Client\Client_FoM\` (crash dumps for `fom_client.exe`)
 - Config: both client and server use `.ini` files for env vars + quick behavior toggles

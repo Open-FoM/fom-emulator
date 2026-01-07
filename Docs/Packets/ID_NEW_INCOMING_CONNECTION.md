@@ -19,8 +19,8 @@ SystemAddress internalIds[]  (count = sizeof(mySystemAddress)/sizeof(SystemAddre
 | internalIds | SystemAddress[] | raw | Array length from RakNet |
 
 ## Read/Write (decomp)
-- Write: RakNet 3.5 `outBitStream.Write((MessageID)ID_NEW_INCOMING_CONNECTION)` send path
-- Read: RakNet 3.5 parse path in `RakPeer::RunUpdateCycle`
+- Write: RakNet 3.611 `outBitStream.Write((MessageID)ID_NEW_INCOMING_CONNECTION)` send path
+- Read: RakNet 3.611 parse path in `RakPeer::RunUpdateCycle`
 
 ## IDA Anchors
 - ida: pending (RakNet in `fom_client.exe` not yet mapped)
@@ -29,7 +29,7 @@ SystemAddress internalIds[]  (count = sizeof(mySystemAddress)/sizeof(SystemAddre
 ## Validation
 - ida: pending
 - ida2: n/a
-- Source of truth: `External\\raknet\\src\\RakPeer.cpp`
+- Source of truth: `Server\\packagers\\networking\\native\\raknet\\src\\RakPeer.cpp`
 
 ## Notes / Edge Cases
 - ConnectMode transitions to CONNECTED on receipt.

@@ -2,7 +2,7 @@
 
 ## Scope & Constraints
 - Scope: Master + World emulation for FoM client to login, enter world, move, and receive core updates.
-- Protocol constraints: RakNet 3.5 + LithTech message layout; strict bit‑length accounting.
+- Protocol constraints: RakNet 3.611 + LithTech message layout; strict bit-length accounting.
 - Current tools: Node/TS server emulator, BitStream/PacketHandler, IDA‑derived packet layouts, local assets only.
 
 ## Goals

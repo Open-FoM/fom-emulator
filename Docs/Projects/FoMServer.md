@@ -11,12 +11,12 @@ It is the single source for FoMServer architecture and execution, with emphasis 
 ## Project Scope (FoMServer)
 
 ### Problem
-The TypeScript Server (`Server/Master_TS/`) has login packet issues and version drift risk. We need a native C++ server that links directly against the repo's `External/raknet` (RakNet 3.611) and preserves the exact login packet parsing/writing logic.
+The TypeScript Server (`Server/apps/master/`) has login packet issues and version drift risk. We need a native C++ server that links directly against `Server/packagers/networking/native/raknet` (RakNet 3.611) and preserves the exact login packet parsing/writing logic.
 
 ### Goals
-- Replace the existing Server (`Server/Master_TS/`) with a C++ server focused on the login handshake.
-- Use `External/raknet` as the authoritative RakNet source.
-- Port login parsing/writing logic 1:1 from `Server/Master_TS/src` (primary code reference) and packet docs.
+- Replace the existing Server (`Server/apps/master/`) with a C++ server focused on the login handshake.
+- Use `Server/packagers/networking/native/raknet` as the authoritative RakNet source.
+- Port login parsing/writing logic 1:1 from `Server/apps/master/src` (primary code reference) and packet docs.
 - Provide a clean, predictable packet handling workflow that scales to MMO packet counts.
 - Mirror PacketLogger behavior (file + console logging, filters, analysis).
 - Build via CMake with a simple batch file (Unreal-style layout reference: `Hook`).

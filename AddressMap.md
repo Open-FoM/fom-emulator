@@ -223,7 +223,6 @@ Notes:
 
 ## NetMgr / Packet Intake (fom_client.exe)
 
-- HandleReceivedPacket (PacketProc) VA `0x0043AFD0` RVA `0x0003AFD0` (logs "Got packet from %p (packet ID %d, length %d).")
 
 - GetPacketId (reads 8 bits from CPacket_Read) VA `0x0043A580` RVA `0x0003A580`
 
@@ -1024,7 +1023,7 @@ Inline stream flags (not part of xhairFlags):
 
 - 0x004EFF90 `PeerClearSecurityFlag` (was sub_F6FF90) - clears byte at peer+0x1418 on teardown.
 
-- 0x004F4520 `RakPeer_RecvDispatch` (was sub_F74520) - main recv loop; reads peer+0x1418 at 0x004F644C to gate encrypted path; dispatches ID 0x05->HandleSecureConnResponse_SetSessionKey, ID 0x06->HandleSecureConnConfirm, ID 0x11 (likely NEW_INCOMING_CONNECTION per RakNet 3.5), ID 0x14 reliability/timeouts, ID 0x13/0x17 connection drops, ID 0x05/0x06 security.
+- 0x004F4520 `RakPeer_RecvDispatch` (was sub_F74520) - main recv loop; reads peer+0x1418 at 0x004F644C to gate encrypted path; dispatches ID 0x05->HandleSecureConnResponse_SetSessionKey, ID 0x06->HandleSecureConnConfirm, ID 0x11 (likely NEW_INCOMING_CONNECTION per RakNet 3.611), ID 0x14 reliability/timeouts, ID 0x13/0x17 connection drops, ID 0x05/0x06 security.
 
 - 0x004F41B0 `RakNet_DecryptEntry` (was sub_F741B0) - recv path decrypt wrapper before BitStream parse; called from recvfrom wrapper sub_F65BA0.
 
@@ -1054,7 +1053,7 @@ Packet ID notes (client side):
 
 - 0x06 Secured Connection Confirmation (size 85; cookie + RSA(random)).
 
-- 0x11 NEW_INCOMING_CONNECTION in RakNet 3.5; **0x19 timestamp header is confirmed in FoM** (client reads u64 timestamp via BitStream::Read 64 bits, then msg id).
+- 0x11 NEW_INCOMING_CONNECTION in RakNet 3.611; **0x19 timestamp header is confirmed in FoM** (client reads u64 timestamp via BitStream::Read 64 bits, then msg id).
 
 - StringCompressor/Huffman confirmed in FoM:
 
@@ -1080,7 +1079,7 @@ Peer offsets (RemoteSystemStruct, FoM):
 
 - AESKey @ +0x1408 (16 bytes), security flag @ +0x1418 (byte), connectMode @ +0x144C.
 
-- connectMode enum values (RakNet 3.5): 4=REQUESTED_CONNECTION, 5=HANDLING_CONNECTION_REQUEST, 7=SET_ENCRYPTION_ON_MULTIPLE_16_BYTE_PACKET, 8=CONNECTED.
+- connectMode enum values (RakNet 3.611): 4=REQUESTED_CONNECTION, 5=HANDLING_CONNECTION_REQUEST, 7=SET_ENCRYPTION_ON_MULTIPLE_16_BYTE_PACKET, 8=CONNECTED.
 
 
 
@@ -1917,6 +1916,7 @@ Read: Packet_ID_LOGIN_RETURN_Read @ 0x101935F0; handler: HandlePacket_ID_LOGIN_R
 Notes:
 
 - See Docs/Packets/ID_LOGIN_RETURN.md for full wire order + structs.
+- Success/NO CHARACTER paths gate on `clientVersion` (u16) <= `0x073D`; if higher, handler shows UI msg 1720 (outdated client) and aborts the flow.
 
 
 
@@ -4998,6 +4998,58 @@ Helpers (CShell):
 |---|---|---|---|---|---|
 
 | 0x1011EBD0 | 0x0011EBD0 | ObjectTemplateTable | 0x80-byte records, u16 id at +0x00; contiguous ids starting at 1 (content does not match weapon stats) | file scan + id sequence | low |
+
+
+
+### Local player object / Vortex FX
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+
+|---|---|---|---|---|---|
+
+| 0x1012EE50 | 0x0012EE50 | CGameServerShell_vftable | Vtable (RTTI ??_R4CGameServerShell@@6B@); slot +0x14 -> CreateLocalPlayerObj, +0x18 -> ClearLocalPlayerObj | vtable scan | med |
+
+| 0x10039D50 | 0x00039D50 | CreateLocalPlayerObj | Creates CPlayerObj, binds to HCLIENT, sets g_pLocalPlayerObj | decomp | high |
+
+| 0x100355A0 | 0x000355A0 | ClearLocalPlayerObj | Detaches from HCLIENT, clears g_pLocalPlayerObj | decomp | high |
+
+| 0x101B4504 | 0x001B4504 | g_pLocalPlayerObj | Global pointer used by Tick_VortexActiveState / UpdateVortexActiveFx | xrefs + crash dump | high |
+
+| 0x10079960 | 0x00079960 | Tick_VortexActiveState | State handler; calls UpdateVortexActiveFx in states 8/11/13 | decomp | med |
+
+| 0x10013C90 | 0x00013C90 | UpdateVortexActiveFx | Every 10s fires "Vortex_Active" on playerObj->objectId | decomp + string | med |
+
+- Crash: UpdateVortexActiveFx reads playerObj+0x9B0; if g_pLocalPlayerObj is 0xFFFFFFFF/NULL during state 8/11/13, access violation at Object.lto+0x13CAA.
+
+
+
+### World login data (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+
+|---|---|---|---|---|---|
+
+| 0x10078D80 | 0x00078D80 | ID_WORLD_LOGIN_Read | Reads large world-login payload into pkt buffer (1072 bytes + extended data blocks) | decomp | med |
+
+| 0x1007AD90 | 0x0007AD90 | Handle_ID_WORLD_LOGIN | Validates worldId/worldInst, branches on pktReturnCode, caches world data, writes spawn/rot into g_pLocalPlayerObj | decomp + strings | med |
+
+| 0x10056F20 | 0x00056F20 | DispatchGameMsg | Message dispatch; msgId 0x79 routes to Handle_ID_WORLD_LOGIN | decomp | med |
+
+| 0x10035BF0 | 0x00035BF0 | CGameServerShell_OnMessage | Trampoline into DispatchGameMsg (engine callback) | decomp + xref | med |
+
+- UI msgs observed in Handle_ID_WORLD_LOGIN failure paths: 1721, 1722, 1724.
+
+Helpers (msgId 0x79 payload):
+- 0x100EAB40 WorldLogin_ReadProfileBlockA (core player profile + ability table)
+- 0x1007A6D0 WorldLogin_CopyProfileBlockA (copies profile into server state)
+- 0x100EAA40 WorldLogin_ReadProfileBlockB
+- 0x100C8D20 WorldLogin_ReadProfileBlockC (bitfield stats)
+- 0x100E34A0 WorldLogin_ReadProfileBlockD (u32c[53])
+- 0x10078B80 WorldLogin_ReadStringBundleE (4 x 256B strings)
+- 0x100DF070 WorldLogin_ReadCompactVec3F
+- 0x100172C0 WorldLogin_ReadEntryG
+- 0x100DEC50 WorldLogin_ReadTableI (id/value table)
+- 0x100E9090 WorldLogin_ReadListK (u16/u8/bit list)
 
 
 

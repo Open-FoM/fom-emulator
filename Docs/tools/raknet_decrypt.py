@@ -1,7 +1,7 @@
 """
 Quick RakNet DataBlockEncryptor decryptor for Client captures.
 
-Algorithm per RakNet 3.5 DataBlockEncryptor (reverse-chained AES-128 ECB + pad/checksum).
+Algorithm per RakNet 3.611 DataBlockEncryptor (reverse-chained AES-128 ECB + pad/checksum).
 Inputs:
   - key: 16-byte session key (peer+0x1408 from HandleSecureConnResponse_SetSessionKey)
   - cipher: encrypted payload (length must be multiple of 16)

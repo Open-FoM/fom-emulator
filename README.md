@@ -98,18 +98,18 @@ launch_fom_with_log.bat
 - Client emulator mirrors `fom_client` packet cadence for automated testing/validation and keeps a dedicated world connection/log.
 - AddressMap coverage is deep: LithTech handler table + `SMSG_UPDATE`/`SMSG_PACKETGROUP` layouts and many CShell packet reads are mapped.
 - Spawn path is mapped in `AddressMap.md` (SMSG_UPDATE GroupObjUpdate -> `Update_ReadObjectDefBlock` -> `World_AddObjectFromUpdate`/`CreateObjectFromDef`, plus CF_* flags like `MODELINFO`/`RENDERINFO`/`ATTACHMENTS`/`DIMS`).
-- RSA key swap is in place so the emulator can decrypt login blobs (`Client/Client_FoM/fom_public.key` must match `Server/Master_TS/fom_private_key.env`).
+- RSA key swap is in place so the emulator can decrypt login blobs (`Client/Client_FoM/fom_public.key` must match `Server/apps/master/src/fom_private_key.json`).
 
 <img width="1296" height="746" alt="image" src="https://github.com/user-attachments/assets/c7b53c71-b748-494b-b099-6985f450fc72" />
 
 ## Repo Layout
 
 - `Server/`  
-  Server implementations, named `SERVERTYPE_FRAMEWORK` (e.g., `Master_TS`, `World_TS`).
+  Server implementations under `Server/apps/*` (e.g., `apps/master`, `apps/world`).
 
-- `Server/Master_TS/`  
+- `Server/apps/master/`  
   TypeScript server emulator (master + world) using native RakNet via Bun FFI.  
-  Logs: `Server\Master_TS\logs\`
+  Logs: `Server\apps\master\logs\`
 
 - `Client/Client_TS/`  
   TypeScript client emulator for packet validation + fast iteration.  
@@ -157,7 +157,7 @@ start_client_world.bat -host 127.0.0.1 -port 62000 -world-id 1 -world-inst 1 -wo
 ## Requirements
 
 - Windows (batch scripts are provided)
-- Bun (used by `Server/Master_TS`)
+- Bun (used by `Server/apps/master` and `Server/apps/world`)
 - Node.js + npm (used by `Client/Client_TS`)
 - `IDA Professional 9.2` for reverse-engineering (see `AGENTS.md` for MCP wiring)
 
@@ -195,6 +195,6 @@ start_client_world.bat -host 127.0.0.1 -port 62000 -world-id 1 -world-inst 1 -wo
   - `Docs/Notes/huffman_table_runtime.json`
 
 - **External references**
-  - `External/LithTech/` and `External/RakNet3.5/` (full source trees for context)
+  - `External/LithTech/` and `Server/packagers/networking/native/raknet` (full source trees for context)
   - `Docs/External/LithTech/README.md`
-  - `Docs/External/RakNet3.5/README.md`
+  - `Server/packagers/networking/native/raknet`

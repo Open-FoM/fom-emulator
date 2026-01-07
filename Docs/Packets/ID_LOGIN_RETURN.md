@@ -279,6 +279,7 @@ These are the UI strings shown for 0x6F status values (string IDs from CRes.dll)
 | 13 | LOGIN_RETURN_NOT_PURCHASED | 1741 | Please visit https://www.faceofmankind.com/account/detail and purchase the game to log in! |
 
 **ClientVersion check (success path):** On status 1/5, the handler compares the `clientVersion` field against `0x073D`. If the field is greater, it shows the outdated-client message (ID 1720). Keep this in mind when populating `clientVersion` in the 0x6F payload.
+**Handler anchor:** `HandlePacket_ID_LOGIN_RETURN` @ `0x65896949` (compare at ~`0x658969F3` in ida2).
 
 ## Constructor
 

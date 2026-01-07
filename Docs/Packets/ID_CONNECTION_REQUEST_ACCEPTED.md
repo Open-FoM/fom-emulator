@@ -21,8 +21,8 @@ SystemAddress internalIds[]  (count = sizeof(mySystemAddress)/sizeof(SystemAddre
 | internalIds | SystemAddress[] | raw | Array length from RakNet |
 
 ## Read/Write (decomp)
-- Write: RakNet 3.5 `SendConnectionRequestAccepted` (`External\\raknet\\src\\RakPeer.cpp`)
-- Read: RakNet 3.5 parse path (reads externalId + systemIndex + internalIds)
+- Write: RakNet 3.611 `SendConnectionRequestAccepted` (`Server\\packagers\\networking\\native\\raknet\\src\\RakPeer.cpp`)
+- Read: RakNet 3.611 parse path (reads externalId + systemIndex + internalIds)
 
 ## IDA Anchors
 - ida: parse path disasm around `0x004F63FE` (reads SystemAddress, then systemIndex, then internal IDs); connectMode=CONNECTED write at `0x004F6419`
@@ -31,7 +31,7 @@ SystemAddress internalIds[]  (count = sizeof(mySystemAddress)/sizeof(SystemAddre
 ## Validation
 - ida: partial 01/05/26 (disasm)
 - ida2: n/a
-- Source of truth: `External\\raknet\\src\\RakPeer.cpp`
+- Source of truth: `Server\\packagers\\networking\\native\\raknet\\src\\RakPeer.cpp`
 
 ## Notes / Edge Cases
 - Client connectMode flips to CONNECTED after acceptance.
