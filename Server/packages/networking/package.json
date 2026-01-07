@@ -1,0 +1,20 @@
+{
+  "name": "@openfom/networking",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build:native": "cd native && build.bat",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@openfom/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.3.0"
+  }
+}

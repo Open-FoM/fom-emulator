@@ -31,7 +31,7 @@
 
 # External References
 - `External\LithTech\` (`LithTech` source used by the binaries; use for struct names, class layouts, and behavior baselines).
-- `External\RakNet3.5\` (`RakNet` 3.5 source used by the binaries; use for reliability, packet layout, and net layer flow).
+- `Server\packagers\networking\native\raknet` (`RakNet` 3.5 source used by the binaries; use for reliability, packet layout, and net layer flow).
 - `Docs\External\LithTech\README.md` (Markdown API docs + guides for LithTech; start here for external reference context).
 - `Docs\External\RakNet3.5\README.md` (Markdown API docs + guides for RakNet 3.5; start here for external reference context).
 
