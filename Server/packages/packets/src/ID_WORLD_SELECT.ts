@@ -90,5 +90,3 @@ export class IdWorldSelectPacket extends Packet {
         });
     }
 }
-
-

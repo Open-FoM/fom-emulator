@@ -123,19 +123,6 @@ export class IdLoginPacket extends Packet {
                 steamTicketLength = bs.readCompressedU32();
             }
 
-            console.log(`Decoded ID_LOGIN: ${JSON.stringify({
-                username,
-                passwordHash,
-                fileCRCs,
-                macAddress,
-                driveModels,
-                driveSerials,
-                loginToken,
-                computerName,
-                hasSteamTicket,
-                steamTicketLength,
-            })}`);
-
             return new IdLoginPacket({
                 username,
                 passwordHash,

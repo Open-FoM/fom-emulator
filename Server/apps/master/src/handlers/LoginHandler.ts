@@ -287,7 +287,7 @@ export class LoginHandler {
         }
 
         let username = packet.username || connection.pendingLoginUser || '';
-        const { passwordHash, fileCRCs, macAddress, driveModels, driveSerials, loginToken, computerName, hasSteamTicket, steamTicketLength } = packet;
+        const { passwordHash, fileCRCs, macAddress, loginToken, computerName, hasSteamTicket, steamTicketLength } = packet;
 
         connection.loginAuthUsername = username;
         connection.loginAuthComputer = computerName;
@@ -305,7 +305,7 @@ export class LoginHandler {
         const loginClientVersion = connection.pendingLoginClientVersion || 0;
 
         const crcNote = fileCRCs.length > 0 ? fileCRCs.map((v) => `0x${v.toString(16)}`).join(',') : 'none';
-        this.log(`[Login6E] user="${username}" hash="${passwordHash.slice(0,16)}..." mac="${macAddress}" crcs=[${crcNote}]`);
+        this.log(`[Login6E] user="${username}" hash="${passwordHash.slice(0, 16)}..." mac="${macAddress}" crcs=[${crcNote}]`);
 
         if (status === LoginReturnStatus.SUCCESS) {
             connection.username = username;
