@@ -114,7 +114,7 @@ void LoadConfig()
     }
 
     char HuffmanPath[MAX_PATH] = {0};
-    GetPrivateProfileStringA("Huffman", "TablePath", "..\\Server\\Master_TS\\huffman_table_runtime.json", HuffmanPath, MAX_PATH, IniPath);
+    GetPrivateProfileStringA("Huffman", "TablePath", "..\\Server\\apps\\master\\huffman_table_runtime.json", HuffmanPath, MAX_PATH, IniPath);
     ResolvePathRelativeTo(HuffmanPath, ModuleDir, GConfig.HuffmanTablePath, MAX_PATH);
 
     char ItemPath[MAX_PATH] = {0};
