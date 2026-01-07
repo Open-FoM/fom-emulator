@@ -113,8 +113,6 @@ function getLibraryPath(): string {
         join(import.meta.dir, '..', '..', 'native', libName),
         // Fallback: workspace root resolution (when running from Server/)
         join(process.cwd(), 'packages', 'networking', 'native', libName),
-        // Legacy fallback for transition period
-        join(process.cwd(), 'Server', 'Master_TS', 'native', libName),
     ];
 
     for (const p of searchPaths) {
@@ -847,7 +845,7 @@ export class NativeBitStream {
         this.ensureAlive();
         if (maxLen <= 1) return '';
         const bits = Math.floor(Math.log2(maxLen)) + 1;
-        const lenBuf = this.readBits(bits, false);
+        const lenBuf = this.readBits(bits, true);
         const len = lenBuf[0] & ((1 << bits) - 1);
         if (len === 0) return '';
         return this.readBytes(len).toString(encoding);
@@ -864,7 +862,7 @@ export class NativeBitStream {
         const raw = Buffer.from(value ?? '', 'latin1');
         const len = Math.min(raw.length, maxLen - 1);
         const bits = Math.floor(Math.log2(maxLen)) + 1;
-        this.writeBits(Buffer.from([len]), bits, false);
+        this.writeBits(Buffer.from([len]), bits, true);
         if (len > 0) this.writeBytes(raw.subarray(0, len));
     }
 

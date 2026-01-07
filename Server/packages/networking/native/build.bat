@@ -101,7 +101,7 @@ echo ============================================================
 echo  Build Successful!
 echo ============================================================
 echo.
-echo Output: Server\\Master_TS\\raknet_ffi.dll
+echo Output: Server\\packages\\networking\\native\\raknet_ffi.dll
 echo.
 echo To use with the emulator:
 echo   cd Server

@@ -38,7 +38,7 @@
       "name": "@openfom/networking",
       "version": "1.0.0",
       "dependencies": {
-        "@openfom/utils": "workspace:*",
+        "@openfom/utils": "file:../utils",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -72,5 +72,7 @@
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "undici-types": ["undici-types@7.16.0", "", {}, "sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw=="],
+
+    "@openfom/networking/@openfom/utils": ["@openfom/utils@file:packages/utils", { "devDependencies": { "@types/bun": "latest", "typescript": "^5.3.0" } }],
   }
 }

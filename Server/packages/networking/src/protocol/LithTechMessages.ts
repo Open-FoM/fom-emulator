@@ -9,60 +9,9 @@
 
 import { NativeBitStream } from '../bindings/raknet';
 import { LithTechMessageId } from './Constants';
+import { BitStreamWriter } from './BitStream';
 
 const SEQUENCE_MASK = 0x1fff; // 13 bits
-
-/**
- * Simple MSB-first bit writer for LithTech message building
- */
-class LithBitWriter {
-    private buffer: number[] = [];
-    private currentByte = 0;
-    private bitPos = 7; // MSB first
-
-    // Write a single MSB-first bit into the output buffer.
-    writeBit(b: number): void {
-        this.currentByte |= (b & 1) << this.bitPos;
-        if (--this.bitPos < 0) {
-            this.buffer.push(this.currentByte);
-            this.currentByte = 0;
-            this.bitPos = 7;
-        }
-    }
-
-    // Write a fixed-width MSB-first bit field.
-    writeBits(value: number, count: number): void {
-        for (let i = count - 1; i >= 0; i--) {
-            this.writeBit((value >> i) & 1);
-        }
-    }
-
-    writeByte(n: number): void {
-        this.writeBits(n & 0xff, 8);
-    }
-
-    writeBytes(buf: Buffer): void {
-        for (let i = 0; i < buf.length; i++) {
-            this.writeByte(buf[i]);
-        }
-    }
-
-    // Write float as LE bytes (LithTech payload format).
-    writeFloat(n: number): void {
-        const buf = Buffer.alloc(4);
-        buf.writeFloatLE(n, 0);
-        this.writeBytes(buf);
-    }
-
-    // Flush partial byte and return packed buffer.
-    toBuffer(): Buffer {
-        const result = [...this.buffer];
-        if (this.bitPos < 7) {
-            result.push(this.currentByte);
-        }
-        return Buffer.from(result);
-    }
-}
 
 interface SubMessage {
     msgId: number;
@@ -78,35 +27,35 @@ interface SubMessage {
  * - If continuation set, 3 more bits + 1 continuation bit
  * - Then remaining bits one at a time with continuation
  */
-function writeSizeIndicator(writer: LithBitWriter, size: number): void {
+function writeSizeIndicator(writer: BitStreamWriter, size: number): void {
     // Size encoding mirrors LithTech bit-size indicator.
     // Write lower 7 bits
     writer.writeBits(size & 0x7f, 7);
 
     if (size <= 0x7f) {
-        writer.writeBit(0); // No continuation
+        writer.writeBits(0, 1); // No continuation
         return;
     }
 
-    writer.writeBit(1); // Continuation
+    writer.writeBits(1, 1); // Continuation
     writer.writeBits((size >> 7) & 0x7, 3);
 
     if (size <= 0x3ff) {
-        writer.writeBit(0); // No continuation
+        writer.writeBits(0, 1); // No continuation
         return;
     }
 
-    writer.writeBit(1); // Continuation
+    writer.writeBits(1, 1); // Continuation
 
     // Write remaining bits one at a time
     let mask = 1 << 10;
     while (mask <= size) {
-        writer.writeBit((size & mask) ? 1 : 0);
+        writer.writeBits((size & mask) ? 1 : 0, 1);
         if (mask * 2 > size) {
-            writer.writeBit(0); // No more bits
+            writer.writeBits(0, 1); // No more bits
             break;
         }
-        writer.writeBit(1); // More bits
+        writer.writeBits(1, 1); // More bits
         mask <<= 1;
     }
 }
@@ -114,15 +63,15 @@ function writeSizeIndicator(writer: LithBitWriter, size: number): void {
 /**
  * Write raw bits from buffer to writer
  */
-function writeBitsFromBuffer(writer: LithBitWriter, buf: Buffer, bitCount: number): void {
+function writeBitsFromBuffer(writer: BitStreamWriter, buf: Buffer, bitCount: number): void {
     // Copy an arbitrary number of bits from a byte buffer.
     let bitsWritten = 0;
     for (let i = 0; i < buf.length && bitsWritten < bitCount; i++) {
         const byte = buf[i];
-        for (let bit = 7; bit >= 0 && bitsWritten < bitCount; bit--) {
-            writer.writeBit((byte >> bit) & 1);
-            bitsWritten++;
-        }
+        const remaining = bitCount - bitsWritten;
+        const take = remaining >= 8 ? 8 : remaining;
+        writer.writeBits(byte, take);
+        bitsWritten += take;
     }
 }
 
@@ -134,7 +83,7 @@ export function buildLithTechGuaranteedPacket(
     subMessages: SubMessage[],
 ): Buffer {
     // Compose LithTech guaranteed packet: sequence + submessage list.
-    const writer = new LithBitWriter();
+    const writer = new BitStreamWriter(128);
 
     // 13-bit sequence number
     writer.writeBits(sequence & SEQUENCE_MASK, 13);
@@ -171,7 +120,7 @@ export function buildLithTechGuaranteedPacket(
  * Build protocol version payload (MSG_NETPROTOCOLVERSION = 4)
  */
 export function buildProtocolVersionPayload(): SubMessage {
-    const writer = new LithBitWriter();
+    const writer = new BitStreamWriter(32);
     writer.writeBits(7, 32); // Protocol version 7
     writer.writeBits(0, 32); // Additional version data
     return {
@@ -185,7 +134,7 @@ export function buildProtocolVersionPayload(): SubMessage {
  * Build your ID payload (MSG_YOURID = 12)
  */
 export function buildYourIdPayload(clientId: number): SubMessage {
-    const writer = new LithBitWriter();
+    const writer = new BitStreamWriter(16);
     writer.writeBits(clientId & 0xffff, 16);
     writer.writeBits(0, 8); // bLocal flag (0 = remote)
     return {
@@ -199,7 +148,7 @@ export function buildYourIdPayload(clientId: number): SubMessage {
  * Build client object ID payload (MSG_CLIENTOBJECTID = 7)
  */
 export function buildClientObjectIdPayload(objectId: number): SubMessage {
-    const writer = new LithBitWriter();
+    const writer = new BitStreamWriter(16);
     writer.writeBits(objectId & 0xffff, 16);
     return {
         msgId: LithTechMessageId.MSG_CLIENTOBJECTID,
@@ -212,8 +161,10 @@ export function buildClientObjectIdPayload(objectId: number): SubMessage {
  * Build load world payload (MSG_LOADWORLD = 6)
  */
 export function buildLoadWorldPayload(worldId: number, gameTime = 0.0): SubMessage {
-    const writer = new LithBitWriter();
-    writer.writeFloat(gameTime);
+    const writer = new BitStreamWriter(24);
+    const timeBuf = Buffer.alloc(4);
+    timeBuf.writeFloatLE(gameTime, 0);
+    writer.writeBytes(timeBuf);
     writer.writeBits(worldId & 0xffff, 16);
     return {
         msgId: LithTechMessageId.MSG_LOADWORLD,

@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@openfom/utils": "workspace:*"
+    "@openfom/utils": "file:../utils"
   },
   "devDependencies": {
     "@types/bun": "latest",

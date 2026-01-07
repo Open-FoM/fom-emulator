@@ -7,7 +7,7 @@
 #define RAKNET_FFI_EXPORTS
 #include "raknet_ffi.h"
 
-// RakNet 3.611 headers (from External/raknet/include/raknet/)
+// RakNet 3.611 headers (from Server/packagers/networking/native/raknet/include/raknet/)
 #include "raknet/RakPeerInterface.h"
 #include "raknet/RakNetworkFactory.h"
 #include "raknet/RakNetTypes.h"

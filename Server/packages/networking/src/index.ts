@@ -20,6 +20,7 @@ export {
     initStringCompressor,
     encodeString,
     decodeString,
+    addressFromString,
 } from './bindings/raknet';
 
 // Address utilities
