@@ -386,6 +386,10 @@ const lib = dlopen(libPath, {
         returns: FFIType.bool,
         args: [FFIType.ptr, FFIType.u32, FFIType.ptr, FFIType.u8],
     },
+    rak_string_compressor_decode_debug: {
+        returns: FFIType.i32,
+        args: [FFIType.ptr, FFIType.u32, FFIType.ptr, FFIType.u8, FFIType.ptr, FFIType.ptr],
+    },
 });
 
 // =============================================================================
@@ -939,6 +943,50 @@ export function decodeString(bs: NativeBitStream, maxChars: number = 2048, langu
     const success = lib.symbols.rak_string_compressor_decode(ptr(outputBuf), maxChars, bs.getHandle(), languageId);
     if (!success) throw new Error('Failed to decode string');
     // Find null terminator
+    let end = outputBuf.indexOf(0);
+    if (end === -1) end = maxChars;
+    return outputBuf.subarray(0, end).toString('utf8');
+}
+
+export interface DecodeStringDebugResult {
+    errorCode: number;
+    errorMessage: string;
+    stringBitLength: number;
+    unreadBits: number;
+}
+
+const DECODE_ERROR_MESSAGES: Record<number, string> = {
+    0: 'Would succeed (passed all checks)',
+    1: 'Null output buffer',
+    2: 'Null bitstream',
+    3: 'max_chars is 0',
+    4: 'StringCompressor instance is null',
+    5: 'Failed to read stringBitLength (ReadCompressed failed)',
+    6: 'Not enough bits remaining in stream',
+};
+
+export function decodeStringDebug(bs: NativeBitStream, maxChars: number = 2048, languageId: number = 0): string {
+    initStringCompressor();
+    const outputBuf = Buffer.alloc(maxChars + 1);
+    const bitLengthBuf = Buffer.alloc(4);
+    const unreadBitsBuf = Buffer.alloc(4);
+    
+    const errorCode = lib.symbols.rak_string_compressor_decode_debug(
+        ptr(outputBuf), 
+        maxChars, 
+        bs.getHandle(), 
+        languageId,
+        ptr(bitLengthBuf),
+        ptr(unreadBitsBuf)
+    );
+    
+    console.log({
+        errorCode,
+        errorMessage: DECODE_ERROR_MESSAGES[errorCode] ?? `Unknown error code: ${errorCode}`,
+        stringBitLength: bitLengthBuf.readUInt32LE(0),
+        unreadBits: unreadBitsBuf.readUInt32LE(0),
+    });
+
     let end = outputBuf.indexOf(0);
     if (end === -1) end = maxChars;
     return outputBuf.subarray(0, end).toString('utf8');

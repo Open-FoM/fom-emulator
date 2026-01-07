@@ -16,11 +16,7 @@
  * - Docs/Packets/ID_LOGIN_TOKEN_CHECK.md
  */
 
-import {
-    RakMessageId,
-    type RakSystemAddress,
-    buildWorldLoginBurst,
-} from '@openfom/networking';
+import { type RakSystemAddress } from '@openfom/networking';
 import {
     RakNetMessageId,
     LoginRequestReturnStatus,
@@ -34,6 +30,8 @@ import {
     IdWorldLoginReturnPacket,
     WorldLoginReturnCode,
     IdWorldSelectPacket,
+    LtGuaranteedPacket,
+    IdUserPacket,
 } from '@openfom/packets';
 import { Connection, LoginPhase } from '../network/Connection';
 import { APARTMENT_WORLD_TABLE } from '../world/WorldRegistry';
@@ -160,7 +158,8 @@ export class LoginHandler {
             }
         } catch (err) {
             const msg = err instanceof Error ? err.message : String(err);
-            this.log(`[Login] Packet decode error: ${msg}`);
+            this.log(`[Login] Packet decode packet ${packetId} error: ${msg}`);
+            this.log(`[Login] Trace : ${err instanceof Error ? err.stack : ''}`);
             return null;
         }
     }
@@ -429,9 +428,9 @@ export class LoginHandler {
         const objectId = playerId || connection.id;
         const lithWorldId = worldId || 16;
 
-        const lithBurst = buildWorldLoginBurst(seq, clientId, objectId, lithWorldId);
-        const wrappedBurst = Buffer.concat([Buffer.from([RakMessageId.USER_PACKET_ENUM]), lithBurst]);
-        this.log(`[Login72] -> LithTech burst (${lithBurst.length} bytes)`);
+        const lithBurst = LtGuaranteedPacket.buildWorldLoginBurst(seq, clientId, objectId, lithWorldId);
+        const wrappedBurst = IdUserPacket.wrap(lithBurst).encode();
+        this.log(`[Login72] -> LithTech burst (${wrappedBurst.length - 1} bytes)`);
 
         responses.push({
             data: wrappedBurst,

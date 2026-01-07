@@ -1,4 +1,4 @@
-export { Packet, NetworkLayer } from './base';
+export { Packet, NetworkLayer, LithMessage } from './base';
 
 export {
     RakNetMessageId,
@@ -44,3 +44,17 @@ export {
 } from './ID_WORLD_LOGIN_RETURN';
 
 export { IdWorldSelectPacket, WorldSelectSubId, type IdWorldSelectData } from './ID_WORLD_SELECT';
+
+export { IdUserPacket, type IdUserPacketData } from './ID_USER_PACKET';
+
+export { LtGuaranteedPacket, type LtGuaranteedData } from './LT_GUARANTEED';
+
+export { MsgNetProtocolVersion, type MsgNetProtocolVersionData } from './MSG_NETPROTOCOLVERSION';
+
+export { MsgYourId, type MsgYourIdData } from './MSG_YOURID';
+
+export { MsgClientObjectId, type MsgClientObjectIdData } from './MSG_CLIENTOBJECTID';
+
+export { MsgLoadWorld, type MsgLoadWorldData } from './MSG_LOADWORLD';
+
+export { MsgUnguaranteedUpdate, type MsgUnguaranteedUpdateData } from './MSG_UNGUARANTEEDUPDATE';

@@ -14,16 +14,13 @@ import {
     RakPeer,
     RakReliability,
     RakPriority,
-    RakMessageId,
     type RakSystemAddress,
     addressToIp,
     addressToString,
-    BitStreamWriter,
-    buildLithTechGuaranteedPacket,
     PacketLogger,
     PacketDirection,
 } from '@openfom/networking';
-import { LithTechMessageId } from '@openfom/packets';
+import { LtGuaranteedPacket, MsgUnguaranteedUpdate, IdUserPacket } from '@openfom/packets';
 import { configureLogger, debug as logDebug, error as logError, info as logInfo, warn as logWarn } from '@openfom/utils';
 import { loadRuntimeConfig } from './config';
 import { ConnectionManager, LoginPhase } from './network/Connection';
@@ -310,25 +307,12 @@ async function mainLoop() {
                 conn.worldLastHeartbeatAt = now;
 
                 const elapsedSec = (now - conn.worldTimeOrigin) / 1000;
-                const payloadWriter = new BitStreamWriter(12);
-                payloadWriter.writeUInt16(0xffff);
-                payloadWriter.writeBits(0, 4);
-                const timeBuf = Buffer.alloc(4);
-                timeBuf.writeFloatLE(elapsedSec, 0);
-                payloadWriter.writeBytes(timeBuf);
-                const payload = payloadWriter.toBuffer();
-                const payloadBits = payloadWriter.position;
+                const updateMsg = MsgUnguaranteedUpdate.createHeartbeat(elapsedSec);
 
                 const seq = conn.lithTechOutSeq;
                 conn.lithTechOutSeq = (seq + 1) & 0x1fff;
-                const packet = buildLithTechGuaranteedPacket(seq, [
-                    {
-                        msgId: LithTechMessageId.MSG_UNGUARANTEEDUPDATE,
-                        payload,
-                        payloadBits,
-                    },
-                ]);
-                const wrapped = Buffer.concat([Buffer.from([RakMessageId.USER_PACKET_ENUM]), packet]);
+                const packet = LtGuaranteedPacket.fromMessages(seq, [updateMsg]);
+                const wrapped = IdUserPacket.wrap(packet).encode();
                 sendUnreliable(wrapped, conn.address);
             }
         }

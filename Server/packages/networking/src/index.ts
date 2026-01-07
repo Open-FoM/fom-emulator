@@ -20,6 +20,7 @@ export {
     initStringCompressor,
     encodeString,
     decodeString,
+    decodeStringDebug,
     addressFromString,
 } from './bindings/raknet';
 
@@ -30,16 +31,6 @@ export * from './net/address';
 export * from './protocol/BitStream';
 export * from './protocol/Constants';
 export * from './protocol/LithCompressed';
-// LithTechMessages - exclude LithTechMessageId (already in Constants)
-export {
-    buildLithTechGuaranteedPacket,
-    buildProtocolVersionPayload,
-    buildYourIdPayload,
-    buildClientObjectIdPayload,
-    buildLoadWorldPayload,
-    buildWorldLoginBurst,
-    buildUnguaranteedUpdate,
-} from './protocol/LithTechMessages';
 export * from './protocol/PacketDocs';
 export * from './protocol/PacketNames';
 

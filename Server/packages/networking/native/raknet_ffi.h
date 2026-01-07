@@ -635,6 +635,27 @@ RAK_FFI_API void rak_string_compressor_encode(const char* input, uint32_t max_ch
 RAK_FFI_API bool rak_string_compressor_decode(char* output, uint32_t max_chars,
                                                RakBitStreamHandle bs, uint8_t language_id);
 
+/**
+ * Debug version of decode that returns detailed error codes.
+ * @param output Output buffer for decoded string
+ * @param max_chars Maximum characters to decode (buffer size)
+ * @param bs BitStream to read from
+ * @param language_id Language ID (usually 0)
+ * @param out_bit_length Output: the stringBitLength read from stream (if successful)
+ * @param out_unread_bits Output: number of unread bits remaining in stream
+ * @return Error code:
+ *         0 = would succeed (passed all checks)
+ *         1 = null output buffer
+ *         2 = null bitstream
+ *         3 = max_chars is 0
+ *         4 = StringCompressor instance is null
+ *         5 = failed to read stringBitLength (ReadCompressed failed)
+ *         6 = not enough bits remaining in stream
+ */
+RAK_FFI_API int32_t rak_string_compressor_decode_debug(char* output, uint32_t max_chars,
+                                                        RakBitStreamHandle bs, uint8_t language_id,
+                                                        uint32_t* out_bit_length, uint32_t* out_unread_bits);
+
 #ifdef __cplusplus
 }
 #endif

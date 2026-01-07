@@ -31,3 +31,18 @@ export const ConnectionResponseFlag = {
     SKIP_GUID_CHECK: 1,
     GUID_MISMATCH: 0,
 } as const;
+
+const LOGIN_PACKET_IDS = new Set<number>([
+    0x6c, // ID_LOGIN_REQUEST
+    0x6d, // ID_LOGIN_REQUEST_RETURN
+    0x6e, // ID_LOGIN
+    0x6f, // ID_LOGIN_RETURN
+    0x70, // ID_LOGIN_TOKEN_CHECK
+    0x72, // ID_WORLD_LOGIN
+    0x73, // ID_WORLD_LOGIN_RETURN
+    0x7b, // ID_WORLD_SELECT
+]);
+
+export function isLoginPacketId(packetId: number): boolean {
+    return LOGIN_PACKET_IDS.has(packetId & 0xff);
+}

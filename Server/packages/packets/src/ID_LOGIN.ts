@@ -96,7 +96,7 @@ export class IdLoginPacket extends Packet {
             // Read 3 file CRCs
             const fileCRCs: number[] = [];
             for (let i = 0; i < 3; i++) {
-                fileCRCs.push(bs.readCompressedU32());
+                fileCRCs.push(bs.readU32());
             }
 
             const macAddress = decodeString(bs, 2048);
@@ -122,6 +122,19 @@ export class IdLoginPacket extends Packet {
                 }
                 steamTicketLength = bs.readCompressedU32();
             }
+
+            console.log(`Decoded ID_LOGIN: ${JSON.stringify({
+                username,
+                passwordHash,
+                fileCRCs,
+                macAddress,
+                driveModels,
+                driveSerials,
+                loginToken,
+                computerName,
+                hasSteamTicket,
+                steamTicketLength,
+            })}`);
 
             return new IdLoginPacket({
                 username,
