@@ -4985,6 +4985,8 @@ Helpers (CShell):
 
 | 0x102CA0A0 | 0x002CA0A0 | Packet_ID_PLAYER2PLAYER_vftable | Vtable for Packet_ID_PLAYER2PLAYER (read/write) | RTTI + disasm | med |
 
+| 0x101B4510 | 0x001B4510 | g_AudioEventQueue | Global audio event queue/context used by AudioEvent_Enqueue | decomp + xrefs | low |
+
 
 
 ## Object.lto (image base 0x10000000)
@@ -4998,6 +5000,7 @@ Helpers (CShell):
 |---|---|---|---|---|---|
 
 | 0x1011EBD0 | 0x0011EBD0 | ObjectTemplateTable | 0x80-byte records, u16 id at +0x00; contiguous ids starting at 1 (content does not match weapon stats) | file scan + id sequence | low |
+| 0x1011EB50 | 0x0011EB50 | SoundEntryTable | 0x80-byte records; entry[31]=clipCount; weight/clip pairs start at entry[11]/[12] | decomp + data scan | low |
 
 
 
@@ -5032,29 +5035,375 @@ Helpers (CShell):
 | 0x10078D80 | 0x00078D80 | ID_WORLD_LOGIN_Read | Reads large world-login payload into pkt buffer (1072 bytes + extended data blocks) | decomp | med |
 
 | 0x1007AD90 | 0x0007AD90 | Handle_ID_WORLD_LOGIN | Validates worldId/worldInst, branches on pktReturnCode, caches world data, writes spawn/rot into g_pLocalPlayerObj | decomp + strings | med |
+| 0x1007A850 | 0x0007A850 | Packet_ID_WORLD_LOGIN_DATA_Ctor | Initializes 0x79 payload defaults (id=0x79, flags, compact vec init) | decomp | med |
 
 | 0x10056F20 | 0x00056F20 | DispatchGameMsg | Message dispatch; msgId 0x79 routes to Handle_ID_WORLD_LOGIN | decomp | med |
 
 | 0x10035BF0 | 0x00035BF0 | CGameServerShell_OnMessage | Trampoline into DispatchGameMsg (engine callback) | decomp + xref | med |
 
+| 0x10051CA0 | 0x00051CA0 | Handle_MSG_ID_WORLD_UPDATE | Packet_ID_WORLD_UPDATE handler: reads (playerId, seq?) then up to 101 entries; spawns/updates CCharacter/Enemy/Turret | decomp | med |
+| 0x10086B50 | 0x00086B50 | Handle_MSG_ID_WEATHER | Packet_ID_WEATHER handler; decodes packed weather fields into local cache | decomp | low |
+| 0x10062680 | 0x00062680 | Handle_MSG_ID_ATTRIBUTE_CHANGE | Packet_ID_ATTRIBUTE_CHANGE handler; applies attribute list and triggers local FX gates | decomp | low |
+| 0x10050550 | 0x00050550 | Handle_MSG_ID_84_HIT | Packet_ID_HIT handler; if target==local player triggers hit reaction | decomp | med |
+| 0x10056AC0 | 0x00056AC0 | Handle_MSG_ID_WORLD_OBJECTS | Packet_ID_WORLD_OBJECTS handler; multi-subtype list payload (ids 0x1FA..0x204) | decomp | low |
+| 0x10050680 | 0x00050680 | Handle_MSG_ID_EXPLOSIVE | Packet_ID_EXPLOSIVE handler; by objectId + subtype; applies effects to CCharacter | decomp | low |
+| 0x1005F0D0 | 0x0005F0D0 | Handle_MSG_ID_AVATAR_CHANGE | Packet_ID_AVATAR_CHANGE handler; applies profile block C and updates shared strings | decomp | low |
+| 0x10050840 | 0x00050840 | Handle_MSG_ID_CHAT | Packet_ID_CHAT handler; chat/notification routing + colored text | decomp | low |
+| 0x10050DF0 | 0x00050DF0 | Handle_MSG_ID_TAUNT | Packet_ID_TAUNT handler; plays taunt + optional local chat | decomp | low |
+| 0x100510B0 | 0x000510B0 | Handle_MSG_ID_OBJECT_DETAILS | Packet_ID_OBJECT_DETAILS handler; updates character metadata strings | decomp | low |
+
 - UI msgs observed in Handle_ID_WORLD_LOGIN failure paths: 1721, 1722, 1724.
+
+### Chat / Taunt helpers (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10046F40 | 0x00046F40 | ChatLog_AddEntry | Pushes chat log entry into shared table (max 0x14 entries) | decomp | low |
+| 0x1004C900 | 0x0004C900 | ChatNameCache_SetEntry | Writes name cache entry (id + name + lowercase) | decomp | low |
+| 0x1004C9E0 | 0x0004C9E0 | ChatNameCache_InsertOrUpdate | Update or append name cache (max 0x32 entries) | decomp | low |
+| 0x1004E150 | 0x0004E150 | ChatNameCache_Reset | Clears name cache entries and resets count | decomp | low |
+| 0x1000B480 | 0x0000B480 | SoundEntryTable_GetEntry | Returns sound entry pointer (id 0..0x18A) | decomp | low |
+| 0x1000B520 | 0x0000B520 | SoundEntryTable_GetEntry_Thunk | Thunk to SoundEntryTable_GetEntry | disasm | low |
+| 0x10070510 | 0x00070510 | SoundEntry_SelectClipPath | Weighted pick of clip path from entry | decomp | low |
+| 0x10070CB0 | 0x00070CB0 | SoundEntry_PlayEntry | Builds audio event from sound entry and enqueues | decomp | low |
+| 0x100711B0 | 0x000711B0 | SoundEntry_PlayById | Look up sound entry then play | decomp | low |
+| 0x100706B0 | 0x000706B0 | SoundEntryList_BuildNameList | Fills UI list with entry names (max len) | decomp | low |
+| 0x100704C0 | 0x000704C0 | AudioEvent_Enqueue | Enqueues audio event payload into shared queue | decomp | low |
+| 0x10070BE0 | 0x00070BE0 | AudioEvent_EnqueueFromObject | Builds audio event from object + string | decomp | low |
+| 0x10070DE0 | 0x00070DE0 | SoundEntry_PlayForObject | Plays sound entry relative to object | decomp | low |
+| 0x10070EF0 | 0x00070EF0 | AudioEvent_EnqueueAtPos | Builds audio event at world position | decomp | low |
+| 0x10071080 | 0x00071080 | SoundEntry_PlayAtPos | Plays sound entry at world position | decomp | low |
+| 0x10046D90 | 0x00046D90 | AudioEvent_InitDefaults | Initializes audio event defaults | decomp | low |
+| 0x10046B20 | 0x00046B20 | AudioEventQueue_Push | Pushes event into queue (max 0x64 entries) | decomp | low |
+
+SoundEntry (SoundEntryTable) layout (partial, 0x80 bytes):
+- +0x00 u32 id
+- +0x04 char* name (C string)
+- +0x0C float minDist (copied into AudioEvent f68)
+- +0x10 float maxDist (copied into AudioEvent f69)
+- +0x14 float pitchOrRolloff (copied into AudioEvent f71)
+- +0x18 float playChance (if <1.0, random gate)
+- +0x1C u8 volumePercent (0..100) -> f70 (0..1)
+- +0x20 u32 flagsOrGroup (copied into AudioEvent dword)
+- +0x24 float useObjectPos (nonzero -> pull object position in SoundEntry_PlayEntry)
+- +0x2C float weight0
+- +0x30 char* clip0
+- subsequent pairs: weight1/clip1 at +0x34/+0x38, etc
+- +0x7C u32 clipCount
+
+Taunt (msgId 0x96) uses SoundEntryTable[tauntId] to pick the clip path (weighted by weightN).
+SoundEntry_SelectClipPath:
+- sums weights (float) -> casts sum to int for Rand_IntInclusive
+- picks first weight bucket where cumulative > randomInt
+
+AudioEvent payload (0x148 bytes, as written by AudioEvent_Enqueue):
+- +0x000 char path[260] (sound/FX path)
+- +0x104 float f65
+- +0x108 float f66
+- +0x10C float f67
+- +0x110 float f68
+- +0x114 float f69
+- +0x118 float f70
+- +0x11C float f71
+- +0x120 float f72 (default 10.0)
+- +0x124 float f73 (default 500.0)
+- +0x128 float f74 (default 1.0)
+- +0x12C float f75 (default 1.0)
+- +0x130 float f76
+- +0x134 float f77
+- +0x138 float f78
+- +0x13C u32 linkA (AudioEvent_Enqueue writes *this)
+- +0x140 u32 linkB (AudioEvent_Enqueue writes *(this+1))
+- +0x144 u32 linkC (cleared to 0)
+Defaults for f65..f78 are set by AudioEvent_InitDefaults; positions/volumes override in SoundEntry_* helpers.
+
+### Appearance helpers (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10015DC0 | 0x00015DC0 | AppearanceEntry_Reset | Zeroes 124-byte appearance/identity block | decomp | low |
+| 0x100143A0 | 0x000143A0 | AppearanceEntry_Clear | Zeroes 124-byte appearance/identity block (inner helper) | decomp | low |
+
+### Sound emitter (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10070180 | 0x00070180 | SoundEmitter_Create | Allocates/initializes sound emitter object | disasm | low |
+| 0x100701B0 | 0x000701B0 | SoundEmitter_PlayNow | Builds AudioEvent from emitter fields and enqueues | decomp | low |
+| 0x100702D0 | 0x000702D0 | SoundEmitter_Update | Tick: plays at interval (rand between min/max) | decomp | low |
+| 0x10070360 | 0x00070360 | SoundEmitter_Stop | Stops/restarts emitter based on flags and timing | decomp | low |
+| 0x10070420 | 0x00070420 | SoundEmitter_OnMessage | Message handler: stop/update based on msg, forwards | disasm | low |
+| 0x10001390 | 0x00001390 | ClientObj_OnMessageDispatch | Forwards engine message to object vtbl handler | disasm | low |
+| 0x10001080 | 0x00001080 | ClientObj_OnMessageDispatch_WithSender | Dispatch w/ sender + extra args | disasm | low |
+
+SoundEmitter fields (partial, from SoundEmitter_PlayNow/Stop/Update):
+- +0x08 HOBJECT (used for position + stop calls)
+- +0x40 s32 soundEntryId (‑1 disables)
+- +0x44 s32 lastEventHandle (AudioEvent_Enqueue return)
+- +0x48 float minDist
+- +0x4C float maxDist
+- +0x50 u8 volumePercent
+- +0x54 float pitchOrRolloff
+- +0x5C bool playAttached
+- +0x64 u8 flags/group
+- +0x68 bool repeat
+- +0x6C float repeatTimeMin
+- +0x70 float repeatTimeMax
+- +0x74 float nextPlayTime
+
+Property strings near 0x10139078 include: RepeatTimeMax, RepeatTimeMin, Repeat, PlayAttached, PitchShift (likely SoundEmitter props).
+
+### Math / visibility helpers (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10013E30 | 0x00013E30 | Vec3_LengthSq | Returns squared length of vec3 | decomp | high |
+| 0x1006D790 | 0x0006D790 | LTServer_IsLineOfSightClear | Raycast between two objects; returns true if clear | decomp | med |
+| 0x10007EA0 | 0x00007EA0 | Rand_IntInclusive | rand() % (n+1) (or -1..0 when n==-1) | decomp | low |
+| 0x10007F10 | 0x00007F10 | Rand_FloatRange | Returns uniform float in [min, max] | decomp | low |
+
+### Object render helpers (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1000D290 | 0x0000D290 | Obj_SetAlphaAndHiddenFlag | Sets alpha and toggles hidden flag when alpha==0 | decomp | low |
+
+### Text parser helpers (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x100E26B0 | 0x000E26B0 | TextParser_StripMarkupTags | Parses text and strips tag markup into std::string | decomp | low |
+| 0x100E22D0 | 0x000E22D0 | TextParser_NextToken | Tokenizes `<tag>` stream; returns token type | decomp | low |
+| 0x100E2280 | 0x000E2280 | TextParser_ReadNonWhitespace | Returns next non-whitespace char from stream | decomp | low |
+
+### World login flow (CShell.dll / fom_client.exe@0x65700000)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x65899AD3 | 0x00199AD3 | ClientShell_OnMessage_DispatchPacketId | Packet ID switch; routes ID 0x73 -> HandlePacket_ID_WORLD_LOGIN_RETURN_73 | decomp | high |
+| 0x6588E340 | 0x0018E340 | HandlePacket_ID_WORLD_LOGIN_RETURN_73 | Handles world login return (code 1/2/3/4/6/7/8 UI + connect) | decomp | high |
+| 0x6588DDA0 | 0x0018DDA0 | ID_WORLD_LOGIN_RETURN_Read | Reads code/flag + worldAddr.ip + worldAddr.port | decomp | high |
+| 0x6588C320 | 0x0018C320 | ID_WORLD_LOGIN_RETURN_Ctor | id=0x73; worldAddr=unassigned; code=0; flag=0xFF | decomp | high |
+| 0x658C0D60 | 0x001C0D60 | WorldLoginReturn_HandleAddress | Validates address; g_LTClient->ConnectToWorld; sets state=2 | decomp | high |
+| 0x6588C570 | 0x0018C570 | WorldLoginReturn_ScheduleRetry | Sets state=1 and retry time (now+5s) | decomp | high |
+| 0x658C0E10 | 0x001C0E10 | WorldLogin_StateMachineTick | State machine; sends 0x72 and loads world | decomp | high |
+| 0x658BFE00 | 0x001BFE00 | ID_WORLD_LOGIN_Ctor | id=0x72; worldId=-1; worldInst/playerId/worldConst=0 | decomp | high |
+| 0x658C09F0 | 0x001C09F0 | ID_WORLD_LOGIN_Write | Writes worldId/worldInst/u32c playerId/u32c worldConst | decomp | high |
+| 0x6588D9C0 | 0x0018D9C0 | LTClient_SendPacket_BuildIfNeeded | Sends packet via g_LTClient vtbl+0x28/0x40 | decomp | med |
+| 0x6575AE30 | 0x0005AE30 | WorldLogin_LoadWorldFromPath | Loads world by path + display name | decomp | med |
+| 0x658C0340 | 0x001C0340 | WorldLogin_LoadApartmentWorld | Special-case worldId==4 load | decomp | med |
+| 0x6578C310 | 0x0008C310 | SharedMem_WriteWorldLoginState_0x1EEC0 | Writes world login state | decomp | med |
+| 0x6588E8F0 | 0x0018E8F0 | Packet_ID_NAME_CHANGE_ReadAndApply | Updates shared string keys 11219/11224 based on name-change packet | decomp | low |
+| 0x657850A0 | 0x000850A0 | SharedMem2BD3_WriteString | Writes key 11219 (string) | decomp | low |
+| 0x6588AD10 | 0x0018AD10 | SharedMem_WriteKey11224 | Writes key 11224 (string) | decomp | low |
+| 0x6588AD30 | 0x0018AD30 | SharedMem_WriteKey126546 | Writes key 126546 (string) | decomp | low |
+| 0x658C51B0 | 0x001C51B0 | WeaponFire_IsDistanceSqBelowThreshold | Reads key 125503 (vec3) + 125506 (u32 threshold) | decomp | low |
+| 0x6589D9D0 | 0x0019D9D0 | SharedMem_WriteKey125508 | Writes key 125508 (u32) | decomp | low |
+
+Packet send path (CShell.dll):
+| 0x6570C770 | 0x0000C770 | Packet_WriteHeader | Writes header id; if id==25 writes U64 token; always writes packet id byte | decomp | med |
+| 0x658CA270 | 0x001CA270 | Packet_GetHeaderTokenU64 | Returns monotonic time (micros/1000) | decomp | med |
+| 0x658CA290 | 0x001CA290 | Timer_GetTimeMicros_Monotonic | QPC-based monotonic microseconds | decomp | med |
+| 0x658C92B0 | 0x001C92B0 | BitStream_ResetBitPosition | Sets bit position=0 | decomp | med |
+| 0x658C96C0 | 0x001C96C0 | BitStream_WriteBits | Writes bits to stream (bit-level) | decomp | med |
+| 0x6570BB60 | 0x0000BB60 | BitStream_WriteU64 | Writes U64 (endian-aware) | decomp | med |
+| 0x658C9BD0 | 0x001C9BD0 | BitStream_EnsureCapacityBits | Grows bitstream buffer as needed | decomp | med |
+| 0x658CA120 | 0x001CA120 | Net_IsBigEndian | Returns big-endian bool (cached) | decomp | low |
+| 0x658CA150 | 0x001CA150 | Net_IsBigEndian_Cached | Cached endianness check using htonl | decomp | low |
+| 0x658CA080 | 0x001CA080 | ByteSwapCopy | Byte-reverse copy helper | decomp | low |
+
+Notes:
+- g_LTClient is runtime engine interface; vtbl+0x18 used as ConnectToWorld(SystemAddress*). Static IDB shows g_LTClient=0xFFFFFFFF (uninitialized).
 
 Helpers (msgId 0x79 payload):
 - 0x100EAB40 WorldLogin_ReadProfileBlockA (core player profile + skill table)
 - 0x1007A6D0 WorldLogin_CopyProfileBlockA (copies profile into server state)
 - 0x100EAA40 WorldLogin_ReadProfileBlockB
+- 0x100EA9E0 WorldLogin_WriteProfileBlockB
 - 0x100C8D20 WorldLogin_ReadProfileBlockC (bitfield stats)
+- 0x100C8B80 WorldLogin_WriteProfileBlockC (bitfield stats, write-side)
 - 0x100E34A0 WorldLogin_ReadProfileBlockD (u32c[53])
+- 0x100E3440 WorldLogin_WriteProfileBlockD (u32c[53])
 - 0x10078B80 WorldLogin_ReadStringBundleE (4 x 256B strings)
-- 0x100DF070 WorldLogin_ReadCompactVec3F
+- 0x1007AA30 WorldLogin_WriteStringBundleE (4 x 256B strings)
+- 0x100DF070 WorldLogin_ReadCompactVec3S16Yaw (vec3 + 9-bit extra)
+- 0x100E1FF0 WorldLogin_ReadCompactVec3S16 (vec3 core)
+- 0x100DF2F0 WorldLogin_CompactVec3_Init16 (sets bitCount=16, zero vec)
+
+Helpers (msgId 0x7F world update payload):
+- 0x1004C740 Packet_ID_WORLD_UPDATE_Ctor
+- 0x10051950 WorldUpdate_ReadEntry (entry type 1-4)
+- 0x100518C0 WorldUpdate_ReadCharacterEntry_Ext (type 1)
+- 0x1004EC50 WorldUpdate_ReadCharacterEntry (type 2)
+- 0x1004EEF0 WorldUpdate_ReadEnemyEntry (type 3)
+- 0x1004F000 WorldUpdate_ReadTurretEntry (type 4)
+- 0x1004FF00 WorldUpdate_SpawnCharacter (CCharacter)
+- 0x10050130 WorldUpdate_SpawnEnemy (Enemy)
+- 0x10050340 WorldUpdate_SpawnTurret (Turret)
+- 0x100C8B60 ProfileBlockC_HasSlots11To19
+- 0x100C0DA0 ItemTemplate_GetTypeById
+- 0x100BFD50 ItemType_HasBitFlag
+- 0x1004DD40 BitStream_Read4BitsToBools
+
+World update entry notes (msgId 0x7F):
+- type 2 (Character): u32c id, compact vec3+yaw, ProfileBlockC, then gated fields (stance, pitch, flags, optional u16c + vec3, bits for appearance/weapon)
+- type 3 (Enemy): u32c id, u16c type?, 3b/8b flags, compact vec3+yaw, 8b state; if state==0 reads extra bitfields + optional u32c
+- type 4 (Turret): u32c id, u16c type?, bit flags, 14b field, 4b flags, compact vec3+yaw, optional u32c[3], 2048-bit string
+
+Helpers (msgId 0x83 attribute change payload):
+- 0x10062260 Packet_ID_ATTRIBUTE_CHANGE_Ctor
+- 0x100622C0 Packet_ID_ATTRIBUTE_CHANGE_Read
+- 0x100E3370 AttributeChange_ReadEntryList
+- 0x100624E0 AttributeTable_SetValueFromServer
+- 0x1001E0E0 AttributeTable_GetValue
+- 0x1007F710 SharedTable_ReadBucket
+- 0x100628C8 Handle_MSG_ID_ATTRIBUTE_CHANGE (apply list to AttributeTable; triggers damage FX when stat 0 drops)
+- 0x10006F50 AppearanceCache_BuildFromProfileC (builds appearance paths from profileC)
+- 0x100077B0 Appearance_ApplyProfileCToObject (apply model/attachment entries from profileC)
+
+Packet_ID_ATTRIBUTE_CHANGE (msgId 0x83) layout (observed):
+- u8 count
+- ids: u8[count] (stored at buf+1)
+- values: u32c[count] (stored at buf+56, 4 bytes each)
+- 0x1007FA90 SharedTable_WriteBucket
+
+Helpers (msgId 0x85 world objects payload):
+- 0x10055D50 Packet_ID_WORLD_OBJECTS_Ctor
+- 0x100568D0 Packet_ID_WORLD_OBJECTS_Read
+- 0x10055A90 Packet_ID_WORLD_OBJECTS_Dtor
+- 0x10054F00 WorldObjects_ReadList_Type508 (size 792)
+- 0x10055090 WorldObjects_ReadList_Type513 (size 84)
+- 0x100567E0 WorldObjects_ReadList_NPC (size 196)
+- 0x1004EA70 WorldObjects_ReadType508_Entries
+- 0x1004E990 WorldObjects_ReadType508_Header
+- 0x1004EB90 WorldObjects_ReadType513_Entries
+- 0x1004EB30 WorldObjects_ReadType513_Header
+- 0x100E08A0 WorldObjects_Type508_MapInsert
+- 0x100E07C0 WorldObjects_Type508_MapLowerBound
+- 0x100E1740 WorldObjects_Type513_MapInsert
+- 0x100DC250 WorldObjects_ReadList28 (entry size 28)
+- 0x100DC190 WorldObjects_List28_Insert
+- 0x100DBC40 WorldObjects_List28_Copy
+- 0x100DBB10 WorldObjects_List28_GetEntry
+- 0x10054AE0 WorldObjects_List792_AllocAt
+- 0x10054B50 WorldObjects_List84_AllocAt
+- 0x10055CE0 WorldObjects_List196_AllocAt
+- 0x100539F0 WorldObjects_List792_CopyOrThrow
+- 0x10053AA0 WorldObjects_List84_CopyOrThrow
+- 0x10053B50 WorldObjects_List792_Clear
+- 0x10053BA0 WorldObjects_List84_Clear
+- 0x10052ED0 WorldObjects_List792_DestroyEntry
+- 0x10052F10 WorldObjects_List84_DestroyEntry
+- 0x10051240 WorldObjects_HandleList28_ByType (types 506/507/509/510/511/512/515/516)
+- 0x100530D0 WorldObjects_HandleList800_Type508
+- 0x100535D0 WorldObjects_HandleList92_Type513
+- 0x100515C0 WorldObjects_HandleNPCList
+- 0x100723A0 WorldObject_RegisterIds (sets objectId/type and registers in mgr)
+- 0x10073630 WorldObject_ApplyUpdate
+- 0x100734F0 WorldObject_ApplyStateByType (type 0x200/0x201/0x203/0x204)
+- 0x100722C0 WorldObject_SetState_Off (sets text "OFF", triggers effect id 180)
+- 0x10072330 WorldObject_SetState_On (sets text "ON", triggers effect id 180)
+- 0x10073020 WorldObject_EnableShieldFx (spawns shield meshes/shaders)
+- 0x10072170 WorldObject_DisableShieldFx
+
+World objects (msgId 0x85) subId → list/type mapping:
+- 0x1FA → type 506 (list28) -> WorldObjects_HandleList28_ByType(506)
+- 0x1FB → type 507 (list28) -> WorldObjects_HandleList28_ByType(507)
+- 0x1FC → type 508 (list792) -> WorldObjects_HandleList800_Type508
+- 0x1FD → type 509 (list28) -> WorldObjects_HandleList28_ByType(509)
+- 0x1FE → type 510 (list28) -> WorldObjects_HandleList28_ByType(510)
+- 0x1FF → type 511 (list28) -> WorldObjects_HandleList28_ByType(511)
+- 0x200 → type 512 (list28) -> WorldObjects_HandleList28_ByType(512)
+- 0x201 → type 513 (list84) -> WorldObjects_HandleList92_Type513
+- 0x202 → NPC list (list196) -> WorldObjects_HandleNPCList
+- 0x203 → type 515 (list28) -> WorldObjects_HandleList28_ByType(515)
+- 0x204 → type 516 (list28) -> WorldObjects_HandleList28_ByType(516)
+
+Type behavior notes (WorldObject_ApplyStateByType):
+- type 0x200 (512): toggles "Looping"/"PowerUp" animation slots
+- type 0x201 (513): ON/OFF text + effect id 180
+- type 0x203 (515): shield fx enable/disable (Models\\Items\\shield_player.ltb + shader textures)
+- type 0x204 (516): state timer gate (sets state + time)
+
+List28 entry (from WorldObjects_ReadList28):
+- u32c objectId
+- u16c typeOrItemId
+- u8  flag
+- u32c paramA
+- compact vec3 s16 + yaw (WorldLogin_ReadCompactVec3S16Yaw)
+
+Helpers (msgId 0x89 explosive payload):
+- 0x1004DF00 Packet_ID_EXPLOSIVE_Ctor
+- 0x1004F270 Packet_ID_EXPLOSIVE_Read
+- 0x100164A0 ExplosiveEvent_Init
+- 0x10016E10 Character_HandleExplosiveAction1
+- 0x10019EE0 Character_HandleExplosiveAction2 (spawns effect if item class == 4)
+
+Packet_ID_EXPLOSIVE (msgId 0x89) layout (observed):
+- u32c targetId
+- u16c itemId? (used as *u16 in ExplosiveEvent_Init -> sub_10019EE0)
+- u8 action (1/2/3)
+- if action==2 or 3:
+  - s16c x,y,z
+  - u32c unkA
+  - compact vec3 + yaw (s16)
+- if action==2:
+  - s16c vx,vy,vz (scaled by 0.001 in handler)
+- if action==3:
+  - compact vec3 s16 (A)
+  - compact vec3 s16 (B)
+Handler behavior:
+- action==1 -> Character_HandleExplosiveAction1
+- action==2 -> ExplosiveEvent_Init + Character_HandleExplosiveAction2 (uses scaled vecs)
+- action==3 -> parsed but no handler path observed here
+
+Helpers (msgId 0x80 weather payload):
+- 0x100854F0 Packet_ID_WEATHER_Ctor
+- 0x100EE8F0 Packet_ID_WEATHER_ReadU32Pair
+- 0x100EEA70 WeatherState_SetPacked
+- 0x100EEB20 WeatherState_Reset
+- 0x100DFCB0 BitStream_Read_u32c_into
 - 0x100172C0 WorldLogin_ReadEntryG
-- 0x100DEC50 WorldLogin_ReadTableI (id/value table)
-- 0x100E9090 WorldLogin_ReadListK (u16/u8/bit list)
+- 0x100DEC50 WorldLogin_ReadTableI (header u8x4+u32c, count u32c; entry id/type/value/flags)
+- 0x100E9090 WorldLogin_ReadListK (header u32c+u32c, count u32c; entry u16 id + u8 value + 1-bit flag -> u8)
+- 0x1007AB00 ID_WORLD_LOGIN_DATA_Write (writes msgId 0x79 payload)
 - 0x100EBA60 WorldLogin_ReadSkillTable
 - 0x100DB820 WorldLogin_ReadSkillEntry
 - 0x100DB940 WorldLogin_ReadSkillSlot
 - 0x100CE500 WorldLogin_ReadSkillTreeList
 - 0x100CC190 WorldLogin_ReadSkillTree
+- 0x10101AB0 WorldLogin_ReadSkillTable_3Slots
+- 0x10101D60 WorldLogin_ReadSkillTable_6Slots
+- 0x1007A7A0 WorldLogin_ProfileA_Init (skill trees + skill tables defaults)
+- 0x10078870 WorldLogin_SkillTable12_Init
+- 0x100788D0 WorldLogin_SkillTable3_Init
+- 0x10078810 WorldLogin_SkillTable6_Init
+- 0x100EA990 WorldLogin_ProfileB_Init
+- 0x100E3400 WorldLogin_ProfileD_Init
+- 0x100E2D50 WorldLogin_ProfileD_Defaults (fills 2x53 dword tables + flags)
+- 0x100DE7C0 WorldLogin_TableI_Init
+- 0x100DE480 WorldLogin_TableI_Reset
+- 0x100EBA50 WorldLogin_StringBundle_Init
+- 0x100EB9F0 WorldLogin_StringBundle_Reset
+- 0x1007A410 WorldLogin_CopyListK
+- 0x1007A450 WorldLogin_CopyTableI
+- 0x100EA9E0 WorldLogin_WriteProfileBlockB (4 * u16c)
+- 0x100C8B80 WorldLogin_WriteProfileBlockC (bitfield; conditional 9x12 block)
+- 0x100E3440 WorldLogin_WriteProfileBlockD (u32c[53])
+- 0x1007AA30 WorldLogin_WriteStringBundleE (u32c + flag + 4 strings)
+- 0x10017390 WorldLogin_WriteEntryGBlock (u32c + 10 entries)
+- 0x100171E0 WorldLogin_WriteEntryG (present bit + 12B entry fields)
+- 0x1007A0B0 Vec4_Assign
+- 0x10025540 Vec4_Assign_Alt
+- 0x1007A1C0 Vec20_Assign
+- 0x1000B1C0 SharedStringTable_WriteAt
+- 0x10016750 BitStream_Write_u16c
+- 0x1008BA90 BitStream_WriteCompressed
+- 0x1008B940 BitStream_WriteBits
+- 0x1008B590 BitStream_WriteBit1
+- 0x1008B550 BitStream_WriteBit0
+- 0x10015F10 WorldLogin_ListK_FindById (u16 id -> entry {u16 id, u8 value, u8 flag})
+- 0x10017440 WorldLogin_ListK_IsFlagSet (entryId -> entry[+3] != 0)
 - 0x100CB2A0 WorldLogin_SkillTree_Insert
 - 0x100EBAB0 WorldLogin_SkillTable_IsEmpty
 - 0x100DEBC0 WorldLogin_TableI_Insert
@@ -5080,6 +5429,23 @@ Helpers (msgId 0x79 payload):
 - 0x1002C080 SkillEntry_CopyTree
 - 0x1002BD40 SkillEntry_TreeCopyRecurse
 - 0x100DD350 Skill_ProcessValue (logs "ProcessValue - Skill {0} not handled!")
+- 0x10007C90 AppearanceCache_Init (clears large appearance cache struct)
+- 0x10006F50 AppearanceCache_BuildFromProfileC (builds skin/mesh paths from ProfileBlockC)
+- 0x10037C40 WorldLogin_SelectStartPoint (startpoint selection when no override spawn)
+- 0x10017DE0 WorldLogin_ApplyProfileCToPlayer (appearance + ability updates)
+
+Bitstream helpers (Object.lto):
+- 0x10016090 VariableSizedPacket_Read (copies payload -> bitstream + reads header)
+- 0x1008BD20 BitStream_ReadCompressed
+- 0x1008BBB0 BitStream_ReadBits
+- 0x1008B610 BitStream_ReadBit
+- 0x10016250 BitStream_ReadBit_Checked
+- 0x10016370 BitStream_Read_u32c
+- 0x100163D0 BitStream_Read_u16c
+- 0x10014BD0 BitStream_ReadU64
+- 0x1008C300 ByteSwapCopy
+- 0x1008C3A0 Net_IsBigEndian
+- 0x1008C3D0 Net_IsBigEndian_Cached
 
 
 
@@ -9972,6 +10338,16 @@ Item_FormatStatLine notes (stat_id -> display):
 
 | 0x10007970 | 0x00007970 | SharedMem_ReadU16_std | Stdcall read u16 at index with lock | decomp | low |
 
+| 0x1000A650 | 0x0000A650 | SharedMem_IsFlagSet | Reads dword at index and returns nonzero (bounds check vs 0x1EF29) | decomp | low |
+| 0x1000A0C0 | 0x0000A0C0 | SharedMem_Lock | Thread-local lock (reentrant) for shared mem access | disasm | med |
+| 0x1000A0D0 | 0x0000A0D0 | SharedMem_Unlock | Decrements lock refcount; releases when hits 0 | disasm | med |
+| 0x1000A170 | 0x0000A170 | SharedMem_ReadDword_Locked | Read dword with SharedMem_Lock/Unlock | decomp | low |
+| 0x1000A9D0 | 0x0000A9D0 | SharedMem_ReadBlock_Locked | memcpy out of shared mem with lock | decomp | low |
+| 0x1000B000 | 0x0000B000 | SharedMem_WriteU8_Locked | Writes u8 into shared mem with lock | decomp | low |
+| 0x1000AB60 | 0x0000AB60 | SharedMem_WriteDword_Locked | Writes dword into shared mem with lock | decomp | low |
+| 0x1000B230 | 0x0000B230 | SharedMem_WriteBlock_Locked | memcpy into shared mem with lock | decomp | low |
+| 0x1000B0B0 | 0x0000B0B0 | SharedMem_WriteDword_Locked_Global | Writes dword into shared mem (no ctx param) | decomp | low |
+
 | 0x100083A0 | 0x000083A0 | SharedMem_WriteDword_this | Writes dword at index with lock | decomp | med |
 
 | 0x100088F0 | 0x000088F0 | SharedMem_WriteDword_std | Stdcall write dword at index with lock | decomp | med |
@@ -10145,3 +10521,136 @@ Item_FormatStatLine notes (stat_id -> display):
 
 | 0x1000D730 | 0x0000D730 | Playerfile_read_blockC0_entry | Reads one blockC0 entry (bitfield + u16c + u8c) | decomp | low |
 
+Packet_ID_HIT (msgId 0x84) layout (observed):
+- u32c targetId
+- u8 hitType? (compressed)
+- u8 hitSubType? (compressed)
+
+Helper:
+- 0x1004F1B0 Packet_ID_HIT_Read
+
+### Hit FX helpers (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10016C80 | 0x00016C80 | Player_HandleHitFx | Resolves hit bone name + triggers hit FX | decomp | low |
+| 0x10016910 | 0x00016910 | Obj_GetForwardVector | Computes forward vector from object rotation | decomp | low |
+| 0x1000E380 | 0x0000E380 | HitFx_ApplyByHitLoc | Applies hit FX based on hit location + facing | decomp | low |
+| 0x1000E090 | 0x0000E090 | ClientFX_SetSlotByName | Loads/assigns client FX by name into slot | decomp | low |
+| 0x1000DDE0 | 0x0000DDE0 | ClientFX_TestFlag | Queries FX flags for slot/name | decomp | low |
+| 0x1000DED0 | 0x0000DED0 | ClientFX_ResetSlot | Clears FX slot, resets names/flags | decomp | low |
+| 0x1000DFD0 | 0x0000DFD0 | ClientFX_GetState | Returns FX state code (==86 used as active) | decomp | low |
+| 0x1000E9D0 | 0x0000E9D0 | ClientFX_Update | Updates FX state and syncs tracker scales | decomp | low |
+| 0x1000E510 | 0x0000E510 | ClientFX_UpdateByState | Chooses FX by faction/state and assigns slots | decomp | low |
+| 0x1000E000 | 0x0000E000 | ClientFX_ClearSlot1IfNeeded | Clears slot 1 when pending flag set | decomp | low |
+| 0x1000DF90 | 0x0000DF90 | ClientFX_ResetSlot1IfActive | Resets slot 1 if currently active | decomp | low |
+| 0x1000DE30 | 0x0000DE30 | ClientFX_RestoreSlot | Restores previously cached slot entry | decomp | low |
+| 0x1000E050 | 0x0000E050 | ClientFX_SetState | Sets state field (this+17) | decomp | low |
+
+### Animation helpers (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1000D8E0 | 0x0000D8E0 | Animator_Ctor | Initializes Animator fields + default tracker ids | decomp | low |
+| 0x1000D850 | 0x0000D850 | Animator_WeightSetName | Returns weightset name by index (Upper/Lower/Recoil_*) | decomp | low |
+| 0x1000D960 | 0x0000D960 | Animator_InitTrackers | Adds animation trackers (Upper/Lower/Recoil) | decomp | low |
+| 0x1000DD70 | 0x0000DD70 | Animator_ClearTrackers | Removes trackers 1..4 from object | decomp | low |
+| 0x1000EB50 | 0x0000EB50 | Animator_InitFullTracker | Adds single "Full" tracker | decomp | low |
+| 0x1000EC60 | 0x0000EC60 | Animator_ClearFullTracker | Removes "Full" tracker | decomp | low |
+
+### AI helpers (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1000D390 | 0x0000D390 | AINode_Ctor | Initializes AINode (vtbl + fields) | decomp | low |
+
+### PowerUp / Swarm helpers (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1000D5B0 | 0x0000D5B0 | PowerUp_OnMessage | Handles PowerUp messages (spawns FX / stops) | decomp | low |
+| 0x1000D420 | 0x0000D420 | PowerUp_StopFx | Stops powerup FX (via sub_1006D9D0) | decomp | low |
+| 0x1000D770 | 0x0000D770 | SwarmObj_ReadProps | Reads SwarmType/Radius props | decomp | low |
+
+### Attachment helpers (Object.lto)
+
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1000F170 | 0x0000F170 | CAttachment_Ctor | Initializes attachment record | decomp | low |
+| 0x1000F540 | 0x0000F540 | CAttachment_Detach | Detaches and destroys attached object | decomp | low |
+| 0x1000F600 | 0x0000F600 | CAttachment_Init | Sets owner/object/socket; updates local state | decomp | low |
+| 0x1000F470 | 0x0000F470 | CAttachmentPosition_Ctor | Initializes attachment position | decomp | low |
+| 0x1000F710 | 0x0000F710 | CAttachmentPosition_Dtor | Frees attachment position | decomp | low |
+| 0x1000F7A0 | 0x0000F7A0 | CAttachmentPosition_Clear | Clears attachment and sets name to \"<nothing>\" | decomp | low |
+| 0x1000F880 | 0x0000F880 | CAttachment_CreateItemModel | Spawns item model and attaches to owner | decomp | low |
+| 0x1000FE90 | 0x0000FE90 | CAttachment_CreateLogo | Spawns team/role logo and attaches to owner | decomp | low |
+| 0x1000FBD0 | 0x0000FBD0 | CAttachment_CreatePropByName | Spawns prop (Hamburger/Cigarette/Handy) and attaches | decomp | low |
+- u8 hitDir? (compressed)
+Hit handler:
+- 0x10016C80 Player_HandleHitFx (maps hitType → bone name, spawns hit effect)
+
+Helpers (msgId 0x94 avatar change):
+- 0x1005BBA0 Packet_ID_AVATAR_CHANGE_Ctor
+
+Packet_ID_AVATAR_CHANGE (msgId 0x94) layout (observed):
+- u32c playerId
+- ProfileBlockC (0x32 bytes)
+Applies via `WorldLogin_ApplyProfileCToPlayer` (0x10017DE0).
+
+Helpers (msgId 0x95 chat):
+- 0x1004C810 Packet_ID_CHAT_Ctor
+- 0x1004F470 Packet_ID_CHAT_Read
+
+Packet_ID_CHAT (msgId 0x95) layout (observed):
+- u8 type
+- u32c senderId
+- if type in {1,9,12}: u32c targetId
+- if type==10: string (len 0x800)
+- else: bit + optional u8 color? then string A (0x800) + string B (0x800)
+
+Chat color mapping (colorId -> textColor/outlineColor):
+- 0: FFFFFF00 / D2D2D200
+- 1,5: FFED0000 / FFFF0000
+- 2: B4FF6400 / B4FF0000
+- 3: 64FFA200 / 00FFA200
+- 4: FF828200 / FF878700
+- 6: FFD26400 / FFB90F00 (sets flag)
+- 7: 90D7FF00 / 7CC5FD00
+- 8: CE90FF00 / C57CFD00
+
+Helpers (msgId 0x96 taunt):
+- 0x10050DF0 Handle_MSG_ID_TAUNT (inline read)
+
+Packet_ID_TAUNT (msgId 0x96) layout (observed):
+- u8 tauntId
+- u32c characterId
+
+Helpers (msgId 0xA1 object details):
+- 0x100161B0 Packet_ID_OBJECT_DETAILS_Ctor
+- 0x10017470 Packet_ID_OBJECT_DETAILS_Read
+- 0x100162F0 Packet_ReadEncodedString_0x800
+- 0x10016860 BitStream_ReadU8Compressed
+- 0x10017400 ObjectDetails_ReadEntryGList
+- 0x1004DA70 Character_SetString_80_len19
+- 0x1004DAA0 Character_SetString_328_len31
+- 0x1004DAD0 Character_SetString_360_len63
+- 0x1004DB00 Character_SetString_2379
+- 0x1004DB30 Character_SetString_2384
+
+Packet_ID_OBJECT_DETAILS (msgId 0xA1) layout (observed):
+- u32c objectId
+- u8c detailType
+- bit hasDetails
+- if hasDetails:
+  - string A (0x800)
+  - string B (0x800)
+  - string C (0x800)
+  - EntryG list (u32c count + 10x 12-byte entries)
+  - u8c field_1326
+  - string D (0x800)
+  - u8c field_1331
+  - string E (0x800)
+  - u8c field_1336
+  - bit field_1325
+  - bit field_1324
+- else: u32c fallbackId

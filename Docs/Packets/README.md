@@ -15,4 +15,4 @@ Standard format: every packet doc should include **Summary**, **On-wire encoding
 | 0x72 | ID_WORLD_LOGIN | client -> world | CShell | ID_WORLD_LOGIN.md | Uses worldConst 0x13BC52 |
 | 0x73 | ID_WORLD_LOGIN_RETURN | server -> client | CShell | ID_WORLD_LOGIN_RETURN.md | u32c worldIp/u16c worldPort |
 | 0x7B | ID_WORLD_SELECT | server -> client | CShell | ID_WORLD_SELECT.md | SubId 4/7 set worldId/worldInst |
-| 0x79 (msgId) | WORLD_LOGIN_DATA | world -> client | Object.lto | MSG_ID_79_WORLD_LOGIN_DATA.md | LithTech game message (not CShell packet ID) |
+| 0x79 (msgId) | WORLD_LOGIN_DATA | world -> client | Object.lto | ID_WORLD_LOGIN_DATA.md | RakNet/BitStream payload dispatched via game-message path (not CShell packet ID) |
