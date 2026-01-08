@@ -984,18 +984,15 @@ These functions dereference g_pLTServer without NULL checks - crash on pure clie
 | 0x100959B0 | 0x000959B0 | RakPeer_SetMTUSize | RakNet/RakPeer | decomp/rename | med |
 | 0x10095A90 | 0x00095A90 | RakPeer_GetMTUSize | RakNet/RakPeer | decomp/rename | med |
 | 0x10097160 | 0x00097160 | RakPeer_GetRemoteSystemFromSystemAddress | RakNet/RakPeer | decomp/rename | med |
-
 | 0x1008F380 | 0x0008F380 | BitStream_Write_u16 | RakNet BitStream | decomp/rename | med |
 | 0x10097330 | 0x00097330 | RakPeer_ParseConnectionRequestPacket | RakNet/RakPeer | decomp/rename | med |
 | 0x10097660 | 0x00097660 | RakPeer_OnConnectionRequest | RakNet/RakPeer | decomp/rename | med |
 | 0x100976C0 | 0x000976C0 | RakPeer_SendConnectionRequestAccepted | RakNet/RakPeer | decomp/rename | med |
 | 0x10097800 | 0x00097800 | RakPeer_NotifyAndFlagForShutdown | RakNet/RakPeer | decomp/rename | med |
-
 | 0x10098150 | 0x00098150 | RakPeer_ShiftIncomingTimestamp | RakNet/RakPeer | decomp/rename | med |
 | 0x10098220 | 0x00098220 | RakPeer_GetBestClockDifferential | RakNet/RakPeer | decomp/rename | med |
 | 0x100979E0 | 0x000979E0 | RakPeer_AssignSystemAddressToRemoteSystemList | RakNet/RakPeer | decomp/rename | med |
 | 0x100982F0 | 0x000982F0 | RakPeer_HandleRPCPacket | RakNet/RakPeer | decomp/rename | med |
-
 | 0x1008C260 | 0x0008C260 | BitStream_SetWriteOffset | RakNet BitStream | decomp/rename | med |
 | 0x10074020 | 0x00074020 | RPCParameters_Init | RakNet/RPC | decomp/rename | med |
 | 0x10098C00 | 0x00098C00 | RakPeer_HandleRPCReplyPacket | RakNet/RakPeer | decomp/rename | med |
@@ -1005,24 +1002,20 @@ These functions dereference g_pLTServer without NULL checks - crash on pure clie
 | 0x10098E50 | 0x00098E50 | RakPeer_SecuredConnectionResponse | RakNet/RakPeer | decomp/rename | med |
 | 0x10099060 | 0x00099060 | RakPeer_SecuredConnectionConfirmation | RakNet/RakPeer | decomp/rename | med |
 | 0x10099590 | 0x00099590 | RakPeer_CloseConnectionInternal | RakNet/RakPeer | decomp/rename | med |
-
 | 0x1008C340 | 0x0008C340 | ReverseBytesInPlace | Utility | decomp/rename | med |
 | 0x10099770 | 0x00099770 | RakPeer_IsConnected_ConnectedOnly | RakNet/RakPeer | decomp/rename | med |
 | 0x10099840 | 0x00099840 | RakPeer_SendBuffered | RakNet/RakPeer | decomp/rename | med |
 | 0x10099950 | 0x00099950 | RakPeer_SendBufferedList | RakNet/RakPeer | decomp/rename | med |
 | 0x10099B30 | 0x00099B30 | RakPeer_SendImmediate | RakNet/RakPeer | decomp/rename | med |
-
 | 0x10099FE0 | 0x00099FE0 | RakPeer_ClearBufferedCommands | RakNet/RakPeer | decomp/rename | med |
 | 0x1009A070 | 0x0009A070 | RakPeer_ClearSocketQueryOutput | RakNet/RakPeer | decomp/rename | med |
 | 0x1009A0B0 | 0x0009A0B0 | RakPeer_ClearRequestedConnectionList | RakNet/RakPeer | decomp/rename | med |
 | 0x1009A190 | 0x0009A190 | RakPeer_GenerateGUID | RakNet/RakPeer | decomp/rename | med |
 | 0x1009A2F0 | 0x0009A2F0 | ProcessOfflineNetworkPacket | RakNet/NetLoop | decomp/rename | med |
-
 | 0x1008B900 | 0x0008B900 | BitStream_AlignReadToByteBoundary | RakNet BitStream | decomp/rename | med |
 | 0x100972A0 | 0x000972A0 | RakPeer_GetRemoteSystemFromGUID | RakNet/RakPeer | decomp/rename | med |
 | 0x10099430 | 0x00099430 | RakPeer_AllowIncomingConnections | RakNet/RakPeer | decomp/rename | med |
 | 0x1009A2C0 | 0x0009A2C0 | time64 | Utility | decomp/rename | med |
-
 | 0x10097920 | 0x00097920 | RakPeer_GetNumberOfRemoteInitiatedConnections | RakNet/RakPeer | decomp/rename | med |
 | 0x1009BC00 | 0x0009BC00 | ProcessNetworkPacket | RakNet/NetLoop | decomp/rename | med |
 | 0x1009BE60 | 0x0009BE60 | RakPeer_GenerateSeedFromGuid | RakNet/RakPeer | decomp/rename | med |
@@ -1223,3 +1216,447 @@ These functions dereference g_pLTServer without NULL checks - crash on pure clie
 | 0x100A4030 | 0x000A4030 | RSAKey_GetKeySize | Return key size | decomp/rename | med |
 | 0x100A4050 | 0x000A4050 | RSAKey_Apply | Apply RSA exponent/modulus | decomp/rename | low |
 | 0x100A40B0 | 0x000A40B0 | RSAKey_DecryptCRT | RSA decrypt (CRT) | decomp/rename | low |
+
+### Class definitions / IDs
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x100012F0 | 0x000012F0 | ObjectDLLSetup | Builds class-def pointer array from linked list; sets g_pLTServer and returns array+count | decomp | high |
+| 0x1006C150 | 0x0006C150 | CacheObjectClassIds | Caches class IDs by name via g_pLTServer vfunc +0x170 | decomp | high |
+| (see Docs/Notes/Object_lto_class_ids.csv) | (abs) | ObjectClassDef list | Object class name -> class_id mapping from .data (93 entries) | IDA script | med |
+
+- ID 14 `SMSG_PACKETGROUP`        -> `OnMessageGroupPacket` VA `0x00426C00` RVA `0x00026C00` (iterates: u8 **bit-length** + subpacket; length includes inner SMSG id bits; dispatched via g_MessageHandlers)
+    - OnMessagePacket internals: builds a message object via MessagePacket_Parse (PacketView->MessagePacket_Alloc->MessagePacket_Init) then calls IClientShell_Default vtbl+0x58 with message id; releases object after dispatch.
+    - OnMessageGroupPacket: for each subpacket, reads inner msgId via Packet_ReadBits(8) and dispatches g_MessageHandlers[msgId]; decrefs PacketView when done.
+  - ID 15 `SMSG_CONSOLEVAR`         -> `OnConsoleVar` VA `0x00426FC0` RVA `0x00026FC0`
+  - ID 16 `SMSG_SKYDEF`             -> `OnSkyDef` VA `0x00426360` RVA `0x00026360`
+  - ID 17 `SMSG_INSTANTSPECIALEFFECT` -> `OnInstantSpecialEffect` VA `0x00427050` RVA `0x00027050`
+  - ID 18 `SMSG_(unused)`           -> no handler set
+  - ID 19 `SMSG_PRELOADLIST`        -> `OnPreloadListPacket` VA `0x004270D0` RVA `0x000270D0`
+  - ID 20 `SMSG_THREADLOAD`         -> `OnThreadLoadPacket` VA `0x004250F0` RVA `0x000250F0`
+  - ID 21 `SMSG_UNLOAD`             -> `OnUnloadPacket` VA `0x00425130` RVA `0x00025130`
+  - ID 22 `SMSG_GLOBALLIGHT`        -> `OnGlobalLight` VA `0x00425820` RVA `0x00025820`
+  - ID 23 `SMSG_CHANGE_CHILDMODEL`  -> `OnChangeChildModel` VA `0x00425230` RVA `0x00025230`
+
+### CrosshairMgr_OnMessage flag map (MSG_ID 0x6E)
+Flags are read as a single u32 and drive icon selection + text parsing:
+- 0x00002000: add secondary icon (uses InterfaceMgr slot +24).
+- 0x00020000: icon variant A (uses InterfaceMgr slot +48).
+- 0x00240000: icon variant B (uses InterfaceMgr slot +40). **Mask test** includes 0x200000; handled before title parsing.
+- 0x00100000: title string uses format 13008/13007 with numeric param (u32) ? text buffer.
+- 0x00880000: icon variant C (uses InterfaceMgr slot +44) when 0x100000 is **not** set.
+- 0x00200000: has title string + timer: reads u32 stringId + 256?byte string + u8 seconds; creates primary text line w/ optional ?(Ns)? suffix; if stringId != 0, adds title line from id+14000.
+- 0x00800000: special tagged title parse. If title starts with ?_T*??, strips between `*` markers and may force icon variant A + red/green color logic. Also toggles hostile color when no timer.
+- 0x00080000: action text uses LT string 6002 (else 6000/6061).
+- 0x00400000: action text uses LT string 6061 with extra param (else 6000/6002).
+
+Inline stream flags (not part of xhairFlags):
+- u8 == 1 ? read two extra 256?byte strings (lines 2 & 3).
+- bit (1) ? attach icon slot +32 (if set).
+- bit (1) ? attach icon slot +20 (if set).
+- bit (1) ? prepend formatted LT string 13013 using the current name buffer.
+- u8 color code(s) ? Color_GetARGBHexByCode for bracketed tag lines.
+
+### Code (client init + module loading)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x0044C380 | 0x0004C380 | ClientEntry | CEF/bootstrap + single-instance mutex; calls RunClient | decomp + xrefs | high |
+| 0x0044BC80 | 0x0004BC80 | RunClient | Main loop + launcher gate (requires dpsmagic); sets CWD; calls InitEngineAndLoadLtmsg | decomp + strings | high |
+| 0x0044B580 | 0x0004B580 | ParseCmdLine | Parses command line; expands -cmdfile; builds arg table | decomp | med |
+| 0x0044AA60 | 0x0004AA60 | InitClientFromCmdLine | Parses -rez list, workingdir/config/display, +sounddll; calls resource init | decomp + strings | high |
+| 0x00450000 | 0x00050000 | InitEngineAndLoadLtmsg | CoInitialize + core init; LoadLibraryA(\"ltmsg.dll\") | decomp | high |
+| 0x004B8390 | 0x000B8390 | InitMasterConnection | Init connection to master server (default fom1.fomportal.com); validates install | decomp + strings | high |
+| 0x00499960 | 0x00099960 | ClientNetworking_Init | Loads fom_public.key (68 bytes: exp=0x00010001 + 64-byte modulus); creates RakPeer master/world; sets MTU 0x578 | decomp + file inspection | high |
+| 0x0043E660 | 0x0003E660 | UDP_BuildSockaddrFromString | Builds local sockaddr; uses BindIP override or gethostname/gethostbyname | decomp + strings | high |
+| 0x00446180 | 0x00046180 | CUDPDriver_StartQuery | Binds UDP socket for queries; retries ports; uses BindIP override | decomp + strings | high |
+| 0x00449B70 | 0x00049B70 | CUDPDriver_HostSession | Binds UDP socket for hosting; default port 0x6CF0 (27888) | decomp + strings | high |
+| 0x0045F930 | 0x0005F930 | LoadLibraryA_ShowError | Wrapper: LoadLibraryA + GetLastError + FormatMessage + MessageBox | decomp + strings | high |
+| 0x0044A8E0 | 0x0004A8E0 | LoadClientModule | Loads client module, optional SetMasterDatabase export, then init interface | decomp + xrefs | high |
+| 0x0044F6C0 | 0x0004F6C0 | CopyRezFileToTemp | Extracts rez-contained file to temp path; returns temp file path + flag | decomp | med |
+
+### Code (networking / master-world)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x0043DEE0 | 0x0003DEE0 | UDP_ParseHostString_DefaultPort | Parses "host[:port]" -> sockaddr; if no :port uses 0x6CF0 (27888) | decomp | high |
+| 0x0043E0E0 | 0x0003E0E0 | UDP_SelectClientPortFromRange | Chooses bind port from IPClientPort/IPClientPortRange/IPClientPortMRU; randomizes when MRU=0 | decomp | med |
+| 0x0043E090 | 0x0003E090 | UDP_UpdateClientPortMRU | Writes MRU port string to IPClientPortMRU cvar | decomp | med |
+| 0x00449F20 | 0x00049F20 | CUDPDriver_OpenSocket | Binds client UDP socket to selected port; retries within range | decomp | high |
+| 0x00442BD0 | 0x00042BD0 | UDP_SendMasterPacket | Builds packet w/ magic 0x9919D9C7 and sends to parsed host/port | decomp | med |
+| 0x00447C20 | 0x00047C20 | CUDPDriver_SendPacketWithRetry | Wraps UDP_SendMasterPacket with retry list + msg id | decomp | med |
+| 0x0049AB70 | 0x0009AB70 | World_Connect | Logs "Try connecting to world server at {0}:{1}"; calls RakPeer::Connect with password "37eG87Ph" | decomp + strings | high |
+| 0x0049AD60 | 0x0009AD60 | CloseMasterConnection | Logs + closes master; resets addr/port to defaults | decomp + strings | med |
+| 0x0049AE30 | 0x0009AE30 | CloseWorldConnection | Logs + closes world; resets addr/port to defaults | decomp + strings | med |
+| 0x0049AF40 | 0x0009AF40 | SendPacket_LogMasterWorld | Logs "Sent packet {0} to Master/World" | decomp + strings | med |
+| 0x0049B990 | 0x0009B990 | Networking_Reset | Resets networking state; clears master/world endpoints | decomp | med |
+
+### Code (socket wrappers / RakNet)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x004E5BA0 | 0x000E5BA0 | Net_RecvFrom | recvfrom wrapper; builds sockaddr, calls __imp_recvfrom | disasm + xrefs | high |
+| 0x004E5E30 | 0x000E5E30 | Net_SendTo | sendto wrapper; builds sockaddr, calls __imp_sendto | disasm + xrefs | high |
+| 0x005230F0 | 0x001230F0 | Net_Send | send wrapper; calls __imp_send | disasm + xrefs | med |
+| 0x00523120 | 0x00123120 | Net_Recv | recv wrapper; calls __imp_recv | disasm + xrefs | med |
+| 0x004F4520 | 0x000F4520 | Net_RecvFrom_Caller | upstream caller of Net_RecvFrom | xrefs | med |
+| 0x004E5E90 | 0x000E5E90 | Net_SendTo_Caller | upstream caller of Net_SendTo | xrefs | low |
+| 0x00522560 | 0x00122560 | Net_SendRecv_Caller | upstream caller of Net_Send/Recv wrappers | xrefs | med |
+
+### Data (network config globals + constants)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x007362F4 | 0x003362F4 | g_MasterServerHost | CVar "MasterServer"; if null/empty defaults to fom1.fomportal.com | decomp + strings | high |
+| 0x006BA4A8 | 0x002BA4A8 | s_DefaultMasterServer | "fom1.fomportal.com" | .rdata string | high |
+| 0x007362EC | 0x003362EC | g_BindIP | CVar ?BindIP?; overrides local bind address for UDP sockets | decomp + strings | high |
+| 0x007362F0 | 0x003362F0 | g_IPOverride | CVar ?IP?; overrides local IP string in UDP_BuildSockaddrFromString | decomp + strings | high |
+| 0x006B9D18 | 0x002B9D18 | s_CVar_MasterServer | CVar name string "MasterServer" | .rdata string | high |
+| 0x006B9D24 | 0x002B9D24 | s_CVar_IP | CVar name string "IP" | .rdata string | high |
+| 0x006B9D28 | 0x002B9D28 | s_CVar_BindIP | CVar name string "BindIP" | .rdata string | high |
+| 0x0071A528 | 0x0031A528 | g_QueryPortRange | Port-try count/range for CUDPDriver_StartQuery (retry loop) | decomp | med |
+| 0x007363CC | 0x003363CC | g_QueryPortBase | Base port used when retrying StartQuery binds | decomp | med |
+| 0x007363D0 | 0x003363D0 | g_QueryPortMRU | Last-used port for StartQuery (MRU cycling) | decomp | med |
+| 0x006B31C0 | 0x002B31C0 | s_LauncherMagic | String "dpsmagic" used by RunClient launcher gate | .rdata string + decomp | high |
+| 0x006B9724 | 0x002B9724 | s_CVar_IPClientPortMRU | CVar name "IPClientPortMRU" | .rdata string | med |
+| 0x006B9734 | 0x002B9734 | s_CVar_IPClientPortRange | CVar name "IPClientPortRange" | .rdata string | med |
+| 0x006B9748 | 0x002B9748 | s_CVar_IPClientPort | CVar name "IPClientPort" | .rdata string | med |
+| 0x00712954 | 0x00312954 | s_IPClientPortMRU | Duplicate string used by UDP_UpdateClientPortMRU | decomp + hexdump | low |
+| 0x006B9224 | 0x002B9224 | s_WorldPassword | "37eG87Ph" world password used in World_Connect | .rdata string + decomp | high |
+
+### Code/Data (LithTech message handlers)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x00427480 | 0x00027480 | Init_MessageHandlers | Initializes g_MessageHandlers table | decomp | high |
+| 0x0072AB88 | 0x0032AB88 | g_MessageHandlers | Message handler function table (msg id * 4) | decomp + xrefs | high |
+| 0x00424EF0 | 0x00024EF0 | LithTech_HandleIDPacket | Msg ID 12 handler; reads u16 id + u8 flag; logs "Got ID packet (%d)" | decomp + string | high |
+| 0x00426C00 | 0x00026C00 | LithTech_OnMessageGroupPacket | Msg ID 14 handler; iterates sub-messages; logs "invalid packet" on overflow | decomp + string | high |
+
+### Message handlers (IDs 4..23)
+| ID | VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|---|
+| 4 | 0x00425060 | 0x00025060 | OnNetProtocolVersionPacket | Validates protocol version; logs LT_INVALIDNETVERSION on mismatch | decomp + string | high |
+| 5 | 0x00424F40 | 0x00024F40 | OnUnloadWorldPacket | Clears client object id; unloads world | decomp + External/LithTech shellnet.cpp | med |
+| 6 | 0x004266C0 | 0x000266C0 | OnLoadWorldPacket | Clears client object id; calls ClientShell_DoLoadWorld; sends MSG_ID 0x09 connect stage=0 | decomp + External/LithTech shellnet.cpp | med |
+| 7 | 0x00425040 | 0x00025040 | OnClientObjectID | Reads u16 client object id | decomp + External/LithTech shellnet.cpp | high |
+| 8 | 0x00426DF0 | 0x00026DF0 | OnUpdatePacket | Parses update entries; validates length; logs LT_INVALIDSERVERPACKET on error | decomp + string | high |
+| 9 | 0x00000000 | 0x00000000 | NULL | No handler assigned | Init_MessageHandlers | high |
+| 10 | 0x004260D0 | 0x000260D0 | OnUnguaranteedUpdatePacket | Per-object unguaranteed update (pos/rot/animinfo); uses UUF flags | decomp + External/LithTech shellnet.cpp | med |
+| 11 | 0x00000000 | 0x00000000 | NULL | No handler assigned | Init_MessageHandlers | high |
+| 12 | 0x00424EF0 | 0x00024EF0 | OnYourIDPacket | Reads u16 client id + u8 local flag; logs "Got ID packet (%d)" | decomp + string | high |
+| 13 | 0x00426F50 | 0x00026F50 | OnMessagePacket | Wraps CSubMsg_Client and calls client shell OnMessage | decomp + External/LithTech shellnet.cpp | med |
+| 14 | 0x00426C00 | 0x00026C00 | OnMessageGroupPacket | SMSG_PACKETGROUP: u8 **bit-length** + subpacket; length includes inner SMSG id bits; dispatched via g_MessageHandlers | decomp + string | high |
+| 15 | 0x00426FC0 | 0x00026FC0 | OnConsoleVar | Reads var name + value strings (two reads) then applies via sub_974C90(dword_BF94C8+1184, name, value) | decomp | high |
+| 16 | 0x00426360 | 0x00026360 | OnSkyDef | Reads 0x180 bits into sky data, then u16 count<=0x1E and u16 sky object IDs into dword_BF94C8+2444; invalid -> LT_ERROR | decomp + string | high |
+| 17 | 0x00427050 | 0x00027050 | OnInstantSpecialEffect | MessagePacket_Parse + IClientShell_Default vtbl+0x64 (SpecialEffectNotify) | decomp | med |
+| 18 | 0x00000000 | 0x00000000 | NULL | No handler assigned | Init_MessageHandlers | high |
+| 19 | 0x004270D0 | 0x000270D0 | OnPreloadListPacket | subtype u8: 0/1 start/end, 2 model, 3 texture?, 4 sprite, 5 sound, 6 cached model; loads via rez managers, logs "model-rez: client preload ..." | decomp + strings | high |
+| 20 | 0x004250F0 | 0x000250F0 | OnThreadLoadPacket | Reads u16 fileId; loads via sub_8EA5A0 (resource type=3) | decomp | med |
+| 21 | 0x00425130 | 0x00025130 | OnUnloadPacket | Reads fileType(u8)+fileId(u16): type0 unload cached model via g_ModelRezMap; type2 unloads resource via dword_BFAF8C; else invalid | decomp + strings | med |
+| 22 | 0x00425820 | 0x00025820 | OnGlobalLight | Reads 2x vec3 + ambient float (3x32 each) then calls dword_BFAB80 vtbl+0x130/+0x138/+0x140 | decomp | high |
+| 23 | 0x00425230 | 0x00025230 | OnChangeChildModel | Reads parent/child model file IDs; resolves via g_ModelRezMap; logs missing object/model; applies via sub_93D8E0 | decomp + strings | high |
+
+### Update sub-handlers (SMSG_UPDATE)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x00425ED0 | 0x00025ED0 | UpdateHandle_Group0 | Group 0: u16 blockId + u8 flags; optional u16+u8 scale fields; optional byte (flag 0x40); optional time-scale (sign bit); optional vec3 from packet or client object pos; ends with u32 + World_ApplyUpdateBlock | decomp | med |
+| 0x004256B0 | 0x000256B0 | UpdateHandle_Group1 | Group 1: flags 0x1 spawn/refresh (Update_ReadBlock0_Alloc), 0x2 pos vec3 apply, 0x20 Object_HandleGroup1_Flag20; calls World_ApplyUpdateBlock when spawn set | decomp | med |
+| 0x004267C0 | 0x000267C0 | UpdateHandle_GroupObjUpdate | Per-object update/spawn: if flags&1 reads obj-def (Update_ReadBlock_ObjectDef) + World_AddObjectFromUpdate, then Update_ValidateObject; if flags&1 and not local player, builds ObjectMsg packet and calls IClientShell_Default vtbl+0x64; if flags&0x800 calls vtbl+0x14 | decomp | med |
+| 0x00424F60 | 0x00024F60 | UpdateHandle_Group3 | Group 3: remove object(s) by id; if obj flag 0x40 -> Object_HandlePendingRemoval; else World_RemoveObject/ObjectInstance_OnRemoved | decomp | low |
+
+### Message layouts (source-aligned, FoM)
+- ID 4 (SMSG_NETPROTOCOLVERSION): u32 version; u32 server bandwidth.
+- ID 5 (SMSG_UNLOADWORLD): no payload.
+- ID 6 (SMSG_LOADWORLD): ClientShell_DoLoadWorld(cPacket,false) (payload: float game time + u16 world file id).
+- ID 7 (SMSG_CLIENTOBJECTID): u16 client object id.
+- ID 8 (SMSG_UPDATE): loop: u32 **bitlen**; read updateFlags lo8; if (lo8 & 0x80) read hi8 and combine => u16 updateFlags.
+  - if updateFlags != 0: read u16 objectId + UpdateHandle_GroupObjUpdate(objectId, updateFlags)
+  - else: read groupTag u8: 0->UpdateHandle_Group0, 1->UpdateHandle_Group1 (then u8 flags + u16 id), 3->UpdateHandle_Group3
+  - validates: endBit == startBit + bitlen; mismatch returns LT_INVALIDSERVERPACKET (44).
+  - client validates consumed bits == bitlen; mismatch => LT_INVALIDSERVERPACKET (44)
+  - CF_* flags (Update_ValidateObject): NEWOBJECT=0x1, POSITION=0x2, ROTATION=0x4, FLAGS=0x8, SCALE=0x10,
+    MODELINFO=0x2020, RENDERINFO=0x40, ATTACHMENTS=0x100, FILENAMES=0x800, DIMS=0x8000
+
+- ID 10 (SMSG_UNGUARANTEEDUPDATE): loop: u16 objectId; u4 flags; if objectId==0xFFFF then read float gameTime and end.
+  - flags: 0x4 position (vec3) + optional vel bit + compressed vec3, 0x8 alt rotation (sub_97BFC0), 0x2 compressed quat, 0x1 modelinfo.
+  - apply: Object_ApplyPosVel (pos+vel) + Object_ApplyRotationQuat (rot) + Update_ReadModelInfoBlock (anim/model info).
+
+### Data (object templates)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1011EBD0 | 0x0011EBD0 | ObjectTemplateTable | 0x80-byte records, u16 id at +0x00; contiguous ids starting at 1 (content does not match weapon stats) | file scan + id sequence | low |
+| 0x1011EB50 | 0x0011EB50 | SoundEntryTable | 0x80-byte records; entry[31]=clipCount; weight/clip pairs start at entry[11]/[12] | decomp + data scan | low |
+
+### Local player object / Vortex FX
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1012EE50 | 0x0012EE50 | CGameServerShell_vftable | Vtable (RTTI ??_R4CGameServerShell@@6B@); slot +0x14 -> CreateLocalPlayerObj, +0x18 -> ClearLocalPlayerObj | vtable scan | med |
+| 0x10039D50 | 0x00039D50 | CreateLocalPlayerObj | Creates CPlayerObj, binds to HCLIENT, sets g_pLocalPlayerObj | decomp | high |
+| 0x100355A0 | 0x000355A0 | ClearLocalPlayerObj | Detaches from HCLIENT, clears g_pLocalPlayerObj | decomp | high |
+| 0x101B4504 | 0x001B4504 | g_pLocalPlayerObj | Global pointer used by Tick_VortexActiveState / UpdateVortexActiveFx | xrefs + crash dump | high |
+| 0x10079960 | 0x00079960 | Tick_VortexActiveState | State handler; calls UpdateVortexActiveFx in states 8/11/13 | decomp | med |
+| 0x10013C90 | 0x00013C90 | UpdateVortexActiveFx | Every 10s fires "Vortex_Active" on playerObj->objectId | decomp + string | med |
+
+- Crash: UpdateVortexActiveFx reads playerObj+0x9B0; if g_pLocalPlayerObj is 0xFFFFFFFF/NULL during state 8/11/13, access violation at Object.lto+0x13CAA.
+
+### World login data (Object.lto)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10078D80 | 0x00078D80 | ID_WORLD_LOGIN_Read | Reads large world-login payload into pkt buffer (1072 bytes + extended data blocks) | decomp | med |
+| 0x1007AD90 | 0x0007AD90 | Handle_ID_WORLD_LOGIN | Validates worldId/worldInst, branches on pktReturnCode, caches world data, writes spawn/rot into g_pLocalPlayerObj | decomp + strings | med |
+| 0x1007A850 | 0x0007A850 | Packet_ID_WORLD_LOGIN_DATA_Ctor | Initializes 0x79 payload defaults (id=0x79, flags, compact vec init) | decomp | med |
+| 0x10056F20 | 0x00056F20 | DispatchGameMsg | Message dispatch; msgId 0x79 routes to Handle_ID_WORLD_LOGIN | decomp | med |
+| 0x10035BF0 | 0x00035BF0 | CGameServerShell_OnMessage | Trampoline into DispatchGameMsg (engine callback) | decomp + xref | med |
+| 0x10051CA0 | 0x00051CA0 | Handle_MSG_ID_WORLD_UPDATE | Packet_ID_WORLD_UPDATE handler: reads (playerId, seq?) then up to 101 entries; spawns/updates CCharacter/Enemy/Turret | decomp | med |
+| 0x10086B50 | 0x00086B50 | Handle_MSG_ID_WEATHER | Packet_ID_WEATHER handler; decodes packed weather fields into local cache | decomp | low |
+| 0x10062680 | 0x00062680 | Handle_MSG_ID_ATTRIBUTE_CHANGE | Packet_ID_ATTRIBUTE_CHANGE handler; applies attribute list and triggers local FX gates | decomp | low |
+| 0x10050550 | 0x00050550 | Handle_MSG_ID_84_HIT | Packet_ID_HIT handler; if target==local player triggers hit reaction | decomp | med |
+| 0x10056AC0 | 0x00056AC0 | Handle_MSG_ID_WORLD_OBJECTS | Packet_ID_WORLD_OBJECTS handler; multi-subtype list payload (ids 0x1FA..0x204) | decomp | low |
+| 0x10050680 | 0x00050680 | Handle_MSG_ID_EXPLOSIVE | Packet_ID_EXPLOSIVE handler; by objectId + subtype; applies effects to CCharacter | decomp | low |
+| 0x1005F0D0 | 0x0005F0D0 | Handle_MSG_ID_AVATAR_CHANGE | Packet_ID_AVATAR_CHANGE handler; applies profile block C and updates shared strings | decomp | low |
+| 0x10050840 | 0x00050840 | Handle_MSG_ID_CHAT | Packet_ID_CHAT handler; chat/notification routing + colored text | decomp | low |
+| 0x10050DF0 | 0x00050DF0 | Handle_MSG_ID_TAUNT | Packet_ID_TAUNT handler; plays taunt + optional local chat | decomp | low |
+| 0x100510B0 | 0x000510B0 | Handle_MSG_ID_OBJECT_DETAILS | Packet_ID_OBJECT_DETAILS handler; updates character metadata strings | decomp | low |
+
+- UI msgs observed in Handle_ID_WORLD_LOGIN failure paths: 1721, 1722, 1724.
+
+### Chat / Taunt helpers (Object.lto)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10046F40 | 0x00046F40 | ChatLog_AddEntry | Pushes chat log entry into shared table (max 0x14 entries) | decomp | low |
+| 0x1004C900 | 0x0004C900 | ChatNameCache_SetEntry | Writes name cache entry (id + name + lowercase) | decomp | low |
+| 0x1004C9E0 | 0x0004C9E0 | ChatNameCache_InsertOrUpdate | Update or append name cache (max 0x32 entries) | decomp | low |
+| 0x1004E150 | 0x0004E150 | ChatNameCache_Reset | Clears name cache entries and resets count | decomp | low |
+| 0x1000B480 | 0x0000B480 | SoundEntryTable_GetEntry | Returns sound entry pointer (id 0..0x18A) | decomp | low |
+| 0x1000B520 | 0x0000B520 | SoundEntryTable_GetEntry_Thunk | Thunk to SoundEntryTable_GetEntry | disasm | low |
+| 0x10070510 | 0x00070510 | SoundEntry_SelectClipPath | Weighted pick of clip path from entry | decomp | low |
+| 0x10070CB0 | 0x00070CB0 | SoundEntry_PlayEntry | Builds audio event from sound entry and enqueues | decomp | low |
+| 0x100711B0 | 0x000711B0 | SoundEntry_PlayById | Look up sound entry then play | decomp | low |
+| 0x100706B0 | 0x000706B0 | SoundEntryList_BuildNameList | Fills UI list with entry names (max len) | decomp | low |
+| 0x100704C0 | 0x000704C0 | AudioEvent_Enqueue | Enqueues audio event payload into shared queue | decomp | low |
+| 0x10070BE0 | 0x00070BE0 | AudioEvent_EnqueueFromObject | Builds audio event from object + string | decomp | low |
+| 0x10070DE0 | 0x00070DE0 | SoundEntry_PlayForObject | Plays sound entry relative to object | decomp | low |
+| 0x10070EF0 | 0x00070EF0 | AudioEvent_EnqueueAtPos | Builds audio event at world position | decomp | low |
+| 0x10071080 | 0x00071080 | SoundEntry_PlayAtPos | Plays sound entry at world position | decomp | low |
+| 0x10046D90 | 0x00046D90 | AudioEvent_InitDefaults | Initializes audio event defaults | decomp | low |
+| 0x10046B20 | 0x00046B20 | AudioEventQueue_Push | Pushes event into queue (max 0x64 entries) | decomp | low |
+
+SoundEntry (SoundEntryTable) layout (partial, 0x80 bytes):
+- +0x00 u32 id
+- +0x04 char* name (C string)
+- +0x0C float minDist (copied into AudioEvent f68)
+- +0x10 float maxDist (copied into AudioEvent f69)
+- +0x14 float pitchOrRolloff (copied into AudioEvent f71)
+- +0x18 float playChance (if <1.0, random gate)
+- +0x1C u8 volumePercent (0..100) -> f70 (0..1)
+- +0x20 u32 flagsOrGroup (copied into AudioEvent dword)
+- +0x24 float useObjectPos (nonzero -> pull object position in SoundEntry_PlayEntry)
+- +0x2C float weight0
+- +0x30 char* clip0
+- subsequent pairs: weight1/clip1 at +0x34/+0x38, etc
+- +0x7C u32 clipCount
+
+Taunt (msgId 0x96) uses SoundEntryTable[tauntId] to pick the clip path (weighted by weightN).
+SoundEntry_SelectClipPath:
+- sums weights (float) -> casts sum to int for Rand_IntInclusive
+- picks first weight bucket where cumulative > randomInt
+
+AudioEvent payload (0x148 bytes, as written by AudioEvent_Enqueue):
+- +0x000 char path[260] (sound/FX path)
+- +0x104 float f65
+- +0x108 float f66
+- +0x10C float f67
+- +0x110 float f68
+- +0x114 float f69
+- +0x118 float f70
+- +0x11C float f71
+- +0x120 float f72 (default 10.0)
+- +0x124 float f73 (default 500.0)
+- +0x128 float f74 (default 1.0)
+- +0x12C float f75 (default 1.0)
+- +0x130 float f76
+- +0x134 float f77
+- +0x138 float f78
+- +0x13C u32 linkA (AudioEvent_Enqueue writes *this)
+- +0x140 u32 linkB (AudioEvent_Enqueue writes *(this+1))
+- +0x144 u32 linkC (cleared to 0)
+Defaults for f65..f78 are set by AudioEvent_InitDefaults; positions/volumes override in SoundEntry_* helpers.
+
+### Appearance helpers (Object.lto)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10015DC0 | 0x00015DC0 | AppearanceEntry_Reset | Zeroes 124-byte appearance/identity block | decomp | low |
+| 0x100143A0 | 0x000143A0 | AppearanceEntry_Clear | Zeroes 124-byte appearance/identity block (inner helper) | decomp | low |
+
+### Sound emitter (Object.lto)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10070180 | 0x00070180 | SoundEmitter_Create | Allocates/initializes sound emitter object | disasm | low |
+| 0x100701B0 | 0x000701B0 | SoundEmitter_PlayNow | Builds AudioEvent from emitter fields and enqueues | decomp | low |
+| 0x100702D0 | 0x000702D0 | SoundEmitter_Update | Tick: plays at interval (rand between min/max) | decomp | low |
+| 0x10070360 | 0x00070360 | SoundEmitter_Stop | Stops/restarts emitter based on flags and timing | decomp | low |
+| 0x10070420 | 0x00070420 | SoundEmitter_OnMessage | Message handler: stop/update based on msg, forwards | disasm | low |
+| 0x10001390 | 0x00001390 | ClientObj_OnMessageDispatch | Forwards engine message to object vtbl handler | disasm | low |
+| 0x10001080 | 0x00001080 | ClientObj_OnMessageDispatch_WithSender | Dispatch w/ sender + extra args | disasm | low |
+
+SoundEmitter fields (partial, from SoundEmitter_PlayNow/Stop/Update):
+- +0x08 HOBJECT (used for position + stop calls)
+- +0x40 s32 soundEntryId (?1 disables)
+- +0x44 s32 lastEventHandle (AudioEvent_Enqueue return)
+- +0x48 float minDist
+- +0x4C float maxDist
+- +0x50 u8 volumePercent
+- +0x54 float pitchOrRolloff
+- +0x5C bool playAttached
+- +0x64 u8 flags/group
+- +0x68 bool repeat
+- +0x6C float repeatTimeMin
+- +0x70 float repeatTimeMax
+- +0x74 float nextPlayTime
+
+Property strings near 0x10139078 include: RepeatTimeMax, RepeatTimeMin, Repeat, PlayAttached, PitchShift (likely SoundEmitter props).
+
+### Math / visibility helpers (Object.lto)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10013E30 | 0x00013E30 | Vec3_LengthSq | Returns squared length of vec3 | decomp | high |
+| 0x1006D790 | 0x0006D790 | LTServer_IsLineOfSightClear | Raycast between two objects; returns true if clear | decomp | med |
+| 0x10007EA0 | 0x00007EA0 | Rand_IntInclusive | rand() % (n+1) (or -1..0 when n==-1) | decomp | low |
+| 0x10007F10 | 0x00007F10 | Rand_FloatRange | Returns uniform float in [min, max] | decomp | low |
+
+### Object render helpers (Object.lto)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1000D290 | 0x0000D290 | Obj_SetAlphaAndHiddenFlag | Sets alpha and toggles hidden flag when alpha==0 | decomp | low |
+
+### Text parser helpers (Object.lto)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x100E26B0 | 0x000E26B0 | TextParser_StripMarkupTags | Parses text and strips tag markup into std::string | decomp | low |
+| 0x100E22D0 | 0x000E22D0 | TextParser_NextToken | Tokenizes `<tag>` stream; returns token type | decomp | low |
+| 0x100E2280 | 0x000E2280 | TextParser_ReadNonWhitespace | Returns next non-whitespace char from stream | decomp | low |
+
+### MasterDatabase / internal DB APIs
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10004D50 | 0x00004D50 | ObjDB_ListInsert | Intrusive list insert helper | bytes + call sites | med |
+| 0x10004D90 | 0x00004D90 | ObjDB_ListRemove | Intrusive list remove helper | bytes + call sites | med |
+| 0x10004FC0 | 0x00004FC0 | ObjDB_ProcessTables | Table iteration/dispatch loop (walks list, calls handlers) | bytes + call pattern | low |
+| 0x10005420 | 0x00005420 | ObjDB_Master_Init | Master DB init/ctor (vtbl=0x10114440, allocs 0x0C) | bytes + field init | med |
+| 0x100054A0 | 0x000054A0 | ObjDB_Master_Dtor | Master DB destructor/clear (frees lists/blocks) | bytes + call sites | med |
+| 0x100054F0 | 0x000054F0 | ObjDB_Master_Build | Master DB setup/dispatch (calls vtbl+0x10 path) | bytes + call pattern | low |
+| 0x10005608 | 0x00005608 | ObjDB_Master_CallSlot0C | Master DB dispatch via vtbl+0x0C | bytes + vtbl call | low |
+| 0x100056B8 | 0x000056B8 | ObjDB_Master_CallSlot08 | Master DB dispatch via vtbl+0x08 | bytes + vtbl call | low |
+| 0x10005840 | 0x00005840 | Server_Call_50_vtbl88 | Calls vtbl+0x88 on *(this+0x50) with arg | disasm | low |
+| 0x10005BA0 | 0x00005BA0 | ObjDB_Master_CtorThunk | Sets vptr (0x1011446C) then tail-jumps | bytes (mov vptr + jmp) | low |
+| 0x10114440 | 0x00114440 | ObjDB_Master_vftable | Master DB vtable (vptr set in ObjDB_Master_Init) | bytes (vtbl ptr) | med |
+
+### Vtable slots (ObjDB_Master_vftable):
+- +0x00 -> 0x10005A80 ObjDB_Master_Vfn00
+- +0x04 -> 0x10005B80 ObjDB_Master_Vfn04
+- +0x08 -> 0x10004F00 ObjDB_Master_Vfn08
+- +0x0C -> 0x10004E30 ObjDB_Master_Vfn0C
+- +0x10 -> 0x10005280 ObjDB_Master_Vfn10
+- +0x14 -> 0x100048F0 ObjDB_Master_Vfn14
+- +0x18 -> 0x10004890 ObjDB_Master_Vfn18
+- +0x1C -> 0x10004DD0 ObjDB_Master_Vfn1C
+- +0x20 -> 0x10004950 ObjDB_Master_Vfn20
+- +0x24 -> 0x10004250 ObjDB_Master_Vfn24
+- +0x28 -> 0x1018C58C ObjDB_Master_VtblData_28 (data, unknown)
+- +0x2C -> 0x10005BB0 ObjDB_Master_Vfn2C
+- +0x30/+0x34/+0x38 -> 0x10102324 thunk__purecall (IAT thunk -> _purecall)
+- +0x3C -> 0x1018C5A0 ObjDB_Master_VtblData_3C (data, unknown)
+
+### IAT thunks near vtable:
+- 0x10102324 thunk__purecall -> [0x10113278] _purecall
+- 0x1010232A thunk__strncpy_s -> [0x1011327C] strncpy_s
+- 0x10102330 thunk__rand -> [0x10113280] rand
+- 0x10102336 thunk___CIatan2 -> [0x10113284] _CIatan2
+- 0x1010233C thunk___CIcos -> [0x10113288] _CIcos
+- 0x10102342 thunk___CIsin -> [0x1011328C] _CIsin
+- 0x10102224 thunk__op_new -> [0x10113268] operator new
+- 0x1010222A thunk__sprintf -> [0x1011326C] sprintf
+- 0x101021F0 thunk__op_delete -> [0x10113250] operator delete
+
+### Vtable call graph (IDA callees, no decomp/disasm):
+- Vfn00 (0x10005A80) calls: ObjDB_Array_GetPtr, ObjDB_Array_GetPtr2, ObjDB_Index_GetByIdx, ObjDB_Index_Create, ObjDB_Index_BinSearch, ObjDB_Index_Ensure, ObjDB_Master_RebuildIndexes, thunk__op_new
+- Vfn04 (0x10005B80) calls: ObjDB_Master_Dtor (0x100054A0), thunk__op_delete
+- Vfn08 (0x10004F00) calls: ObjDB_Index_GetByIdx, ObjDB_Index_Create, ObjDB_Index_BinSearch, ObjDB_Index_Ensure, ObjDB_List_CallVfn8, thunk__op_new
+- Vfn0C (0x10004E30) calls: ObjDB_Index_GetByIdx, ObjDB_Index_Create, ObjDB_Index_BinSearch, ObjDB_Index_Ensure, ObjDB_List_ForEachA, thunk__op_new
+- Vfn10 (0x10005280) calls: ObjDB_Index_GetByIdx, ObjDB_Index_Create, ObjDB_Index_BinSearch, ObjDB_Index_Ensure, ObjDB_Master_ProcessTable, thunk__op_new
+- Vfn14 (0x100048F0) calls: ObjDB_Index_GetByIdx, ObjDB_List_Add, ObjDB_Index_Ready, ObjDB_Array_Find
+- Vfn18 (0x10004890) calls: ObjDB_Index_GetByIdx, ObjDB_List_Add2, ObjDB_Index_Ready, ObjDB_Array_Find
+- Vfn1C (0x10004DD0) calls: ObjDB_Index_GetByIdx, ObjDB_Index_Rebuild, ObjDB_Index_Ready, ObjDB_Array_Find
+- Vfn20 (0x10004950) calls: ObjDB_Index_GetByIdx, ObjDB_List_RemoveMaybe
+- Vfn24 (0x10004250) calls: ObjDB_Array_GetPtr
+- Vfn2C (0x10005BB0) calls: ObjDB_Master_CtorThunk (0x10005BA0), thunk__op_delete
+
+### Helper cluster (renamed, no decomp/disasm):
+| VA | RVA | Symbol | Purpose (inferred) | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10004720 | 0x00004720 | ObjDB_Index_GetByIdx | Index lookup by id (calls ObjDB_Index_AllocSlots) | bytes + call chain | low |
+| 0x10004300 | 0x00004300 | ObjDB_Index_Create | Create index struct (allocs, sets vtbl 0x10114438) | bytes + alloc pattern | low |
+| 0x10004B90 | 0x00004B90 | ObjDB_Index_BinSearch | Binary search over index entries | bytes + loop pattern | low |
+| 0x100038E0 | 0x000038E0 | ObjDB_Index_Ensure | Ensure list/index allocated (uses memset) | bytes + memset | low |
+| 0x100038A0 | 0x000038A0 | ObjDB_Index_CopyHeader | Copy/init header (memcpy) | bytes + memcpy | low |
+| 0x10004A10 | 0x00004A10 | ObjDB_List_ForEachA | Iterates list + callback | bytes + call chain | low |
+| 0x10004A40 | 0x00004A40 | ObjDB_List_CallVfn8 | Calls vtbl+8 on list items | bytes + vtbl call | low |
+| 0x10004A70 | 0x00004A70 | ObjDB_Index_Rebuild | Rebuilds index (calls Array_* + List_Iterate) | call graph | low |
+| 0x10004470 | 0x00004470 | ObjDB_Index_Ready | Ready check / counts (uses Array_* helpers) | call graph | low |
+| 0x100044C0 | 0x000044C0 | ObjDB_List_Add | Add element to list | call chain | low |
+| 0x100044A0 | 0x000044A0 | ObjDB_List_Add2 | Add element (variant; uses ObjDB_Array_FindIdx) | call chain | low |
+| 0x100044E0 | 0x000044E0 | ObjDB_List_RemoveMaybe | Remove element or status | call chain | low |
+| 0x10003B10 | 0x00003B10 | ObjDB_Array_GetPtr | Array ptr getter | bytes | low |
+| 0x10003B20 | 0x00003B20 | ObjDB_Array_GetPtr2 | Array ptr getter (variant) | bytes | low |
+| 0x10003B40 | 0x00003B40 | ObjDB_Array_Find | Linear/array search | bytes | low |
+| 0x10003C70 | 0x00003C70 | ObjDB_Array_Pop | Pop/decrement helper | bytes | low |
+| 0x10003D40 | 0x00003D40 | ObjDB_Array_GetPtr4 | Array ptr getter (variant) | bytes | low |
+| 0x10003D00 | 0x00003D00 | ObjDB_Array_FindIdx | Linear search returning index | bytes | low |
+| 0x10003BD0 | 0x00003BD0 | ObjDB_StructZero1 | Zero-init helper (memset) | bytes + calls | low |
+| 0x10003CD0 | 0x00003CD0 | ObjDB_StructZero2 | Zero-init helper (memset) | bytes + calls | low |
+| 0x10003DE0 | 0x00003DE0 | ObjDB_StructZero3 | Zero-init helper (memset) | bytes + calls | low |
+| 0x10003EC0 | 0x00003EC0 | ObjDB_Index_AllocSlots | Alloc index slots | bytes | low |
+| 0x10003B90 | 0x00003B90 | ObjDB_Index_Init1 | Index init helper | calls memcpy | low |
+| 0x10003C90 | 0x00003C90 | ObjDB_Index_Init2 | Index init helper | calls memcpy | low |
+| 0x10003DA0 | 0x00003DA0 | ObjDB_Index_Init3 | Index init helper | calls memcpy | low |
+| 0x100047E0 | 0x000047E0 | ObjDB_Index_BinSearchEx | Binsearch variant | calls ObjDB_Index_Sort3 | low |
+| 0x100039E0 | 0x000039E0 | ObjDB_List_Next | Next pointer helper | bytes | low |
+| 0x10004780 | 0x00004780 | ObjDB_Index_Build1 | Builds index (sort) | calls memcpy+memset | low |
+| 0x100047B0 | 0x000047B0 | ObjDB_Index_Build2 | Builds index (sort) | calls memcpy+memset | low |
+| 0x10004830 | 0x00004830 | ObjDB_Index_InsertSorted | Insert into sorted index | bytes + loop | low |
+| 0x10004C70 | 0x00004C70 | ObjDB_Index_InsertMulti | Insert multiple entries (calls InsertSorted) | call graph | low |
+| 0x10003C20 | 0x00003C20 | ObjDB_Array_SetRange | Set array range | bytes | low |
+| 0x10003BF0 | 0x00003BF0 | ObjDB_Array_Clear | Clear array | bytes | low |
+| 0x10003C00 | 0x00003C00 | ObjDB_Array_Set | Set array entry | bytes | low |
+| 0x10004550 | 0x00004550 | ObjDB_List_Iterate1 | List iteration helper | call graph | low |
+| 0x100045A0 | 0x000045A0 | ObjDB_List_Iterate2 | List iteration helper | call graph | low |
+| 0x10003CF0 | 0x00003CF0 | ObjDB_List_Reset | Reset list head | bytes | low |
+| 0x10003E50 | 0x00003E50 | ObjDB_List_FindInsertPos | Find insert pos (sort) | bytes | low |
+| 0x100040C0 | 0x000040C0 | ObjDB_Index_Sort3 | Sort helper (memcpy+memset) | call graph | low |
+| 0x10004000 | 0x00004000 | ObjDB_Index_Sort1 | Sort helper (memcpy+memset) | call graph | low |
+| 0x10004060 | 0x00004060 | ObjDB_Index_Sort2 | Sort helper (memcpy+memset) | call graph | low |
+| 0x10003D80 | 0x00003D80 | ObjDB_List_Count | Count items in list | bytes | low |
+| 0x10003E00 | 0x00003E00 | ObjDB_List_GetHead | Returns head pointer | bytes | low |
+| 0x10003E10 | 0x00003E10 | ObjDB_Array_GetPtr3 | Array ptr getter (variant) | bytes | low |
+| 0x10003EA0 | 0x00003EA0 | ObjDB_Array_GetPtr5 | Array ptr getter (variant) | bytes | low |
+| 0x10004990 | 0x00004990 | ObjDB_Index_Clear | Clears index structs (memset + zero helpers) | call graph | low |
+| 0x10004FD0 | 0x00004FD0 | ObjDB_Index_Dtor | Index destructor (clears + delete) | call graph | low |
+| 0x10114438 | 0x00114438 | ObjDB_Index_vftable | Index vtable (extends Master vtable) | bytes | low |
+| 0x1018C544 | 0x0018C544 | ObjDB_Index_VtblData_04 | Vtable data (unknown) | bytes | low |
+| 0x10005000 | 0x00005000 | ObjDB_Master_ProcessTable | Master vfn helper (uses list iterate + index ops) | call graph | low |
+| 0x100055B0 | 0x000055B0 | ObjDB_Master_AddIndex_A | Alloc + link index list (uses op_new + list ops) | call graph | low |
+| 0x10005660 | 0x00005660 | ObjDB_Master_AddIndex_B | Alloc + link index list (uses op_new + list ops) | call graph | low |
+| 0x10005740 | 0x00005740 | ObjDB_Master_RebuildIndexes | Rebuild indexes for tables | call graph | low |
+
+### Vtable slots (ObjDB_Index_vftable):
+- +0x00 -> 0x10004FD0 ObjDB_Index_Dtor
+- +0x04 -> 0x1018C544 ObjDB_Index_VtblData_04 (data)
+- +0x08 -> 0x10005A80 ObjDB_Master_Vfn00
+- +0x0C -> 0x10005B80 ObjDB_Master_Vfn04
+- +0x10 -> 0x10004F00 ObjDB_Master_Vfn08
+- +0x14 -> 0x10004E30 ObjDB_Master_Vfn0C
+- +0x18 -> 0x10005280 ObjDB_Master_Vfn10
+- +0x1C -> 0x100048F0 ObjDB_Master_Vfn14
+- +0x20 -> 0x10004890 ObjDB_Master_Vfn18
+- +0x24 -> 0x10004DD0 ObjDB_Master_Vfn1C
+- +0x28 -> 0x10004950 ObjDB_Master_Vfn20
+- +0x2C -> 0x10004250 ObjDB_Master_Vfn24
+
+### CRT thunks:
+- 0x1010231E thunk__memset -> [0x10113270] memset
+- 0x10101F87 thunk__memcpy -> [0x10113298] memcpy
