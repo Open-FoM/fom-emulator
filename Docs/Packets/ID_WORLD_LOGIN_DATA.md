@@ -66,34 +66,40 @@ Note: Offsets are struct offsets; read order follows `ID_WORLD_LOGIN_Read`.
            * header: u16c + u32c + u32c + u32c (unknown semantics)
            * entryCount: u16c
            * entries: WorldLogin_ReadSkillTree (SkillTreeEntry)
-               - SkillEntry (see SkillEntry layout)
+               - WorldLoginSkillEntry48 (see below)
                - skillIdCount: u16c
                - skillIds: skillIdCount * u32c
   - +0x24  SkillTable12 (12 * 48B slots)
-           * per-slot: present bit; if 0 => slot zeroed; if 1 => u32c slotId + SkillEntry
+           * per-slot: present bit; if 0 => slot zeroed; if 1 => u32c slotId + WorldLoginSkillEntry48
+           * consumed in Handle_ID_WORLD_LOGIN: slots map to indices 5..16; if slotId != 0 then
+             SkillEntry.abilityItemId is granted via WorldLogin_GrantAbilityIfAllowed.
   - +0x27C SkillTable3 (3 * 48B slots)
-           * per-slot: present bit; if 0 => slot zeroed; if 1 => u32c slotId + SkillEntry
+           * per-slot: present bit; if 0 => slot zeroed; if 1 => u32c slotId + WorldLoginSkillEntry48
   - +0x2F8 SkillTable6 (6 * 48B slots)
-           * per-slot: present bit; if 0 => slot zeroed; if 1 => u32c slotId + SkillEntry
+           * per-slot: present bit; if 0 => slot zeroed; if 1 => u32c slotId + WorldLoginSkillEntry48
   - +0x41C SkillTreeListB (same layout as A)
   - +0x42C u32
   - +0x430 u32
   - +0x434 u32
   - +0x438 u8
-- SkillEntry layout (from WorldLogin_ReadSkillEntry; within each 48B slot):
-  - +0x00 u16c
-  - +0x02 u16c
-  - +0x04 u16c
-  - +0x06 u16c
-  - +0x08 u8
-  - +0x09 u8
-  - +0x0C u32c
-  - +0x10 u32c
-  - +0x14 u32c
-  - +0x18 u8
-  - +0x19 u8
-  - +0x1A u8
-  - +0x1B..+0x1E u8[4]
+- WorldLoginSkillEntry48 layout (WorldLogin_ReadSkillEntry; within each 48B slot).
+  NOTE: Not the same as Packet_ID_SKILLS ItemStatEntry (20B) in CShell_Gameplay_Packets.md.
+  Defaults from WorldLogin_SkillTable{12,6,3}_Init.
+  - +0x00 u16c abilityItemId (used by Handle_ID_WORLD_LOGIN to grant ability/accessory)
+  - +0x02 u16c (default 0; no consumers found)
+  - +0x04 u16c (default 0; no consumers found)
+  - +0x06 u16c (default 0; no consumers found)
+  - +0x08 u8 (default 100; no consumers found)
+  - +0x09 u8 (default 0; no consumers found)
+  - +0x0C u32c (default 0; no consumers found)
+  - +0x10 u32c (default 0; no consumers found)
+  - +0x14 u32c (default 0; no consumers found)
+  - +0x18 u8 (default 0; no consumers found)
+  - +0x19 u8 (default 0; no consumers found)
+  - +0x1A u8 (default 0; no consumers found)
+  - +0x1B..+0x1E u8[4] (default 0; no consumers found)
+  - Slot tail (local-only): +0x20..+0x2F (12 bytes), zeroed in init, not on-wire.
+    (two u32 + one u8 within SkillEntry at +0x20/+0x24/+0x28)
 
 ### PlayerProfileB (WorldLogin_ReadProfileBlockB)
 - 4 records, each 16 bytes in memory.
