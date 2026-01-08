@@ -291,8 +291,7 @@ export class PacketLogger {
         // Interpret ID as raw payload or inside RakNet reliable wrapper.
         const effectiveId = this.getEffectiveId(packet);
         const forceLogin =
-            this.containsLoginMarker(packet.data) ||
-            (effectiveId !== null && isLoginPacketId(effectiveId));
+            effectiveId !== null;
         if (this.ignorePacketIds && effectiveId !== null && this.ignorePacketIds.has(effectiveId)) {
             return { log: false, suppressed: 0, signature };
         }

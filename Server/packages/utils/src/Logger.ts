@@ -19,6 +19,7 @@ const config: LoggerConfig = {
 
 // Update logging switches.
 export function configureLogger(next: Partial<LoggerConfig>): void {
+    console.log('Configuring logger:', next);
     if (typeof next.quiet === 'boolean') {
         config.quiet = next.quiet;
     }

@@ -59,6 +59,8 @@ export { MsgLoadWorld, type MsgLoadWorldData } from './MSG_LOADWORLD';
 
 export { MsgUnguaranteedUpdate, type MsgUnguaranteedUpdateData } from './MSG_UNGUARANTEEDUPDATE';
 
+export { MsgMessage, type MsgMessageData } from './MSG_MESSAGE';
+
 export {
     formatPacket,
     formatPacketString,

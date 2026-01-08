@@ -74,6 +74,7 @@ export enum LithTechMessageId {
     MSG_UPDATE = 8,               // Object update (guaranteed)
     MSG_UNGUARANTEEDUPDATE = 10,  // Object update (unguaranteed, position/rotation)
     MSG_YOURID = 12,              // Player ID assignment
+    MSG_MESSAGE = 13,             // Game message wrapper (routes RakNet packet IDs to CShell)
     MSG_MESSAGE_GROUP = 14,       // Grouped message container
 
     // Client -> Server messages

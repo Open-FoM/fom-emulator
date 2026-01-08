@@ -12,27 +12,114 @@ CLIENT (fom_client.exe + CShell)          MASTER (Server)             WORLD (wor
 ClientNetworking_HandleLoginRequestReturn_6D
   -> build 0x6E LOGIN (auth packet; session_str + client fields) ---------->
                                                      validate / route
-  <------------------------------- 0x7B WORLD_SELECT (type=4 worldId/worldInst)
-  <------------------------------- Packet_Id107 subId (world select alt path, unconfirmed)
-  <------------------------------- 0x73 WORLD_LOGIN_RETURN (code + worldIp + worldPort)
-  [Emulator: 0x73 is currently sent after 0x72; see note below]
+  <------------------------------- 0x6F LOGIN_RETURN (status + playerId + apartment data)
 
-CShell HandlePacket_ID_WORLD_LOGIN_RETURN_73
+HandlePacket_ID_LOGIN_RETURN (CShell)
+  -> sets SharedMem[0x5B] = playerId
+  -> if status==SUCCESS and hasCharacter:
+       -> sets SharedMem[0x54] = 1 (triggers logout check in old flow)
+       -> enters GameStateMgr menu state 3 (world selection UI)
+  -> if noCharacter: enters menu state 2 (character creation)
+
+WORLD SELECTION (two paths):
+
+  PATH A: UI-driven (original game with world selection starmap)
+  ---------------------------------------------------------------
+  [User clicks world in UI]
+    -> sets SharedMem[0x1EEC1] = worldId
+    -> sets SharedMem[0x1EEC2] = worldInst
+    -> sets SharedMem[0x1EEC0] = 1 (triggers state machine)
+
+  PATH B: Server-triggered via 0x7B (requires LithTech wrapping)
+  ---------------------------------------------------------------
+  <------------------------------- 0x7B WORLD_SELECT (subId=4, worldId, worldInst)
+    -> sets SharedMem[0x1EEC1] = worldId
+    -> sets SharedMem[0x1EEC2] = worldInst
+    -> sets SharedMem[0x1EEC0] = 1
+    -> shows "Connecting..." UI (message 11)
+
+STATE MACHINE (WorldLogin_StateMachineTick, state==1):
+  -> builds 0x72 WORLD_LOGIN (worldId, worldInst, playerId, worldConst)
+  -> sends to master  ----------------------------------------------------->
+                                                     validates, looks up world
+  <------------------------------- 0x73 WORLD_LOGIN_RETURN (code=1, worldIp, worldPort)
+
+HandlePacket_ID_WORLD_LOGIN_RETURN_73 (CShell)
   -> WorldLoginReturn_HandleAddress(worldIp:port)
-  -> g_LTClient->Connect(world addr)  (CShell)
-  -> rejects unassigned address (SystemAddress == 0xFFFFFFFFFFFF) with UI message 1722
+  -> g_LTClient->ConnectToWorld(addr)  (vtbl+0x18)
+  -> sets SharedMem[0x1EEC0] = 2
+
+STATE MACHINE (state==2):
+  -> waits for g_LTClient->IsConnected()
+  -> when connected: sets state = 3
+
+STATE MACHINE (state==3):
+  -> loads world assets from SharedMem[0x1EEC1] (worldId)
+  -> clears SharedMem[0x1EEC0/1/2]
 
 fom_client World_Connect
   -> RakPeer::Connect(host, port, "37eG87Ph", 8, 0, 7, 500, 0, 0)  (RakNet handshake)
-
-CShell WorldLogin_StateMachineTick
-  -> build/send 0x72 WORLD_LOGIN (worldId, worldInst, playerId, worldConst) ------->
 
 World (post-connect) begins LithTech SMSG stream:
   - SMSG_NETPROTOCOLVERSION (ID 4, expects version==7)
   - SMSG_YOURID (ID 12) / SMSG_CLIENTOBJECTID (ID 7)
   - SMSG_LOADWORLD (ID 6) then SMSG_UPDATE / SMSG_MESSAGE / SMSG_PACKETGROUP
     - client sends MSG_ID 0x09 (CMSG_CONNECTSTAGE) with stage=0 after loadworld
+
+## CRITICAL: 0x7B Crash Issue (SOLVED)
+
+Sending 0x7B directly via RakNet crashes the client!
+
+The crash occurs in VariableSizedPacket::Read (0x6570c6c0) which expects:
+- a2+0x24 (36): payload length
+- a2+0x2C (44): pointer to payload data
+
+This structure is only present when packets come through the LithTech message layer
+(wrapped in ID_USER 0x86 + LtGuaranteedPacket). Raw RakNet packets lack this wrapper.
+
+### Solution: Send 0x7B via MSG_MESSAGE (MSG_ID 13)
+
+The server must wrap 0x7B inside the LithTech message layer:
+
+1. Create 0x7B payload (excluding packet ID byte)
+2. Wrap in MsgMessage (MSG_ID 13) which adds the packet ID back
+3. Wrap in LtGuaranteedPacket with sequence number
+4. Wrap in IdUserPacket (0x86)
+5. Send via RakNet reliable
+
+```typescript
+const worldSelectPacket = IdWorldSelectPacket.createWorldSelect(playerId, worldId, worldInst);
+const worldSelectPayload = worldSelectPacket.encode().subarray(1); // Remove 0x7B byte
+
+const msgMessage = MsgMessage.wrap(RakNetMessageId.ID_WORLD_SELECT, worldSelectPayload);
+const lithPacket = LtGuaranteedPacket.fromMessages(seq, [msgMessage]);
+const wrapped = IdUserPacket.wrap(lithPacket).encode();
+sendReliable(wrapped, address);
+```
+
+This routes through:
+1. Client receives ID_USER (0x86)
+2. LithTech parses LtGuaranteedPacket
+3. MSG_MESSAGE (ID 13) handler (`OnMessagePacket` @ 0x00426F50) parses payload
+4. Builds MessagePacket wrapper with payload ptr at +0x2C, length at +0x24
+5. Calls IClientShell_Default vtbl+0x58 → ClientShell_OnMessage_DispatchPacketId
+6. Dispatcher routes 0x7B to HandlePacket_ID_WORLD_SELECT_7B
+7. Handler sets SharedMem[0x1EEC1/0x1EEC2/0x1EEC0] (worldId/worldInst/state=1)
+
+## CRITICAL: Version Without World Selection UI
+
+Some versions of the client (e.g., Fall of the Dominion) do NOT have the world
+selection starmap UI (menu state 3). In these versions:
+
+1. 0x6F LOGIN_RETURN sets SharedMem[0x54]=1 and tries to enter menu state 3
+2. Without the UI, worldId/worldInst are never set (remain 0)
+3. State machine sends 0x72 with worldId=0, worldInst=0
+4. WorldLogin_StateTick sees SharedMem[0x54]=1 and sends 0x71 (logout)
+5. Client disconnects
+
+To support these versions, the server MUST send 0x7B with proper LithTech wrapping
+to set worldId/worldInst before the state machine runs, OR find an alternative
+trigger mechanism
 
 ## Key call chain (addresses)
 
@@ -208,9 +295,37 @@ Load step (state==3 path):
 - WorldLogin_LoadWorldFromPath writes SharedMem string index 19 = path, then calls g_pILTClient vtbl+0x144 (load world)
 
 ## World login state flags (SharedMem)
-- 0x1EEC0: world login state gate
+- 0x1EEC0: world login state gate (0=idle, 1=pending, 2=connecting, 3=loading)
 - 0x1EEC1: worldId
 - 0x1EEC2: worldInst
-- 0x54: apartment login gate (bool)
+- 0x54: login complete flag (triggers logout in WorldLogin_StateTick if world not entered)
+- 0x5A: no character flag
+- 0x5B: playerId (set by 0x6F handler)
 - 0x78: apartmentId selector (1..24)
 - 0x74: apartment flag set to 1 before load
+
+## 0x7B Packet Structure Requirements
+
+The 0x7B packet handler (HandlePacket_ID_WORLD_SELECT_7B @ 0x65899270) receives a LithTech
+message wrapper structure, NOT raw packet data:
+
+```
+LithTech Message Wrapper (passed as 'payload' to handler):
+  +0x00: vtable pointer
+  +0x08: message type
+  +0x24 (36): payload length (DWORD)
+  +0x2C (44): pointer to payload data (void*)
+  ...
+```
+
+The packet reader VariableSizedPacket::Read (@ 0x6570c6c0) does:
+```c
+BitStream_InitFromBuffer(v5, *(void**)(a2 + 44), *(DWORD*)(a2 + 36), 0);
+```
+
+This expects the wrapper structure. Raw RakNet packet data does NOT have this layout,
+which causes a crash when trying to dereference invalid pointers.
+
+To send 0x7B properly, it must go through the LithTech guaranteed message layer,
+wrapped in ID_USER (0x86). Implementation requires understanding how LithTech 
+messages encapsulate RakNet-style packet IDs (not typical MSG_* IDs)

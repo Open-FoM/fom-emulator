@@ -320,6 +320,8 @@ async function mainLoop() {
         // Small sleep to prevent busy-waiting
         await Bun.sleep(10);
     }
+
+    logInfo('\n[Server] Main loop has exited.');
 }
 
 // =============================================================================
@@ -336,6 +338,19 @@ function shutdown() {
 
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
+process.on('uncaughtException', (err) => {
+    const errText = err instanceof Error ? err.stack || err.message : String(err);
+    logError(`[Server] Uncaught exception: ${errText}`);
+    shutdown();
+});
+process.on('unhandledRejection', (reason) => {
+    const reasonText = reason instanceof Error ? reason.stack || reason.message : String(reason);
+    logError(`[Server] Unhandled rejection: ${reasonText}`);
+    shutdown();
+});
+process.on('beforeExit', (code) => {
+    logInfo(`[Server] Process beforeExit event with code: ${code}`);
+});
 
 // =============================================================================
 // Start

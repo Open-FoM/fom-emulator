@@ -18,11 +18,12 @@ export function createPacketHandlers(context: HandlerContext): Map<number, Packe
     const handlers: Map<number, PacketHandler> = new Map();
 
     // Normalize handler return types into outbound sends.
-    const sendResponses = (response: ReturnType<typeof loginHandler.handle>): void => {
+    const sendResponses = async (response: ReturnType<typeof loginHandler.handle>) => {
         if (!response) return;
         if (Array.isArray(response)) {
             for (const r of response) {
                 sendReliable(r.data, r.address);
+                if (r.delay) await new Promise(resolve => setTimeout(resolve, r.delay)); 
             }
         } else {
             sendReliable(response.data, response.address);

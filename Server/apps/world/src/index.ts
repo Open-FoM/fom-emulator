@@ -23,6 +23,8 @@ import {
     LtGuaranteedPacket,
     MsgUnguaranteedUpdate,
     IdUserPacket,
+    IdWorldSelectPacket,
+    MsgMessage,
 } from '@openfom/packets';
 import { configureLogger, debug as logDebug, error as logError, info as logInfo } from '@openfom/utils';
 import { loadRuntimeConfig } from './config';
@@ -142,12 +144,15 @@ function handleWorldLogin(packet: IdWorldLoginPacket, address: RakSystemAddress)
 
     logInfo(`[World] 0x72 WORLD_LOGIN from ${key}: worldId=${worldId} inst=${worldInst} playerId=${playerId} const=0x${worldConst.toString(16)}`);
 
+    const actualWorldId = worldId || 1;
+    const actualWorldInst = worldInst || 1;
+
     const conn: WorldConnection = {
         address,
         key,
         playerId,
-        worldId,
-        worldInst,
+        worldId: actualWorldId,
+        worldInst: actualWorldInst,
         authenticated: true,
         worldTimeOrigin: Date.now(),
         lastHeartbeatAt: 0,
@@ -159,14 +164,23 @@ function handleWorldLogin(packet: IdWorldLoginPacket, address: RakSystemAddress)
     sendReliable(response.encode(), address);
     logInfo(`[World] -> 0x73 WORLD_LOGIN_RETURN success`);
 
-    const seq = conn.lithTechOutSeq;
+    let seq = conn.lithTechOutSeq;
+    conn.lithTechOutSeq = (seq + 1) & 0x1fff;
+
+    const worldSelectPacket = IdWorldSelectPacket.createWorldSelect(playerId, actualWorldId, actualWorldInst);
+    const msgMessage = MsgMessage.wrapEncoded(worldSelectPacket.encode());
+    const worldSelectLith = LtGuaranteedPacket.fromMessages(seq, [msgMessage]);
+    const wrappedWorldSelect = IdUserPacket.wrap(worldSelectLith).encode();
+    sendReliable(wrappedWorldSelect, address);
+    logInfo(`[World] -> 0x7B via MSG_MESSAGE (worldId=${actualWorldId}, inst=${actualWorldInst})`);
+
+    seq = conn.lithTechOutSeq;
     conn.lithTechOutSeq = (seq + 1) & 0x1fff;
 
     const clientId = playerId;
     const objectId = playerId;
-    const lithWorldId = worldId || 16;
 
-    const lithBurst = LtGuaranteedPacket.buildWorldLoginBurst(seq, clientId, objectId, lithWorldId);
+    const lithBurst = LtGuaranteedPacket.buildWorldLoginBurst(seq, clientId, objectId, actualWorldId);
     const wrappedBurst = IdUserPacket.wrap(lithBurst).encode();
     sendReliable(wrappedBurst, address);
     logInfo(`[World] -> LithTech burst (${wrappedBurst.length - 1} bytes)`);
@@ -190,6 +204,7 @@ async function mainLoop() {
     while (peer.isActive()) {
         let packet = peer.receive();
         while (packet) {
+            console.log('received packet');
             const addrIp = addressToIp(packet.systemAddress);
             const connection = connections.get(getConnectionKey(packet.systemAddress));
             const incomingPacket = {

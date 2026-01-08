@@ -1,19 +1,11 @@
 /**
  * Login Handler for V2
  *
- * Handles the FoM login flow based on Docs/Packets specifications:
+ * Master server login flow:
  *   0x6C (LOGIN_REQUEST) -> 0x6D (LOGIN_REQUEST_RETURN)
  *   0x6E (LOGIN) -> 0x6F (LOGIN_RETURN)
  *   0x70 (LOGIN_TOKEN_CHECK) bidirectional
  *   0x72 (WORLD_LOGIN) -> 0x73 (WORLD_LOGIN_RETURN)
- *   0x7B (WORLD_SELECT)
- *
- * Packet formats are based on reverse-engineered structures from:
- * - Docs/Packets/ID_LOGIN_REQUEST.md
- * - Docs/Packets/ID_LOGIN_REQUEST_RETURN.md
- * - Docs/Packets/ID_LOGIN.md
- * - Docs/Packets/ID_LOGIN_RETURN.md
- * - Docs/Packets/ID_LOGIN_TOKEN_CHECK.md
  */
 
 import { type RakSystemAddress } from '@openfom/networking';
@@ -29,12 +21,8 @@ import {
     IdWorldLoginPacket,
     IdWorldLoginReturnPacket,
     WorldLoginReturnCode,
-    IdWorldSelectPacket,
-    LtGuaranteedPacket,
-    IdUserPacket,
 } from '@openfom/packets';
 import { Connection, LoginPhase } from '../network/Connection';
-import { APARTMENT_WORLD_TABLE } from '../world/WorldRegistry';
 import { info as logInfo } from '@openfom/utils';
 
 export interface LoginHandlerConfig {
@@ -52,69 +40,22 @@ export interface LoginHandlerConfig {
     worldSelectWorldInst?: number;
     worldSelectPlayerId?: number;
     worldSelectPlayerIdRandom?: boolean;
-    worldLoginWorldConst?: number;
 }
 
 export interface LoginResponse {
     data: Buffer;
     address: RakSystemAddress;
+    delay?: number;
 }
 
 export class LoginHandler {
     private config: LoginHandlerConfig;
-    private apartmentInstByConn: Map<string, number> = new Map();
-    private apartmentInstCounts: Map<number, number> = new Map();
-    private apartmentInstList: number[] = [];
 
     constructor(config: LoginHandlerConfig) {
         this.config = config;
-        this.apartmentInstList = Object.keys(APARTMENT_WORLD_TABLE)
-            .map((key) => Number.parseInt(key, 10))
-            .filter((value) => Number.isFinite(value) && value > 0)
-            .sort((a, b) => a - b);
     }
 
-    // Reserve a worldInst for apartment worlds (worldId=4). Uses least-loaded inst id.
-    private allocApartmentInst(connection: Connection): number {
-        const existing = this.apartmentInstByConn.get(connection.key);
-        if (existing !== undefined) {
-            return existing;
-        }
-        if (this.apartmentInstList.length === 0) {
-            return 0;
-        }
-        let chosen = this.apartmentInstList[0];
-        let bestCount = this.apartmentInstCounts.get(chosen) ?? 0;
-        for (const inst of this.apartmentInstList) {
-            const count = this.apartmentInstCounts.get(inst) ?? 0;
-            if (count < bestCount) {
-                bestCount = count;
-                chosen = inst;
-            }
-        }
-        this.apartmentInstByConn.set(connection.key, chosen);
-        this.apartmentInstCounts.set(chosen, bestCount + 1);
-        return chosen;
-    }
-
-    // Release a previously reserved apartment inst.
-    private releaseApartmentInst(connection: Connection): void {
-        const inst = this.apartmentInstByConn.get(connection.key);
-        if (inst === undefined) {
-            return;
-        }
-        this.apartmentInstByConn.delete(connection.key);
-        const count = (this.apartmentInstCounts.get(inst) ?? 1) - 1;
-        if (count > 0) {
-            this.apartmentInstCounts.set(inst, count);
-        } else {
-            this.apartmentInstCounts.delete(inst);
-        }
-    }
-
-    // External hook for connection teardown.
-    releaseConnection(connection: Connection): void {
-        this.releaseApartmentInst(connection);
+    releaseConnection(_connection: Connection): void {
     }
 
     /**
@@ -320,35 +261,21 @@ export class LoginHandler {
             connection.loginPhase = LoginPhase.USER_SENT;
         }
 
-        if (this.config.serverMode === 'master') {
-            const playerId = status === LoginReturnStatus.SUCCESS
-                ? this.resolveWorldSelectPlayerId(connection)
-                : 0;
-            const worldId = this.resolveWorldSelectWorldId(connection);
-            const worldInst = this.resolveWorldSelectWorldInst(connection, worldId);
-            connection.worldSelectWorldId = worldId;
-            connection.worldSelectWorldInst = worldInst;
+        const playerId = status === LoginReturnStatus.SUCCESS
+            ? this.resolveWorldSelectPlayerId(connection)
+            : 0;
 
-            const loginReturn = new IdLoginReturnPacket({
-                status,
-                playerId,
-                clientVersion: loginClientVersion,
-            }).encode();
+        const loginReturn = new IdLoginReturnPacket({
+            status,
+            playerId,
+            clientVersion: loginClientVersion,
+            worldIDs: [1],
+        }).encode();
 
-            this.log(`[Login6E] -> 0x6F status=${status} playerId=${playerId} world=${worldId}:${worldInst}`);
-            const responses: LoginResponse[] = [{ data: loginReturn, address: connection.address }];
+        // Removed 7B world select from here
 
-            if (status === LoginReturnStatus.SUCCESS) {
-                const worldSelect = IdWorldSelectPacket.createWorldSelect(playerId, worldId, worldInst).encode();
-                connection.worldSelectSent = true;
-                this.log(`[Login6E] -> 0x7B subId=4 playerId=${playerId} world=${worldId}:${worldInst}`);
-                responses.push({ data: worldSelect, address: connection.address });
-            }
-
-            return responses;
-        }
-
-        return null;
+        this.log(`[Login6E] -> 0x6F status=${status} playerId=${playerId}`);
+        return { data: loginReturn, address: connection.address };
     }
 
     private handleLoginTokenCheck(packet: IdLoginTokenCheckPacket, connection: Connection): LoginResponse | null {
@@ -386,58 +313,24 @@ export class LoginHandler {
 
         this.log(`[Login72] worldId=${worldId} inst=${worldInst} playerId=${playerId} const=0x${worldConst.toString(16)}`);
 
-        if (this.config.serverMode === 'master') {
-            if (!connection.authenticated) {
-                this.log(`[Login72] ignore unauth`);
-                return null;
-            }
-
-            const code = this.resolveWorldLoginReturnCode(connection);
-            const response = new IdWorldLoginReturnPacket({
-                code: code as WorldLoginReturnCode,
-                flag: 0xff,
-                worldIp: this.config.worldIp,
-                worldPort: this.config.worldPort,
-            });
-            this.log(`[Login72] -> 0x73 code=${code} world=${this.config.worldIp}:${this.config.worldPort}`);
-            return {
-                data: response.encode(),
-                address: connection.address,
-            };
+        if (!connection.authenticated) {
+            this.log(`[Login72] ignore unauth`);
+            return null;
         }
 
-        connection.authenticated = true;
-        connection.loginPhase = LoginPhase.IN_WORLD;
-        if (!connection.worldTimeOrigin) {
-            connection.worldTimeOrigin = Date.now();
-        }
-        connection.worldLastHeartbeatAt = 0;
+        const code = this.resolveWorldLoginReturnCode(connection);
+        const response = new IdWorldLoginReturnPacket({
+            code: code as WorldLoginReturnCode,
+            flag: 0xff,
+            worldIp: this.config.worldIp,
+            worldPort: this.config.worldPort,
+        });
+        this.log(`[Login72] -> ${response}`);
 
-        const responses: LoginResponse[] = [];
-
-        const response = IdWorldLoginReturnPacket.createSuccess(this.config.worldIp, this.config.worldPort);
-        responses.push({
+        return {
             data: response.encode(),
             address: connection.address,
-        });
-
-        const seq = connection.lithTechOutSeq;
-        connection.lithTechOutSeq = (seq + 1) & 0x1fff;
-
-        const clientId = connection.id;
-        const objectId = playerId || connection.id;
-        const lithWorldId = worldId || 16;
-
-        const lithBurst = LtGuaranteedPacket.buildWorldLoginBurst(seq, clientId, objectId, lithWorldId);
-        const wrappedBurst = IdUserPacket.wrap(lithBurst).encode();
-        this.log(`[Login72] -> LithTech burst (${wrappedBurst.length - 1} bytes)`);
-
-        responses.push({
-            data: wrappedBurst,
-            address: connection.address,
-        });
-
-        return responses;
+        };
     }
 
     private resolveWorldLoginReturnCode(connection: Connection): number {
@@ -484,34 +377,6 @@ export class LoginHandler {
         }
         connection.worldSelectPlayerId = playerId >>> 0;
         return connection.worldSelectPlayerId;
-    }
-
-    private resolveWorldSelectWorldId(connection: Connection): number {
-        if (connection.worldSelectWorldId > 0) {
-            return connection.worldSelectWorldId;
-        }
-        const worldId = this.config.worldSelectWorldId ?? 0;
-        if (worldId > 0) {
-            connection.worldSelectWorldId = worldId >>> 0;
-            return connection.worldSelectWorldId;
-        }
-        return 0;
-    }
-
-    private resolveWorldSelectWorldInst(connection: Connection, worldId: number): number {
-        if (connection.worldSelectWorldInst > 0) {
-            return connection.worldSelectWorldInst;
-        }
-        const worldInst = this.config.worldSelectWorldInst ?? 0;
-        if (worldInst > 0) {
-            connection.worldSelectWorldInst = worldInst >>> 0;
-            return connection.worldSelectWorldInst;
-        }
-        if (worldId === 4) {
-            connection.worldSelectWorldInst = this.allocApartmentInst(connection) >>> 0;
-            return connection.worldSelectWorldInst;
-        }
-        return 0;
     }
 
     private log(message: string): void {
