@@ -26,7 +26,7 @@ import { loadRuntimeConfig } from './config';
 import { ConnectionManager, LoginPhase } from './network/Connection';
 import { LoginHandler } from './handlers/LoginHandler';
 import { createPacketHandlers } from './handlers/registerHandlers';
-import { loadRsaKeyFromJson, type RsaKey, type RsaKeyJson } from './utils/Rsa';
+import { loadRsaKeyFromJson, type RsaKeyJson } from './utils/Rsa';
 import rsaKeyJson from './fom_private_key.json' with { type: 'json' };
 
 const runtime = loadRuntimeConfig();

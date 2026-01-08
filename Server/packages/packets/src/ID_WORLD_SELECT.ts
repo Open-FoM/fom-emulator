@@ -84,7 +84,7 @@ export class IdWorldSelectPacket extends Packet {
     static createWorldSelect(playerId: number, worldId: number, worldInst: number): IdWorldSelectPacket {
         return new IdWorldSelectPacket({
             playerId,
-            subId: WorldSelectSubId.WORLD_ID_INST,
+            subId: WorldSelectSubId.WORLD_ID_INST_ALT,
             worldId,
             worldInst,
         });

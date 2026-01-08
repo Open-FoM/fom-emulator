@@ -19,12 +19,9 @@ import {
 import {
     RakNetMessageId,
     IdWorldLoginPacket,
-    IdWorldLoginReturnPacket,
     LtGuaranteedPacket,
     MsgUnguaranteedUpdate,
     IdUserPacket,
-    IdWorldSelectPacket,
-    MsgMessage,
 } from '@openfom/packets';
 import { configureLogger, debug as logDebug, error as logError, info as logInfo } from '@openfom/utils';
 import { loadRuntimeConfig } from './config';
@@ -144,51 +141,44 @@ function handleWorldLogin(packet: IdWorldLoginPacket, address: RakSystemAddress)
 
     logInfo(`[World] 0x72 WORLD_LOGIN from ${key}: worldId=${worldId} inst=${worldInst} playerId=${playerId} const=0x${worldConst.toString(16)}`);
 
-    const actualWorldId = worldId || 1;
-    const actualWorldInst = worldInst || 1;
+    const conn = connections.get(key);
+    if (!conn) {
+        logError(`[World] No connection found for ${key}`);
+        return;
+    }
+
+    conn.playerId = playerId;
+    conn.worldId = worldId || 1;
+    conn.worldInst = worldInst || 1;
+    conn.authenticated = true;
+
+    logInfo(`[World] Updated connection: playerId=${conn.playerId} worldId=${conn.worldId}`);
+}
+
+function handleNewConnection(address: RakSystemAddress): void {
+    const key = getConnectionKey(address);
+    logInfo(`[World] New connection from ${key}`);
 
     const conn: WorldConnection = {
         address,
         key,
-        playerId,
-        worldId: actualWorldId,
-        worldInst: actualWorldInst,
-        authenticated: true,
+        playerId: 1,
+        worldId: 1,
+        worldInst: 1,
+        authenticated: false,
         worldTimeOrigin: Date.now(),
         lastHeartbeatAt: 0,
         lithTechOutSeq: 0,
     };
     connections.set(key, conn);
 
-    const response = IdWorldLoginReturnPacket.createSuccess('127.0.0.1', config.port);
-    sendReliable(response.encode(), address);
-    logInfo(`[World] -> 0x73 WORLD_LOGIN_RETURN success`);
-
-    let seq = conn.lithTechOutSeq;
+    const seq = conn.lithTechOutSeq;
     conn.lithTechOutSeq = (seq + 1) & 0x1fff;
 
-    const worldSelectPacket = IdWorldSelectPacket.createWorldSelect(playerId, actualWorldId, actualWorldInst);
-    const msgMessage = MsgMessage.wrapEncoded(worldSelectPacket.encode());
-    const worldSelectLith = LtGuaranteedPacket.fromMessages(seq, [msgMessage]);
-    const wrappedWorldSelect = IdUserPacket.wrap(worldSelectLith).encode();
-    sendReliable(wrappedWorldSelect, address);
-    logInfo(`[World] -> 0x7B via MSG_MESSAGE (worldId=${actualWorldId}, inst=${actualWorldInst})`);
-
-    seq = conn.lithTechOutSeq;
-    conn.lithTechOutSeq = (seq + 1) & 0x1fff;
-
-    const clientId = playerId;
-    const objectId = playerId;
-
-    const lithBurst = LtGuaranteedPacket.buildWorldLoginBurst(seq, clientId, objectId, actualWorldId);
+    const lithBurst = LtGuaranteedPacket.buildWorldLoginBurst(seq, conn.playerId, conn.playerId, conn.worldId);
     const wrappedBurst = IdUserPacket.wrap(lithBurst).encode();
     sendReliable(wrappedBurst, address);
     logInfo(`[World] -> LithTech burst (${wrappedBurst.length - 1} bytes)`);
-}
-
-function handleNewConnection(address: RakSystemAddress): void {
-    const key = getConnectionKey(address);
-    logInfo(`[World] New connection from ${key}`);
 }
 
 function handleDisconnect(address: RakSystemAddress): void {

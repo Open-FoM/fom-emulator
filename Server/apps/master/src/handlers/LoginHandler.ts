@@ -21,6 +21,7 @@ import {
     IdWorldLoginPacket,
     IdWorldLoginReturnPacket,
     WorldLoginReturnCode,
+    IdWorldSelectPacket,
 } from '@openfom/packets';
 import { Connection, LoginPhase } from '../network/Connection';
 import { info as logInfo } from '@openfom/utils';
@@ -272,10 +273,13 @@ export class LoginHandler {
             worldIDs: [1],
         }).encode();
 
-        // Removed 7B world select from here
+        const worldId = this.config.worldSelectWorldId ?? 1;
+        const worldInst = this.config.worldSelectWorldInst ?? 1;
+        const loginWorldSelect = IdWorldSelectPacket.createWorldSelect(playerId, worldId, worldInst).encode();
 
         this.log(`[Login6E] -> 0x6F status=${status} playerId=${playerId}`);
-        return { data: loginReturn, address: connection.address };
+        this.log(`[Login6E] -> 0x7B WORLD_SELECT playerId=${playerId} worldId=${worldId} worldInst=${worldInst} (delayed 500ms)`);
+        return [{ data: loginReturn, address: connection.address }, { data: loginWorldSelect, address: connection.address, delay: 500 }];
     }
 
     private handleLoginTokenCheck(packet: IdLoginTokenCheckPacket, connection: Connection): LoginResponse | null {

@@ -36,7 +36,7 @@ export class IdWorldLoginReturnPacket extends Packet {
         super();
         this.code = data.code;
         this.flag = data.flag;
-        this.worldIpU32 = IdWorldLoginReturnPacket.ipv4ToU32BE(data.worldIp);
+        this.worldIpU32 = IdWorldLoginReturnPacket.ipv4ToU32LE(data.worldIp);
         this.worldPort = data.worldPort;
     }
 
@@ -70,27 +70,27 @@ export class IdWorldLoginReturnPacket extends Packet {
             const worldIpU32 = bs.readCompressedU32();
             const worldPort = bs.readCompressedU16();
 
-            const worldIp = IdWorldLoginReturnPacket.u32BEToIpv4(worldIpU32);
+            const worldIp = IdWorldLoginReturnPacket.u32LEToIpv4(worldIpU32);
             return new IdWorldLoginReturnPacket({ code, flag, worldIp, worldPort });
         } finally {
             bs.destroy();
         }
     }
 
-    static ipv4ToU32BE(ip: string): number {
+    static ipv4ToU32LE(ip: string): number {
         const parts = ip.split('.');
         if (parts.length !== 4) return 0;
         const bytes = parts.map((p) => Number.parseInt(p, 10));
         if (bytes.some((b) => !Number.isInteger(b) || b < 0 || b > 255)) return 0;
-        return ((bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3]) >>> 0;
+        return ((bytes[3] << 24) | (bytes[2] << 16) | (bytes[1] << 8) | bytes[0]) >>> 0;
     }
 
-    static u32BEToIpv4(value: number): string {
+    static u32LEToIpv4(value: number): string {
         return [
-            (value >>> 24) & 0xff,
-            (value >>> 16) & 0xff,
-            (value >>> 8) & 0xff,
             value & 0xff,
+            (value >>> 8) & 0xff,
+            (value >>> 16) & 0xff,
+            (value >>> 24) & 0xff,
         ].join('.');
     }
 
@@ -105,8 +105,8 @@ export class IdWorldLoginReturnPacket extends Packet {
 
     toString(): string {
         const codeName = WorldLoginReturnCode[this.code] ?? this.code;
-        const worldIp = IdWorldLoginReturnPacket.u32BEToIpv4(this.worldIpU32);
-        return `IdWorldLoginReturnPacket { code: ${codeName}, flag: 0x${this.flag.toString(16)}, worldIp: "${worldIp}", worldIp (Hex): 0x${this.worldIpU32.toString(16)}, worldPort: ${this.worldPort} }`;
+        const worldIp = IdWorldLoginReturnPacket.u32LEToIpv4(this.worldIpU32);
+        return `IdWorldLoginReturnPacket { code: ${codeName}, flag: 0x${this.flag.toString(16)}, worldIp: "${worldIp}", worldPort: ${this.worldPort} }`;
     }
 }
 
