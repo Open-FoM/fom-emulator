@@ -14,5 +14,6 @@ Standard format: every packet doc should include **Summary**, **On-wire encoding
 | 0x70 | ID_LOGIN_TOKEN_CHECK | bidirectional | CShell | ID_LOGIN_TOKEN_CHECK.md | From-server bit flips layout |
 | 0x72 | ID_WORLD_LOGIN | client -> world | CShell | ID_WORLD_LOGIN.md | Uses worldConst 0x13BC52 |
 | 0x73 | ID_WORLD_LOGIN_RETURN | server -> client | CShell | ID_WORLD_LOGIN_RETURN.md | u32c worldIp/u16c worldPort |
+| 0x78 (msgId) | REGISTER_CLIENT | client -> world | Object.lto | ID_REGISTER_CLIENT.md | Precursor to 0x79 WORLD_LOGIN_DATA |
 | 0x7B | ID_WORLD_SELECT | server -> client | CShell | ID_WORLD_SELECT.md | SubId 4/7 set worldId/worldInst |
 | 0x79 (msgId) | WORLD_LOGIN_DATA | world -> client | Object.lto | ID_WORLD_LOGIN_DATA.md | RakNet/BitStream payload dispatched via game-message path (not CShell packet ID) |
