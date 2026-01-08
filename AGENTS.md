@@ -16,7 +16,7 @@
 - `Server\apps\master\` (active server emulator)
 - `Hook\` (DLL injector + hook points + packet decode/logging helpers)
 - `Docs\Logs\FoM Reverse Engineering.md` (active RE task log for packet/layout work)
-- `AddressMap.md` (working FoM map; add confirmed addresses continuously)
+- `Docs/AddressMaps/AddressMap.md` (working FoM map; add confirmed addresses continuously)
 - `catalog\` (`CRes_*_items.csv` / `CRes_*_categories.csv` item tables; derived from `CRes.dll`)
 - `Docs\Notes\cvar_bind_table.csv` (console variable bindings)
 - `Docs\Notes\huffman_freq_table.json`, `Docs\Notes\huffman_table_runtime.json` (string compression tables)
@@ -36,8 +36,8 @@
 - `Server\packagers\networking\native\raknet` (RakNet 3.611 source root; start here for external reference context).
 
 # AddressMap
-- On session start, open `AddressMap.md`.
-- Continuously map/record confirmed addresses in `AddressMap.md`.
+- On session start, open `Docs/AddressMaps/AddressMap.md`.
+- Continuously map/record confirmed addresses in `Docs/AddressMaps/AddressMap.md`.
 
 # Targets
 - `Client\Client_FoM\` (FoM client binaries; see for the current executable filename)

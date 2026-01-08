@@ -91,7 +91,7 @@ launch_fom_with_log.bat
 - World side accepts `0x72` and sends initial LithTech SMSGs (`NETPROTOCOLVERSION`/`YOURID`/`CLIENTOBJECTID`/`LOADWORLD`), parses `CMSG_CONNECTSTAGE` (`0x09`), and emits a minimal spawn + periodic `SMSG_UNGUARANTEEDUPDATE` heartbeats.
 - Client emulator mirrors `fom_client` packet cadence for automated testing/validation and keeps a dedicated world connection/log.
 - AddressMap coverage is deep: LithTech handler table + `SMSG_UPDATE`/`SMSG_PACKETGROUP` layouts and many CShell packet reads are mapped.
-- Spawn path is mapped in `AddressMap.md` (SMSG_UPDATE GroupObjUpdate -> `Update_ReadObjectDefBlock` -> `World_AddObjectFromUpdate`/`CreateObjectFromDef`, plus CF_* flags like `MODELINFO`/`RENDERINFO`/`ATTACHMENTS`/`DIMS`).
+- Spawn path is mapped in `Docs/AddressMaps/AddressMap.md` (SMSG_UPDATE GroupObjUpdate -> `Update_ReadObjectDefBlock` -> `World_AddObjectFromUpdate`/`CreateObjectFromDef`, plus CF_* flags like `MODELINFO`/`RENDERINFO`/`ATTACHMENTS`/`DIMS`).
 - RSA key swap is in place so the emulator can decrypt login blobs (`Client/Client_FoM/fom_public.key` must match `Server/apps/master/src/fom_private_key.json`).
 
 <img width="1296" height="746" alt="image" src="https://github.com/user-attachments/assets/c7b53c71-b748-494b-b099-6985f450fc72" />
@@ -122,7 +122,7 @@ launch_fom_with_log.bat
 - `External/`  
   Reference **source code trees** (LithTech / RakNet 3.611) used for struct naming, message layout, and behavior baselines.
 
-- `AddressMap.md`  
+- `Docs/AddressMaps/AddressMap.md`  
   Canonical address map of named symbols and findings.
 
 - `Client/Client_FoM/*.i64` (IDA databases)  
