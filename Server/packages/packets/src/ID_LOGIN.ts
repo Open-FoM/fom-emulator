@@ -139,4 +139,9 @@ export class IdLoginPacket extends Packet {
             bs.destroy();
         }
     }
+
+    toString(): string {
+        const crcs = this.fileCRCs.map(c => `0x${c.toString(16)}`).join(', ');
+        return `IdLoginPacket { username: "${this.username}", passwordHash: "${this.passwordHash.slice(0, 8)}...", fileCRCs: [${crcs}], macAddress: "${this.macAddress}", computerName: "${this.computerName}", hasSteamTicket: ${this.hasSteamTicket} }`;
+    }
 }

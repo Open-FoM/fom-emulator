@@ -30,4 +30,8 @@ export class IdUserPacket extends Packet {
     static wrap(message: LithMessage): IdUserPacket {
         return new IdUserPacket({ message });
     }
+
+    toString(): string {
+        return `IdUserPacket { message: ${this.message.toString()} }`;
+    }
 }

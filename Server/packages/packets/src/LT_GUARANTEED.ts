@@ -119,4 +119,9 @@ export class LtGuaranteedPacket extends LithMessage {
         ];
         return LtGuaranteedPacket.fromMessages(sequence, messages);
     }
+
+    toString(): string {
+        const msgStrs = this.messages.map(m => m.toString()).join(', ');
+        return `LtGuaranteedPacket { sequence: ${this.sequence}, messages: [${msgStrs}] }`;
+    }
 }

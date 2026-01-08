@@ -43,4 +43,8 @@ export class MsgLoadWorld extends LithMessage {
     static create(worldId: number, gameTime: number = 0.0): MsgLoadWorld {
         return new MsgLoadWorld({ worldId, gameTime });
     }
+
+    toString(): string {
+        return `MsgLoadWorld { worldId: ${this.worldId}, gameTime: ${this.gameTime.toFixed(3)} }`;
+    }
 }

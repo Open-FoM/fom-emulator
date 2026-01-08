@@ -90,4 +90,11 @@ export class IdLoginTokenCheckPacket extends Packet {
     static createServerResponse(success: boolean, username: string): IdLoginTokenCheckPacket {
         return new IdLoginTokenCheckPacket({ fromServer: true, success, username });
     }
+
+    toString(): string {
+        if (this.fromServer) {
+            return `IdLoginTokenCheckPacket { fromServer: true, success: ${this.success}, username: "${this.username}" }`;
+        }
+        return `IdLoginTokenCheckPacket { fromServer: false, requestToken: "${this.requestToken}" }`;
+    }
 }

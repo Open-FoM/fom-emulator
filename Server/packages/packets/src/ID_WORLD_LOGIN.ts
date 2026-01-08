@@ -57,4 +57,8 @@ export class IdWorldLoginPacket extends Packet {
             bs.destroy();
         }
     }
+
+    toString(): string {
+        return `IdWorldLoginPacket { worldId: ${this.worldId}, worldInst: ${this.worldInst}, playerId: ${this.playerId}, worldConst: 0x${this.worldConst.toString(16)} }`;
+    }
 }

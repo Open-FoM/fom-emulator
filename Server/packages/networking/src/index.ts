@@ -11,7 +11,6 @@ export {
     NativeBitStream,
     RakPriority,
     RakReliability,
-    RakMessageId,
     type RakSystemAddress,
     type RakPacket,
     type RakStatistics,

@@ -40,4 +40,8 @@ export class MsgYourId extends LithMessage {
     static create(clientId: number, isLocal: boolean = false): MsgYourId {
         return new MsgYourId({ clientId, isLocal });
     }
+
+    toString(): string {
+        return `MsgYourId { clientId: ${this.clientId}, isLocal: ${this.isLocal} }`;
+    }
 }

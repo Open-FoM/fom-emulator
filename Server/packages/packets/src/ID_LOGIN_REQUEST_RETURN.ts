@@ -54,4 +54,9 @@ export class IdLoginRequestReturnPacket extends Packet {
             bs.destroy();
         }
     }
+
+    toString(): string {
+        const statusName = LoginRequestReturnStatus[this.status] ?? this.status;
+        return `IdLoginRequestReturnPacket { status: ${statusName}, username: "${this.username}" }`;
+    }
 }

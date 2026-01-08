@@ -61,45 +61,6 @@ export interface RakStatistics {
     lowestPing: number;
 }
 
-// RakNet 3.611 Message IDs (exact FoM version)
-export const RakMessageId = {
-    // Reserved internal types
-    INTERNAL_PING: 0x00,
-    PING: 0x01,
-    PING_OPEN_CONNECTIONS: 0x02,
-    CONNECTED_PONG: 0x03,
-    CONNECTION_REQUEST: 0x04,
-    SECURED_CONNECTION_RESPONSE: 0x05,
-    SECURED_CONNECTION_CONFIRMATION: 0x06,
-    RPC_MAPPING: 0x07,
-    DETECT_LOST_CONNECTIONS: 0x08,
-    OPEN_CONNECTION_REQUEST: 0x09,
-    OPEN_CONNECTION_REPLY: 0x0a,
-    RPC: 0x0b,
-    RPC_REPLY: 0x0c,
-    OUT_OF_BAND_INTERNAL: 0x0d,
-    
-    // User types (returned to application)
-    CONNECTION_REQUEST_ACCEPTED: 0x0e,
-    CONNECTION_ATTEMPT_FAILED: 0x0f,
-    ALREADY_CONNECTED: 0x10,
-    NEW_INCOMING_CONNECTION: 0x11,
-    NO_FREE_INCOMING_CONNECTIONS: 0x12,
-    DISCONNECTION_NOTIFICATION: 0x13,
-    CONNECTION_LOST: 0x14,
-    RSA_PUBLIC_KEY_MISMATCH: 0x15,
-    CONNECTION_BANNED: 0x16,
-    INVALID_PASSWORD: 0x17,
-    MODIFIED_PACKET: 0x18,
-    TIMESTAMP: 0x19,
-    PONG: 0x1a,
-    ADVERTISE_SYSTEM: 0x1b,
-    DOWNLOAD_PROGRESS: 0x1c,
-    
-    // First user-defined packet ID
-    USER_PACKET_ENUM: 0x4b,
-} as const;
-
 // =============================================================================
 // FFI Library Loading
 // =============================================================================

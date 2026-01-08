@@ -24,6 +24,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@openfom/networking": "workspace:*",
+        "@openfom/packets": "workspace:*",
         "@openfom/utils": "workspace:*",
       },
       "devDependencies": {

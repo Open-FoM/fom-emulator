@@ -238,4 +238,12 @@ export class IdLoginReturnPacket extends Packet {
             clientVersion,
         });
     }
+
+    toString(): string {
+        const statusName = LoginReturnStatus[this.status] ?? this.status;
+        const accountTypeName = AccountType[this.accountType] ?? this.accountType;
+        const worldIds = this.worldIDs.join(', ');
+        const apartmentStr = this.apartment ? `ApartmentData { id: ${this.apartment.id}, type: ${ApartmentType[this.apartment.type] ?? this.apartment.type} }` : 'null';
+        return `IdLoginReturnPacket { status: ${statusName}, playerId: ${this.playerId}, accountType: ${accountTypeName}, clientVersion: ${this.clientVersion}, isBanned: ${this.isBanned}, worldIDs: [${worldIds}], apartment: ${apartmentStr} }`;
+    }
 }

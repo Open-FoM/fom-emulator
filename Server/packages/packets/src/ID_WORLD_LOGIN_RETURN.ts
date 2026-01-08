@@ -102,6 +102,12 @@ export class IdWorldLoginReturnPacket extends Packet {
             worldPort,
         });
     }
+
+    toString(): string {
+        const codeName = WorldLoginReturnCode[this.code] ?? this.code;
+        const worldIp = IdWorldLoginReturnPacket.u32BEToIpv4(this.worldIpU32);
+        return `IdWorldLoginReturnPacket { code: ${codeName}, flag: 0x${this.flag.toString(16)}, worldIp: "${worldIp}", worldPort: ${this.worldPort} }`;
+    }
 }
 
 export { WorldLoginReturnCode as WorldLoginCode };

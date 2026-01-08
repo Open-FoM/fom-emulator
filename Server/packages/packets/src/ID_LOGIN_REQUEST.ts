@@ -33,6 +33,10 @@ export class IdLoginRequestPacket extends Packet {
         throw new Error('IdLoginRequestPacket is client->server only');
     }
 
+    toString(): string {
+        return `IdLoginRequestPacket { username: "${this.username}", clientVersion: ${this.clientVersion} }`;
+    }
+
     /**
      * Decode 0x6C packet from buffer.
      *

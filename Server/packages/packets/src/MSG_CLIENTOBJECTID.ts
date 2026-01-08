@@ -35,4 +35,8 @@ export class MsgClientObjectId extends LithMessage {
     static create(objectId: number): MsgClientObjectId {
         return new MsgClientObjectId({ objectId });
     }
+
+    toString(): string {
+        return `MsgClientObjectId { objectId: ${this.objectId} }`;
+    }
 }

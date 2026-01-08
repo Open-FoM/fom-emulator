@@ -27,7 +27,7 @@ export interface IdWorldSelectDataOther {
 export type IdWorldSelectData = IdWorldSelectDataSubId4 | IdWorldSelectDataOther;
 
 /**
- * ID_WORLD_SELECT (0x7A) - Server -> Client
+ * ID_WORLD_SELECT (0x7B) - Server -> Client
  * See: Docs/Packets/ID_WORLD_SELECT.md
  */
 export class IdWorldSelectPacket extends Packet {
@@ -88,5 +88,14 @@ export class IdWorldSelectPacket extends Packet {
             worldId,
             worldInst,
         });
+    }
+
+    toString(): string {
+        const subIdName = WorldSelectSubId[this.subId] ?? this.subId;
+        if (this.subId === WorldSelectSubId.WORLD_ID_INST || this.subId === WorldSelectSubId.WORLD_ID_INST_ALT) {
+            return `IdWorldSelectPacket { playerId: ${this.playerId}, subId: ${subIdName}, worldId: ${this.worldId}, worldInst: ${this.worldInst} }`;
+        }
+        const payloadLen = this.rawPayload?.length ?? 0;
+        return `IdWorldSelectPacket { playerId: ${this.playerId}, subId: ${subIdName}, rawPayload: ${payloadLen} bytes }`;
     }
 }

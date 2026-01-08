@@ -45,4 +45,8 @@ export class MsgUnguaranteedUpdate extends LithMessage {
     static createHeartbeat(gameTimeSeconds: number): MsgUnguaranteedUpdate {
         return new MsgUnguaranteedUpdate({ objectId: 0xffff, gameTime: gameTimeSeconds });
     }
+
+    toString(): string {
+        return `MsgUnguaranteedUpdate { objectId: ${this.objectId}, gameTime: ${this.gameTime.toFixed(3)} }`;
+    }
 }

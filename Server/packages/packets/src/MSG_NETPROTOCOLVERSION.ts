@@ -40,4 +40,8 @@ export class MsgNetProtocolVersion extends LithMessage {
     static createDefault(): MsgNetProtocolVersion {
         return new MsgNetProtocolVersion({ protocolVersion: 7, additionalVersion: 0 });
     }
+
+    toString(): string {
+        return `MsgNetProtocolVersion { protocolVersion: ${this.protocolVersion}, additionalVersion: ${this.additionalVersion} }`;
+    }
 }
