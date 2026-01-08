@@ -15,9 +15,9 @@
 !/Docs/
 !/Docs/**
 # external sources (selective)
-!/External/
-!/Server/packagers/networking/native/raknet/
-!/Server/packagers/networking/native/raknet/**
+!/External/**
+!/Server/packages/networking/native/raknet/
+!/Server/packages/networking/native/raknet/**
 # keep Logs local-only
 /Docs/Logs/
 /Docs/Logs/**

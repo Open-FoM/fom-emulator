@@ -7,17 +7,17 @@
 - **Read**: `Packet_ID_WORLD_SELECT_Read` @ CShell 0x65806590
 - **Ctor**: `Packet_ID_WORLD_SELECT_Ctor` @ CShell 0x658064C0
 
-## CRITICAL: Client Crash Issue
+## Packet Validation
 
-**Sending this packet incorrectly WILL crash the client.**
+The handler performs these checks before processing:
+1. **playerId validation**: Must match `g_pPlayerStats[0x5B]` - mismatch causes silent drop (no crash)
+2. **subId dispatch**: Unrecognized subIds (0,1,5) fall through to default (no-op, returns success)
+3. **Payload completeness**: SubIds 2 and 6 have complex list payloads that must be complete
 
-The crash occurs because the packet struct is **1120+ bytes** and uses a `VariableSizedPacket` base class that copies the entire RakNet payload into an internal BitStream. If the packet is malformed or truncated, the client will crash during parsing.
-
-### Common Crash Causes:
-1. **Missing base class init**: The packet requires `VariableSizedPacket::Read()` to initialize the internal BitStream from the RakNet payload first
-2. **Invalid playerId**: Handler validates `playerId == g_pPlayerStats[0x5B]` - mismatch causes silent drop
-3. **Invalid subId**: Unrecognized subIds (0,1,5) still succeed but do nothing
-4. **Truncated payload**: SubIds 2 and 6 have complex list payloads that must be complete
+**Note**: A crash was previously observed during login flow, but it was traced to Object.lto 
+`UpdateVortexActiveFx` dereferencing NULL `g_pLTServer` via object message 0x7A - this is 
+unrelated to 0x7B packet encoding. The 0x7B packet itself is sent directly via RakNet 
+without LithTech message wrapping.
 
 ---
 
@@ -288,9 +288,9 @@ Send with RakNet **RELIABLE** ordering - packet loss would leave the client in a
 
 ---
 
-## Crash Debugging Checklist
+## Troubleshooting Checklist
 
-If sending this packet crashes the client:
+If the packet is being silently dropped:
 
 1. ☐ Is packetId exactly 0x7B?
 2. ☐ Is playerId compressed correctly (WriteCompressed)?
@@ -298,7 +298,10 @@ If sending this packet crashes the client:
 4. ☐ Is subId a valid value (2,3,4,5,6,7)?
 5. ☐ For subId 2/6: Is the list payload complete and properly formatted?
 6. ☐ Are you sending via RakNet RELIABLE?
-7. ☐ Check fom_hook.log for packet hex dump before crash
+7. ☐ Check fom_hook.log for packet hex dump
+
+**Known unrelated crash**: If client crashes in `UpdateVortexActiveFx` (Object.lto), 
+this is caused by object message 0x7A sent to player object, not by 0x7B packet issues.
 
 ---
 

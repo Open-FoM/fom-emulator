@@ -1,4 +1,33 @@
 ### Object.lto (image base 0x10000000)
+
+#### Critical Globals
+| VA | Symbol | Purpose | Notes |
+|---|---|---|---|
+| 0x101b445c | g_pLTServer | ILTServer interface pointer | NULL on pure client (no local server) |
+| 0x101b4514 | dword_101B4514 | SharedMem context pointer | Used by TravelMgr/Vortex system |
+| 0x101b44fc | dword_101B44FC | Local player context | Used by vortex state machine |
+
+#### g_pLTServer NULL Crash Functions
+These functions dereference g_pLTServer without NULL checks - crash on pure client:
+| VA | RVA | Symbol | Crash Risk | Evidence |
+|---|---|---|---|---|
+| 0x10013c90 | 0x00013c90 | UpdateVortexActiveFx | HIGH - direct deref | decomp confirmed |
+| 0x10015240 | 0x00015240 | Actor_ActivateVortexFx | HIGH - calls UpdateVortexActiveFx | decomp confirmed |
+| 0x10030420 | 0x00030420 | Play_VortexActive_Periodic | HIGH - direct deref | decomp confirmed |
+| 0x10079960 | 0x00079960 | Tick_VortexActiveState | HIGH - cases 8,9,11,13 crash | decomp confirmed |
+| 0x10079e10 | 0x00079e10 | TravelMgrSrv_OnMessage | MED - log call uses g_pLTServer | decomp confirmed |
+
+#### Vortex/TravelMgr System
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x10041200 | 0x00041200 | GameMaster_HandleMessage | Object message dispatcher (switch 102-159) | decomp/rename | high |
+| 0x10079960 | 0x00079960 | Tick_VortexActiveState | Vortex travel state machine (triggered by msg 111) | decomp/rename | high |
+| 0x10079e10 | 0x00079e10 | TravelMgrSrv_OnMessage | Handles object msg 111, calls Tick_VortexActiveState | decomp/rename | high |
+| 0x1005aa90 | 0x0005aa90 | SharedMem_SetVortexActive | Sets vortex state via SharedMem | decomp/rename | med |
+| 0x1005ab30 | 0x0005ab30 | NPC_TickVortexTimer | NPC vortex timer tick | decomp/rename | med |
+| 0x10001304 | 0x00001304 | ObjectDLLSetup | Sets g_pLTServer from engine parameter | decomp/rename | high |
+
+#### Function Table
 | VA | RVA | Symbol | Purpose | Evidence | Conf |
 |---|---|---|---|---|---|
 | 0x10001080 | 0x00001080 | ClientObj_OnMessageDispatch_WithSender | Client object handler | decomp/rename | med |

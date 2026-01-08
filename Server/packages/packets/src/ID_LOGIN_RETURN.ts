@@ -106,8 +106,18 @@ export interface IdLoginReturnData {
     worldIDs?: number[];
     factionMOTD?: string;
     apartment?: ApartmentData;
-    fieldFinal1?: number;
-    fieldFinal2?: number;
+    /**
+     * Default worldId written to SharedMem[1] on the client.
+     * Used by the starmap UI to determine which world to connect to.
+     * Must be set to a valid worldId (1-30) for world login to work.
+     */
+    defaultWorldId?: number;
+    /**
+     * Current/selected worldId stored in UI slot +0x18ED.
+     * Written to SharedMem[0x1EEC1] when user clicks CONTINUE.
+     * This is the world the player will actually connect to.
+     */
+    currentWorldId?: number;
 }
 
 export class IdLoginReturnPacket extends Packet {
@@ -125,8 +135,8 @@ export class IdLoginReturnPacket extends Packet {
     worldIDs: number[];
     factionMOTD: string;
     apartment: ApartmentData | null;
-    fieldFinal1: number;
-    fieldFinal2: number;
+    defaultWorldId: number;
+    currentWorldId: number;
 
     constructor(data: IdLoginReturnData) {
         super();
@@ -142,8 +152,8 @@ export class IdLoginReturnPacket extends Packet {
         this.worldIDs = data.worldIDs ?? [];
         this.factionMOTD = data.factionMOTD ?? '';
         this.apartment = data.apartment ?? null;
-        this.fieldFinal1 = data.fieldFinal1 ?? 0;
-        this.fieldFinal2 = data.fieldFinal2 ?? 0;
+        this.defaultWorldId = data.defaultWorldId ?? 1;
+        this.currentWorldId = data.currentWorldId ?? 1;
     }
 
     encode(): Buffer {
@@ -172,8 +182,8 @@ export class IdLoginReturnPacket extends Packet {
 
                 encodeString(this.factionMOTD, bs, 2048, 0);
                 this.writeApartment(bs, this.apartment);
-                bs.writeCompressedU8(this.fieldFinal1 & 0xff);
-                bs.writeCompressedU8(this.fieldFinal2 & 0xff);
+                bs.writeCompressedU8(this.defaultWorldId & 0xff);
+                bs.writeCompressedU8(this.currentWorldId & 0xff);
             }
 
             return bs.getData();
@@ -244,6 +254,6 @@ export class IdLoginReturnPacket extends Packet {
         const accountTypeName = AccountType[this.accountType] ?? this.accountType;
         const worldIds = this.worldIDs.join(', ');
         const apartmentStr = this.apartment ? `ApartmentData { id: ${this.apartment.id}, type: ${ApartmentType[this.apartment.type] ?? this.apartment.type} }` : 'null';
-        return `IdLoginReturnPacket { status: ${statusName}, playerId: ${this.playerId}, accountType: ${accountTypeName}, clientVersion: ${this.clientVersion}, isBanned: ${this.isBanned}, worldIDs: [${worldIds}], apartment: ${apartmentStr} }`;
+        return `IdLoginReturnPacket { status: ${statusName}, playerId: ${this.playerId}, accountType: ${accountTypeName}, clientVersion: ${this.clientVersion}, isBanned: ${this.isBanned}, worldIDs: [${worldIds}], defaultWorldId: ${this.defaultWorldId}, currentWorldId: ${this.currentWorldId}, apartment: ${apartmentStr} }`;
     }
 }

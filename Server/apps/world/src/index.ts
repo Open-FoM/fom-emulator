@@ -147,7 +147,7 @@ function handleWorldLogin(packet: IdWorldLoginPacket, address: RakSystemAddress)
         return;
     }
 
-    conn.playerId = playerId;
+    conn.playerId = playerId || 1;
     conn.worldId = worldId || 1;
     conn.worldInst = worldInst || 1;
     conn.authenticated = true;
@@ -178,7 +178,7 @@ function handleNewConnection(address: RakSystemAddress): void {
     const lithBurst = LtGuaranteedPacket.buildWorldLoginBurst(seq, conn.playerId, conn.playerId, conn.worldId);
     const wrappedBurst = IdUserPacket.wrap(lithBurst).encode();
     sendReliable(wrappedBurst, address);
-    logInfo(`[World] -> LithTech burst (${wrappedBurst.length - 1} bytes)`);
+    logInfo(`[World] -> LithTech burst (worldId=${conn.worldId}, ${wrappedBurst.length - 1} bytes)`);
 }
 
 function handleDisconnect(address: RakSystemAddress): void {

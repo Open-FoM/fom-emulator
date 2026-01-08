@@ -83,8 +83,8 @@ Packet_ID_LOGIN_RETURN
     │   ├── isFeatured: bool                     // bit (UI: "Featured")
     │   └── occupancy: uint32                    // compressed (number of players in apartment)
     │
-    ├── field_final1: uint8                      // compressed
-    └── field_final2: uint8                      // compressed
+    ├── defaultWorldId: uint8                    // compressed - written to SharedMem[1], used by starmap UI
+    └── currentWorldId: uint8                    // compressed - stored in UI slot +0x18ED, written to SharedMem[0x1EEC1] on CONTINUE
 ```
 
 ## Structures

@@ -59,8 +59,8 @@ WORLD SELECTION (two paths):
     -> sets SharedMem[0x1EEC2] = worldInst
     -> sets SharedMem[0x1EEC0] = 1 (triggers state machine)
 
-  PATH B: Server-triggered via 0x7B (requires LithTech wrapping)
-  ---------------------------------------------------------------
+  PATH B: Server-triggered via 0x7B 
+  ---------------------------------------------------------------------
   <------------------------------- 0x7B WORLD_SELECT (subId=4, worldId, worldInst)
     -> sets SharedMem[0x1EEC1] = worldId
     -> sets SharedMem[0x1EEC2] = worldInst
@@ -95,60 +95,84 @@ World (post-connect) begins LithTech SMSG stream:
   - SMSG_LOADWORLD (ID 6) then SMSG_UPDATE / SMSG_MESSAGE / SMSG_PACKETGROUP
     - client sends MSG_ID 0x09 (CMSG_CONNECTSTAGE) with stage=0 after loadworld
 
-## CRITICAL: 0x7B Crash Issue (SOLVED)
+## 0x7B Packet Handling (CONFIRMED)
 
-Sending 0x7B directly via RakNet crashes the client!
+**0x7B WORLD_SELECT is sent directly via RakNet - NO LithTech wrapping required.**
 
-The crash occurs in VariableSizedPacket::Read (0x6570c6c0) which expects:
-- a2+0x24 (36): payload length
-- a2+0x2C (44): pointer to payload data
+The packet is handled by `HandlePacket_ID_WORLD_SELECT_7B` @ CShell 0x65899270, which:
+1. Reads playerId (u32c) and validates against g_pPlayerStats[0x5B]
+2. Reads subId (u8c) and dispatches based on type
+3. For subId=4: Sets worldId/worldInst/state and triggers world login
 
-This structure is only present when packets come through the LithTech message layer
-(wrapped in ID_USER 0x86 + LtGuaranteedPacket). Raw RakNet packets lack this wrapper.
+### Known Crash: 0x7B SubId=4 triggers g_pLTServer NULL dereference
 
-### Solution: Send 0x7B via MSG_MESSAGE (MSG_ID 13)
+**DO NOT SEND 0x7B SubId=4** - it crashes the client on pure client mode.
 
-The server must wrap 0x7B inside the LithTech message layer:
+When 0x7B SubId=4 is received:
+1. CShell sets SharedMem[0x1EEC1] = worldId and SharedMem[0x1EEC0] = 1
+2. State machine enters state=3 (load world assets)
+3. World loading triggers Object.lto code that dereferences g_pLTServer
+4. g_pLTServer is NULL on pure client → **CRASH**
 
-1. Create 0x7B payload (excluding packet ID byte)
-2. Wrap in MsgMessage (MSG_ID 13) which adds the packet ID back
-3. Wrap in LtGuaranteedPacket with sequence number
-4. Wrap in IdUserPacket (0x86)
-5. Send via RakNet reliable
+#### Why g_pLTServer is NULL
 
-```typescript
-const worldSelectPacket = IdWorldSelectPacket.createWorldSelect(playerId, worldId, worldInst);
-const worldSelectPayload = worldSelectPacket.encode().subarray(1); // Remove 0x7B byte
-
-const msgMessage = MsgMessage.wrap(RakNetMessageId.ID_WORLD_SELECT, worldSelectPayload);
-const lithPacket = LtGuaranteedPacket.fromMessages(seq, [msgMessage]);
-const wrapped = IdUserPacket.wrap(lithPacket).encode();
-sendReliable(wrapped, address);
+`g_pLTServer` is set in `ObjectDLLSetup` @ 0x10001304:
+```c
+g_pLTServer = pLTServer;  // Passed by LithTech engine on DLL load
 ```
 
-This routes through:
-1. Client receives ID_USER (0x86)
-2. LithTech parses LtGuaranteedPacket
-3. MSG_MESSAGE (ID 13) handler (`OnMessagePacket` @ 0x00426F50) parses payload
-4. Builds MessagePacket wrapper with payload ptr at +0x2C, length at +0x24
-5. Calls IClientShell_Default vtbl+0x58 → ClientShell_OnMessage_DispatchPacketId
-6. Dispatcher routes 0x7B to HandlePacket_ID_WORLD_SELECT_7B
-7. Handler sets SharedMem[0x1EEC1/0x1EEC2/0x1EEC0] (worldId/worldInst/state=1)
+On a **dedicated client** (connecting to remote server, no local server running), the engine
+calls `ObjectDLLSetup` with `pLTServer = NULL` because there's no server instance.
 
-## CRITICAL: Version Without World Selection UI
+#### Affected Functions (Object.lto)
+| VA | Function | Crash Risk |
+|----|----------|------------|
+| 0x10013c90 | UpdateVortexActiveFx | HIGH - direct g_pLTServer deref |
+| 0x10015240 | Actor_ActivateVortexFx | HIGH - calls UpdateVortexActiveFx |
+| 0x10030420 | Play_VortexActive_Periodic | HIGH - direct g_pLTServer deref |
+| 0x10079960 | Tick_VortexActiveState | HIGH - cases 8,9,11,13 crash |
 
-Some versions of the client (e.g., Fall of the Dominion) do NOT have the world
-selection starmap UI (menu state 3). In these versions:
+See `Docs/AddressMaps/AddressMap_Object_lto.md` for full mapping.
 
-1. 0x6F LOGIN_RETURN sets SharedMem[0x54]=1 and tries to enter menu state 3
-2. Without the UI, worldId/worldInst are never set (remain 0)
-3. State machine sends 0x72 with worldId=0, worldInst=0
-4. WorldLogin_StateTick sees SharedMem[0x54]=1 and sends 0x71 (logout)
-5. Client disconnects
+## SOLVED: worldId must be set via LOGIN_RETURN (0x6F)
 
-To support these versions, the server MUST send 0x7B with proper LithTech wrapping
-to set worldId/worldInst before the state machine runs, OR find an alternative
-trigger mechanism
+The worldId is set through the `defaultWorldId` field (offset 0x8E0) in the LOGIN_RETURN packet:
+
+1. **Master sends 0x6F LOGIN_RETURN** with `defaultWorldId` field set (e.g., 1)
+2. `HandlePacket_ID_LOGIN_RETURN` @ 0x65896900 writes this to `SharedMem[1]`
+3. Client enters menu state 3 (world selection UI)
+4. **User clicks world in starmap** (or server triggers via other mechanism)
+5. UI reads `SharedMem[1]` → writes to `SharedMem[0x1EEC1]` → sets `SharedMem[0x1EEC0]=1`
+6. State machine sends 0x72 WORLD_LOGIN with valid worldId
+
+**Key code path** (CShell @ 0x65896af6):
+```asm
+movzx   eax, [ebp+var_2B0]     ; defaultWorldId from packet offset 0x8E0
+mov     ecx, g_pWorldMgr
+push    eax
+push    1                       ; SharedMem index 1
+call    SharedMem_WriteDword_this
+```
+
+**Why 0x7B crashes**: The 0x7B WORLD_SELECT packet (SubId=4) is intended for **vortex travel** (mid-game world transitions), not initial login. It triggers Object.lto code that expects `g_pLTServer` to be valid.
+
+## All World ID Write Paths (Comprehensive Analysis)
+
+Only ONE packet can trigger world login - all other paths are UI-driven:
+
+### Packet-Based (Server → Client)
+| Packet | Handler | Action |
+|--------|---------|--------|
+| **0x7B SubId 4** | HandlePacket_ID_WORLD_SELECT_7B @ 0x65899270 | **ONLY** packet that sets worldId/worldInst and triggers login |
+| 0x73 | HandlePacket_ID_WORLD_LOGIN_RETURN_73 @ 0x6588e340 | Sets state=2 (connecting) or state=1 (retry) |
+
+### UI-Driven (No Packet - User Interaction)
+| Class | Handler | Trigger | WorldId Source |
+|-------|---------|---------|----------------|
+| CWindowNodeSelection | 0x65822b50 | Starmap click (cmd=5) | SharedMem[1] from LOGIN_RETURN |
+| CMenuPopup | 0x6578c3c0 | Menu select (cmd=7) | Field [esi+18EDh] |
+| Unknown (Apartment) | 0x65805a50 | [esi+18E0h]==6 | Hardcoded worldId=4 |
+| InputMgr | 0x658a3220 | Timer timeout | Hardcoded worldId=30 (auto-kick)
 
 ## Key call chain (addresses)
 

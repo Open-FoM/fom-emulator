@@ -266,20 +266,19 @@ export class LoginHandler {
             ? this.resolveWorldSelectPlayerId(connection)
             : 0;
 
+        const defaultWorldId = this.config.worldSelectWorldId ?? 1;
+        const currentWorldId = this.config.worldSelectWorldId ?? 1;
         const loginReturn = new IdLoginReturnPacket({
             status,
             playerId,
             clientVersion: loginClientVersion,
             worldIDs: [1],
+            defaultWorldId,
+            currentWorldId,
         }).encode();
 
-        const worldId = this.config.worldSelectWorldId ?? 1;
-        const worldInst = this.config.worldSelectWorldInst ?? 1;
-        const loginWorldSelect = IdWorldSelectPacket.createWorldSelect(playerId, worldId, worldInst).encode();
-
-        this.log(`[Login6E] -> 0x6F status=${status} playerId=${playerId}`);
-        this.log(`[Login6E] -> 0x7B WORLD_SELECT playerId=${playerId} worldId=${worldId} worldInst=${worldInst} (delayed 500ms)`);
-        return [{ data: loginReturn, address: connection.address }, { data: loginWorldSelect, address: connection.address, delay: 500 }];
+        this.log(`[Login6E] -> 0x6F status=${status} playerId=${playerId} defaultWorldId=${defaultWorldId} currentWorldId=${currentWorldId}`);
+        return [{ data: loginReturn, address: connection.address }];
     }
 
     private handleLoginTokenCheck(packet: IdLoginTokenCheckPacket, connection: Connection): LoginResponse | null {
