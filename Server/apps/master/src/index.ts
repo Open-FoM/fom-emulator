@@ -3,11 +3,6 @@
  *
  * Uses native RakNet 3.611 via Bun FFI for proper reliability, ACKs, and duplicate detection.
  *
- * Login flow handled:
- *   0x6C (LOGIN_REQUEST) -> 0x6D (LOGIN_REQUEST_RETURN)
- *   0x6E (LOGIN) -> 0x6F (LOGIN_RETURN)
- *   0x70 (LOGIN_TOKEN_CHECK) bidirectional
- *   0x72 (WORLD_LOGIN) -> 0x73 (WORLD_LOGIN_RETURN)
  */
 
 import {
@@ -20,10 +15,10 @@ import {
     PacketLogger,
     PacketDirection,
 } from '@openfom/networking';
-import { LtGuaranteedPacket, MsgUnguaranteedUpdate, IdUserPacket } from '@openfom/packets';
+
 import { configureLogger, debug as logDebug, error as logError, info as logInfo, warn as logWarn } from '@openfom/utils';
 import { loadRuntimeConfig } from './config';
-import { ConnectionManager, LoginPhase } from './network/Connection';
+import { ConnectionManager } from './network/Connection';
 import { LoginHandler } from './handlers/LoginHandler';
 import { createPacketHandlers } from './handlers/registerHandlers';
 import { loadRsaKeyFromJson, type RsaKeyJson } from './utils/Rsa';
@@ -286,33 +281,6 @@ async function mainLoop() {
 
             // Get next packet
             packet = peer.receive();
-        }
-
-        // World-mode heartbeat: send periodic unguaranteed updates.
-        if (config.serverMode === 'world') {
-            const now = Date.now();
-            const heartbeatMs = 3000;
-            for (const conn of connections.getAll()) {
-                if (conn.loginPhase !== LoginPhase.IN_WORLD) {
-                    continue;
-                }
-                if (conn.worldTimeOrigin <= 0) {
-                    conn.worldTimeOrigin = now;
-                }
-                if (conn.worldLastHeartbeatAt && (now - conn.worldLastHeartbeatAt) < heartbeatMs) {
-                    continue;
-                }
-                conn.worldLastHeartbeatAt = now;
-
-                const elapsedSec = (now - conn.worldTimeOrigin) / 1000;
-                const updateMsg = MsgUnguaranteedUpdate.createHeartbeat(elapsedSec);
-
-                const seq = conn.lithTechOutSeq;
-                conn.lithTechOutSeq = (seq + 1) & 0x1fff;
-                const packet = LtGuaranteedPacket.fromMessages(seq, [updateMsg]);
-                const wrapped = IdUserPacket.wrap(packet).encode();
-                sendUnreliable(wrapped, conn.address);
-            }
         }
 
         // Small sleep to prevent busy-waiting
