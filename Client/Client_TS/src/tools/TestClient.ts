@@ -152,13 +152,13 @@ class TestClient {
     this.worldClientObjectId = null;
     this.worldNetProtocol = null;
     this.worldUnguaranteedLog = parseBool(
-      process.env.FOM_WORLD_UNGUARANTEED_LOG ?? process.env.FOM_LOG_UNGUARANTEED,
+      process.env.WORLD_UNGUARANTEED_LOG ?? process.env.FOM_LOG_UNGUARANTEED,
       false,
     );
     this.worldUnguaranteedLogIntervalMs = Math.max(
       0,
       parseInt(
-        process.env.FOM_WORLD_UNGUARANTEED_LOG_MS ??
+        process.env.WORLD_UNGUARANTEED_LOG_MS ??
           process.env.FOM_LOG_UNGUARANTEED_MS ??
           '5000',
         10,
@@ -1147,15 +1147,15 @@ async function main() {
   );
 
   const worldId =
-    parseU32(getFlag('world-id') || process.env.FOM_WORLD_ID || process.env.WORLD_ID);
+    parseU32(getFlag('world-id') || process.env.WORLD_ID);
   const worldInst =
-    parseU32(getFlag('world-inst') || process.env.FOM_WORLD_INST || process.env.WORLD_INST);
+    parseU32(getFlag('world-inst') || process.env.WORLD_INST);
   const playerId =
     parseU32(getFlag('world-player') || process.env.FOM_PLAYER_ID || process.env.PLAYER_ID);
   const worldConst =
-    parseU32(getFlag('world-const') || process.env.FOM_WORLD_CONST || process.env.WORLD_CONST);
-  const worldIp = getFlag('world-ip') || process.env.FOM_WORLD_IP || process.env.WORLD_IP;
-  const worldPortRaw = getFlag('world-port') || process.env.FOM_WORLD_PORT || process.env.WORLD_PORT;
+    parseU32(getFlag('world-const') || process.env.WORLD_CONST);
+  const worldIp = getFlag('world-ip') || process.env.WORLD_IP;
+  const worldPortRaw = getFlag('world-port') || process.env.WORLD_PORT;
   const worldPort = worldPortRaw ? Number.parseInt(worldPortRaw, 10) : NaN;
 
   const quiet = parseBool(process.env.QUIET_MODE ?? process.env.FOM_QUIET_LOGS, false);
@@ -1225,7 +1225,7 @@ async function main() {
       const targetIp = worldIp || address;
       const targetPort = Number.isFinite(worldPort) ? worldPort : port;
       if (!targetIp || !Number.isFinite(targetPort) || targetPort <= 0) {
-        console.log('Missing --world-ip/--world-port (or set FOM_WORLD_IP/FOM_WORLD_PORT).');
+        console.log('Missing --world-ip/--world-port (or set WORLD_IP/WORLD_PORT).');
         client.close();
         return;
       }

@@ -96,8 +96,8 @@ export function loadRuntimeConfig(): RuntimeConfig {
         acceptLoginAuthWithoutUser: parseBool(env.ACCEPT_AUTH_WITHOUT_USER, false),
         resendDuplicateLogin6D: parseBool(env.RESEND_DUPLICATE_6D, false),
         loginClientVersion: parseInt(env.LOGIN_CLIENT_VERSION || '0', 10),
-        worldSelectWorldId: parseInt(env.FOM_WORLD_ID || env.WORLD_ID || '0', 10),
-        worldSelectWorldInst: parseInt(env.FOM_WORLD_INST || env.WORLD_INST || '0', 10),
+        worldSelectWorldId: parseInt(env.WORLD_ID || '0', 10),
+        worldSelectWorldInst: parseInt(env.WORLD_INST || '0', 10),
         worldSelectPlayerId: parseInt(env.WORLD_SELECT_PLAYER_ID || '0', 10),
         worldSelectPlayerIdRandom: parseBool(env.WORLD_SELECT_PLAYER_ID_RANDOM, false),
     };

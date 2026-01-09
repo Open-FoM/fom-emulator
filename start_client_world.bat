@@ -95,12 +95,12 @@ if "%PORT%"=="" set PORT=62000
 echo [Client_TS] Starting world client: %HOST%:%PORT% worldId=%WORLD_ID% inst=%WORLD_INST% player=%PLAYER_ID%
 
 set FOM_LOGIN_AUTH=false
-set FOM_WORLD_IP=%HOST%
-set FOM_WORLD_PORT=%PORT%
-set FOM_WORLD_ID=%WORLD_ID%
-set FOM_WORLD_INST=%WORLD_INST%
+set WORLD_IP=%HOST%
+set WORLD_PORT=%PORT%
+set WORLD_ID=%WORLD_ID%
+set WORLD_INST=%WORLD_INST%
 set FOM_PLAYER_ID=%PLAYER_ID%
-set FOM_WORLD_CONST=%WORLD_CONST%
+set WORLD_CONST=%WORLD_CONST%
 
 npx tsx src\tools\TestClient.ts world %HOST% %PORT% --world-id=%WORLD_ID% --world-inst=%WORLD_INST% --world-player=%PLAYER_ID% --world-const=%WORLD_CONST%
 if errorlevel 1 (
