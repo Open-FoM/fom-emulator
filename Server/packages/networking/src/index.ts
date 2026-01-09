@@ -21,6 +21,7 @@ export {
     decodeString,
     decodeStringDebug,
     addressFromString,
+    CompressedString,
 } from './bindings/raknet';
 
 // LithNet FFI bindings (LithTech-compatible packet read/write)
@@ -34,11 +35,11 @@ export {
 export * from './net/address';
 
 // Protocol utilities
-export * from './protocol/BitStream';
 export * from './protocol/Constants';
 export * from './protocol/LithCompressed';
 export * from './protocol/PacketDocs';
 export * from './protocol/PacketNames';
+export * from './protocol/Struct';
 
 // Logging
 export * from './logging/PacketLogger';

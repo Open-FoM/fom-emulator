@@ -50,6 +50,8 @@ export {
     type IdRegisterClientReturnData,
 } from './ID_REGISTER_CLIENT_RETURN';
 
+export * from './structs';
+
 export { IdWorldSelectPacket, WorldSelectSubId, type IdWorldSelectData } from './ID_WORLD_SELECT';
 
 export { IdWorldServicePacket, type IdWorldServiceData } from './ID_WORLDSERVICE';

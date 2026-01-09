@@ -675,9 +675,9 @@ export class NativeBitStream {
 
     // --- Write functions ---
 
-    writeBit(value: boolean): void {
+    writeBit(value: boolean | 1 | 0): void {
         this.ensureAlive();
-        lib.symbols.rak_bs_write_bit(this.handle, value);
+        lib.symbols.rak_bs_write_bit(this.handle, Boolean(value));
     }
 
     writeU8(value: number): void {
@@ -836,17 +836,41 @@ export class NativeBitStream {
         lib.symbols.rak_bs_align_read_to_byte_boundary(this.handle);
     }
 
-    /**
-     * Get the internal handle for use with StringCompressor.
-     */
+    writeCompressedString(value: string | CompressedString, maxChars: number = 2048): void {
+        this.ensureAlive();
+        if (typeof value === 'string') {
+            initStringCompressor();
+            const inputBuf = Buffer.from(value + '\0');
+            lib.symbols.rak_string_compressor_encode(ptr(inputBuf), maxChars, this.handle, 0);
+        } else {
+            value.encode(this);
+        }
+    }
+
+    readCompressedString(maxChars: number = 2048): CompressedString {
+        this.ensureAlive();
+        initStringCompressor();
+        const outputBuf = Buffer.alloc(maxChars + 1);
+        const success = lib.symbols.rak_string_compressor_decode(ptr(outputBuf), maxChars, this.handle, 0);
+        if (!success) throw new Error('Failed to decode compressed string');
+        let end = outputBuf.indexOf(0);
+        if (end === -1) end = maxChars;
+        return new CompressedString(outputBuf.subarray(0, end).toString('latin1'), maxChars);
+    }
+
+    writeStruct<T extends { encode(bs: NativeBitStream): void }>(struct: T): void {
+        struct.encode(this);
+    }
+
+    readStruct<T>(StructClass: { decode(bs: NativeBitStream): T }): T {
+        return StructClass.decode(this);
+    }
+
     getHandle(): ReturnType<typeof lib.symbols.rak_bs_create> {
         this.ensureAlive();
         return this.handle;
     }
 
-    /**
-     * Destroy this BitStream and free resources.
-     */
     destroy(): void {
         if (!this.destroyed && this.handle) {
             lib.symbols.rak_bs_destroy(this.handle);
@@ -951,5 +975,41 @@ export function decodeStringDebug(bs: NativeBitStream, maxChars: number = 2048, 
     let end = outputBuf.indexOf(0);
     if (end === -1) end = maxChars;
     return outputBuf.subarray(0, end).toString('utf8');
+}
+
+/**
+ * CompressedString - Huffman-compressed string via RakNet StringCompressor.
+ * Source: StringCompressor::EncodeString/DecodeString (vtable +52/+56)
+ */
+export class CompressedString {
+    constructor(
+        public value: string = '',
+        public maxChars: number = 2048
+    ) {}
+
+    encode(bs: NativeBitStream): void {
+        encodeString(this.value, bs, this.maxChars);
+    }
+
+    static decode(bs: NativeBitStream, maxChars: number = 2048): CompressedString {
+        const value = decodeString(bs, maxChars);
+        return new CompressedString(value, maxChars);
+    }
+
+    static empty(maxChars: number = 2048): CompressedString {
+        return new CompressedString('', maxChars);
+    }
+
+    static from(value: string | ArrayBufferLike, maxChars: number = 2048): CompressedString {
+        if (typeof value === 'string') {
+            return new CompressedString(value, maxChars);
+        } else {
+            return new CompressedString(Buffer.from(value).toString('latin1'), maxChars);
+        }
+    }
+
+    toString(): string {
+        return `CompressedString(value: ${this.value}, maxChars: ${this.maxChars})`;
+    }
 }
 
