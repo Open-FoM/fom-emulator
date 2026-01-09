@@ -7,7 +7,6 @@ CLIENT              MASTER SERVER           WORLD SERVER
    |<-- 0x6D LOGIN_RET ---|                       |
    |-- 0x6E LOGIN ------->|                       |
    |<-- 0x6F LOGIN_RET ---|                       |
-   |<-- 0x7B WORLD_SEL ---|                       |
    |-- 0x72 WORLD_LOGIN ->|                       |
    |<-- 0x73 (IP:Port) ---|                       |
    |                      |                       |
