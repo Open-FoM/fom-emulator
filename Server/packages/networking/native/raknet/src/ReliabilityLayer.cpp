@@ -88,9 +88,9 @@ updateBitStream( MAXIMUM_MTU_SIZE + 21 )   // preallocate the update bitstream s
 	freeThreadedMemoryOnNextUpdate = false;
 #ifdef _DEBUG
 	// Wait longer to disconnect in debug so I don't get disconnected while tracing
-	timeoutTime=30000;
+	timeoutTime=600000;
 #else
-	timeoutTime=10000;
+	timeoutTime=600000;
 #endif
 
 #ifndef _RELEASE

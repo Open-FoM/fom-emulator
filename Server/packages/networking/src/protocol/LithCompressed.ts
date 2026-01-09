@@ -5,7 +5,7 @@
  * Uses LSB BitStreamWriter for game layer serialization.
  */
 
-import { LsbBitStreamWriter } from './BitStream';
+import { LithPacketWrite } from '../bindings/lithnet';
 
 const clampU32 = (value: number): number => value >>> 0;
 
@@ -16,7 +16,7 @@ const clampU32 = (value: number): number => value >>> 0;
  * @param byteCount Number of bytes (1-4)
  */
 export const writeCompressedUInt = (
-    writer: LsbBitStreamWriter,
+    writer: LithPacketWrite,
     value: number,
     byteCount: number,
 ): void => {
@@ -51,28 +51,28 @@ export const writeCompressedUInt = (
 /**
  * Write compressed u8 (1 byte)
  */
-export const writeU8c = (writer: LsbBitStreamWriter, value: number): void => {
+export const writeU8c = (writer: LithPacketWrite, value: number): void => {
     writeCompressedUInt(writer, value & 0xff, 1);
 };
 
 /**
  * Write compressed u16 (2 bytes)
  */
-export const writeU16c = (writer: LsbBitStreamWriter, value: number): void => {
+export const writeU16c = (writer: LithPacketWrite, value: number): void => {
     writeCompressedUInt(writer, value & 0xffff, 2);
 };
 
 /**
  * Write compressed u32 (4 bytes)
  */
-export const writeU32c = (writer: LsbBitStreamWriter, value: number): void => {
+export const writeU32c = (writer: LithPacketWrite, value: number): void => {
     writeCompressedUInt(writer, clampU32(value), 4);
 };
 
 /**
  * Write a list with u16 count prefix and u32 compressed entries
  */
-export const writeListU16CountU32c = (writer: LsbBitStreamWriter, values: number[]): void => {
+export const writeListU16CountU32c = (writer: LithPacketWrite, values: number[]): void => {
     const list = values ?? [];
     writeU16c(writer, list.length);
     for (const entry of list) {
@@ -83,7 +83,7 @@ export const writeListU16CountU32c = (writer: LsbBitStreamWriter, values: number
 /**
  * Write a list with u8 count prefix and u32 compressed entries
  */
-export const writeListU8CountU32c = (writer: LsbBitStreamWriter, values: number[]): void => {
+export const writeListU8CountU32c = (writer: LithPacketWrite, values: number[]): void => {
     const list = values ?? [];
     writeU8c(writer, list.length);
     for (const entry of list) {

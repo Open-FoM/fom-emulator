@@ -1,4 +1,4 @@
-import { BitStreamWriter, BitStreamReader } from '@openfom/networking';
+import { LithPacketWrite, LithPacketRead } from '@openfom/networking';
 import { LithMessage } from './base';
 import { LithTechMessageId } from './shared';
 
@@ -20,20 +20,21 @@ export class MsgYourId extends LithMessage {
     }
 
     encode(): Buffer {
-        const writer = new BitStreamWriter(16);
-        writer.writeBits(this.clientId & 0xffff, 16);
-        writer.writeBits(this.isLocal ? 1 : 0, 8);
-        return writer.toBuffer();
-    }
-
-    get payloadBits(): number {
-        return 24;
+        using writer = new LithPacketWrite();
+        writer.writeUint8(MsgYourId.MESSAGE_ID);
+        writer.writeUint16(this.clientId & 0xffff);
+        writer.writeUint8(this.isLocal ? 1 : 0);
+        return writer.getData();
     }
 
     static decode(buffer: Buffer): MsgYourId {
-        const reader = new BitStreamReader(buffer);
-        const clientId = reader.readBits(16);
-        const isLocal = reader.readBits(8) !== 0;
+        using reader = new LithPacketRead(buffer);
+        const messageId = reader.readUint8();
+        if (messageId !== MsgYourId.MESSAGE_ID) {
+            throw new Error(`Expected message ID ${MsgYourId.MESSAGE_ID}, got ${messageId}`);
+        }
+        const clientId = reader.readUint16();
+        const isLocal = reader.readUint8() !== 0;
         return new MsgYourId({ clientId, isLocal });
     }
 

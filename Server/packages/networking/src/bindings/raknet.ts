@@ -11,7 +11,7 @@
  *   peer.setMaxIncomingConnections(100);
  */
 
-import { dlopen, FFIType, ptr, suffix, CString, toBuffer } from 'bun:ffi';
+import { dlopen, FFIType, ptr, suffix, CString } from 'bun:ffi';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { addressToString as formatAddress } from '../net/address';

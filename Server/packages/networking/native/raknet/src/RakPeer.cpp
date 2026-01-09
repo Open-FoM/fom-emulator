@@ -217,9 +217,9 @@ RakPeer::RakPeer()
 
 #ifdef _DEBUG
 	// Wait longer to disconnect in debug so I don't get disconnected while tracing
-	defaultTimeoutTime=30000;
+	defaultTimeoutTime=600000;
 #else
-	defaultTimeoutTime=10000;
+	defaultTimeoutTime=600000;
 #endif
 
 #ifndef _RELEASE

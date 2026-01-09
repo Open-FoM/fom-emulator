@@ -1,4 +1,4 @@
-import { BitStreamWriter, BitStreamReader } from '@openfom/networking';
+import { LithPacketWrite, LithPacketRead } from '@openfom/networking';
 import { LithMessage } from './base';
 import { LithTechMessageId } from './shared';
 
@@ -20,20 +20,21 @@ export class MsgNetProtocolVersion extends LithMessage {
     }
 
     encode(): Buffer {
-        const writer = new BitStreamWriter(32);
-        writer.writeBits(this.protocolVersion, 32);
-        writer.writeBits(this.additionalVersion, 32);
-        return writer.toBuffer();
-    }
-
-    get payloadBits(): number {
-        return 64;
+        using writer = new LithPacketWrite();
+        writer.writeUint8(MsgNetProtocolVersion.MESSAGE_ID);
+        writer.writeUint32(this.protocolVersion);
+        writer.writeUint32(this.additionalVersion);
+        return writer.getData();
     }
 
     static decode(buffer: Buffer): MsgNetProtocolVersion {
-        const reader = new BitStreamReader(buffer);
-        const protocolVersion = reader.readBits(32);
-        const additionalVersion = reader.readBits(32);
+        using reader = new LithPacketRead(buffer);
+        const messageId = reader.readUint8();
+        if (messageId !== MsgNetProtocolVersion.MESSAGE_ID) {
+            throw new Error(`Expected message ID ${MsgNetProtocolVersion.MESSAGE_ID}, got ${messageId}`);
+        }
+        const protocolVersion = reader.readUint32();
+        const additionalVersion = reader.readUint32();
         return new MsgNetProtocolVersion({ protocolVersion, additionalVersion });
     }
 

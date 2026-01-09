@@ -32,9 +32,8 @@ export class IdWorldServicePacket extends Packet {
     }
 
     static decode(buffer: Buffer): IdWorldServicePacket {
-        const bs = new NativeBitStream();
+        const bs = new NativeBitStream(buffer, true);
         try {
-            bs.setData(buffer);
             const packetId = bs.readU8();
             if (packetId !== RakNetMessageId.ID_WORLDSERVICE) {
                 throw new Error(`Expected packet ID 0xa5, got 0x${packetId.toString(16)}`);

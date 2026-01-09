@@ -1,4 +1,4 @@
-import { BitStreamWriter } from '@openfom/networking';
+import { LithPacketWrite } from '@openfom/networking';
 import { LithMessage } from './base';
 import { LithTechMessageId } from './shared';
 import { MsgNetProtocolVersion } from './MSG_NETPROTOCOLVERSION';
@@ -8,7 +8,7 @@ import { MsgLoadWorld } from './MSG_LOADWORLD';
 
 const SEQUENCE_MASK = 0x1fff;
 
-function writeSizeIndicator(writer: BitStreamWriter, size: number): void {
+function writeSizeIndicator(writer: LithPacketWrite, size: number): void {
     writer.writeBits(size & 0x7f, 7);
 
     if (size <= 0x7f) {
@@ -38,7 +38,7 @@ function writeSizeIndicator(writer: BitStreamWriter, size: number): void {
     }
 }
 
-function writeBitsFromBuffer(writer: BitStreamWriter, buf: Buffer, bitCount: number): void {
+function writeBitsFromBuffer(writer: LithPacketWrite, buf: Buffer, bitCount: number): void {
     let bitsWritten = 0;
     for (let i = 0; i < buf.length && bitsWritten < bitCount; i++) {
         const byte = buf[i];
@@ -67,17 +67,16 @@ export class LtGuaranteedPacket extends LithMessage {
     }
 
     encode(): Buffer {
-        const writer = new BitStreamWriter(128);
+        using writer = new LithPacketWrite();
 
         writer.writeBits(this.sequence & SEQUENCE_MASK, 13);
         writer.writeBits(0, 1);
 
         for (let i = 0; i < this.messages.length; i++) {
             const msg = this.messages[i];
-            const msgClass = msg.constructor as typeof LithMessage;
-            const msgId = msgClass.MESSAGE_ID;
+            const msgId = msg.Id;
             const payload = msg.encode();
-            const payloadBits = (msg as LithMessage & { payloadBits?: number }).payloadBits ?? (payload.length * 8);
+            const payloadBits = msg.payloadBits ?? (payload.length * 8);
             const subBits = payloadBits + 8;
 
             writeSizeIndicator(writer, subBits);
@@ -91,9 +90,13 @@ export class LtGuaranteedPacket extends LithMessage {
             writer.writeBits(hasMore ? 1 : 0, 1);
         }
 
-        writer.writeBits(0, 8);
+        return writer.getData();
+    }
 
-        return writer.toBuffer();
+    get payloadBits(): number {
+        // We encode for simplicity. But we could calculate the exact bit count.
+        // However we would need to take into account the size indicator for each message.
+        return this.encode().length * 8;
     }
 
     static decode(_buffer: Buffer): LtGuaranteedPacket {
@@ -107,14 +110,12 @@ export class LtGuaranteedPacket extends LithMessage {
     static buildWorldLoginBurst(
         sequence: number,
         clientId: number,
-        objectId: number,
         worldId: number,
         gameTime: number = 0.0,
     ): LtGuaranteedPacket {
         const messages: LithMessage[] = [
             MsgNetProtocolVersion.createDefault(),
             MsgYourId.create(clientId, false),
-            MsgClientObjectId.create(objectId),
             MsgLoadWorld.create(worldId, gameTime),
         ];
         return LtGuaranteedPacket.fromMessages(sequence, messages);

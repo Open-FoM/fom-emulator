@@ -19,6 +19,12 @@ export abstract class Packet {
 export abstract class LithMessage {
     static MESSAGE_ID: LithTechMessageId;
 
+    abstract get payloadBits(): number
+
+    get Id(): LithTechMessageId {
+        return (this.constructor as typeof LithMessage).MESSAGE_ID;
+    }
+
     abstract encode(): Buffer;
     abstract toString(): string;
 

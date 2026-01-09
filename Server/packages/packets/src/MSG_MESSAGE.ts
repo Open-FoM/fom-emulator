@@ -1,7 +1,6 @@
-import { BitStreamWriter } from '@openfom/networking';
+import { LithPacketWrite } from '@openfom/networking';
 import { LithMessage } from './base';
-
-const MSG_MESSAGE_ID = 13;
+import { LithTechMessageId } from './shared';
 
 export interface MsgMessageData {
     packetId: number;
@@ -9,7 +8,7 @@ export interface MsgMessageData {
 }
 
 export class MsgMessage extends LithMessage {
-    static MESSAGE_ID = MSG_MESSAGE_ID;
+    static MESSAGE_ID = LithTechMessageId.MSG_MESSAGE;
 
     packetId: number;
     payload: Buffer;
@@ -21,12 +20,11 @@ export class MsgMessage extends LithMessage {
     }
 
     encode(): Buffer {
-        const writer = new BitStreamWriter(this.payload.length + 1);
-        writer.writeBits(this.packetId & 0xff, 8);
-        for (let i = 0; i < this.payload.length; i++) {
-            writer.writeBits(this.payload[i], 8);
-        }
-        return writer.toBuffer();
+        using writer = new LithPacketWrite();
+        writer.writeUint8(MsgMessage.MESSAGE_ID);
+        writer.writeUint8(this.packetId & 0xff);
+        writer.writeData(this.payload, this.payload.length * 8);
+        return writer.getData();
     }
 
     get payloadBits(): number {

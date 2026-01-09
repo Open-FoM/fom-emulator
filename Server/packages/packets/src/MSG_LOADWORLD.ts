@@ -1,4 +1,4 @@
-import { BitStreamWriter, BitStreamReader } from '@openfom/networking';
+import { LithPacketWrite, LithPacketRead } from '@openfom/networking';
 import { LithMessage } from './base';
 import { LithTechMessageId } from './shared';
 
@@ -20,23 +20,21 @@ export class MsgLoadWorld extends LithMessage {
     }
 
     encode(): Buffer {
-        const writer = new BitStreamWriter(24);
-        const timeBuf = Buffer.alloc(4);
-        timeBuf.writeFloatLE(this.gameTime, 0);
-        writer.writeBytes(timeBuf);
-        writer.writeBits(this.worldId & 0xffff, 16);
-        return writer.toBuffer();
-    }
-
-    get payloadBits(): number {
-        return 48;
+        using writer = new LithPacketWrite();
+        writer.writeUint8(MsgLoadWorld.MESSAGE_ID);
+        writer.writeFloat(this.gameTime);
+        writer.writeUint16(this.worldId & 0xffff);
+        return writer.getData();
     }
 
     static decode(buffer: Buffer): MsgLoadWorld {
-        const reader = new BitStreamReader(buffer);
-        const timeBuf = reader.readBytes(4);
-        const gameTime = timeBuf.readFloatLE(0);
-        const worldId = reader.readBits(16);
+        using reader = new LithPacketRead(buffer);
+        const messageId = reader.readUint8();
+        if (messageId !== MsgLoadWorld.MESSAGE_ID) {
+            throw new Error(`Expected message ID ${MsgLoadWorld.MESSAGE_ID}, got ${messageId}`);
+        }
+        const gameTime = reader.readFloat();
+        const worldId = reader.readUint16();
         return new MsgLoadWorld({ worldId, gameTime });
     }
 

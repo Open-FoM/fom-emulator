@@ -14,7 +14,7 @@ export {
     type RakSystemAddress,
     type RakPacket,
     type RakStatistics,
-    getVersion,
+    getVersion as getRakNetVersion,
     unassignedAddress,
     initStringCompressor,
     encodeString,
@@ -22,6 +22,13 @@ export {
     decodeStringDebug,
     addressFromString,
 } from './bindings/raknet';
+
+// LithNet FFI bindings (LithTech-compatible packet read/write)
+export {
+    LithPacketWrite,
+    LithPacketRead,
+    getVersion as getLithNetVersion,
+} from './bindings/lithnet';
 
 // Address utilities
 export * from './net/address';

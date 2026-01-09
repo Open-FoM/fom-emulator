@@ -42,6 +42,7 @@ export enum RakNetMessageId {
     ID_FILE_LIST_TRANSFER_HEADER = 0x32,
     ID_FILE_LIST_TRANSFER_RESPONSE = 0x36,
 
+    ID_WORLD_LOGIN_REQUEST = 0x6b,
     // FoM Login flow (Docs/Packets/*.md)
     ID_LOGIN_REQUEST = 0x6c,        // 108 - Client -> Master (username + version)
     ID_LOGIN_REQUEST_RETURN = 0x6d, // 109 - Master -> Client (status + username echo)
@@ -71,34 +72,21 @@ export enum RakNetMessageId {
  */
 export enum LithTechMessageId {
     // Server -> Client messages
-    MSG_CYCLECHECK = 4,           // Cycle/heartbeat check
-    MSG_NETPROTOCOLVERSION = 4,   // Alias: protocol version handshake
-    MSG_PROTOCOL_VERSION = 6,     // Protocol version (SMSG_LOADWORLD)
-    MSG_LOADWORLD = 6,            // Alias: load world command
-    MSG_CLIENTOBJECTID = 7,       // Client object ID assignment
-    MSG_UPDATE = 8,               // Object update (guaranteed)
-    MSG_UNGUARANTEEDUPDATE = 10,  // Object update (unguaranteed, position/rotation)
-    MSG_YOURID = 12,              // Player ID assignment
-    MSG_MESSAGE = 13,             // Game message wrapper (routes RakNet packet IDs to CShell)
-    MSG_MESSAGE_GROUP = 14,       // Grouped message container
+    MSG_CYCLECHECK = 4,           // 0x04 - Cycle/heartbeat check
+    MSG_NETPROTOCOLVERSION = 4,   // 0x04 - Alias: protocol version handshake
+    MSG_PROTOCOL_VERSION = 6,     // 0x06 - Protocol version (SMSG_LOADWORLD)
+    MSG_LOADWORLD = 6,            // 0x06 - Alias: load world command
+    MSG_CLIENTOBJECTID = 7,       // 0x07 - Client object ID assignment
+    MSG_UPDATE = 8,               // 0x08 - Object update (guaranteed)
+    MSG_UNGUARANTEEDUPDATE = 10,  // 0x0A - Object update (unguaranteed, position/rotation)
+    MSG_YOURID = 12,              // 0x0C - Player ID assignment
+    MSG_MESSAGE = 13,             // 0x0D - Game message wrapper (routes RakNet packet IDs to CShell)
+    MSG_MESSAGE_GROUP = 14,       // 0x0E - Grouped message container
+    MSG_SKYDEF = 16,              // 0x10 - Sky definition
+    MSG_PRELOADLIST = 19,         // 0x13 - Preload file list (textures, models, sounds)
 
     // Client -> Server messages
-    MSG_CONNECTSTAGE = 9,         // Client connection stage notification
-
-    // Unknown / under investigation
-    MSG_UNKNOWN_5 = 5,
-    MSG_UNKNOWN_7 = 7,
-    MSG_UNKNOWN_10 = 10,
-    MSG_ID_PACKET = 12,
-    MSG_UNKNOWN_13 = 13,
-    MSG_UNKNOWN_15 = 15,
-    MSG_UNKNOWN_16 = 16,
-    MSG_UNKNOWN_17 = 17,
-    MSG_UNKNOWN_19 = 19,
-    MSG_UNKNOWN_20 = 20,
-    MSG_UNKNOWN_21 = 21,
-    MSG_UNKNOWN_22 = 22,
-    MSG_UNKNOWN_23 = 23,
+    MSG_CONNECTSTAGE = 9,         // 0x09 - Client connection stage notification (stage 0=loaded, 1=preloaded)
 }
 
 export const LOGIN_PACKET_IDS = new Set<number>([

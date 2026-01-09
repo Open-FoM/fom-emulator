@@ -1,4 +1,4 @@
-import { BitStreamWriter, BitStreamReader } from '@openfom/networking';
+import { LithPacketWrite, LithPacketRead } from '@openfom/networking';
 import { LithMessage } from './base';
 import { LithTechMessageId } from './shared';
 
@@ -20,13 +20,12 @@ export class MsgUnguaranteedUpdate extends LithMessage {
     }
 
     encode(): Buffer {
-        const writer = new BitStreamWriter(12);
-        writer.writeUInt16(this.objectId & 0xffff);
+        using writer = new LithPacketWrite();
+        writer.writeUint8(MsgUnguaranteedUpdate.MESSAGE_ID);
+        writer.writeUint16(this.objectId & 0xffff);
         writer.writeBits(0, 4);
-        const timeBuf = Buffer.alloc(4);
-        timeBuf.writeFloatLE(this.gameTime, 0);
-        writer.writeBytes(timeBuf);
-        return writer.toBuffer();
+        writer.writeFloat(this.gameTime);
+        return writer.getData();
     }
 
     get payloadBits(): number {
@@ -34,11 +33,14 @@ export class MsgUnguaranteedUpdate extends LithMessage {
     }
 
     static decode(buffer: Buffer): MsgUnguaranteedUpdate {
-        const reader = new BitStreamReader(buffer);
-        const objectId = reader.readUInt16();
+        using reader = new LithPacketRead(buffer);
+        const messageId = reader.readUint8();
+        if (messageId !== MsgUnguaranteedUpdate.MESSAGE_ID) {
+            throw new Error(`Expected message ID ${MsgUnguaranteedUpdate.MESSAGE_ID}, got ${messageId}`);
+        }
+        const objectId = reader.readUint16();
         reader.readBits(4);
-        const timeBuf = reader.readBytes(4);
-        const gameTime = timeBuf.readFloatLE(0);
+        const gameTime = reader.readFloat();
         return new MsgUnguaranteedUpdate({ objectId, gameTime });
     }
 

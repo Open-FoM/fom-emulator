@@ -12,7 +12,7 @@ export const SEQUENCE_BITS = 13;
 export const SEQUENCE_MASK = 0x1fff;
 export const MAX_SEQUENCE = 8191;
 
-export const CONNECTION_TIMEOUT = 10000;
+export const CONNECTION_TIMEOUT = 600000; // 10 minutes for debugging
 export const RETRY_INTERVAL = 300;
 export const HEARTBEAT_INTERVAL = 5000;
 
