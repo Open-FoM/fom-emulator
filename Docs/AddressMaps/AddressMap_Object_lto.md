@@ -1660,3 +1660,191 @@ Property strings near 0x10139078 include: RepeatTimeMax, RepeatTimeMin, Repeat, 
 ### CRT thunks:
 - 0x1010231E thunk__memset -> [0x10113270] memset
 - 0x10101F87 thunk__memcpy -> [0x10113298] memcpy
+
+## RakNet / ReliabilityLayer + DataStructures (Object.lto)
+| VA | RVA | Symbol | Purpose (inferred) | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x100A5CB0 | 0x000A5CB0 | SplitPacketChannelComp | RakNet split-packet channel helper | decomp + raknet src | med |
+| 0x100A5D10 | 0x000A5D10 | SplitPacketIndexComp | Split-packet comparator | decomp + raknet src | med |
+| 0x100A5D50 | 0x000A5D50 | ReliabilityLayer_Ctor | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A5E80 | 0x000A5E80 | ReliabilityLayer_Dtor | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A5F80 | 0x000A5F80 | ReliabilityLayer_ResetForNewConnection | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A5FB0 | 0x000A5FB0 | ReliabilityLayer_SetEncryptor | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A5FF0 | 0x000A5FF0 | ReliabilityLayer_SetTimeoutTime | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A6020 | 0x000A6020 | ReliabilityLayer_GetTimeoutTime | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A6040 | 0x000A6040 | ReliabilityLayer_Reset | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A62C0 | 0x000A62C0 | ReliabilityLayer_ClearInternal | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A6310 | 0x000A6310 | ReliabilityLayer_ClearQueues | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A65F0 | 0x000A65F0 | ReliabilityLayer_ProcessIncoming | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A7B90 | 0x000A7B90 | ReliabilityLayer_GetNextPacket | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A7C00 | 0x000A7C00 | ReliabilityLayer_Send | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A7F00 | 0x000A7F00 | ReliabilityLayer_UpdateSend | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A8160 | 0x000A8160 | ReliabilityLayer_SendBitStream | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A8270 | 0x000A8270 | ReliabilityLayer_BuildOutgoingPacket | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A8CC0 | 0x000A8CC0 | ReliabilityLayer_HasOutgoingData | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A8E20 | 0x000A8E20 | ReliabilityLayer_HasAck | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A8E70 | 0x000A8E70 | ReliabilityLayer_SetUnreliableTimeoutMs | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A8ED0 | 0x000A8ED0 | ReliabilityLayer_ClearAcknowledgeRecord | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A8F50 | 0x000A8F50 | ReliabilityLayer_AddToAckList | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A8F90 | 0x000A8F90 | ReliabilityLayer_GetPacketHeaderBitLength | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A9020 | 0x000A9020 | ReliabilityLayer_WriteToBitStreamFromInternalPacket | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A9130 | 0x000A9130 | ReliabilityLayer_CreateInternalPacketFromBitStream | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A9470 | 0x000A9470 | ReliabilityLayer_GetSHA1 | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A9740 | 0x000A9740 | ReliabilityLayer_IsOlderOrderedPacket | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A97A0 | 0x000A97A0 | ReliabilityLayer_SplitPacket | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A9AA0 | 0x000A9AA0 | ReliabilityLayer_InsertIntoSplitPacketList | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100A9D90 | 0x000A9D90 | ReliabilityLayer_BuildPacketFromSplitPacketList | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA090 | 0x000AA090 | ReliabilityLayer_DeleteOldUnreliableSplitPackets | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA260 | 0x000AA260 | ReliabilityLayer_CreateInternalPacketCopy | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA340 | 0x000AA340 | ReliabilityLayer_GetOrderingListAtOrderingStream | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA380 | 0x000AA380 | ReliabilityLayer_AddToOrderingList | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA470 | 0x000AA470 | ReliabilityLayer_InsertPacketIntoResendList | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA510 | 0x000AA510 | ReliabilityLayer_IsCheater | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA530 | 0x000AA530 | ReliabilityLayer_IsDeadConnection | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA570 | 0x000AA570 | ReliabilityLayer_GetStatistics | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA7A0 | 0x000AA7A0 | ReliabilityLayer_GetResendListDataSize | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA7C0 | 0x000AA7C0 | ReliabilityLayer_UpdateThreadedMemory | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA7F0 | 0x000AA7F0 | ReliabilityLayer_AckTimeout | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA920 | 0x000AA920 | ReliabilityLayer_GetNextSendTime | RakNet ReliabilityLayer method | decomp + raknet src | med |
+| 0x100AA9C0 | 0x000AA9C0 | DS_List_Size_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AA9E0 | 0x000AA9E0 | OrderedList_Insert_0 | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AAA70 | 0x000AAA70 | DS_List_At | DataStructures::List method | decomp + raknet src | med |
+| 0x100AAA90 | 0x000AAA90 | DS_List_Size2_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AAAB0 | 0x000AAAB0 | DS_List_Ctor_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AAAE0 | 0x000AAAE0 | DS_List_Dtor_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AAB30 | 0x000AAB30 | DS_List_Replace | DataStructures::List method | decomp + raknet src | med |
+| 0x100AAC40 | 0x000AAC40 | DS_List_Size3 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AAC60 | 0x000AAC60 | DS_List_Clear_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AACD0 | 0x000AACD0 | DS_Queue_Ctor_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AAD10 | 0x000AAD10 | DS_Queue_Dtor_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AAD40 | 0x000AAD40 | DS_Queue_Push_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AAEA0 | 0x000AAEA0 | DS_Queue_PushAtHead | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AAFD0 | 0x000AAFD0 | DS_Queue_At | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AB110 | 0x000AB110 | DS_Queue_Peek | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AB130 | 0x000AB130 | DS_Queue_Pop_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AB190 | 0x000AB190 | DS_Queue_Size_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AB1D0 | 0x000AB1D0 | DS_Queue_ClearAndForceAllocation | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AB230 | 0x000AB230 | DS_List_At_RangeNode | DataStructures::List method | decomp + raknet src | med |
+| 0x100AB250 | 0x000AB250 | DS_List_Size_RangeNode | DataStructures::List method | decomp + raknet src | med |
+| 0x100AB270 | 0x000AB270 | RangeList_Ctor | DataStructures::RangeList/RangeNode | decomp + raknet src | med |
+| 0x100AB320 | 0x000AB320 | RangeList_Dtor | DataStructures::RangeList/RangeNode | decomp + raknet src | med |
+| 0x100AB370 | 0x000AB370 | RangeList_Insert | DataStructures::RangeList/RangeNode | decomp + raknet src | med |
+| 0x100AB6B0 | 0x000AB6B0 | RangeList_Size | DataStructures::RangeList/RangeNode | decomp + raknet src | med |
+| 0x100AB6D0 | 0x000AB6D0 | RangeList_Serialize | DataStructures::RangeList/RangeNode | decomp + raknet src | med |
+| 0x100AB920 | 0x000AB920 | RangeList_Deserialize | DataStructures::RangeList/RangeNode | decomp + raknet src | med |
+| 0x100ABAB0 | 0x000ABAB0 | BPlusTree_Get | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100ABBE0 | 0x000ABBE0 | BPlusTree_Insert | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100ABD20 | 0x000ABD20 | BPlusTree_Clear | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100ABD60 | 0x000ABD60 | BPlusTree_Size | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100ABDB0 | 0x000ABDB0 | BPlusTree_IsEmpty | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100ABE40 | 0x000ABE40 | OrderedList_GetIndexFromKey | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100ABF10 | 0x000ABF10 | OrderedList_Insert2 | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100ABFA0 | 0x000ABFA0 | OrderedList_At | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100ABFC0 | 0x000ABFC0 | OrderedList_RemoveAtIndex | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AC000 | 0x000AC000 | OrderedList_Size | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AC020 | 0x000AC020 | DS_Queue_Ctor2 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AC060 | 0x000AC060 | DS_Queue_Dtor2_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AC090 | 0x000AC090 | DS_Queue_Push2_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AC210 | 0x000AC210 | DS_Queue_At2 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AC260 | 0x000AC260 | DS_Queue_Peek2 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AC280 | 0x000AC280 | DS_Queue_Pop2_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AC2F0 | 0x000AC2F0 | DS_Queue_Size2_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AC350 | 0x000AC350 | DS_Queue_Compress2 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AC440 | 0x000AC440 | DS_Queue_ClearAndForceAllocation2 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AC4A0 | 0x000AC4A0 | MemoryPool_Ctor | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AC4D0 | 0x000AC4D0 | MemoryPool_Dtor | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AC4F0 | 0x000AC4F0 | MemoryPool_Allocate | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AC660 | 0x000AC660 | MemoryPool_Release | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AC840 | 0x000AC840 | MemoryPool_Clear | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AC9B0 | 0x000AC9B0 | rakFree_Ex | RakNet alloc/free wrapper | decomp | low |
+| 0x100AC9E0 | 0x000AC9E0 | CircularLinkedList_Add | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100ACB50 | 0x000ACB50 | CircularLinkedList_Size | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100ACB60 | 0x000ACB60 | CircularLinkedList_Peek | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100ACB80 | 0x000ACB80 | CircularLinkedList_Pop | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100ACBB0 | 0x000ACBB0 | CircularLinkedList_Beginning | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100ACBD0 | 0x000ACBD0 | CircularLinkedList_End | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100ACC00 | 0x000ACC00 | LinkedList_OperatorInc | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100ACC20 | 0x000ACC20 | rakFree_Ex2 | RakNet alloc/free wrapper | decomp | low |
+| 0x100ACC50 | 0x000ACC50 | BitStream_Write_u32 | BitStream helper | decomp + raknet src | med |
+| 0x100ACCC0 | 0x000ACCC0 | BitStream_Read_u32_0 | BitStream helper | decomp + raknet src | med |
+| 0x100ACD40 | 0x000ACD40 | RakNet_OP_NEW_SplitPacketChannel | RakNet alloc/free wrapper | decomp | low |
+| 0x100ACDD0 | 0x000ACDD0 | RakNet_OP_DELETE_ARRAY | RakNet alloc/free wrapper | decomp | low |
+| 0x100ACE30 | 0x000ACE30 | RakNet_OP_NEW_LinkedList | RakNet alloc/free wrapper | decomp | low |
+| 0x100ACEC0 | 0x000ACEC0 | SplitPacketChannel_Dtor | RakNet split-packet channel helper | decomp + raknet src | med |
+| 0x100ACEF0 | 0x000ACEF0 | LinkedList_Dtor | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100ACF20 | 0x000ACF20 | SplitPacketChannel_Ctor | RakNet split-packet channel helper | decomp + raknet src | med |
+| 0x100ACF40 | 0x000ACF40 | SplitPacketChannel_Destroy | RakNet split-packet channel helper | decomp + raknet src | med |
+| 0x100ACF60 | 0x000ACF60 | LinkedList_Ctor | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100ACFD0 | 0x000ACFD0 | DS_List_Insert | DataStructures::List method | decomp + raknet src | med |
+| 0x100AD0B0 | 0x000AD0B0 | DS_List_InsertAtIndex | DataStructures::List method | decomp + raknet src | med |
+| 0x100AD1E0 | 0x000AD1E0 | OrderedList_Ctor_0 | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD200 | 0x000AD200 | OrderedList_Dtor_0 | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD250 | 0x000AD250 | OrderedList_GetIndexFromKey2 | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD320 | 0x000AD320 | RakNet_OP_DELETE_ARRAY2 | RakNet alloc/free wrapper | decomp | low |
+| 0x100AD380 | 0x000AD380 | RakNet_OP_NEW_ARRAY | RakNet alloc/free wrapper | decomp | low |
+| 0x100AD400 | 0x000AD400 | RakNet_OP_DELETE_ARRAY3 | RakNet alloc/free wrapper | decomp | low |
+| 0x100AD460 | 0x000AD460 | RakNet_OP_NEW_ARRAY2 | RakNet alloc/free wrapper | decomp | low |
+| 0x100AD4E0 | 0x000AD4E0 | OrderedList_Ctor2 | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD500 | 0x000AD500 | OrderedList_Dtor2 | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD550 | 0x000AD550 | OrderedList_GetIndexFromKey_RangeNode | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD620 | 0x000AD620 | OrderedList_Insert_RangeNode | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD6B0 | 0x000AD6B0 | OrderedList_RemoveAtIndex_RangeNode | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD6D0 | 0x000AD6D0 | OrderedList_InsertAtIndex_RangeNode | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD700 | 0x000AD700 | OrderedList_InsertAtEnd_RangeNode | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD730 | 0x000AD730 | OrderedList_RemoveFromEnd_RangeNode | DataStructures::OrderedList method | decomp + raknet src | med |
+| 0x100AD770 | 0x000AD770 | DS_List_At_RangeNode2 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AD790 | 0x000AD790 | DS_List_Size_RangeNode2 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AD7B0 | 0x000AD7B0 | BPlusTree_GetListHead | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100AD7D0 | 0x000AD7D0 | BPlusTree_DeleteFromPageAtIndex | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100AD8B0 | 0x000AD8B0 | BPlusTree_FreePages | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100AD970 | 0x000AD970 | BPlusTree_GetIndexOf | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100AE050 | 0x000AE050 | MemoryPool_Dtor2 | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AE070 | 0x000AE070 | MemoryPool_Allocate2 | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AE1E0 | 0x000AE1E0 | MemoryPool_Release2 | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AE3C0 | 0x000AE3C0 | MemoryPool_Clear2 | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AE530 | 0x000AE530 | DS_List_Ctor2_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AE560 | 0x000AE560 | DS_List_Dtor2_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AE5B0 | 0x000AE5B0 | DS_List_Insert2 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AE690 | 0x000AE690 | DS_List_InsertAtIndex2 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AE7A0 | 0x000AE7A0 | DS_List_RemoveAtIndex | DataStructures::List method | decomp + raknet src | med |
+| 0x100AE800 | 0x000AE800 | DS_List_Size4 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AE890 | 0x000AE890 | RakNet_OP_DELETE_ARRAY4 | RakNet alloc/free wrapper | decomp | low |
+| 0x100AE8F0 | 0x000AE8F0 | RakNet_OP_NEW_ARRAY_8 | RakNet alloc/free wrapper | decomp | low |
+| 0x100AE970 | 0x000AE970 | MemoryPool_BlocksPerPage | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AE990 | 0x000AE990 | MemoryPool_InitPage | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AEA90 | 0x000AEA90 | CircularLinkedList_Ctor | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100AEAC0 | 0x000AEAC0 | CircularLinkedList_Del | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100AEBA0 | 0x000AEBA0 | RakNet_OP_NEW_LinkedListNode | RakNet alloc/free wrapper | decomp | low |
+| 0x100AEBE0 | 0x000AEBE0 | LinkedList_Clear | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100AEC30 | 0x000AEC30 | CircularLinkedList_ClearWrapper | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100AEC50 | 0x000AEC50 | CircularLinkedList_OperatorInc | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100AEC90 | 0x000AEC90 | DS_List_Ctor3_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AECC0 | 0x000AECC0 | DS_List_Dtor3_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AED10 | 0x000AED10 | DS_List_Ctor4_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AED40 | 0x000AED40 | DS_List_Dtor4_0 | DataStructures::List method | decomp + raknet src | med |
+| 0x100AED70 | 0x000AED70 | DS_List_InsertPair | DataStructures::List method | decomp + raknet src | med |
+| 0x100AEE60 | 0x000AEE60 | DS_List_InsertAtIndexPair | DataStructures::List method | decomp + raknet src | med |
+| 0x100AEF80 | 0x000AEF80 | DS_List_RemoveAtIndexPair | DataStructures::List method | decomp + raknet src | med |
+| 0x100AEFF0 | 0x000AEFF0 | DS_List_RemoveFromEnd | DataStructures::List method | decomp + raknet src | med |
+| 0x100AF080 | 0x000AF080 | BPlusTree_CanRotateLeft | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100AF0C0 | 0x000AF0C0 | BPlusTree_CanRotateRight | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100AF100 | 0x000AF100 | BPlusTree_RotateRight | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100AF1F0 | 0x000AF1F0 | BPlusTree_RotateLeft | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100AF2F0 | 0x000AF2F0 | BPlusTree_InsertIntoNode | DataStructures::BPlusTree method | decomp + raknet src | med |
+| 0x100AFCB0 | 0x000AFCB0 | DS_Queue_Ctor3_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AFCF0 | 0x000AFCF0 | DS_Queue_Dtor3_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AFD20 | 0x000AFD20 | DS_Queue_Push3_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AFE80 | 0x000AFE80 | DS_Queue_Pop3_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AFEE0 | 0x000AFEE0 | DS_Queue_Size3_0 | DataStructures::Queue method | decomp + raknet src | med |
+| 0x100AFF20 | 0x000AFF20 | MemoryPool_BlocksPerPage2 | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100AFF40 | 0x000AFF40 | MemoryPool_InitPage2 | DataStructures::MemoryPool method | decomp + raknet src | med |
+| 0x100B0040 | 0x000B0040 | DS_List_RemoveFromEnd2 | DataStructures::List method | decomp + raknet src | med |
+| 0x100B0060 | 0x000B0060 | RakNet_OP_DELETE_ARRAY5 | RakNet alloc/free wrapper | decomp | low |
+| 0x100B00C0 | 0x000B00C0 | RakNet_OP_NEW_ARRAY3 | RakNet alloc/free wrapper | decomp | low |
+| 0x100B0140 | 0x000B0140 | CircularLinkedList_Clear | DataStructures::(Circular)LinkedList method | decomp + raknet src | med |
+| 0x100B01E0 | 0x000B01E0 | RakNet_OP_DELETE | RakNet alloc/free wrapper | decomp | low |
+| 0x100B0280 | 0x000B0280 | RakNet_OP_DELETE_ARRAY_8 | RakNet alloc/free wrapper | decomp | low |
+| 0x100B02F0 | 0x000B02F0 | RakNet_OP_NEW_ARRAY_8_ctor | RakNet alloc/free wrapper | decomp | low |
+| 0x100B0570 | 0x000B0570 | RakNet_OP_DELETE_ARRAY6 | RakNet alloc/free wrapper | decomp | low |
+| 0x100B05D0 | 0x000B05D0 | RakNet_OP_NEW_ARRAY4 | RakNet alloc/free wrapper | decomp | low |
+| 0x100B0650 | 0x000B0650 | RangeNode_Dtor | DataStructures::RangeList/RangeNode | decomp + raknet src | med |
