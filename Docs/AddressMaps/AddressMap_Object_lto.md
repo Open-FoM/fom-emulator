@@ -1894,3 +1894,193 @@ Property strings near 0x10139078 include: RepeatTimeMax, RepeatTimeMin, Repeat, 
 | 0x100C65C0 | 0x000C65C0 | ItemTemplate_RandomId_Type12or14_Flag | Random ID by type + flag | decomp | low |
 | 0x100C6690 | 0x000C6690 | ItemTemplate_RandomId_Type15_Flag | Random ID by type + flag | decomp | low |
 | 0x100C6BE0 | 0x000C6BE0 | ItemTemplate_RandomId_Type7 | Random ID by type | decomp | low |
+
+#### Object.lto Recent Deobfuscation (2026-01-08)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x1000CB70 | 0x0000CB70 | Memmove_Copy_u32 | memmove u32 range | decomp | med |
+| 0x10026340 | 0x00026340 | BountyEntry_CopyFrom_0 | copy 0x44? bounty entry (IDA name has _0) | decomp | low |
+| 0x100E1BA0 | 0x000E1BA0 | Vector_InsertOne_ReturnIter_92B_0 | vector insert + return iter (92B element) | decomp | med |
+| 0x100E4140 | 0x000E4140 | Reverse_u32_Range | reverse u32 range in-place | decomp | med |
+| 0x100E4420 | 0x000E4420 | FindEntry32ById_Limit30 | scan 30 entries of 32B for id | decomp | low |
+| 0x100E4A20 | 0x000E4A20 | Vector_Alloc_372B | allocate 372B elements | decomp | med |
+| 0x100E4A80 | 0x000E4A80 | Vector_Alloc_72B | allocate 72B elements | decomp | med |
+| 0x100E4D70 | 0x000E4D70 | MoveBackward_372B | move backward 372B range | decomp | med |
+| 0x100E5E50 | 0x000E5E50 | Fill_372B_Range | fill range with 372B src | decomp | med |
+| 0x100E5EA0 | 0x000E5EA0 | Fill_72B_Range | fill range with 72B src | decomp | med |
+| 0x100E5FC0 | 0x000E5FC0 | Copy_372B_Range | copy range 372B | decomp | med |
+| 0x100E6000 | 0x000E6000 | Copy_72B_Range | copy range 72B | decomp | med |
+| 0x100E62F0 | 0x000E62F0 | Struct4_WriteBitStream | write 4B struct to bitstream | decomp | low |
+| 0x100E6540 | 0x000E6540 | Copy_72B_Range_2 | copy range 72B (alt) | decomp | low |
+| 0x100E65C0 | 0x000E65C0 | Copy_u32_Range | copy u32 range | decomp | med |
+| 0x100E6700 | 0x000E6700 | Vector_Init_Reserve_72B | init vector reserve 72B elements | decomp | med |
+| 0x100E6750 | 0x000E6750 | List_AllocHead | alloc 12B list head | decomp | low |
+| 0x100E6820 | 0x000E6820 | ListNode_Alloc_Byte | alloc list node {next,prev,byte} | decomp | low |
+| 0x100E68B0 | 0x000E68B0 | MoveBackward_372B_Wrapper | wrapper move backward 372B | decomp | low |
+| 0x100E68E0 | 0x000E68E0 | MoveBackward_u32 | move backward u32 range | decomp | med |
+| 0x100E6910 | 0x000E6910 | MoveBackward_72B | move backward 72B range | decomp | med |
+| 0x100E6950 | 0x000E6950 | FillN_372B_Core | fill N*372B | decomp | med |
+| 0x100E69C0 | 0x000E69C0 | FillN_72B_Core | fill N*72B | decomp | med |
+| 0x100E6E90 | 0x000E6E90 | List_RemoveDuplicateByByte | dedupe list by byte field | decomp | low |
+| 0x100E6F90 | 0x000E6F90 | FillN_372B | fill N*372B wrapper | decomp | low |
+| 0x100E6FD0 | 0x000E6FD0 | Vec4_CopyN_Wrapper | Vec4_CopyN wrapper | decomp | low |
+| 0x100E7010 | 0x000E7010 | FillN_72B | fill N*72B wrapper | decomp | low |
+| 0x100E70F0 | 0x000E70F0 | IdArray_BuildListAndSum | build list from id array + sum | decomp | low |
+| 0x100E7240 | 0x000E7240 | Vector_Insert_u32 | vector insert u32 | decomp | med |
+| 0x100E74C0 | 0x000E74C0 | Copy_372B_Range_Wrapper | wrapper copy 372B range | decomp | low |
+| 0x100E74F0 | 0x000E74F0 | Copy_u32_Range_Wrapper | wrapper copy u32 range | decomp | low |
+| 0x100E7520 | 0x000E7520 | Copy_72B_Range_Wrapper | wrapper copy 72B range | decomp | low |
+| 0x100E7620 | 0x000E7620 | Vector_Assign_72B | vector assign 72B elements | decomp | med |
+| 0x100E7740 | 0x000E7740 | Vector_Insert_372B | vector insert 372B elements | decomp | med |
+| 0x100E7C10 | 0x000E7C10 | Vector_Insert_72B | vector insert 72B elements | decomp | med |
+| 0x100E82E0 | 0x000E82E0 | BountyList_SwapEntriesAndFixFlags | swap bounty entries + fix bitflags | decomp | low |
+| 0x100E85E0 | 0x000E85E0 | BountyEntry_Swap | swap bounty entries | decomp | med |
+| 0x100E8680 | 0x000E8680 | BountyHeap_SiftUp | heap sift-up (68B entries) | decomp | low |
+| 0x100E9210 | 0x000E9210 | Struct36_AllocWithVector72B | alloc 36B struct + vector72B copy | decomp | low |
+| 0x100E9330 | 0x000E9330 | BountyHeap_SiftDown | heap sift-down (68B entries) | decomp | low |
+| 0x100E94E0 | 0x000E94E0 | BountyHeap_PushEntry | heap push entry | decomp | low |
+
+#### Object.lto Recent Deobfuscation (2026-01-08 10:24)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x100F4140 | 0x000F4140 | MT19937_64_NormalizeState | RandomLib PRNG core | decomp/rename | med |
+| 0x100F6CA0 | 0x000F6CA0 | MT19937_64_InitState | RandomLib PRNG core | decomp/rename | med |
+| 0x100F9760 | 0x000F9760 | RandomEngine_AdvanceBy_312 | RandomLib PRNG core | decomp/rename | med |
+| 0x100FA260 | 0x000FA260 | RandomEngine_SetStrideOffsetA | RandomLib PRNG config | decomp/rename | med |
+| 0x100FA4B0 | 0x000FA4B0 | RandomEngine_SetStrideOffsetB | RandomLib PRNG config | decomp/rename | med |
+| 0x100FA6B0 | 0x000FA6B0 | RandomEngine_SetStrideOffsetC | RandomLib PRNG config | decomp/rename | med |
+| 0x100FA900 | 0x000FA900 | RandomEngine_SetStrideOffsetD | RandomLib PRNG config | decomp/rename | med |
+| 0x100FBB70 | 0x000FBB70 | Vector_Reserve_u32 | std::vector helper | decomp/rename | med |
+| 0x100FC250 | 0x000FC250 | RandomEngine_CollectSeedU32 | seed collection | decomp/rename | med |
+| 0x100FC440 | 0x000FC440 | ParseU32ListFromString | seed parsing | decomp/rename | med |
+| 0x100FC540 | 0x000FC540 | SeedString_ParseAndApply | seed parsing | decomp/rename | med |
+| 0x100F3270 | 0x000F3270 | SFMT_AdvanceState | RandomLib PRNG core | decomp/rename | med |
+| 0x100F5A00 | 0x000F5A00 | CopyRange_u32 | std::vector helper | decomp/rename | med |
+| 0x100F6FA0 | 0x000F6FA0 | RandomEngine_InitState_312 | RandomLib PRNG core | decomp/rename | med |
+| 0x100F8030 | 0x000F8030 | RandomEngine_AdvanceBy_624A | RandomLib PRNG core | decomp/rename | med |
+| 0x100F8420 | 0x000F8420 | RandomEngine_AdvanceBy_312_MT64A | RandomLib PRNG core | decomp/rename | med |
+| 0x100F87F0 | 0x000F87F0 | RandomEngine_AdvanceBy_624B | RandomLib PRNG core | decomp/rename | med |
+| 0x100F8BE0 | 0x000F8BE0 | RandomEngine_AdvanceBy_312_MT64B | RandomLib PRNG core | decomp/rename | med |
+| 0x100FBB00 | 0x000FBB00 | Vector_AssignFill_u32 | std::vector helper | decomp/rename | med |
+| 0x100FC6A0 | 0x000FC6A0 | RandomEngine_MakeSeedU32 | seed generation | decomp/rename | med |
+| 0x100FC780 | 0x000FC780 | RandomEngine_MT19937_MixerSFMT_CtorFromString | RandomLib ctor | decomp/rename | med |
+| 0x100F2590 | 0x000F2590 | SFMT_PeriodCertify | RandomLib PRNG core | decomp/rename | med |
+| 0x100F4DE0 | 0x000F4DE0 | MT19937_InitByArray | RandomLib PRNG core | decomp/rename | med |
+| 0x100F50B0 | 0x000F50B0 | MT19937_64_InitByArray | RandomLib PRNG core | decomp/rename | med |
+| 0x100F5280 | 0x000F5280 | MT19937_InitByArray_Alt | RandomLib PRNG core | decomp/rename | med |
+| 0x100F5370 | 0x000F5370 | MT19937_64_InitByArray_Alt | RandomLib PRNG core | decomp/rename | med |
+| 0x100FC7E0 | 0x000FC7E0 | RandomEngine_MT19937_64_MixerSFMT_CtorFromString | RandomLib ctor | decomp/rename | med |
+| 0x100FC840 | 0x000FC840 | RandomEngine_SFMT19937_32_MixerSFMT_CtorFromString | RandomLib ctor | decomp/rename | med |
+| 0x100FC8A0 | 0x000FC8A0 | RandomEngine_SFMT19937_64_MixerSFMT_CtorFromString | RandomLib ctor | decomp/rename | med |
+| 0x100FC900 | 0x000FC900 | RandomEngine_MT19937_32_MixerMT0_CtorFromString | RandomLib ctor | decomp/rename | med |
+| 0x100FC960 | 0x000FC960 | RandomEngine_MT19937_64_MixerMT0_CtorFromString | RandomLib ctor | decomp/rename | med |
+| 0x100FC9C0 | 0x000FC9C0 | RandomEngine_MT19937_32_MixerMT1_CtorFromString | RandomLib ctor | decomp/rename | med |
+| 0x100FCA20 | 0x000FCA20 | RandomEngine_MT19937_64_MixerMT1_CtorFromString | RandomLib ctor | decomp/rename | med |
+| 0x100FCA80 | 0x000FCA80 | RandomEngine_ReadState_SFMT19937_32 | state read/validate | decomp/rename | med |
+| 0x100FCCD0 | 0x000FCCD0 | RandomEngine_ReadState_MT_Mixer0_32 | state read/validate | decomp/rename | med |
+| 0x100FCF20 | 0x000FCF20 | RandomEngine_ReadState_MT_Mixer0_64 | state read/validate | decomp/rename | med |
+| 0x100FD180 | 0x000FD180 | RandomEngine_ReadState_MT_Mixer1_32 | state read/validate | decomp/rename | med |
+| 0x100FD3D0 | 0x000FD3D0 | RandomEngine_ReadState_MT_Mixer1_64 | state read/validate | decomp/rename | med |
+| 0x100FD630 | 0x000FD630 | RandomEngine_ReadState_MT_MixerSFMT_32 | state read/validate | decomp/rename | med |
+| 0x100FD880 | 0x000FD880 | RandomEngine_ReadState_MT_MixerSFMT_64 | state read/validate | decomp/rename | med |
+| 0x100FDAE0 | 0x000FDAE0 | RandomEngine_ReadState_SFMT19937_64 | state read/validate | decomp/rename | med |
+| 0x100747D0 | 0x000747D0 | Vector_EraseRange_u32 | std::vector helper | decomp/rename | med |
+| 0x100FDD40 | 0x000FDD40 | RandomEngine_SeedFromU32 | seed init | decomp/rename | med |
+| 0x100FDDF0 | 0x000FDDF0 | RandomEngine_MT19937_32_MixerSFMT_CtorFromSeedU32 | RandomLib ctor | decomp/rename | med |
+| 0x100FDE50 | 0x000FDE50 | RandomSeed_ReadState_MT_MixerSFMT_32 | seed read | decomp/rename | med |
+| 0x100FDF10 | 0x000FDF10 | RandomEngine_MT19937_64_MixerSFMT_CtorFromSeedU32 | RandomLib ctor | decomp/rename | med |
+| 0x100FDF70 | 0x000FDF70 | RandomSeed_ReadState_MT_MixerSFMT_64 | seed read | decomp/rename | med |
+| 0x100FE030 | 0x000FE030 | RandomEngine_SFMT19937_32_MixerSFMT_CtorFromSeedU32 | RandomLib ctor | decomp/rename | med |
+| 0x100FE090 | 0x000FE090 | RandomSeed_ReadState_SFMT19937_32 | seed read | decomp/rename | med |
+| 0x100FE170 | 0x000FE170 | RandomEngine_SFMT19937_64_MixerSFMT_CtorFromSeedU32 | RandomLib ctor | decomp/rename | med |
+| 0x100FE1D0 | 0x000FE1D0 | RandomSeed_ReadState_SFMT19937_64 | seed read | decomp/rename | med |
+| 0x100FE2B0 | 0x000FE2B0 | RandomEngine_MT19937_32_MixerMT0_CtorFromSeedU32 | RandomLib ctor | decomp/rename | med |
+| 0x100FB250 | 0x000FB250 | RandomEngine_CopyState_MT19937_32 | state copy | decomp/rename | med |
+| 0x100FB340 | 0x000FB340 | RandomEngine_CopyState_MT19937_64 | state copy | decomp/rename | med |
+| 0x100FB3F0 | 0x000FB3F0 | RandomEngine_CopyState_SFMT19937_32 | state copy | decomp/rename | med |
+| 0x100FB4F0 | 0x000FB4F0 | RandomEngine_CopyState_SFMT19937_64 | state copy | decomp/rename | med |
+| 0x100749C0 | 0x000749C0 | Vector_Assign_u32 | std::vector helper | decomp/rename | med |
+| 0x10074510 | 0x00074510 | Vector_Alloc_u32 | std::vector helper | decomp/rename | med |
+| 0x100745D0 | 0x000745D0 | CopyRange_u32_2 | std::vector helper | decomp/rename | low |
+| 0x10074820 | 0x00074820 | Vector_Clear_u32 | std::vector helper | decomp/rename | low |
+| 0x10074880 | 0x00074880 | CopyRange_u32_Memmove | std::vector helper | decomp/rename | low |
+| 0x100FE310 | 0x000FE310 | RandomSeed_ReadState_MT_Mixer0_32 | seed read | decomp/rename | med |
+| 0x100FE3D0 | 0x000FE3D0 | RandomEngine_MT19937_64_MixerMT0_CtorFromSeedU32 | RandomLib ctor | decomp/rename | med |
+| 0x100FE430 | 0x000FE430 | RandomSeed_ReadState_MT_Mixer0_64 | seed read | decomp/rename | med |
+| 0x100FE4F0 | 0x000FE4F0 | RandomEngine_MT19937_32_MixerMT1_CtorFromSeedU32 | RandomLib ctor | decomp/rename | med |
+| 0x100FE550 | 0x000FE550 | RandomSeed_ReadState_MT_Mixer1_32 | seed read | decomp/rename | med |
+| 0x100FE610 | 0x000FE610 | RandomEngine_MT19937_64_MixerMT1_CtorFromSeedU32 | RandomLib ctor | decomp/rename | med |
+| 0x100FE670 | 0x000FE670 | RandomSeed_ReadState_MT_Mixer1_64 | seed read | decomp/rename | med |
+| 0x100FC610 | 0x000FC610 | Vector_TransformAppend_u32 | std::vector helper | decomp/rename | med |
+| 0x100FE730 | 0x000FE730 | RandomEngine_SeedFromRangeU32 | seed init | decomp/rename | med |
+| 0x100FE7F0 | 0x000FE7F0 | RandomEngine_MT19937_32_MixerSFMT_CtorDefault | RandomLib ctor | decomp/rename | med |
+| 0x100FE850 | 0x000FE850 | RandomEngine_MT19937_64_MixerSFMT_CtorDefault | RandomLib ctor | decomp/rename | med |
+| 0x100FE8B0 | 0x000FE8B0 | RandomEngine_SFMT19937_64_MixerSFMT_CtorDefault | RandomLib ctor | decomp/rename | med |
+| 0x100FE910 | 0x000FE910 | RandomEngine_MT19937_32_MixerMT0_CtorDefault | RandomLib ctor | decomp/rename | med |
+| 0x100FE970 | 0x000FE970 | RandomEngine_MT19937_64_MixerMT0_CtorDefault | RandomLib ctor | decomp/rename | med |
+| 0x100FE9D0 | 0x000FE9D0 | RandomEngine_MT19937_32_MixerMT1_CtorDefault | RandomLib ctor | decomp/rename | med |
+| 0x100FEA30 | 0x000FEA30 | RandomEngine_MT19937_64_MixerMT1_CtorDefault | RandomLib ctor | decomp/rename | med |
+| 0x100FEA90 | 0x000FEA90 | RandomEngine_SFMT19937_32_MixerSFMT_CtorFromSeedRange | RandomLib ctor | decomp/rename | med |
+| 0x100FEB00 | 0x000FEB00 | RandomEngine_MT19937_32_MixerMT0_CtorFromSeedRange | RandomLib ctor | decomp/rename | med |
+| 0x100FEB70 | 0x000FEB70 | RandomEngine_MT19937_64_MixerMT0_CtorFromSeedRange | RandomLib ctor | decomp/rename | med |
+| 0x100FEBE0 | 0x000FEBE0 | RandomEngine_MT19937_32_MixerMT1_CtorFromSeedRange | RandomLib ctor | decomp/rename | med |
+| 0x10074200 | 0x00074200 | Identity_U32 | utility | decomp/rename | low |
+| 0x100F9850 | 0x000F9850 | RandomSeed_ToString | seed formatting | decomp/rename | med |
+| 0x100F9E30 | 0x000F9E30 | RandomEngine_AdvanceTo_MT19937 | RandomLib PRNG core | decomp/rename | med |
+| 0x100FACC0 | 0x000FACC0 | RandomEngine_Equals_MT19937 | RandomLib compare | decomp/rename | med |
+| 0x100FA9F0 | 0x000FA9F0 | Vector_Equals_u32 | std::vector helper | decomp/rename | med |
+| 0x100FEF60 | 0x000FEF60 | RandomEngine_SelfTest_SFMT19937_32 | RandomLib self-test | decomp/rename | med |
+| 0x100FF4D0 | 0x000FF4D0 | RandomEngine_SelfTest_MT_Mixer0_32 | RandomLib self-test | decomp/rename | med |
+| 0x100FF9D0 | 0x000FF9D0 | RandomEngine_SelfTest_MT_Mixer0_64 | RandomLib self-test | decomp/rename | med |
+| 0x100FFF50 | 0x000FFF50 | RandomEngine_SelfTest_MT_Mixer1_32 | RandomLib self-test | decomp/rename | med |
+| 0x10100450 | 0x00100450 | RandomEngine_SelfTest_MT_Mixer1_64 | RandomLib self-test | decomp/rename | med |
+| 0x101009D0 | 0x001009D0 | RandomEngine_SelfTest_MT_MixerSFMT_32 | RandomLib self-test | decomp/rename | med |
+| 0x10100ED0 | 0x00100ED0 | RandomEngine_SelfTest_MT_MixerSFMT_64 | RandomLib self-test | decomp/rename | med |
+| 0x10101450 | 0x00101450 | RandomEngine_SelfTest_SFMT19937_64 | RandomLib self-test | decomp/rename | med |
+| 0x100F2E50 | 0x000F2E50 | MT19937_64_Temper | RandomLib PRNG core | decomp/rename | med |
+| 0x100F7760 | 0x000F7760 | MT19937_RefreshState_A | RandomLib PRNG core | decomp/rename | med |
+| 0x100F7880 | 0x000F7880 | MT19937_RefreshState_B | RandomLib PRNG core | decomp/rename | med |
+| 0x100F77F0 | 0x000F77F0 | MT19937_64_RefreshState_A | RandomLib PRNG core | decomp/rename | med |
+| 0x100F7910 | 0x000F7910 | MT19937_64_RefreshState_B | RandomLib PRNG core | decomp/rename | med |
+| 0x100F7430 | 0x000F7430 | MT19937_64_RefreshState_C | RandomLib PRNG core | decomp/rename | med |
+| 0x100F7490 | 0x000F7490 | SFMT_RefreshState | RandomLib PRNG core | decomp/rename | med |
+| 0x100F73A0 | 0x000F73A0 | MT19937_RefreshState_C | RandomLib PRNG core | decomp/rename | med |
+| 0x100FA130 | 0x000FA130 | MT19937_NextU32_A | RandomLib PRNG core | decomp/rename | med |
+| 0x100FA580 | 0x000FA580 | MT19937_NextU32_B | RandomLib PRNG core | decomp/rename | med |
+| 0x100F98E0 | 0x000F98E0 | MT19937_NextU32_C | RandomLib PRNG core | decomp/rename | med |
+| 0x100FA200 | 0x000FA200 | RandomEngine_AdvanceTo_MT19937_A | RandomLib PRNG core | decomp/rename | med |
+| 0x100FA650 | 0x000FA650 | RandomEngine_AdvanceTo_MT19937_B | RandomLib PRNG core | decomp/rename | med |
+| 0x100F9AE0 | 0x000F9AE0 | RandomEngine_AdvanceTo_MT19937_C | RandomLib PRNG core | decomp/rename | med |
+| 0x100FA450 | 0x000FA450 | RandomEngine_AdvanceTo_MT19937_64_A | RandomLib PRNG core | decomp/rename | med |
+| 0x100FA8A0 | 0x000FA8A0 | RandomEngine_AdvanceTo_MT19937_64_B | RandomLib PRNG core | decomp/rename | med |
+| 0x100F9CB0 | 0x000F9CB0 | RandomEngine_AdvanceTo_MT19937_64_C | RandomLib PRNG core | decomp/rename | med |
+| 0x100FA000 | 0x000FA000 | RandomEngine_AdvanceTo_SFMT | RandomLib PRNG core | decomp/rename | med |
+| 0x100FAE80 | 0x000FAE80 | RandomEngine_Equals_MT_Mixer0_32 | RandomLib compare | decomp/rename | med |
+| 0x100FAF60 | 0x000FAF60 | RandomEngine_Equals_MT_Mixer0_64 | RandomLib compare | decomp/rename | med |
+| 0x100FB040 | 0x000FB040 | RandomEngine_Equals_MT_Mixer1_32 | RandomLib compare | decomp/rename | med |
+| 0x100FB120 | 0x000FB120 | RandomEngine_Equals_MT_Mixer1_64 | RandomLib compare | decomp/rename | med |
+| 0x100FAB00 | 0x000FAB00 | RandomEngine_Equals_MT_MixerSFMT_32 | RandomLib compare | decomp/rename | med |
+| 0x100FABE0 | 0x000FABE0 | RandomEngine_Equals_MT_MixerSFMT_64 | RandomLib compare | decomp/rename | med |
+| 0x100FADA0 | 0x000FADA0 | RandomEngine_Equals_SFMT | RandomLib compare | decomp/rename | med |
+| 0x101019E0 | 0x001019E0 | RandomEngineInfo_CopyById | RandomLib registry | decomp/rename | low |
+| 0x10101B50 | 0x00101B50 | TripleSlot_IsEmpty | equip slot helper | decomp/rename | low |
+| 0x10101BF0 | 0x00101BF0 | StatBlockHeaderArray3_WriteBitStream | stat block serialize | decomp/rename | med |
+| 0x10101C30 | 0x00101C30 | EquipSlotArray_ValidateEquipGroup | equip validation | decomp/rename | med |
+| 0x10101D00 | 0x00101D00 | EquipSlotArray3_BuildIndexList | equip list build | decomp/rename | low |
+| 0x10101E20 | 0x00101E20 | StatBlockHeaderArray6_WriteBitStream | stat block serialize | decomp/rename | med |
+| 0x10101E60 | 0x00101E60 | EquipSlotArray6_ValidateEquipGroup | equip validation | decomp/rename | med |
+| 0x10101F30 | 0x00101F30 | EquipSlotArray6_BuildIndexList | equip list build | decomp/rename | low |
+| 0x101022FE | 0x001022FE | Unlock_Mutex8_Return | threading helper | decomp/rename | low |
+| 0x10103048 | 0x00103048 | Init_SSE2_Info | cpu feature init | decomp/rename | low |
+| 0x101031DB | 0x001031DB | IsAccessViolationException | SEH helper | decomp/rename | low |
+| 0x101031EF | 0x001031EF | SEH_ResetState | SEH helper | decomp/rename | low |
+| 0x10110050 | 0x00110050 | Init_ILTCommon_Server_API | API init | decomp/rename | low |
+| 0x10110080 | 0x00110080 | Register_AtExit_ILTCommon_Server_API | API init | decomp/rename | low |
+| 0x10110310 | 0x00110310 | Register_AtExit_10112000 | atexit helper | decomp/rename | low |
+| 0x10110320 | 0x00110320 | Init_ILTServer_Default_API | API init | decomp/rename | low |
+| 0x10110350 | 0x00110350 | Init_ILTClient_Default_API | API init | decomp/rename | low |
+| 0x10110380 | 0x00110380 | Init_ILTCommon_Server_API2 | API init | decomp/rename | low |
+| 0x101103C0 | 0x001103C0 | Init_TargetGlobals | init globals | decomp/rename | low |
+| 0x101104B0 | 0x001104B0 | Init_List_101B43D4 | init list | decomp/rename | low |
+| 0x101105A0 | 0x001105A0 | Init_g_pLTServer | init global | decomp/rename | low |
+| 0x101105D0 | 0x001105D0 | Init_IInstanceHandleServer_Default | interface init | decomp/rename | low |
