@@ -585,14 +585,22 @@ export class ProfileD extends Struct {
 
     static empty(): ProfileD {
         const values = Array(PROFILE_D_STAT_COUNT).fill(0);
-        // Basic vitals: match client stat scale caps (g_StatScaleTable[0..3]).
+
+        // Stats
         values[ProfileDStatIndex.Health] = 1000;
+        values[ProfileDStatIndex.HealthRegen] = 3;
         values[ProfileDStatIndex.Stamina] = 10000;
         values[ProfileDStatIndex.BioEnergy] = 1000;
         values[ProfileDStatIndex.Aura] = 1000;
-        // On-wire index mapping: statId >= 5 => values[statId - 1].
+        values[ProfileDStatIndex.AuraRegen] = 43;
         values[ProfileDStatIndex.Agility] = 800;   // 80.0%
         values[ProfileDStatIndex.MaxStamina] = 10000;
+        values[ProfileDStatIndex.JumpVelocityMultiplier] = 1100;
+        values[ProfileDStatIndex.SprintSpeedMultiplier] = 1200;
+
+        // Currencies
+        values[ProfileDStatIndex.UniversalCredits] = 10000;
+        values[ProfileDStatIndex.Coins] = 100;
         return new ProfileD(values);
     }
 }
