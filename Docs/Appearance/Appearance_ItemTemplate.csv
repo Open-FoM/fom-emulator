@@ -1,0 +1,835 @@
+item_name,item_id,type,subtype,equip_slot,model_key,skin_path,template_ptr
+Advanced Civilian Helmet,110,5,37,5,Helmet1,Skins/Items/Standard/Helmet1_1.dtx,707CFA70
+MT-27 Ballistics Helmet,111,5,37,5,Helmet2,Skins/Items/Standard/Helmet2_2.dtx,707CFB00
+Tactical Systems Helmet,112,5,37,5,Helmet3,Skins/Items/Standard/Helmet3_3.dtx,707CFB90
+Locans Defense Helmet,113,5,5,5,Helmet4,Skins/Items/LED/Helmet4_4.dtx,707CFC20
+Locans Ethereal Helmet,114,5,5,5,Helmet5,Skins/Items/LED/Helmet5_5.dtx,707CFCB0
+Locans Patrol Helmet,115,5,5,5,Helmet6,Skins/Items/LED/Helmet6_6.dtx,707CFD40
+Locans Pressured Helmet,116,5,5,5,Helmet7,Skins/Items/LED/Helmet7_7.dtx,707CFDD0
+Pythica Special Operations Helmet,117,5,4,5,Helmet4,Skins/Items/FDC/Helmet4_4.dtx,707CFE60
+Pythica Mobile Infantry Helmet,118,5,4,5,Helmet5,Skins/Items/FDC/Helmet5_5.dtx,707CFEF0
+Pythica S1 Helmet,119,5,4,5,Helmet6,Skins/Items/FDC/Helmet6_6.dtx,707CFF80
+Pythica Sustained Battle Helmet,120,5,4,5,Helmet7,Skins/Items/FDC/Helmet7_7.dtx,707D0010
+NanoTech Trauma Helmet,121,5,0,5,Helmet4,Skins/Items/GOM/Helmet4_4.dtx,707D00A0
+NanoTech Scout Helmet,122,5,0,5,Helmet5,Skins/Items/GOM/Helmet5_5.dtx,707D0130
+NanoTech Voltaic Helmet,123,5,0,5,Helmet6,Skins/Items/GOM/Helmet6_6.dtx,707D01C0
+NanoTech Cognizant Helmet,124,5,0,5,Helmet7,Skins/Items/GOM/Helmet7_7.dtx,707D0250
+Hypobaric Helmet,125,5,0,5,Helmet4,Skins/Items/BOS/Helmet4_4.dtx,707D02E0
+Metabolic Helmet,126,5,0,5,Helmet5,Skins/Items/BOS/Helmet5_5.dtx,707D0370
+Venom Helmet,127,5,0,5,Helmet6,Skins/Items/BOS/Helmet6_6.dtx,707D0400
+Detox Combat Helmet,128,5,0,5,Helmet7,Skins/Items/BOS/Helmet7_7.dtx,707D0490
+Delta Powered Helmet,129,5,0,5,Helmet4,Skins/Items/MOB/Helmet4_4.dtx,707D0520
+Havoc Powered Helmet,130,5,0,5,Helmet5,Skins/Items/MOB/Helmet5_5.dtx,707D05B0
+Firstborn Powered Helmet,131,5,0,5,Helmet6,Skins/Items/MOB/Helmet6_6.dtx,707D0640
+Legionnaire Powered Helmet,132,5,0,5,Helmet7,Skins/Items/MOB/Helmet7_7.dtx,707D06D0
+PreMet Buffer Helmet,133,5,3,5,Helmet4,Skins/Items/CMG/Helmet4_4.dtx,707D0760
+PreMet Contact Helmet,134,5,3,5,Helmet5,Skins/Items/CMG/Helmet5_5.dtx,707D07F0
+PreMet Collision Helmet,135,5,3,5,Helmet6,Skins/Items/CMG/Helmet6_6.dtx,707D0880
+PreMet Impact Helmet,136,5,3,5,Helmet7,Skins/Items/CMG/Helmet7_7.dtx,707D0910
+Dilatant 46b Helmet,137,5,0,5,Helmet4,Skins/Items/EC/Helmet4_4.dtx,707D09A0
+Aramid Modified Helmet,138,5,0,5,Helmet5,Skins/Items/EC/Helmet5_5.dtx,707D0A30
+Dilatant 50b Helmet,139,5,0,5,Helmet6,Skins/Items/EC/Helmet6_6.dtx,707D0AC0
+Aramid Basic Helmet,140,5,0,5,Helmet7,Skins/Items/EC/Helmet7_7.dtx,707D0B50
+Infensus Minimalist Helmet,141,5,6,5,Helmet4,Skins/Items/VTX/Helmet4_4.dtx,707D0BE0
+Infensus Shock Helmet,142,5,6,5,Helmet5,Skins/Items/VTX/Helmet5_5.dtx,707D0C70
+Infensus X1 Assault Helmet,143,5,6,5,Helmet6,Skins/Items/VTX/Helmet6_6.dtx,707D0D00
+Infensus Heavy Helmet,144,5,6,5,Helmet7,Skins/Items/VTX/Helmet7_7.dtx,707D0D90
+Locans Patrol Helmet,145,5,5,5,Helmet6,Skins/Items/LED/Helmet6_8.dtx,707D0E20
+Pythica S2 Helmet,146,5,4,5,Helmet6,Skins/Items/FDC/Helmet6_8.dtx,707D0EB0
+NanoTech Voltaic Assault Helmet,147,5,0,5,Helmet6,Skins/Items/GOM/Helmet6_8.dtx,707D0F40
+Venom Helmet,148,5,0,5,Helmet6,Skins/Items/BOS/Helmet6_8.dtx,707D0FD0
+Firstborn Powered Helmet,149,5,0,5,Helmet6,Skins/Items/MOB/Helmet6_8.dtx,707D1060
+PreMet Collision Helmet,150,5,3,5,Helmet6,Skins/Items/CMG/Helmet6_8.dtx,707D10F0
+Dilatant 50b Helmet,151,5,0,5,Helmet6,Skins/Items/EC/Helmet6_8.dtx,707D1180
+Infensus X2 Assault Helmet,152,5,6,5,Helmet6,Skins/Items/VTX/Helmet6_8.dtx,707D1210
+XenoTech Expeditionary Helmet,153,5,37,5,Helmet7,Skins/Items/Standard/Helmet7_9.dtx,707D12A0
+Exile Helmet,154,5,37,5,Helmet6,Skins/Items/Standard/Helmet6_10.dtx,707D1330
+Black Shuck Helmet,155,5,37,5,Helmet6,Skins/Items/Standard/Helmet6_11.dtx,707D13C0
+Echion Helmet,156,5,37,5,Helmet6,Skins/Items/Standard/Helmet6_12.dtx,707D1450
+Locans Stabilized Helmet,157,5,5,5,Helmet7,Skins/Items/LED/Helmet7_13.dtx,707D14E0
+Pythica Durable Battle Helmet,158,5,4,5,Helmet7,Skins/Items/FDC/Helmet7_13.dtx,707D1570
+NanoTech Vitality Helmet,159,5,0,5,Helmet7,Skins/Items/GOM/Helmet7_13.dtx,707D1600
+Lintems Glasses,160,7,0,6,Glasses1,Skins/Items/Standard/Glasses1_1.dtx,707DE1A0
+DesIns Glasses,161,7,0,6,Glasses2,Skins/Items/Standard/Glasses2_2.dtx,707DE230
+Imaxil Incorporated Glasses,162,7,0,6,Glasses3,Skins/Items/Standard/Glasses3_3.dtx,707DE2C0
+ALM designs Glasses (Blue),163,7,0,6,Glasses4,Skins/Items/Standard/Glasses4_4.dtx,707DE350
+Nology Glasses (Blue),164,7,0,6,Glasses5,Skins/Items/Standard/Glasses5_5.dtx,707DE3E0
+Zivce6 Glasses (Blue),165,7,0,6,Glasses6,Skins/Items/Standard/Glasses6_6.dtx,707DE470
+Mica|tems Glasses (Blue),166,7,0,6,Glasses7,Skins/Items/Standard/Glasses7_7.dtx,707DE500
+ALM Designs Glasses (Black),167,7,0,6,Glasses4,Skins/Items/Standard/Glasses4_8.dtx,707DE590
+Urban Dreams Glasses,168,7,0,6,Glasses5,Skins/Items/Standard/Glasses5_9.dtx,707DE620
+Zivce6 Glasses (Grey),169,7,0,6,Glasses6,Skins/Items/Standard/Glasses6_10.dtx,707DE6B0
+Mica|tems Glasses (Silver),170,7,0,6,Glasses7,Skins/Items/Standard/Glasses7_11.dtx,707DE740
+ALM Designs Glasses (Green),171,7,0,6,Glasses4,Skins/Items/Standard/Glasses4_12.dtx,707DE7D0
+Nology Glasses (Yellow),172,7,0,6,Glasses5,Skins/Items/Standard/Glasses5_13.dtx,707DE860
+Zivce6 Glasses (Yellow),173,7,0,6,Glasses6,Skins/Items/Standard/Glasses6_14.dtx,707DE8F0
+Mica|tems Glasses (Yellow),174,7,0,6,Glasses7,Skins/Items/Standard/Glasses7_15.dtx,707DE980
+ALM Designs Glasses (Red),175,7,0,6,Glasses4,Skins/Items/Standard/Glasses4_16.dtx,707DEA10
+Nology Glasses (Red),176,7,0,6,Glasses5,Skins/Items/Standard/Glasses5_17.dtx,707DEAA0
+Zivce6 Glasses (Red),177,7,0,6,Glasses6,Skins/Items/Standard/Glasses6_18.dtx,707DEB30
+Mica|tems Glasses (Red),178,7,0,6,Glasses7,Skins/Items/Standard/Glasses7_19.dtx,707DEBC0
+ALM Designs Glasses (Grey),179,7,0,6,Glasses4,Skins/Items/Standard/Glasses4_20.dtx,707DEC50
+Nology Glasses (Grey),180,7,0,6,Glasses5,Skins/Items/Standard/Glasses5_21.dtx,707DECE0
+Zivce6 Glasses (Olive Green),181,7,0,6,Glasses6,Skins/Items/Standard/Glasses6_22.dtx,707DED70
+Mica|tems Glasses (Grey),182,7,0,6,Glasses7,Skins/Items/Standard/Glasses7_23.dtx,707DEE00
+ALM Designs Glasses (Yellow),183,7,0,6,Glasses4,Skins/Items/Standard/Glasses4_24.dtx,707DEE90
+Nology Glasses (Brown),184,7,0,6,Glasses5,Skins/Items/Standard/Glasses5_25.dtx,707DEF20
+Zivce6 Glasses (Yellow),185,7,0,6,Glasses6,Skins/Items/Standard/Glasses6_26.dtx,707DEFB0
+Mica|tems Glasses (Brown),186,7,0,6,Glasses7,Skins/Items/Standard/Glasses7_27.dtx,707DF040
+ALM Designs Glasses (Silver),187,7,0,6,Glasses4,Skins/Items/Standard/Glasses4_28.dtx,707DF0D0
+Nology Glasses (Silver),188,7,0,6,Glasses5,Skins/Items/Standard/Glasses5_29.dtx,707DF160
+Zivce6 Glasses (Silver),189,7,0,6,Glasses6,Skins/Items/Standard/Glasses6_30.dtx,707DF1F0
+Mica|tems Glasses (Black),190,7,0,6,Glasses7,Skins/Items/Standard/Glasses7_31.dtx,707DF280
+ALM Designs Glasses (Green),191,7,0,6,Glasses4,Skins/Items/Standard/Glasses4_32.dtx,707DF310
+Nology Glasses (Green),192,7,0,6,Glasses5,Skins/Items/Standard/Glasses5_33.dtx,707DF3A0
+Zivce6 Glasses (Green),193,7,0,6,Glasses6,Skins/Items/Standard/Glasses6_34.dtx,707DF430
+Mica|tems Glasses (Green),194,7,0,6,Glasses7,Skins/Items/Standard/Glasses7_35.dtx,707DF4C0
+GIS Shades,195,7,0,6,Glasses1,Skins/Items/Standard/Glasses1_36.dtx,707DF550
+Fire Orange Glasses,196,7,0,6,Glasses1,Skins/Items/Standard/Glasses1_37.dtx,707DF5E0
+Incognito Shades,197,7,0,6,Glasses1,Skins/Items/Standard/Glasses1_36.dtx,707DF670
+Leech Helmet,200,5,0,5,Helmet7,Skins/Items/BOS/Helmet7_13.dtx,707D1690
+Justicar Powered Helmet,201,5,0,5,Helmet7,Skins/Items/MOB/Helmet7_13.dtx,707D1720
+PreMet Tremor Helmet,202,5,3,5,Helmet7,Skins/Items/CMG/Helmet7_13.dtx,707D17B0
+Aramid Altered Helmet,203,5,0,5,Helmet7,Skins/Items/EC/Helmet7_13.dtx,707D1840
+Infensus Essentials Helmet,204,5,6,5,Helmet7,Skins/Items/VTX/Helmet7_13.dtx,707D18D0
+Jack-o'-lantern Helmet,205,5,37,5,Helmet6,Skins/Items/Standard/Helmet6_14.dtx,707D1960
+Skeleton Helmet,206,5,37,5,Helmet6,Skins/Items/Standard/Helmet6_15.dtx,707D19F0
+Backer Helmet,207,5,37,5,Helmet6,Skins/Items/Standard/Helmet6_16.dtx,707D1A80
+Advanced Civilian Shoulder Pads,210,5,37,7,ShoulderPads1,Skins/Items/Standard/ShoulderPads1_1.dtx,707D1B10
+MT-27 Ballistics Shoulder Pads,211,5,37,7,ShoulderPads2,Skins/Items/Standard/ShoulderPads2_2.dtx,707D1BA0
+Tactical Systems Shoulder Pads,212,5,37,7,ShoulderPads3,Skins/Items/Standard/ShoulderPads3_3.dtx,707D1C30
+Locans Defense Shoulder Pads,213,5,5,7,ShoulderPads4,Skins/Items/LED/ShoulderPads4_4.dtx,707D1CC0
+Locans Ethereal Shoulder Pads,214,5,5,7,ShoulderPads5,Skins/Items/LED/ShoulderPads5_5.dtx,707D1D50
+Locans Patrol Shoulder Pads,215,5,5,7,ShoulderPads6,Skins/Items/LED/ShoulderPads6_6.dtx,707D1DE0
+Locans Pressured Shoulder Pads,216,5,5,7,ShoulderPads7,Skins/Items/LED/ShoulderPads7_7.dtx,707D1E70
+Pythica Special Operations Shoulder Pads,217,5,4,7,ShoulderPads4,Skins/Items/FDC/ShoulderPads4_4.dtx,707D1F00
+Pythica Mobile Infantry Shoulder Pads,218,5,4,7,ShoulderPads5,Skins/Items/FDC/ShoulderPads5_5.dtx,707D1F90
+Pythica S1 Shoulder Pads,219,5,4,7,ShoulderPads6,Skins/Items/FDC/ShoulderPads6_6.dtx,707D2020
+Pythica Sustained Battle Shoulder Pads,220,5,4,7,ShoulderPads7,Skins/Items/FDC/ShoulderPads7_7.dtx,707D20B0
+NanoTech Trauma Shoulder Pads,221,5,0,7,ShoulderPads4,Skins/Items/GOM/ShoulderPads4_4.dtx,707D2140
+NanoTech Scout Shoulder Pads,222,5,0,7,ShoulderPads5,Skins/Items/GOM/ShoulderPads5_5.dtx,707D21D0
+NanoTech Voltaic Shoulder Pads,223,5,0,7,ShoulderPads6,Skins/Items/GOM/ShoulderPads6_6.dtx,707D2260
+NanoTech Cognizant Shoulder Pads,224,5,0,7,ShoulderPads7,Skins/Items/GOM/ShoulderPads7_7.dtx,707D22F0
+Hypobaric Shoulder Pads,225,5,0,7,ShoulderPads4,Skins/Items/BOS/ShoulderPads4_4.dtx,707D2380
+Metabolic Shoulder Pads,226,5,0,7,ShoulderPads5,Skins/Items/BOS/ShoulderPads5_5.dtx,707D2410
+Venom Shoulder Pads,227,5,0,7,ShoulderPads6,Skins/Items/BOS/ShoulderPads6_6.dtx,707D24A0
+Detox Combat Shoulder Pads,228,5,0,7,ShoulderPads7,Skins/Items/BOS/ShoulderPads7_7.dtx,707D2530
+Delta Powered Shoulder Pads,229,5,0,7,ShoulderPads4,Skins/Items/MOB/ShoulderPads4_4.dtx,707D25C0
+Havoc Powered Shoulder Pads,230,5,0,7,ShoulderPads5,Skins/Items/MOB/ShoulderPads5_5.dtx,707D2650
+Firstborn Powered Shoulder Pads,231,5,0,7,ShoulderPads6,Skins/Items/MOB/ShoulderPads6_6.dtx,707D26E0
+Legionnaire Powered Shoulder Pads,232,5,0,7,ShoulderPads7,Skins/Items/MOB/ShoulderPads7_7.dtx,707D2770
+PreMet Buffer Shoulder Pads,233,5,3,7,ShoulderPads4,Skins/Items/CMG/ShoulderPads4_4.dtx,707D2800
+PreMet Contact Shoulder Pads,234,5,3,7,ShoulderPads5,Skins/Items/CMG/ShoulderPads5_5.dtx,707D2890
+PreMet Collision Shoulder Pads,235,5,3,7,ShoulderPads6,Skins/Items/CMG/ShoulderPads6_6.dtx,707D2920
+PreMet Impact Shoulder Pads,236,5,3,7,ShoulderPads7,Skins/Items/CMG/ShoulderPads7_7.dtx,707D29B0
+Dilatant 46b Shoulder Pads,237,5,0,7,ShoulderPads4,Skins/Items/EC/ShoulderPads4_4.dtx,707D2A40
+Aramid Modified Shoulder Pads,238,5,0,7,ShoulderPads5,Skins/Items/EC/ShoulderPads5_5.dtx,707D2AD0
+Dilatant 50b Shoulder Pads,239,5,0,7,ShoulderPads6,Skins/Items/EC/ShoulderPads6_6.dtx,707D2B60
+Aramid Basic Shoulder Pads,240,5,0,7,ShoulderPads7,Skins/Items/EC/ShoulderPads7_7.dtx,707D2BF0
+Infensus Minimalist Shoulder Pads,241,5,6,7,ShoulderPads4,Skins/Items/VTX/ShoulderPads4_4.dtx,707D2C80
+Infensus Shock Shoulder Pads,242,5,6,7,ShoulderPads5,Skins/Items/VTX/ShoulderPads5_5.dtx,707D2D10
+Infensus X1 Assault Shoulder Pads,243,5,6,7,ShoulderPads6,Skins/Items/VTX/ShoulderPads6_6.dtx,707D2DA0
+Infensus Heavy Shoulder Pads,244,5,6,7,ShoulderPads7,Skins/Items/VTX/ShoulderPads7_7.dtx,707D2E30
+XenoTech Expeditionary Shoulder Pads,245,5,37,7,ShoulderPads7,Skins/Items/Standard/ShoulderPads7_8.dtx,707D2EC0
+Exile Shoulder Pads,246,5,37,7,ShoulderPads6,Skins/Items/Standard/ShoulderPads6_9.dtx,707D2F50
+Locans Stabilized Shoulder Pads,247,5,5,7,ShoulderPads7,Skins/Items/LED/ShoulderPads7_10.dtx,707D2FE0
+Pythica Durable Battle Shoulder Pads,248,5,4,7,ShoulderPads7,Skins/Items/FDC/ShoulderPads7_10.dtx,707D3070
+NanoTech Vitality Shoulder Pads,249,5,0,7,ShoulderPads7,Skins/Items/GOM/ShoulderPads7_10.dtx,707D3100
+Leech Shoulder Pads,250,5,0,7,ShoulderPads7,Skins/Items/BOS/ShoulderPads7_10.dtx,707D3190
+Justicar Powered Shoulder Pads,251,5,0,7,ShoulderPads7,Skins/Items/MOB/ShoulderPads7_10.dtx,707D3220
+PreMet Tremor Shoulder Pads,252,5,3,7,ShoulderPads7,Skins/Items/CMG/ShoulderPads7_10.dtx,707D32B0
+Aramid Altered Shoulder Pads,253,5,0,7,ShoulderPads7,Skins/Items/EC/ShoulderPads7_10.dtx,707D3340
+Infensus Essentials Shoulder Pads,254,5,6,7,ShoulderPads7,Skins/Items/VTX/ShoulderPads7_10.dtx,707D33D0
+Jack-o'-lantern Shoulder Pads,255,5,37,7,ShoulderPads2,Skins/Items/Standard/ShoulderPads2_11.dtx,707D3460
+Skeleton Shoulder Pads,256,5,37,7,ShoulderPads2,Skins/Items/Standard/ShoulderPads2_12.dtx,707D34F0
+Backer Shoulder Pads,257,5,37,7,ShoulderPads2,Skins/Items/Standard/ShoulderPads2_13.dtx,707D3580
+Advanced Civilian Arm Pads,260,5,37,9,ArmPads1,Skins/Items/Standard/ArmPads1_1.dtx,707D3610
+MT-27 Ballistics Arm Pads,261,5,37,9,ArmPads2,Skins/Items/Standard/ArmPads2_2.dtx,707D36A0
+Tactical Systems Arm Pads,262,5,37,9,ArmPads3,Skins/Items/Standard/ArmPads3_3.dtx,707D3730
+Locans Defense Arm Pads,263,5,5,9,ArmPads4,Skins/Items/LED/ArmPads4_4.dtx,707D37C0
+Locans Ethereal Arm Pads,264,5,5,9,ArmPads5,Skins/Items/LED/ArmPads5_5.dtx,707D3850
+Locans Patrol Arm Pads,265,5,5,9,ArmPads6,Skins/Items/LED/ArmPads6_6.dtx,707D38E0
+Locans Pressured Arm Pads,266,5,5,9,ArmPads7,Skins/Items/LED/ArmPads7_7.dtx,707D3970
+Pythica Special Operations Arm Pads,267,5,4,9,ArmPads4,Skins/Items/FDC/ArmPads4_4.dtx,707D3A00
+Pythica Mobile Infantry Arm Pads,268,5,4,9,ArmPads5,Skins/Items/FDC/ArmPads5_5.dtx,707D3A90
+Pythica S1 Arm Pads,269,5,4,9,ArmPads6,Skins/Items/FDC/ArmPads6_6.dtx,707D3B20
+Pythica Sustained Battle Arm Pads,270,5,4,9,ArmPads7,Skins/Items/FDC/ArmPads7_7.dtx,707D3BB0
+NanoTech Trauma Arm Pads,271,5,0,9,ArmPads4,Skins/Items/GOM/ArmPads4_4.dtx,707D3C40
+NanoTech Scout Arm Pads,272,5,0,9,ArmPads5,Skins/Items/GOM/ArmPads5_5.dtx,707D3CD0
+NanoTech Voltaic Arm Pads,273,5,0,9,ArmPads6,Skins/Items/GOM/ArmPads6_6.dtx,707D3D60
+NanoTech Cognizant Arm Pads,274,5,0,9,ArmPads7,Skins/Items/GOM/ArmPads7_7.dtx,707D3DF0
+Hypobaric Arm Pads,275,5,0,9,ArmPads4,Skins/Items/BOS/ArmPads4_4.dtx,707D3E80
+Metabolic Arm Pads,276,5,0,9,ArmPads5,Skins/Items/BOS/ArmPads5_5.dtx,707D3F10
+Venom Arm Pads,277,5,0,9,ArmPads6,Skins/Items/BOS/ArmPads6_6.dtx,707D3FA0
+Detox Combat Arm Pads,278,5,0,9,ArmPads7,Skins/Items/BOS/ArmPads7_7.dtx,707D4030
+Delta Powered Arm Pads,279,5,0,9,ArmPads4,Skins/Items/MOB/ArmPads4_4.dtx,707D40C0
+Havoc Powered Arm Pads,280,5,0,9,ArmPads5,Skins/Items/MOB/ArmPads5_5.dtx,707D4150
+Firstborn Powered Arm Pads,281,5,0,9,ArmPads6,Skins/Items/MOB/ArmPads6_6.dtx,707D41E0
+Legionnaire Powered Arm Pads,282,5,0,9,ArmPads7,Skins/Items/MOB/ArmPads7_7.dtx,707D4270
+PreMet Buffer Arm Pads,283,5,3,9,ArmPads4,Skins/Items/CMG/ArmPads4_4.dtx,707D4300
+PreMet Contact Arm Pads,284,5,3,9,ArmPads5,Skins/Items/CMG/ArmPads5_5.dtx,707D4390
+PreMet Collision Arm Pads,285,5,3,9,ArmPads6,Skins/Items/CMG/ArmPads6_6.dtx,707D4420
+PreMet Impact Arm Pads,286,5,3,9,ArmPads7,Skins/Items/CMG/ArmPads7_7.dtx,707D44B0
+Dilatant 46b Arm Pads,287,5,0,9,ArmPads4,Skins/Items/EC/ArmPads4_4.dtx,707D4540
+Aramid Modified Arm Pads,288,5,0,9,ArmPads5,Skins/Items/EC/ArmPads5_5.dtx,707D45D0
+Dilatant 50b Arm Pads,289,5,0,9,ArmPads6,Skins/Items/EC/ArmPads6_6.dtx,707D4660
+Aramid Basic Arm Pads,290,5,0,9,ArmPads7,Skins/Items/EC/ArmPads7_7.dtx,707D46F0
+Infensus Minimalist Arm Pads,291,5,6,9,ArmPads4,Skins/Items/VTX/ArmPads4_4.dtx,707D4780
+Infensus Shock Arm Pads,292,5,6,9,ArmPads5,Skins/Items/VTX/ArmPads5_5.dtx,707D4810
+Infensus X1 Assault Arm Pads,293,5,6,9,ArmPads6,Skins/Items/VTX/ArmPads6_6.dtx,707D48A0
+Infensus Heavy Arm Pads,294,5,6,9,ArmPads7,Skins/Items/VTX/ArmPads7_7.dtx,707D4930
+XenoTech Expeditionary Arm Pads,295,5,37,9,ArmPads7,Skins/Items/Standard/ArmPads7_8.dtx,707D49C0
+Exile Arm Pads,296,5,37,9,ArmPads6,Skins/Items/Standard/ArmPads6_9.dtx,707D4A50
+Locans Stabilized Arm Pads,297,5,5,9,ArmPads7,Skins/Items/LED/ArmPads7_10.dtx,707D4AE0
+Pythica Durable Battle Arm Pads,298,5,4,9,ArmPads7,Skins/Items/FDC/ArmPads7_10.dtx,707D4B70
+NanoTech Vitality Arm Pads,299,5,0,9,ArmPads7,Skins/Items/GOM/ArmPads7_10.dtx,707D4C00
+Leech Arm Pads,300,5,0,9,ArmPads7,Skins/Items/BOS/ArmPads7_10.dtx,707D4C90
+Justicar Powered Arm Pads,301,5,0,9,ArmPads7,Skins/Items/MOB/ArmPads7_10.dtx,707D4D20
+PreMet Tremor Arm Pads,302,5,3,9,ArmPads7,Skins/Items/CMG/ArmPads7_10.dtx,707D4DB0
+Aramid Altered Arm Pads,303,5,0,9,ArmPads7,Skins/Items/EC/ArmPads7_10.dtx,707D4E40
+Infensus Essentials Arm Pads,304,5,6,9,ArmPads7,Skins/Items/VTX/ArmPads7_10.dtx,707D4ED0
+Jack-o'-lantern Arm Pads,305,5,37,9,ArmPads2,Skins/Items/Standard/ArmPads2_11.dtx,707D4F60
+Skeleton Arm Pads,306,5,37,9,ArmPads6,Skins/Items/Standard/ArmPads6_12.dtx,707D4FF0
+Backer Arm Pads,307,5,37,9,ArmPads3,Skins/Items/Standard/ArmPads3_13.dtx,707D5080
+Advanced Civilian Torso Armor,310,5,37,8,TorsoArmour1,Skins/Items/Standard/TorsoArmour1_1.dtx,707D5110
+MT-27 Ballistics Torso Armor,311,5,37,8,TorsoArmour2,Skins/Items/Standard/TorsoArmour2_2.dtx,707D51A0
+Tactical Systems Torso Armor,312,5,37,8,TorsoArmour3,Skins/Items/Standard/TorsoArmour3_3.dtx,707D5230
+Locans Defense Torso Armor,313,5,5,8,TorsoArmour4,Skins/Items/LED/TorsoArmour4_4.dtx,707D52C0
+Locans Ethereal Torso Armor,314,5,5,8,TorsoArmour5,Skins/Items/LED/TorsoArmour5_5.dtx,707D5350
+Locans Patrol Torso Armor,315,5,5,8,TorsoArmour6,Skins/Items/LED/TorsoArmour6_6.dtx,707D53E0
+Locans Pressured Torso Armor,316,5,5,8,TorsoArmour7,Skins/Items/LED/TorsoArmour7_7.dtx,707D5470
+Pythica Special Operations Torso Armor,317,5,4,8,TorsoArmour4,Skins/Items/FDC/TorsoArmour4_4.dtx,707D5500
+Pythica Mobile Infantry Torso Armor,318,5,4,8,TorsoArmour5,Skins/Items/FDC/TorsoArmour5_5.dtx,707D5590
+Pythica S1 Torso Armor,319,5,4,8,TorsoArmour6,Skins/Items/FDC/TorsoArmour6_6.dtx,707D5620
+Pythica Sustained Battle Torso Armor,320,5,4,8,TorsoArmour7,Skins/Items/FDC/TorsoArmour7_7.dtx,707D56B0
+NanoTech Trauma Torso Armor,321,5,0,8,TorsoArmour4,Skins/Items/GOM/TorsoArmour4_4.dtx,707D5740
+NanoTech Scout Torso Armor,322,5,0,8,TorsoArmour5,Skins/Items/GOM/TorsoArmour5_5.dtx,707D57D0
+NanoTech Voltaic Torso Armor,323,5,0,8,TorsoArmour6,Skins/Items/GOM/TorsoArmour6_6.dtx,707D5860
+NanoTech Cognizant Torso Armor,324,5,0,8,TorsoArmour7,Skins/Items/GOM/TorsoArmour7_7.dtx,707D58F0
+Hypobaric Torso Armor,325,5,0,8,TorsoArmour4,Skins/Items/BOS/TorsoArmour4_4.dtx,707D5980
+Metabolic Torso Armor,326,5,0,8,TorsoArmour5,Skins/Items/BOS/TorsoArmour5_5.dtx,707D5A10
+Venom Torso Armor,327,5,0,8,TorsoArmour6,Skins/Items/BOS/TorsoArmour6_6.dtx,707D5AA0
+Detox Combat Torso Armor,328,5,0,8,TorsoArmour7,Skins/Items/BOS/TorsoArmour7_7.dtx,707D5B30
+Delta Powered Torso Armor,329,5,0,8,TorsoArmour4,Skins/Items/MOB/TorsoArmour4_4.dtx,707D5BC0
+Havoc Powered Torso Armor,330,5,0,8,TorsoArmour5,Skins/Items/MOB/TorsoArmour5_5.dtx,707D5C50
+Firstborn Powered Torso Armor,331,5,0,8,TorsoArmour6,Skins/Items/MOB/TorsoArmour6_6.dtx,707D5CE0
+Legionnaire Powered Torso Armor,332,5,0,8,TorsoArmour7,Skins/Items/MOB/TorsoArmour7_7.dtx,707D5D70
+PreMet Buffer Torso Armor,333,5,3,8,TorsoArmour4,Skins/Items/CMG/TorsoArmour4_4.dtx,707D5E00
+PreMet Contact Torso Armor,334,5,3,8,TorsoArmour5,Skins/Items/CMG/TorsoArmour5_5.dtx,707D5E90
+PreMet Collision Torso Armor,335,5,3,8,TorsoArmour6,Skins/Items/CMG/TorsoArmour6_6.dtx,707D5F20
+PreMet Impact Torso Armor,336,5,3,8,TorsoArmour7,Skins/Items/CMG/TorsoArmour7_7.dtx,707D5FB0
+Dilatant 46b Torso Armor,337,5,0,8,TorsoArmour4,Skins/Items/EC/TorsoArmour4_4.dtx,707D6040
+Aramid Modified Torso Armor,338,5,0,8,TorsoArmour5,Skins/Items/EC/TorsoArmour5_5.dtx,707D60D0
+Dilatant 50b Torso Armor,339,5,0,8,TorsoArmour6,Skins/Items/EC/TorsoArmour6_6.dtx,707D6160
+Aramid Basic Torso Armor,340,5,0,8,TorsoArmour7,Skins/Items/EC/TorsoArmour7_7.dtx,707D61F0
+Infensus Minimalist Torso Armor,341,5,6,8,TorsoArmour4,Skins/Items/VTX/TorsoArmour4_4.dtx,707D6280
+Infensus Shock Torso Armor,342,5,6,8,TorsoArmour5,Skins/Items/VTX/TorsoArmour5_5.dtx,707D6310
+Infensus X1 Assault Torso Armor,343,5,6,8,TorsoArmour6,Skins/Items/VTX/TorsoArmour6_6.dtx,707D63A0
+Infensus Heavy Torso Armor,344,5,6,8,TorsoArmour7,Skins/Items/VTX/TorsoArmour7_7.dtx,707D6430
+XenoTech Expeditionary Torso Armor,345,5,37,8,TorsoArmour7,Skins/Items/Standard/TorsoArmour7_8.dtx,707D64C0
+Exile Torso Armor,346,5,37,8,TorsoArmour6,Skins/Items/Standard/TorsoArmour6_9.dtx,707D6550
+Locans Stabilized Torso Armor,347,5,5,8,TorsoArmour7,Skins/Items/LED/TorsoArmour7_10.dtx,707D65E0
+Pythica Durable Battle Torso Armor,348,5,4,8,TorsoArmour7,Skins/Items/FDC/TorsoArmour7_10.dtx,707D6670
+NanoTech Vitality Torso Armor,349,5,0,8,TorsoArmour7,Skins/Items/GOM/TorsoArmour7_10.dtx,707D6700
+Leech Torso Armor,350,5,0,8,TorsoArmour7,Skins/Items/BOS/TorsoArmour7_10.dtx,707D6790
+Justicar Powered Torso Armor,351,5,0,8,TorsoArmour7,Skins/Items/MOB/TorsoArmour7_10.dtx,707D6820
+PreMet Tremor Torso Armor,352,5,3,8,TorsoArmour7,Skins/Items/CMG/TorsoArmour7_10.dtx,707D68B0
+Aramid Altered Torso Armor,353,5,0,8,TorsoArmour7,Skins/Items/EC/TorsoArmour7_10.dtx,707D6940
+Infensus Essentials Torso Armor,354,5,6,8,TorsoArmour7,Skins/Items/VTX/TorsoArmour7_10.dtx,707D69D0
+Jack-o'-lantern Torso Armor,355,5,37,8,TorsoArmour3,Skins/Items/Standard/TorsoArmour3_11.dtx,707D6A60
+Skeleton Torso Armor,356,5,37,8,TorsoArmour2,Skins/Items/Standard/TorsoArmour2_12.dtx,707D6AF0
+Backer Torso Armor,357,5,37,8,TorsoArmour7,Skins/Items/Standard/TorsoArmour7_13.dtx,707D6B80
+Advanced Civilian Leg Pads,360,5,37,11,LegPads1,Skins/Items/Standard/LegPads1_1.dtx,707D6C10
+MT-27 Ballistics Leg Pads,361,5,37,11,LegPads2,Skins/Items/Standard/LegPads2_2.dtx,707D6CA0
+Tactical Systems Leg Pads,362,5,37,11,LegPads3,Skins/Items/Standard/LegPads3_3.dtx,707D6D30
+Locans Defense Leg Pads,363,5,5,11,LegPads4,Skins/Items/LED/LegPads4_4.dtx,707D6DC0
+Locans Ethereal Leg Pads,364,5,5,11,LegPads5,Skins/Items/LED/LegPads5_5.dtx,707D6E50
+Locans Patrol Leg Pads,365,5,5,11,LegPads6,Skins/Items/LED/LegPads6_6.dtx,707D6EE0
+Locans Pressured Leg Pads,366,5,5,11,LegPads7,Skins/Items/LED/LegPads7_7.dtx,707D6F70
+Pythica Special Operations Leg Pads,367,5,4,11,LegPads4,Skins/Items/FDC/LegPads4_4.dtx,707D7000
+Pythica Mobile Infantry Leg Pads,368,5,4,11,LegPads5,Skins/Items/FDC/LegPads5_5.dtx,707D7090
+Pythica S1 Leg Pads,369,5,4,11,LegPads6,Skins/Items/FDC/LegPads6_6.dtx,707D7120
+Pythica Sustained Battle Leg Pads,370,5,4,11,LegPads7,Skins/Items/FDC/LegPads7_7.dtx,707D71B0
+NanoTech Trauma Leg Pads,371,5,0,11,LegPads4,Skins/Items/GOM/LegPads4_4.dtx,707D7240
+NanoTech Scout Leg Pads,372,5,0,11,LegPads5,Skins/Items/GOM/LegPads5_5.dtx,707D72D0
+NanoTech Voltaic Leg Pads,373,5,0,11,LegPads6,Skins/Items/GOM/LegPads6_6.dtx,707D7360
+NanoTech Cognizant Leg Pads,374,5,0,11,LegPads7,Skins/Items/GOM/LegPads7_7.dtx,707D73F0
+Hypobaric Leg Pads,375,5,0,11,LegPads4,Skins/Items/BOS/LegPads4_4.dtx,707D7480
+Metabolic Leg Pads,376,5,0,11,LegPads5,Skins/Items/BOS/LegPads5_5.dtx,707D7510
+Venom Leg Pads,377,5,0,11,LegPads6,Skins/Items/BOS/LegPads6_6.dtx,707D75A0
+Detox Combat Leg Pads,378,5,0,11,LegPads7,Skins/Items/BOS/LegPads7_7.dtx,707D7630
+Delta Powered Leg Pads,379,5,0,11,LegPads4,Skins/Items/MOB/LegPads4_4.dtx,707D76C0
+Havoc Powered Leg Pads,380,5,0,11,LegPads5,Skins/Items/MOB/LegPads5_5.dtx,707D7750
+Firstborn Powered Leg Pads,381,5,0,11,LegPads6,Skins/Items/MOB/LegPads6_6.dtx,707D77E0
+Legionnaire Powered Leg Pads,382,5,0,11,LegPads7,Skins/Items/MOB/LegPads7_7.dtx,707D7870
+PreMet Buffer Leg Pads,383,5,3,11,LegPads4,Skins/Items/CMG/LegPads4_4.dtx,707D7900
+PreMet Contact Leg Pads,384,5,3,11,LegPads5,Skins/Items/CMG/LegPads5_5.dtx,707D7990
+PreMet Collision Leg Pads,385,5,3,11,LegPads6,Skins/Items/CMG/LegPads6_6.dtx,707D7A20
+PreMet Impact Leg Pads,386,5,3,11,LegPads7,Skins/Items/CMG/LegPads7_7.dtx,707D7AB0
+Dilatant 46b Leg Pads,387,5,0,11,LegPads4,Skins/Items/EC/LegPads4_4.dtx,707D7B40
+Aramid Modified Leg Pads,388,5,0,11,LegPads5,Skins/Items/EC/LegPads5_5.dtx,707D7BD0
+Dilatant 50b Assault Leg Pads,389,5,0,11,LegPads6,Skins/Items/EC/LegPads6_6.dtx,707D7C60
+Aramid Basic Leg Pads,390,5,0,11,LegPads7,Skins/Items/EC/LegPads7_7.dtx,707D7CF0
+Infensus Minimalist Leg Pads,391,5,6,11,LegPads4,Skins/Items/VTX/LegPads4_4.dtx,707D7D80
+Infensus Shock Leg Pads,392,5,6,11,LegPads5,Skins/Items/VTX/LegPads5_5.dtx,707D7E10
+Infensus X1 Assault Leg Pads,393,5,6,11,LegPads6,Skins/Items/VTX/LegPads6_6.dtx,707D7EA0
+Infensus Heavy Leg Pads,394,5,6,11,LegPads7,Skins/Items/VTX/LegPads7_7.dtx,707D7F30
+XenoTech Expeditionary Leg Pads,395,5,37,11,LegPads7,Skins/Items/Standard/LegPads7_8.dtx,707D7FC0
+Exile Leg Pads,396,5,37,11,LegPads6,Skins/Items/Standard/LegPads6_9.dtx,707D8050
+Locans Stabilized Leg Pads,397,5,5,11,LegPads7,Skins/Items/LED/LegPads7_10.dtx,707D80E0
+Pythica Durable Battle Leg Pads,398,5,4,11,LegPads7,Skins/Items/FDC/LegPads7_10.dtx,707D8170
+NanoTech Vitality Leg Pads,399,5,0,11,LegPads7,Skins/Items/GOM/LegPads7_10.dtx,707D8200
+Leech Leg Pads,400,5,0,11,LegPads7,Skins/Items/BOS/LegPads7_10.dtx,707D8290
+Justicar Powered Leg Pads,401,5,0,11,LegPads7,Skins/Items/MOB/LegPads7_10.dtx,707D8320
+PreMet Tremor Leg Pads,402,5,3,11,LegPads7,Skins/Items/CMG/LegPads7_10.dtx,707D83B0
+Aramid Altered Leg Pads,403,5,0,11,LegPads7,Skins/Items/EC/LegPads7_10.dtx,707D8440
+Infensus Essentials Leg Pads,404,5,6,11,LegPads7,Skins/Items/VTX/LegPads7_10.dtx,707D84D0
+Jack-o'-lantern Leg Pads,405,5,37,11,LegPads4,Skins/Items/Standard/LegPads4_11.dtx,707D8560
+Skeleton Leg Pads,406,5,37,11,LegPads2,Skins/Items/Standard/LegPads2_12.dtx,707D85F0
+Backer Leg Pads,407,5,37,11,LegPads4,Skins/Items/Standard/LegPads4_13.dtx,707D8680
+Envirotech Gloves (Male),410,5,37,10,Hands2,Skins/Items/Standard/m_Hands2_1.dtx,707D8710
+Infusion Gloves (Male),411,5,37,10,Hands2,Skins/Items/Standard/m_Hands2_2.dtx,707D87A0
+Infostyle Gloves (Male),412,5,37,10,Hands2,Skins/Items/Standard/m_Hands2_3.dtx,707D8830
+Locans Defense Gloves (Male),413,5,5,10,Hands2,Skins/Items/LED/m_Hands2_4.dtx,707D88C0
+Locans Ethereal Gloves (Male),414,5,5,10,Hands2,Skins/Items/LED/m_Hands2_5.dtx,707D8950
+Locans Patrol Gloves (Male),415,5,5,10,Hands2,Skins/Items/LED/m_Hands2_6.dtx,707D89E0
+Locans Pressured Gloves (Male),416,5,5,10,Hands2,Skins/Items/LED/m_Hands2_7.dtx,707D8A70
+Pythica Special Operations Gloves (Male),417,5,4,10,Hands2,Skins/Items/FDC/m_Hands2_4.dtx,707D8B00
+Pythica Mobile Infantry Gloves (Male),418,5,4,10,Hands2,Skins/Items/FDC/m_Hands2_5.dtx,707D8B90
+Pythica S1 Gloves (Male),419,5,4,10,Hands2,Skins/Items/FDC/m_Hands2_6.dtx,707D8C20
+Pythica Sustained Battle Gloves (Male),420,5,4,10,Hands2,Skins/Items/FDC/m_Hands2_7.dtx,707D8CB0
+NanoTech Trauma Gloves (Male),421,5,0,10,Hands2,Skins/Items/GOM/m_Hands2_4.dtx,707D8D40
+NanoTech Scout Gloves (Male),422,5,0,10,Hands2,Skins/Items/GOM/m_Hands2_5.dtx,707D8DD0
+NanoTech Voltaic Gloves (Male),423,5,0,10,Hands2,Skins/Items/GOM/m_Hands2_6.dtx,707D8E60
+NanoTech Cognizant Gloves (Male),424,5,0,10,Hands2,Skins/Items/GOM/m_Hands2_7.dtx,707D8EF0
+Hypobaric Gloves (Male),425,5,0,10,Hands2,Skins/Items/BOS/m_Hands2_4.dtx,707D8F80
+Metabolic Gloves (Male),426,5,0,10,Hands2,Skins/Items/BOS/m_Hands2_5.dtx,707D9010
+Venom Gloves (Male),427,5,0,10,Hands2,Skins/Items/BOS/m_Hands2_6.dtx,707D90A0
+Detox Combat Gloves (Male),428,5,0,10,Hands2,Skins/Items/BOS/m_Hands2_7.dtx,707D9130
+Delta Powered Gloves (Male),429,5,0,10,Hands2,Skins/Items/MOB/m_Hands2_4.dtx,707D91C0
+Havoc Powered Gloves (Male),430,5,0,10,Hands2,Skins/Items/MOB/m_Hands2_5.dtx,707D9250
+Firstborn Powered Gloves (Male),431,5,0,10,Hands2,Skins/Items/MOB/m_Hands2_6.dtx,707D92E0
+Legionnaire Powered Gloves (Male),432,5,0,10,Hands2,Skins/Items/MOB/m_Hands2_7.dtx,707D9370
+PreMet Buffer Gloves (Male),433,5,3,10,Hands2,Skins/Items/CMG/m_Hands2_4.dtx,707D9400
+PreMet Contact Gloves (Male),434,5,3,10,Hands2,Skins/Items/CMG/m_Hands2_5.dtx,707D9490
+PreMet Collision Gloves (Male),435,5,3,10,Hands2,Skins/Items/CMG/m_Hands2_6.dtx,707D9520
+PreMet Impact Gloves (Male),436,5,3,10,Hands2,Skins/Items/CMG/m_Hands2_7.dtx,707D95B0
+Dilatant 46b Gloves (Male),437,5,0,10,Hands2,Skins/Items/EC/m_Hands2_4.dtx,707D9640
+Aramid Modified Gloves (Male),438,5,0,10,Hands2,Skins/Items/EC/m_Hands2_5.dtx,707D96D0
+Dilatant 50b Gloves (Male),439,5,0,10,Hands2,Skins/Items/EC/m_Hands2_6.dtx,707D9760
+Aramid Basic Gloves (Male),440,5,0,10,Hands2,Skins/Items/EC/m_Hands2_7.dtx,707D97F0
+Infensus Minimalist Gloves (Male),441,5,6,10,Hands2,Skins/Items/VTX/m_Hands2_4.dtx,707D9880
+Infensus Shock Gloves (Male),442,5,6,10,Hands2,Skins/Items/VTX/m_Hands2_5.dtx,707D9910
+Infensus X1 Assault Gloves (Male),443,5,6,10,Hands2,Skins/Items/VTX/m_Hands2_6.dtx,707D99A0
+Infensus Heavy Gloves (Male),444,5,6,10,Hands2,Skins/Items/VTX/m_Hands2_7.dtx,707D9A30
+Hockey Gloves (Female),445,5,37,10,Hands2,Skins/Items/Standard/f_Hands2_1.dtx,707D9AC0
+Egyptian Knight (Female),446,5,37,10,Hands2,Skins/Items/Standard/f_Hands2_2.dtx,707D9B50
+Crystal Gloves (Female),447,5,37,10,Hands2,Skins/Items/Standard/f_Hands2_3.dtx,707D9BE0
+Locans Defense Gloves(Female),448,5,5,10,Hands2,Skins/Items/LED/f_Hands2_4.dtx,707D9C70
+Locans Ethereal Gloves (Female),449,5,5,10,Hands2,Skins/Items/LED/f_Hands2_5.dtx,707D9D00
+Locans Patrol Gloves (Female),450,5,5,10,Hands2,Skins/Items/LED/f_Hands2_6.dtx,707D9D90
+Locans Pressured Gloves (Female),451,5,5,10,Hands2,Skins/Items/LED/f_Hands2_7.dtx,707D9E20
+Pythica Special Operations Gloves (Female),452,5,4,10,Hands2,Skins/Items/FDC/f_Hands2_4.dtx,707D9EB0
+Pythica Mobile Infantry Gloves (Female),453,5,4,10,Hands2,Skins/Items/FDC/f_Hands2_5.dtx,707D9F40
+Pythica S1 Gloves (Female),454,5,4,10,Hands2,Skins/Items/FDC/f_Hands2_6.dtx,707D9FD0
+Pythica Sustained Battle Gloves (Female),455,5,4,10,Hands2,Skins/Items/FDC/f_Hands2_7.dtx,707DA060
+NanoTech Trauma Gloves (Female),456,5,0,10,Hands2,Skins/Items/GOM/f_Hands2_4.dtx,707DA0F0
+NanoTech Scout Gloves (Female),457,5,0,10,Hands2,Skins/Items/GOM/f_Hands2_5.dtx,707DA180
+NanoTech Voltaic Gloves (Female),458,5,0,10,Hands2,Skins/Items/GOM/f_Hands2_6.dtx,707DA210
+NanoTech Cognizant Gloves (Female),459,5,0,10,Hands2,Skins/Items/GOM/f_Hands2_7.dtx,707DA2A0
+Hypobaric Gloves (Female),460,5,0,10,Hands2,Skins/Items/BOS/f_Hands2_4.dtx,707DA330
+Metabolic Gloves (Female),461,5,0,10,Hands2,Skins/Items/BOS/f_Hands2_5.dtx,707DA3C0
+Venom Gloves (Female),462,5,0,10,Hands2,Skins/Items/BOS/f_Hands2_6.dtx,707DA450
+Detox Combat Gloves (Female),463,5,0,10,Hands2,Skins/Items/BOS/f_Hands2_7.dtx,707DA4E0
+Delta Powered Gloves (Female),464,5,0,10,Hands2,Skins/Items/MOB/f_Hands2_4.dtx,707DA570
+Havoc Powered Gloves (Female),465,5,0,10,Hands2,Skins/Items/MOB/f_Hands2_5.dtx,707DA600
+Firstborn Powered Gloves (Female),466,5,0,10,Hands2,Skins/Items/MOB/f_Hands2_6.dtx,707DA690
+Legionnaire Powered Gloves (Female),467,5,0,10,Hands2,Skins/Items/MOB/f_Hands2_7.dtx,707DA720
+PreMet Buffer Gloves (Female),468,5,3,10,Hands2,Skins/Items/CMG/f_Hands2_4.dtx,707DA7B0
+PreMet Contact Gloves (Female),469,5,3,10,Hands2,Skins/Items/CMG/f_Hands2_5.dtx,707DA840
+PreMet Collision Gloves (Female),470,5,3,10,Hands2,Skins/Items/CMG/f_Hands2_6.dtx,707DA8D0
+PreMet Impact Gloves (Female),471,5,3,10,Hands2,Skins/Items/CMG/f_Hands2_7.dtx,707DA960
+Dilatant 46b Gloves (Female),472,5,0,10,Hands2,Skins/Items/EC/f_Hands2_4.dtx,707DA9F0
+Aramid Modified Gloves (Female),473,5,0,10,Hands2,Skins/Items/EC/f_Hands2_5.dtx,707DAA80
+Dilatant 50b Gloves (Female),474,5,0,10,Hands2,Skins/Items/EC/f_Hands2_6.dtx,707DAB10
+Aramid Basic Gloves (Female),475,5,0,10,Hands2,Skins/Items/EC/f_Hands2_7.dtx,707DABA0
+Infensus Minimalist Gloves (Female),476,5,6,10,Hands2,Skins/Items/VTX/f_Hands2_4.dtx,707DAC30
+Infensus Shock Gloves (Female),477,5,6,10,Hands2,Skins/Items/VTX/f_Hands2_5.dtx,707DACC0
+Infensus X1 Assault Gloves (Female),478,5,6,10,Hands2,Skins/Items/VTX/f_Hands2_6.dtx,707DAD50
+Infensus Heavy Gloves (Female),479,5,6,10,Hands2,Skins/Items/VTX/f_Hands2_7.dtx,707DADE0
+Incognito Gloves (Male),480,5,37,10,Hands2,Skins/Items/Standard/m_Hands2_8.dtx,707DAE70
+XenoTech Expeditionary Gloves (Male),481,5,37,10,Hands2,Skins/Items/Standard/m_Hands2_9.dtx,707DAF00
+Incognito Gloves (Female),482,5,37,10,Hands2,Skins/Items/Standard/f_Hands2_8.dtx,707DAF90
+Skeleton Gloves (Male),483,5,37,10,Hands2,Skins/Items/Standard/m_Hands2_10.dtx,707DB020
+Skeleton Gloves (Female),484,5,37,10,Hands2,Skins/Items/Standard/f_Hands2_9.dtx,707DB0B0
+Jack-o'-lantern Gloves (Male),485,5,37,10,Hands2,Skins/Items/Standard/m_Hands2_11.dtx,707DB140
+Jack-o'-lantern Gloves (Female),486,5,37,10,Hands2,Skins/Items/Standard/f_Hands2_10.dtx,707DB1D0
+Locans Stabilized Gloves (Female),487,5,5,10,Hands2,Skins/Items/LED/f_Hands2_8.dtx,707DB260
+Locans Stabilized Gloves (Male),488,5,5,10,Hands2,Skins/Items/LED/m_Hands2_8.dtx,707DB2F0
+Pythica Durable Battle Gloves (Female),489,5,4,10,Hands2,Skins/Items/FDC/f_Hands2_8.dtx,707DB380
+Pythica Durable Battle Gloves (Male),490,5,4,10,Hands2,Skins/Items/FDC/m_Hands2_8.dtx,707DB410
+NanoTech Vitality Gloves (Female),491,5,0,10,Hands2,Skins/Items/GOM/f_Hands2_8.dtx,707DB4A0
+NanoTech Vitality Gloves (Male),492,5,0,10,Hands2,Skins/Items/GOM/m_Hands2_8.dtx,707DB530
+Leech Gloves (Female),493,5,0,10,Hands2,Skins/Items/BOS/f_Hands2_8.dtx,707DB5C0
+Leech Gloves (Male),494,5,0,10,Hands2,Skins/Items/BOS/m_Hands2_8.dtx,707DB650
+Justicar Powered Gloves (Female),495,5,0,10,Hands2,Skins/Items/MOB/f_Hands2_8.dtx,707DB6E0
+Justicar Powered Gloves (Male),496,5,0,10,Hands2,Skins/Items/MOB/m_Hands2_8.dtx,707DB770
+PreMet Tremor Gloves (Female),497,5,3,10,Hands2,Skins/Items/CMG/f_Hands2_8.dtx,707DB800
+PreMet Tremor Gloves (Male),498,5,4,10,Hands2,Skins/Items/MOB/m_Hands2_8.dtx,707DB890
+Aramid Altered Gloves (Female),499,5,0,10,Hands2,Skins/Items/EC/f_Hands2_8.dtx,707DB920
+Black Dress Shoes (Male),500,15,0,16,Shoes1,Skins/Characters/General/m_Shoes1_1.dtx,707DF700
+Brown Dress Shoes (Male),501,15,0,16,Shoes1,Skins/Characters/General/m_Shoes1_2.dtx,707DF790
+White Dress Shoes (Male),502,15,0,16,Shoes1,Skins/Characters/General/m_Shoes1_3.dtx,707DF820
+Indirect Design Shoes (Male),503,15,0,16,Shoes2,Skins/Characters/General/m_Shoes2_4.dtx,707DF8B0
+Silent Whisper Shoes (Male),504,15,0,16,Shoes2,Skins/Characters/General/m_Shoes2_5.dtx,707DF940
+Fear To Tread Shoes (Male),505,15,0,16,Shoes3,Skins/Characters/General/m_Shoes3_6.dtx,707DF9D0
+Perfect Step Shoes (Male),506,15,0,16,Shoes3,Skins/Characters/General/m_Shoes3_7.dtx,707DFA60
+Milatech Shoes (Male),507,15,0,16,Shoes3,Skins/Characters/General/m_Shoes3_8.dtx,707DFAF0
+Discreet Dress Shoes (Male),508,15,0,16,Shoes4,Skins/Characters/General/m_Shoes4_9.dtx,707DFB80
+Fine Line Shoes (Male),509,15,0,16,Shoes4,Skins/Characters/General/m_Shoes4_10.dtx,707DFC10
+Lizard Tech Blue Shoes(Female),510,15,0,16,Shoes1,Skins/Characters/General/f_Shoes1_1.dtx,707DFCA0
+Lizard Tech Black Shoes (Female),511,15,0,16,Shoes1,Skins/Characters/General/f_Shoes1_2.dtx,707DFD30
+Scarpa Runner Shoes (Female),512,15,0,16,Shoes1,Skins/Characters/General/f_Shoes1_3.dtx,707DFDC0
+Scarpa Solid Shoes (Female),513,15,0,16,Shoes2,Skins/Characters/General/f_Shoes2_4.dtx,707DFE50
+Scarpa Funk Shoes (Female),514,15,0,16,Shoes2,Skins/Characters/General/f_Shoes2_5.dtx,707DFEE0
+Zapato Dichromatic Boots (Female),515,15,0,16,Shoes3,Skins/Characters/General/f_Shoes3_6.dtx,707DFF70
+Zapato Classic Boots (Female),516,15,0,16,Shoes3,Skins/Characters/General/f_Shoes3_7.dtx,707E0000
+Zapato Studded Boots (Female),517,15,0,16,Shoes3,Skins/Characters/General/f_Shoes3_8.dtx,707E0090
+Zapato Light Ankle Boots (Female),518,15,0,16,Shoes4,Skins/Characters/General/f_Shoes4_9.dtx,707E0120
+Zapato Dark Ankle Boots (Female),519,15,0,16,Shoes4,Skins/Characters/General/f_Shoes4_10.dtx,707E01B0
+Esporte All-Terrain Shoes (Male),520,15,0,16,Shoes1,Skins/Characters/General/m_Shoes1_11.dtx,707E0240
+Esporte Comfort Shoes (Male),521,15,0,16,Shoes2,Skins/Characters/General/m_Shoes2_12.dtx,707E02D0
+Esporte Hiking X Shoes (Male),522,15,0,16,Shoes3,Skins/Characters/General/m_Shoes3_13.dtx,707E0360
+Esporte Waterproof Shoes (Male),523,15,0,16,Shoes4,Skins/Characters/General/m_Shoes4_14.dtx,707E03F0
+Klasse Arrow Ankle Boots (Female),524,15,0,16,Shoes1,Skins/Characters/General/f_Shoes1_11.dtx,707E0480
+Esporte Runner Shoes(Female),525,15,0,16,Shoes2,Skins/Characters/General/f_Shoes2_12.dtx,707E0510
+Klasse Avenir High Boots (Female),526,15,0,16,Shoes3,Skins/Characters/General/f_Shoes3_13.dtx,707E05A0
+Klasse Streamline Ankle Boots (Female),527,15,0,16,Shoes4,Skins/Characters/General/f_Shoes4_14.dtx,707E0630
+GIS Shoes (Male),528,15,0,16,Shoes4,Skins/Characters/General/m_Shoes4_15.dtx,707E06C0
+GIS Shoes (Female),529,15,0,16,Shoes4,Skins/Characters/General/f_Shoes4_15.dtx,707E0750
+Workout T-Shirt (Male),610,11,0,14,Torso1,Skins/Characters/LED/m_AVG_Torso1_1.dtx,707E07E0
+Exercise T-Shirt (Male),611,11,0,14,Torso1,Skins/Characters/FDC/m_AVG_Torso1_1.dtx,707E0870
+Day T-Shirt (Male),612,11,0,14,Torso1,Skins/Characters/GOM/m_AVG_Torso1_1.dtx,707E0900
+Shadows T-Shirt (Male),613,11,0,14,Torso1,Skins/Characters/BOS/m_AVG_Torso1_1.dtx,707E0990
+Blood T-Shirt (Male),614,11,0,14,Torso1,Skins/Characters/BOS/m_AVG_Torso1_2.dtx,707E0A20
+Initiation T-Shirt (Male),615,11,0,14,Torso1,Skins/Characters/MOB/m_AVG_Torso1_1.dtx,707E0AB0
+Hiring T-Shirt (Male),616,11,0,14,Torso1,Skins/Characters/MOB/m_AVG_Torso1_2.dtx,707E0B40
+Gold Brand T-Shirt (Male),617,11,0,14,Torso1,Skins/Characters/CMG/m_AVG_Torso1_1.dtx,707E0BD0
+Gray Brand T-Shirt (Male),618,11,0,14,Torso1,Skins/Characters/EC/m_AVG_Torso1_1.dtx,707E0C60
+Neon Brand T-Shirt (Male),619,11,0,14,Torso1,Skins/Characters/VTX/m_AVG_Torso1_1.dtx,707E0CF0
+All-weather T-Shirt (Male),620,11,0,14,Torso1,Skins/Characters/LED/m_AVG_Torso1_6.dtx,707E0D80
+Squad T-Shirt (Male),621,11,0,14,Torso1,Skins/Characters/FDC/m_AVG_Torso1_6.dtx,707E0E10
+Nature T-Shirt (Male),622,11,0,14,Torso1,Skins/Characters/GOM/m_AVG_Torso1_6.dtx,707E0EA0
+Style T-Shirt (Male),623,11,0,14,Torso1,Skins/Characters/MOB/m_AVG_Torso1_6.dtx,707E0F30
+Gateway T-Shirt (Male),624,11,0,14,Torso1,Skins/Characters/CMG/m_AVG_Torso1_6.dtx,707E0FC0
+Contract T-Shirt (Male),625,11,0,14,Torso1,Skins/Characters/EC/m_AVG_Torso1_6.dtx,707E1050
+Celebration T-Shirt (Male),626,11,0,14,Torso1,Skins/Characters/VTX/m_AVG_Torso1_6.dtx,707E10E0
+Trainee Jacket (Male),630,11,0,14,Torso2,Skins/Characters/LED/m_AVG_Torso2_2.dtx,707E1170
+Patrolman's Jacket (Male),631,11,0,14,Torso2,Skins/Characters/LED/m_AVG_Torso2_3.dtx,707E1200
+Street Judge Jacket (Male),632,11,0,14,Torso2,Skins/Characters/LED/m_AVG_Torso2_4.dtx,707E1290
+Dominion Fatigue (Male),633,11,0,14,Torso2,Skins/Characters/FDC/m_AVG_Torso2_2.dtx,707E1320
+Viper Assault Jacket (Male),634,11,0,14,Torso2,Skins/Characters/FDC/m_AVG_Torso2_3.dtx,707E13B0
+Ryubusa Jacket (Male),635,11,0,14,Torso2,Skins/Characters/FDC/m_AVG_Torso2_4.dtx,707E1440
+Turtle-dove Jacket (Male),636,11,0,14,Torso2,Skins/Characters/GOM/m_AVG_Torso2_2.dtx,707E14D0
+Emerald Dove Jacket (Male),637,11,0,14,Torso2,Skins/Characters/GOM/m_AVG_Torso2_3.dtx,707E1560
+Penance Jacket (Male),638,11,0,14,Torso2,Skins/Characters/BOS/m_AVG_Torso2_3.dtx,707E15F0
+Leaders 47 Special (Male),639,11,0,14,Torso2,Skins/Characters/MOB/m_AVG_Torso2_3.dtx,707E1680
+Commando Jacket (Male),640,11,0,14,Torso2,Skins/Characters/MOB/m_AVG_Torso2_4.dtx,707E1710
+Sand Burn Jacket (Male),641,11,0,14,Torso2,Skins/Characters/CMG/m_AVG_Torso2_2.dtx,707E17A0
+Canary Jacket (Male),642,11,0,14,Torso2,Skins/Characters/CMG/m_AVG_Torso2_3.dtx,707E1830
+Prospectors Rock (Male),643,11,0,14,Torso2,Skins/Characters/CMG/m_AVG_Torso2_4.dtx,707E18C0
+ALM Jacket (Male),644,11,0,14,Torso2,Skins/Characters/EC/m_AVG_Torso2_2.dtx,707E1950
+Zivce6 Jacket (Male),645,11,0,14,Torso2,Skins/Characters/EC/m_AVG_Torso2_3.dtx,707E19E0
+Infinity Jacket (Male),646,11,0,14,Torso2,Skins/Characters/VTX/m_AVG_Torso2_2.dtx,707E1A70
+ Amplitude Jacket (Male),647,11,0,14,Torso2,Skins/Characters/VTX/m_AVG_Torso2_3.dtx,707E1B00
+Blue Patrol Jacket (Male),648,11,0,14,Torso2,Skins/Characters/LED/m_AVG_Torso2_7.dtx,707E1B90
+Green Patrol Jacket (Male),649,11,0,14,Torso2,Skins/Characters/FDC/m_AVG_Torso2_7.dtx,707E1C20
+Protester Jacket (Male),650,11,0,14,Torso2,Skins/Characters/GOM/m_AVG_Torso2_7.dtx,707E1CB0
+Shadow Wrap (Male),651,11,0,14,Torso2,Skins/Characters/BOS/m_AVG_Torso2_6.dtx,707E1D40
+Stylized Jacket (Male),652,11,0,14,Torso2,Skins/Characters/MOB/m_AVG_Torso2_7.dtx,707E1DD0
+Gray Defense Jacket (Male),653,11,0,14,Torso2,Skins/Characters/EC/m_AVG_Torso2_7.dtx,707E1E60
+Neon Defense Jacket (Male),654,11,0,14,Torso2,Skins/Characters/VTX/m_AVG_Torso2_7.dtx,707E1EF0
+Patrolman Trenchcoat (Male),670,11,0,14,Torso3,Skins/Characters/LED/m_AVG_Torso3_5.dtx,707E1F80
+Soldier Trenchcoat (Male),671,11,0,14,Torso3,Skins/Characters/FDC/m_AVG_Torso3_5.dtx,707E2010
+Anarchy Trenchcoat (Male),672,11,0,14,Torso3,Skins/Characters/BOS/m_AVG_Torso3_4.dtx,707E20A0
+Riot Trenchcoat (Male),673,11,0,14,Torso3,Skins/Characters/BOS/m_AVG_Torso3_5.dtx,707E2130
+Assassin Trenchcoat (Male),674,11,0,14,Torso3,Skins/Characters/MOB/m_AVG_Torso3_5.dtx,707E21C0
+Miner Trenchcoat (Male),675,11,0,14,Torso3,Skins/Characters/CMG/m_AVG_Torso3_5.dtx,707E2250
+Production Trenchcoat (Male),676,11,0,14,Torso3,Skins/Characters/EC/m_AVG_Torso3_4.dtx,707E22E0
+Explorers Trenchcoat (Male),677,11,0,14,Torso3,Skins/Characters/EC/m_AVG_Torso3_5.dtx,707E2370
+Technician Trenchcoat (Male),678,11,0,14,Torso3,Skins/Characters/VTX/m_AVG_Torso3_4.dtx,707E2400
+Protector Trenchcoat (Male),679,11,0,14,Torso3,Skins/Characters/LED/m_AVG_Torso3_8.dtx,707E2490
+Assault Trenchcoat (Male),680,11,0,14,Torso3,Skins/Characters/FDC/m_AVG_Torso3_8.dtx,707E2520
+Mankind Trenchcoat (Male),681,11,0,14,Torso3,Skins/Characters/GOM/m_AVG_Torso3_8.dtx,707E25B0
+Trenchcoat of the Shadows (Male),682,11,0,14,Torso3,Skins/Characters/BOS/m_AVG_Torso3_7.dtx,707E2640
+Utility Trenchcoat (Male),683,11,0,14,Torso3,Skins/Characters/MOB/m_AVG_Torso3_8.dtx,707E26D0
+Colonization Trenchcoat (Male),684,11,0,14,Torso3,Skins/Characters/CMG/m_AVG_Torso3_7.dtx,707E2760
+Neon Technician Trenchcoat (Male),685,11,0,14,Torso3,Skins/Characters/VTX/m_AVG_Torso3_8.dtx,707E27F0
+Defender Robe (Male),690,11,0,14,Torso4,Skins/Characters/GOM/m_AVG_Torso4_4.dtx,707E2880
+Elder Robe (Male),691,11,0,14,Torso4,Skins/Characters/GOM/m_AVG_Torso4_5.dtx,707E2910
+Luxury Robe (Male),692,11,0,14,Torso4,Skins/Characters/VTX/m_AVG_Torso4_5.dtx,707E29A0
+Robe of Shadows (Male),693,11,0,14,Torso4,Skins/Characters/BOS/m_AVG_Torso4_8.dtx,707E2A30
+Deep Mines Duster (Male),694,11,0,14,Torso4,Skins/Characters/CMG/m_AVG_Torso4_8.dtx,707E2AC0
+Gray Robe (Male),695,11,0,14,Torso4,Skins/Characters/EC/m_AVG_Torso4_8.dtx,707E2B50
+Patrol Trousers (Male),700,12,0,15,Legs1,Skins/Characters/LED/m_AVG_Legs1_1.dtx,707E2BE0
+Liberation Trousers (Male),701,12,0,15,Legs1,Skins/Characters/FDC/m_AVG_Legs1_1.dtx,707E2C70
+Diplomatic Trousers (Male),702,12,0,15,Legs1,Skins/Characters/GOM/m_AVG_Legs1_1.dtx,707E2D00
+Riot Pants (Male),703,12,0,15,Legs1,Skins/Characters/BOS/m_AVG_Legs1_1.dtx,707E2D90
+Chaotic Pants (Male),704,12,0,15,Legs1,Skins/Characters/BOS/m_AVG_Legs1_2.dtx,707E2E20
+Hitman Trousers (Male),705,12,0,15,Legs1,Skins/Characters/MOB/m_AVG_Legs1_1.dtx,707E2EB0
+Battle Trousers (Male),706,12,0,15,Legs1,Skins/Characters/MOB/m_AVG_Legs1_2.dtx,707E2F40
+Mining Trousers (Male),707,12,0,15,Legs1,Skins/Characters/CMG/m_AVG_Legs1_1.dtx,707E2FD0
+Producer Pants (Male),708,12,0,15,Legs1,Skins/Characters/EC/m_AVG_Legs1_1.dtx,707E3060
+Technician Trousers (Male),709,12,0,15,Legs1,Skins/Characters/VTX/m_AVG_Legs1_1.dtx,707E30F0
+Standard Patrol Trousers (Male),710,12,0,15,Legs1,Skins/Characters/LED/m_AVG_Legs1_6.dtx,707E3180
+Casual Trousers (Male),711,12,0,15,Legs1,Skins/Characters/FDC/m_AVG_Legs1_6.dtx,707E3210
+Protector Jeans (Male),712,12,0,15,Legs1,Skins/Characters/GOM/m_AVG_Legs1_6.dtx,707E32A0
+Red Spandex Pants (Male),713,12,0,15,Legs1,Skins/Characters/BOS/m_AVG_Legs1_6.dtx,707E3330
+Assault Pants (Male),714,12,0,15,Legs1,Skins/Characters/MOB/m_AVG_Legs1_6.dtx,707E33C0
+Executive Trousers (Male),715,12,0,15,Legs1,Skins/Characters/CMG/m_AVG_Legs1_6.dtx,707E3450
+Workers’ Pants (Male),716,12,0,15,Legs1,Skins/Characters/EC/m_AVG_Legs1_6.dtx,707E34E0
+Analytical Trousers (Male),717,12,0,15,Legs1,Skins/Characters/VTX/m_AVG_Legs1_6.dtx,707E3570
+Casual Trousers (Male),720,12,0,15,Legs2,Skins/Characters/LED/m_AVG_Legs2_2.dtx,707E3600
+Rugged Trousers (Male),721,12,0,15,Legs2,Skins/Characters/LED/m_AVG_Legs2_3.dtx,707E3690
+Anti-Riot Pants (Male),722,12,0,15,Legs2,Skins/Characters/LED/m_AVG_Legs2_4.dtx,707E3720
+Tactical Trousers (Male),723,12,0,15,Legs2,Skins/Characters/FDC/m_AVG_Legs2_2.dtx,707E37B0
+Assault Trousers (Male),724,12,0,15,Legs2,Skins/Characters/FDC/m_AVG_Legs2_3.dtx,707E3840
+Raid Trousers (Male),725,12,0,15,Legs2,Skins/Characters/FDC/m_AVG_Legs2_4.dtx,707E38D0
+Sentinel Pants (Male),726,12,0,15,Legs2,Skins/Characters/GOM/m_AVG_Legs2_2.dtx,707E3960
+Light Defender Trousers (Male),727,12,0,15,Legs2,Skins/Characters/GOM/m_AVG_Legs2_3.dtx,707E39F0
+Anarchy Trousers (Male),728,12,0,15,Legs2,Skins/Characters/BOS/m_AVG_Legs2_3.dtx,707E3A80
+Executioner Trousers (Male),729,12,0,15,Legs2,Skins/Characters/MOB/m_AVG_Legs2_3.dtx,707E3B10
+Predator Trousers (Male),730,12,0,15,Legs2,Skins/Characters/MOB/m_AVG_Legs2_4.dtx,707E3BA0
+Hiking Trousers (Male),731,12,0,15,Legs2,Skins/Characters/CMG/m_AVG_Legs2_2.dtx,707E3C30
+Miners’ Pants (Male),732,12,0,15,Legs2,Skins/Characters/CMG/m_AVG_Legs2_3.dtx,707E3CC0
+Aurelian Combat Trousers (Male),733,12,0,15,Legs2,Skins/Characters/CMG/m_AVG_Legs2_4.dtx,707E3D50
+Gray Executive Trousers (Male),734,12,0,15,Legs2,Skins/Characters/EC/m_AVG_Legs2_2.dtx,707E3DE0
+Management Trousers (Male),735,12,0,15,Legs2,Skins/Characters/EC/m_AVG_Legs2_3.dtx,707E3E70
+Maintenance Trousers (Male),736,12,0,15,Legs2,Skins/Characters/VTX/m_AVG_Legs2_2.dtx,707E3F00
+Innovator Trousers (Male),737,12,0,15,Legs2,Skins/Characters/VTX/m_AVG_Legs2_3.dtx,707E3F90
+Service Trousers (Male),738,12,0,15,Legs2,Skins/Characters/LED/m_AVG_Legs2_7.dtx,707E4020
+Reconnaissance Trousers (Male),739,12,0,15,Legs2,Skins/Characters/FDC/m_AVG_Legs2_7.dtx,707E40B0
+Arbre Trousers (Male),740,12,0,15,Legs2,Skins/Characters/GOM/m_AVG_Legs2_7.dtx,707E4140
+Havoc Trousers (Male),741,12,0,15,Legs2,Skins/Characters/BOS/m_AVG_Legs2_7.dtx,707E41D0
+Legionnaire Trousers (Male),742,12,0,15,Legs2,Skins/Characters/MOB/m_AVG_Legs2_7.dtx,707E4260
+Mijnwerker Trousers(Male),743,12,0,15,Legs2,Skins/Characters/CMG/m_AVG_Legs2_7.dtx,707E42F0
+Secretarial Trousers (Male),744,12,0,15,Legs2,Skins/Characters/EC/m_AVG_Legs2_7.dtx,707E4380
+Neon Research Trousers (Male),745,12,0,15,Legs2,Skins/Characters/VTX/m_AVG_Legs2_7.dtx,707E4410
+Blue Tactical Trousers (Male),760,12,0,15,Legs3,Skins/Characters/LED/m_AVG_Legs3_5.dtx,707E44A0
+Staff Trousers (Male),761,12,0,15,Legs3,Skins/Characters/FDC/m_AVG_Legs3_5.dtx,707E4530
+Mojo Trousers (Male),762,12,0,15,Legs3,Skins/Characters/BOS/m_AVG_Legs3_4.dtx,707E45C0
+Pharmaceutical Trousers (Male),763,12,0,15,Legs3,Skins/Characters/BOS/m_AVG_Legs3_5.dtx,707E4650
+Soldner Trousers (Male),764,12,0,15,Legs3,Skins/Characters/MOB/m_AVG_Legs3_5.dtx,707E46E0
+Bergmann Trousers (Male),765,12,0,15,Legs3,Skins/Characters/CMG/m_AVG_Legs3_5.dtx,707E4770
+Nucleo Trousers (Male),766,12,0,15,Legs3,Skins/Characters/EC/m_AVG_Legs3_4.dtx,707E4800
+Marketer’s Trousers (Male),767,12,0,15,Legs3,Skins/Characters/EC/m_AVG_Legs3_5.dtx,707E4890
+Molecular Trousers (Male),768,12,0,15,Legs3,Skins/Characters/VTX/m_AVG_Legs3_4.dtx,707E4920
+Liberty Trousers (Male),780,12,0,15,Legs4,Skins/Characters/GOM/m_AVG_Legs4_4.dtx,707E49B0
+Harmony Trousers (Male),781,12,0,15,Legs4,Skins/Characters/GOM/m_AVG_Legs4_5.dtx,707E4A40
+Casual Trousers (Male),782,12,0,15,Legs4,Skins/Characters/VTX/m_AVG_Legs4_5.dtx,707E4AD0
+Blue Tank Top (Female),790,11,0,14,Torso1,Skins/Characters/LED/f_AVG_Torso1_1.dtx,707E4B60
+Advocate T-Shirt (Female),791,11,0,14,Torso1,Skins/Characters/LED/f_AVG_Torso1_2.dtx,707E4BF0
+Armed Forces T-Shirt (Female),792,11,0,14,Torso1,Skins/Characters/FDC/f_AVG_Torso1_1.dtx,707E4C80
+Militant T-Shirt (Female),793,11,0,14,Torso1,Skins/Characters/FDC/f_AVG_Torso1_2.dtx,707E4D10
+Purity T-Shirt (Female),794,11,0,14,Torso1,Skins/Characters/GOM/f_AVG_Torso1_1.dtx,707E4DA0
+Frenzied T-Shirt (Female),795,11,0,14,Torso1,Skins/Characters/BOS/f_AVG_Torso1_1.dtx,707E4E30
+Sinister T-Shirt (Female),796,11,0,14,Torso1,Skins/Characters/BOS/f_AVG_Torso1_2.dtx,707E4EC0
+Death Dealer T-Shirt (Female),797,11,0,14,Torso1,Skins/Characters/MOB/f_AVG_Torso1_1.dtx,707E4F50
+Eradicator T-Shirt (Female),798,11,0,14,Torso1,Skins/Characters/MOB/f_AVG_Torso1_2.dtx,707E4FE0
+Excavator T-Shirt (Female),799,11,0,14,Torso1,Skins/Characters/CMG/f_AVG_Torso1_1.dtx,707E5070
+Casual Leather Jacket (Female),800,11,0,14,Torso1,Skins/Characters/EC/f_AVG_Torso1_1.dtx,707E5100
+Casual T-Shirt (Female),801,11,0,14,Torso1,Skins/Characters/VTX/f_AVG_Torso1_1.dtx,707E5190
+Patrolwoman T-Shirt (Female),802,11,0,14,Torso1,Skins/Characters/LED/f_AVG_Torso1_6.dtx,707E5220
+Freedom Fatigue Top (Female),803,11,0,14,Torso1,Skins/Characters/FDC/f_AVG_Torso1_6.dtx,707E52B0
+Harmony Top (Female),804,11,0,14,Torso1,Skins/Characters/GOM/f_AVG_Torso1_6.dtx,707E5340
+Power Top (Female),805,11,0,14,Torso1,Skins/Characters/MOB/f_AVG_Torso1_6.dtx,707E53D0
+Digger Top (Female),806,11,0,14,Torso1,Skins/Characters/CMG/f_AVG_Torso1_6.dtx,707E5460
+Casual Fridays Top (Female),807,11,0,14,Torso1,Skins/Characters/EC/f_AVG_Torso1_6.dtx,707E54F0
+Travel Top (Female),808,11,0,14,Torso1,Skins/Characters/VTX/f_AVG_Torso1_6.dtx,707E5580
+Peace Keeper Jacket (Female),810,11,0,14,Torso2,Skins/Characters/LED/f_AVG_Torso2_3.dtx,707E5610
+Blue Knight Jacket (Female),811,11,0,14,Torso2,Skins/Characters/LED/f_AVG_Torso2_4.dtx,707E56A0
+Cadet Jacket (Female),812,11,0,14,Torso2,Skins/Characters/FDC/f_AVG_Torso2_3.dtx,707E5730
+Parade Jacket (Female),813,11,0,14,Torso2,Skins/Characters/FDC/f_AVG_Torso2_4.dtx,707E57C0
+Harmony Jacket (Female),814,11,0,14,Torso2,Skins/Characters/GOM/f_AVG_Torso2_2.dtx,707E5850
+Celestial Jacket (Female),815,11,0,14,Torso2,Skins/Characters/GOM/f_AVG_Torso2_3.dtx,707E58E0
+Jackal Jacket (Female),816,11,0,14,Torso2,Skins/Characters/BOS/f_AVG_Torso2_3.dtx,707E5970
+Muscle Jacket (Female),817,11,0,14,Torso2,Skins/Characters/MOB/f_AVG_Torso2_3.dtx,707E5A00
+Fury Jacket(Female),818,11,0,14,Torso2,Skins/Characters/MOB/f_AVG_Torso2_4.dtx,707E5A90
+Tunnel Jacket (Female),819,11,0,14,Torso2,Skins/Characters/CMG/f_AVG_Torso2_2.dtx,707E5B20
+Scrubber Jacket (Female),820,11,0,14,Torso2,Skins/Characters/CMG/f_AVG_Torso2_3.dtx,707E5BB0
+Luna Jacket (Female),821,11,0,14,Torso2,Skins/Characters/CMG/f_AVG_Torso2_4.dtx,707E5C40
+Gray Defense Jacket (Female),822,11,0,14,Torso2,Skins/Characters/EC/f_AVG_Torso2_2.dtx,707E5CD0
+Gray Assault Jacket (Female),823,11,0,14,Torso2,Skins/Characters/EC/f_AVG_Torso2_3.dtx,707E5D60
+Neon Defense Jacket (Female),824,11,0,14,Torso2,Skins/Characters/VTX/f_AVG_Torso2_2.dtx,707E5DF0
+Neon Assault Jacket (Female),825,11,0,14,Torso2,Skins/Characters/VTX/f_AVG_Torso2_3.dtx,707E5E80
+Blue Defense Jacket (Female),826,11,0,14,Torso2,Skins/Characters/LED/f_AVG_Torso2_7.dtx,707E5F10
+Army Green Defense Jacket (Female),827,11,0,14,Torso2,Skins/Characters/FDC/f_AVG_Torso2_7.dtx,707E5FA0
+Protesters Jacket (Female),828,11,0,14,Torso2,Skins/Characters/GOM/f_AVG_Torso2_7.dtx,707E6030
+Anarchy Jacket (Female),829,11,0,14,Torso2,Skins/Characters/BOS/f_AVG_Torso2_6.dtx,707E60C0
+Assassin Jacket (Female),830,11,0,14,Torso2,Skins/Characters/MOB/f_AVG_Torso2_7.dtx,707E6150
+Gray Mining Jacket (Female),831,11,0,14,Torso2,Skins/Characters/EC/f_AVG_Torso2_7.dtx,707E61E0
+Neon Mining Jacket (Female),832,11,0,14,Torso2,Skins/Characters/VTX/f_AVG_Torso2_7.dtx,707E6270
+Blue Patrol Trenchcoat (Female),850,11,0,14,Torso3,Skins/Characters/LED/f_AVG_Torso3_5.dtx,707E6300
+Army Green Patrol Trenchcoat (Female),851,11,0,14,Torso3,Skins/Characters/FDC/f_AVG_Torso3_5.dtx,707E6390
+Chaos Trenchcoat (Female),852,11,0,14,Torso3,Skins/Characters/BOS/f_AVG_Torso3_4.dtx,707E6420
+Anarchy Trenchcoat (Female),853,11,0,14,Torso3,Skins/Characters/BOS/f_AVG_Torso3_5.dtx,707E64B0
+Assassin Trenchcoat (Female),854,11,0,14,Torso3,Skins/Characters/MOB/f_AVG_Torso3_5.dtx,707E6540
+Gray Defense Trenchcoat (Female),855,11,0,14,Torso3,Skins/Characters/CMG/f_AVG_Torso3_5.dtx,707E65D0
+Gray Mining Trenchcoat (Female),856,11,0,14,Torso3,Skins/Characters/EC/f_AVG_Torso3_4.dtx,707E6660
+Production Trenchcoat (Female),857,11,0,14,Torso3,Skins/Characters/EC/f_AVG_Torso3_5.dtx,707E66F0
+Neon Mining Trenchcoat (Female),858,11,0,14,Torso3,Skins/Characters/VTX/f_AVG_Torso3_4.dtx,707E6780
+Protector Trenchcoat (Female),859,11,0,14,Torso3,Skins/Characters/LED/f_AVG_Torso3_8.dtx,707E6810
+Assault Trenchcoat (Female),860,11,0,14,Torso3,Skins/Characters/FDC/f_AVG_Torso3_8.dtx,707E68A0
+Phoenix Trenchcoat (Female),861,11,0,14,Torso3,Skins/Characters/GOM/f_AVG_Torso3_8.dtx,707E6930
+Dark Trench (Female),862,11,0,14,Torso3,Skins/Characters/BOS/f_AVG_Torso3_7.dtx,707E69C0
+Widow Trenchcoat (Female),863,11,0,14,Torso3,Skins/Characters/MOB/f_AVG_Torso3_8.dtx,707E6A50
+Discovery Trenchcoat (Female),864,11,0,14,Torso3,Skins/Characters/CMG/f_AVG_Torso3_7.dtx,707E6AE0
+Neon Defense Trenchcoat (Female),865,11,0,14,Torso3,Skins/Characters/VTX/f_AVG_Torso3_8.dtx,707E6B70
+Protector Robe (Female),870,11,0,14,Torso4,Skins/Characters/GOM/f_AVG_Torso4_4.dtx,707E6C00
+Light Veteran Robe (Female),871,11,0,14,Torso4,Skins/Characters/GOM/f_AVG_Torso4_5.dtx,707E6C90
+Stylized Robe (Female),872,11,0,14,Torso4,Skins/Characters/VTX/f_AVG_Torso4_5.dtx,707E6D20
+Dark Veteran Robe (Female),873,11,0,14,Torso4,Skins/Characters/BOS/f_AVG_Torso4_8.dtx,707E6DB0
+Gold Robe (Female),874,11,0,14,Torso4,Skins/Characters/CMG/f_AVG_Torso4_8.dtx,707E6E40
+Gray Robe (Female),875,11,0,14,Torso4,Skins/Characters/EC/f_AVG_Torso4_8.dtx,707E6ED0
+Patrol Skirt (Female),880,12,0,15,Legs1,Skins/Characters/LED/f_AVG_Legs1_1.dtx,707E6F60
+Defense Skirt (Female),881,12,0,15,Legs1,Skins/Characters/LED/f_AVG_Legs1_2.dtx,707E6FF0
+Soldier Skirt (Female),882,12,0,15,Legs1,Skins/Characters/FDC/f_AVG_Legs1_1.dtx,707E7080
+Defender Skirt (Female),883,12,0,15,Legs1,Skins/Characters/FDC/f_AVG_Legs1_2.dtx,707E7110
+Light Skirt (Female),884,12,0,15,Legs1,Skins/Characters/GOM/f_AVG_Legs1_1.dtx,707E71A0
+Shadow Skirt (Female),885,12,0,15,Legs1,Skins/Characters/BOS/f_AVG_Legs1_1.dtx,707E7230
+Dark Skirt (Female),886,12,0,15,Legs1,Skins/Characters/BOS/f_AVG_Legs1_2.dtx,707E72C0
+Assassin Skirt (Female),887,12,0,15,Legs1,Skins/Characters/MOB/f_AVG_Legs1_1.dtx,707E7350
+Contract Skirt (Female),888,12,0,15,Legs1,Skins/Characters/MOB/f_AVG_Legs1_2.dtx,707E73E0
+Gold Skirt (Female),889,12,0,15,Legs1,Skins/Characters/CMG/f_AVG_Legs1_1.dtx,707E7470
+Gray Skirt (Female),890,12,0,15,Legs1,Skins/Characters/EC/f_AVG_Legs1_1.dtx,707E7500
+Neon Skirt (Female),891,12,0,15,Legs1,Skins/Characters/VTX/f_AVG_Legs1_1.dtx,707E7590
+Patrolman Trousers (Female),900,12,0,15,Legs2,Skins/Characters/LED/f_AVG_Legs2_3.dtx,707E7620
+Blue Defender Trousers (Female),901,12,0,15,Legs2,Skins/Characters/LED/f_AVG_Legs2_4.dtx,707E76B0
+Defense Trousers (Female),902,12,0,15,Legs2,Skins/Characters/FDC/f_AVG_Legs2_3.dtx,707E7740
+Assault Trousers (Female),903,12,0,15,Legs2,Skins/Characters/FDC/f_AVG_Legs2_4.dtx,707E77D0
+Protester Trousers (Female),904,12,0,15,Legs2,Skins/Characters/GOM/f_AVG_Legs2_2.dtx,707E7860
+Light Defender Trousers (Female),905,12,0,15,Legs2,Skins/Characters/GOM/f_AVG_Legs2_3.dtx,707E78F0
+Shadow Trousers (Female),906,12,0,15,Legs2,Skins/Characters/BOS/f_AVG_Legs2_3.dtx,707E7980
+Assassin Trousers (Female),907,12,0,15,Legs2,Skins/Characters/MOB/f_AVG_Legs2_3.dtx,707E7A10
+Assault Trousers (Female),908,12,0,15,Legs2,Skins/Characters/MOB/f_AVG_Legs2_4.dtx,707E7AA0
+Miner Trousers (Female),909,12,0,15,Legs2,Skins/Characters/CMG/f_AVG_Legs2_2.dtx,707E7B30
+Production Trousers (Female),910,12,0,15,Legs2,Skins/Characters/CMG/f_AVG_Legs2_3.dtx,707E7BC0
+Gold Defense Trousers (Female),911,12,0,15,Legs2,Skins/Characters/CMG/f_AVG_Legs2_4.dtx,707E7C50
+Miner Trousers (Female),912,12,0,15,Legs2,Skins/Characters/EC/f_AVG_Legs2_2.dtx,707E7CE0
+Gray Defense Trousers (Female),913,12,0,15,Legs2,Skins/Characters/EC/f_AVG_Legs2_3.dtx,707E7D70
+Technician Trousers (Female),914,12,0,15,Legs2,Skins/Characters/VTX/f_AVG_Legs2_2.dtx,707E7E00
+Neon Defense Trousers (Female),915,12,0,15,Legs2,Skins/Characters/VTX/f_AVG_Legs2_3.dtx,707E7E90
+Blue Protector Trousers (Female),916,12,0,15,Legs2,Skins/Characters/LED/f_AVG_Legs2_6.dtx,707E7F20
+Veteran Trousers (Female),917,12,0,15,Legs2,Skins/Characters/FDC/f_AVG_Legs2_6.dtx,707E7FB0
+Phoenix Trousers (Female),918,12,0,15,Legs2,Skins/Characters/GOM/f_AVG_Legs2_6.dtx,707E8040
+Anarchy Trousers (Female),919,12,0,15,Legs2,Skins/Characters/BOS/f_AVG_Legs2_6.dtx,707E80D0
+Assassin Trousers (Female),920,12,0,15,Legs2,Skins/Characters/MOB/f_AVG_Legs2_6.dtx,707E8160
+Brown Colonist Trousers (Female),921,12,0,15,Legs2,Skins/Characters/CMG/f_AVG_Legs2_6.dtx,707E81F0
+Gray Colonist Trousers (Female),922,12,0,15,Legs2,Skins/Characters/EC/f_AVG_Legs2_6.dtx,707E8280
+Neon Colonist Trousers (Female),923,12,0,15,Legs2,Skins/Characters/VTX/f_AVG_Legs2_6.dtx,707E8310
+Blue Warden Trousers (Female),940,12,0,15,Legs3,Skins/Characters/LED/f_AVG_Legs3_5.dtx,707E83A0
+Green Soldier Trousers (Female),941,12,0,15,Legs3,Skins/Characters/FDC/f_AVG_Legs3_5.dtx,707E8430
+Dealer Trousers (Female),942,12,0,15,Legs3,Skins/Characters/BOS/f_AVG_Legs3_4.dtx,707E84C0
+Rebel Trousers (Female),943,12,0,15,Legs3,Skins/Characters/BOS/f_AVG_Legs3_5.dtx,707E8550
+Defender Trousers (Female),944,12,0,15,Legs3,Skins/Characters/MOB/f_AVG_Legs3_5.dtx,707E85E0
+Brown Assault Trousers (Female),945,12,0,15,Legs3,Skins/Characters/CMG/f_AVG_Legs3_5.dtx,707E8670
+Gray Assault Trousers (Female),946,12,0,15,Legs3,Skins/Characters/EC/f_AVG_Legs3_4.dtx,707E8700
+Gray Traveler Trousers (Female),947,12,0,15,Legs3,Skins/Characters/EC/f_AVG_Legs3_5.dtx,707E8790
+Neon Assault Trousers (Female),948,12,0,15,Legs3,Skins/Characters/VTX/f_AVG_Legs3_4.dtx,707E8820
+Blue Dominion Trousers (Female),949,12,0,15,Legs3,Skins/Characters/LED/f_AVG_Legs3_7.dtx,707E88B0
+Green Dominion Trousers (Female),950,12,0,15,Legs3,Skins/Characters/FDC/f_AVG_Legs3_7.dtx,707E8940
+White Traveler Trousers (Female),951,12,0,15,Legs3,Skins/Characters/GOM/f_AVG_Legs3_7.dtx,707E89D0
+Loyalty Trousers (Female),952,12,0,15,Legs3,Skins/Characters/BOS/f_AVG_Legs3_7.dtx,707E8A60
+Contract Trousers (Female),953,12,0,15,Legs3,Skins/Characters/MOB/f_AVG_Legs3_7.dtx,707E8AF0
+Brown Traveler Trousers (Female),954,12,0,15,Legs3,Skins/Characters/CMG/f_AVG_Legs3_7.dtx,707E8B80
+Gray Trousers (Female),955,12,0,15,Legs3,Skins/Characters/EC/f_AVG_Legs3_7.dtx,707E8C10
+Neon Trousers (Female),956,12,0,15,Legs3,Skins/Characters/VTX/f_AVG_Legs3_7.dtx,707E8CA0
+White Trousers (Female),960,12,0,15,Legs4,Skins/Characters/GOM/f_AVG_Legs4_4.dtx,707E8D30
+Diplomatic Trousers (Female),961,12,0,15,Legs4,Skins/Characters/GOM/f_AVG_Legs4_5.dtx,707E8DC0
+Miner Trousers (Female),962,12,0,15,Legs4,Skins/Characters/VTX/f_AVG_Legs4_5.dtx,707E8E50
+NeoPunk Shirt (Male),1000,13,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_1.dtx,707EA9E0
+Fusion Spider (Male),1001,13,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_2.dtx,707EAA70
+Snakeskin Shirt (Male),1002,13,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_3.dtx,707EAB00
+Adama Jacket (Male),1003,13,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_4.dtx,707EAB90
+Von Neumann Jacket (Male),1004,13,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_5.dtx,707EAC20
+Menasco Sports Jacket (Male),1005,13,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_6.dtx,707EACB0
+Gun Metal Overcoat (Male),1006,13,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_7.dtx,707EAD40
+D.I.R.T. Trenchcoat (Male),1007,13,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_8.dtx,707EADD0
+STS Trenchcoat (Male),1008,13,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_9.dtx,707EAE60
+MegaCorp Shirt (Male),1009,13,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_10.dtx,707EAEF0
+Space Golf Attire (Male),1010,13,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_11.dtx,707EAF80
+Office casual (Male),1011,13,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_12.dtx,707EB010
+Refined Jacket (Male),1012,13,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_13.dtx,707EB0A0
+Gentleman's Jacket (Male),1013,13,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_14.dtx,707EB130
+H.G.Willams Jacket (Male),1014,13,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_15.dtx,707EB1C0
+Doberman Trenchcoat (Male),1015,13,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_16.dtx,707EB250
+Enfield Overcoat (Male),1016,13,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_17.dtx,707EB2E0
+Empire Trenchcoat (Male),1017,13,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_18.dtx,707EB370
+Santa Coat (Male),1018,11,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_19.dtx,707EB400
+GIS Coat (Male),1019,11,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_20.dtx,707EB490
+Exile Overcoat (Male),1020,11,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_21.dtx,707EB520
+Staff Shirt Casual (Male),1021,11,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_GMCasual.dtx,707EB5B0
+Staff Shirt Formal (Male),1022,11,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_GMFormal.dtx,707EB640
+Swamp Trenchcoat 1 (Male),1023,11,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_24.dtx,707EB6D0
+Swamp Trenchcoat 2 (Male),1024,11,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_25.dtx,707EB760
+Jack-o'-lantern Shirt (Male),1025,11,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_26.dtx,707EB7F0
+Flaming Skull Shirt (Male),1026,11,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_27.dtx,707EB880
+Black Shuck Jacket (Male),1027,11,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_28.dtx,707EB910
+Echion Jacket (Male),1028,11,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_29.dtx,707EB9A0
+Midnight Black Jacket (Male),1029,13,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_30.dtx,707EBA30
+White Lightning Jacket (Male),1030,13,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_31.dtx,707EBAC0
+Nightwalker Trenchcoat (Male),1031,13,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_32.dtx,707EBB50
+Black Shadow Trenchoat (Male),1032,13,0,14,Torso3,Skins/Characters/Civilian/m_AVG_Torso3_33.dtx,707EBBE0
+Vampire Robe (Male),1033,13,0,14,Torso4,Skins/Characters/Civilian/m_AVG_Torso4_34.dtx,707EBC70
+Nub Shirt (Male),1034,11,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_35.dtx,707EBD00
+Gingerbread Shirt (Male),1035,11,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_36.dtx,707EBD90
+Cyber Black (Male),1036,11,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_37.dtx,707EBE20
+Shadow's Shirt (Male),1037,13,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_38.dtx,707EBEB0
+Black Businessman's Jacket (Male),1038,11,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_39.dtx,707EBF40
+Blue Businessman's Jacket (Male),1039,11,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_40.dtx,707EBFD0
+Unlimited Secret Blouse (Female),1040,13,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_1.dtx,707EC060
+Chromian Designs Blouse (Female),1041,13,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_2.dtx,707EC0F0
+Raining Thunder (Female),1042,13,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_3.dtx,707EC180
+Oriental Designs Jacket (Female),1043,13,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_4.dtx,707EC210
+Running Jacket (Female),1044,13,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_5.dtx,707EC2A0
+Authoritarian Jacket (Female),1045,13,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_6.dtx,707EC330
+Aurelian Design Trenchcoat (Female),1046,13,0,14,Torso3,Skins/Characters/Civilian/f_AVG_Torso3_7.dtx,707EC3C0
+White Trenchcoat of Purity (Female),1047,13,0,14,Torso3,Skins/Characters/Civilian/f_AVG_Torso3_8.dtx,707EC450
+Lightning Coat (Female),1048,13,0,14,Torso3,Skins/Characters/Civilian/f_AVG_Torso3_9.dtx,707EC4E0
+Bejiffy Trendy Shirt (Female),1049,13,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_10.dtx,707EC570
+Aerodynamic Deluxe Shirt (Female),1050,13,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_11.dtx,707EC600
+Bejiffy Exquisite Shirt (Female),1051,13,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_12.dtx,707EC690
+PermaLast Primary Jacket (Female),1052,13,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_13.dtx,707EC720
+PermaLast Luxury Jacket (Female),1053,13,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_14.dtx,707EC7B0
+Airlight Jacket (Female),1054,13,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_15.dtx,707EC840
+Aurelian Designer Trenchcoat (Female),1055,13,0,14,Torso3,Skins/Characters/Civilian/f_AVG_Torso3_16.dtx,707EC8D0
+Freedom Nationalist Trenchcoat (Female),1056,13,0,14,Torso3,Skins/Characters/Civilian/f_AVG_Torso3_17.dtx,707EC960
+TermoSecure Trenchcoat (Female),1057,13,0,14,Torso3,Skins/Characters/Civilian/f_AVG_Torso3_18.dtx,707EC9F0
+Santa Coat (Female),1058,11,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_19.dtx,707ECA80
+GIS Overcoat (Female),1059,11,0,14,Torso3,Skins/Characters/Civilian/f_AVG_Torso3_20.dtx,707ECB10
+Exile Overcoat (Female),1060,11,0,14,Torso3,Skins/Characters/Civilian/f_AVG_Torso3_21.dtx,707ECBA0
+Staff Shirt Casual (Female),1061,11,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_GMCasual.dtx,707ECC30
+Jack-o'-lantern Shirt (Female),1062,11,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_23.dtx,707ECCC0
+Flaming Skull Shirt (Female),1063,11,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_24.dtx,707ECD50
+Black Shuck Jacket (Female),1064,11,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_25.dtx,707ECDE0
+Echion Jacket (Female),1065,11,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_26.dtx,707ECE70
+Stylized Black Blouse (Female),1066,13,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_27.dtx,707ECF00
+Alternate Universal Blouse (Female),1067,13,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_28.dtx,707ECF90
+Gun Metal Jacket (Female),1068,13,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_29.dtx,707ED020
+Hellstorm Trenchcoat (Female),1069,13,0,14,Torso3,Skins/Characters/Civilian/f_AVG_Torso3_30.dtx,707ED0B0
+Nurse Blouse (Female),1070,11,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_31.dtx,707ED140
+Gingerbread Shirt (Female),1071,11,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_32.dtx,707ED1D0
+Cyber Black (Female),1072,13,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_33.dtx,707ED260
+Shadow's Shirt (Female),1073,13,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_34.dtx,707ED2F0
+Blue Businesswoman's Jacket (Female),1074,11,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_35.dtx,707ED380
+Black Businesswoman's Jacket (Female),1075,11,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_36.dtx,707ED410
+Brown Businesswoman's Jacket (Female),1076,11,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_37.dtx,707ED4A0
+Grey Businesswoman's Jacket (Female),1077,11,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_38.dtx,707ED530
+Pink Businesswoman's Jacket (Female),1078,11,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_39.dtx,707ED5C0
+Purple Businesswoman's Jacket (Female),1079,11,0,14,Torso2,Skins/Characters/Civilian/f_AVG_Torso2_40.dtx,707ED650
+PermaLast T5-Enhanced Trousers (Male),1080,14,0,15,Legs1,Skins/Characters/Civilian/m_AVG_Legs1_1.dtx,707ED6E0
+PermaLast All-Terrain Trousers (Male),1081,14,0,15,Legs1,Skins/Characters/Civilian/m_AVG_Legs1_2.dtx,707ED770
+Thick Anti Freeze Trousers (Male),1082,14,0,15,Legs1,Skins/Characters/Civilian/m_AVG_Legs1_3.dtx,707ED800
+Keplers Luxurious Trousers (Male),1083,14,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_4.dtx,707ED890
+Prosperous Civilian Trousers (Male),1084,14,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_5.dtx,707ED920
+Commoners Trousers (Male),1085,14,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_6.dtx,707ED9B0
+Deviates Trousers (Male),1086,14,0,15,Legs4,Skins/Characters/Civilian/m_AVG_Legs4_7.dtx,707EDA40
+Ultra Secure Trousers (Male),1087,14,0,15,Legs4,Skins/Characters/Civilian/m_AVG_Legs4_8.dtx,707EDAD0
+Infinite Multi-Purpose Trousers (Male),1088,14,0,15,Legs4,Skins/Characters/Civilian/m_AVG_Legs4_9.dtx,707EDB60
+Sierra 17 Trousers (Male),1089,14,0,15,Legs1,Skins/Characters/Civilian/m_AVG_Legs1_10.dtx,707EDBF0
+Civilian Old War Issued Trousers (Male),1090,14,0,15,Legs1,Skins/Characters/Civilian/m_AVG_Legs1_11.dtx,707EDC80
+NYC Urban Trousers (Male),1091,14,0,15,Legs1,Skins/Characters/Civilian/m_AVG_Legs1_12.dtx,707EDD10
+Khaki Trousers (Male),1092,14,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_13.dtx,707EDDA0
+Green Linen Pants (Male),1093,14,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_14.dtx,707EDE30
+MUD Trousers(Male),1094,14,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_15.dtx,707EDEC0
+L.L. Cargo Pants (Male),1095,14,0,15,Legs4,Skins/Characters/Civilian/m_AVG_Legs4_16.dtx,707EDF50
+A.K.A. Trousers (Male),1096,14,0,15,Legs4,Skins/Characters/Civilian/m_AVG_Legs4_17.dtx,707EDFE0
+Relaxed Trousers (Male),1097,14,0,15,Legs4,Skins/Characters/Civilian/m_AVG_Legs4_18.dtx,707EE070
+Santa Trousers (Male),1098,14,0,15,Legs1,Skins/Characters/Civilian/m_AVG_Legs1_19.dtx,707EE100
+GIS Trousers (Male),1099,12,0,15,Legs4,Skins/Characters/Civilian/m_AVG_Legs4_20.dtx,707EE190
+Exile Trousers (Male),1100,14,0,15,Legs1,Skins/Characters/Civilian/m_AVG_Legs1_21.dtx,707EE220
+Black Shuck Trousers (Male),1101,12,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_22.dtx,707EE2B0
+Echion Trousers (Male),1102,12,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_23.dtx,707EE340
+Midnight Black Trousers (Male),1103,14,0,15,Legs1,Skins/Characters/Civilian/m_AVG_Legs1_24.dtx,707EE3D0
+Shadow's Trousers (Male),1104,14,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_25.dtx,707EE460
+Black Slacks (Male),1105,12,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_26.dtx,707EE4F0
+Blue Slacks (Male),1106,12,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_27.dtx,707EE580
+Brown Slacks (Male),1107,12,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_28.dtx,707EE610
+Grey Slacks (Male),1108,12,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_29.dtx,707EE6A0
+Pink Slacks (Male),1109,12,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_30.dtx,707EE730
+White Slacks (Male),1110,12,0,15,Legs2,Skins/Characters/Civilian/m_AVG_Legs2_31.dtx,707EE7C0
+Casual Miniskirt (Female),1120,14,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_1.dtx,707EE850
+Woven Design Miniskirt (Female),1121,14,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_2.dtx,707EE8E0
+Plaid Skirt (Female),1122,14,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_3.dtx,707EE970
+Dark Boot Cut Jeans (Female),1123,14,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_4.dtx,707EEA00
+Necarian Adventure Trousers (Female),1124,14,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_5.dtx,707EEA90
+Slim Work Pants (Female),1125,14,0,15,Legs3,Skins/Characters/Civilian/f_AVG_Legs3_6.dtx,707EEB20
+Teal Slim Pants (Female),1126,14,0,15,Legs3,Skins/Characters/Civilian/f_AVG_Legs3_7.dtx,707EEBB0
+Stunning Bell Bottom Pants (Female),1127,14,0,15,Legs4,Skins/Characters/Civilian/f_AVG_Legs4_8.dtx,707EEC40
+Hip Hugging Jeans (Female),1128,14,0,15,Legs4,Skins/Characters/Civilian/f_AVG_Legs4_9.dtx,707EECD0
+Faded Beauty Jeans (Female),1129,14,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_10.dtx,707EED60
+Traveling Pants (Female),1130,14,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_11.dtx,707EEDF0
+Grey Relaxed Pants (Female),1131,14,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_12.dtx,707EEE80
+Slim Fit Jeans (Female),1132,14,0,15,Legs3,Skins/Characters/Civilian/f_AVG_Legs3_13.dtx,707EEF10
+White Washed Jeans (Female),1133,14,0,15,Legs3,Skins/Characters/Civilian/f_AVG_Legs3_14.dtx,707EEFA0
+Fitted Pants (Female),1134,14,0,15,Legs3,Skins/Characters/Civilian/f_AVG_Legs3_15.dtx,707EF030
+Executive Trousers (Female),1135,14,0,15,Legs4,Skins/Characters/Civilian/f_AVG_Legs4_16.dtx,707EF0C0
+Faded Beauty Hip Huggers (Female),1136,14,0,15,Legs4,Skins/Characters/Civilian/f_AVG_Legs4_17.dtx,707EF150
+Flare Jeans (Female),1137,14,0,15,Legs4,Skins/Characters/Civilian/f_AVG_Legs4_18.dtx,707EF1E0
+Santa Trousers (Female),1138,14,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_19.dtx,707EF270
+GIS Trousers (Female),1139,12,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_20.dtx,707EF300
+Exile Trousers (Female),1140,14,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_21.dtx,707EF390
+Black Shuck Trousers (Female),1141,12,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_22.dtx,707EF420
+Echion Trousers (Female),1142,12,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_23.dtx,707EF4B0
+Dark Abyss Skirt (Female),1143,14,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_24.dtx,707EF540
+Nurse Skirt (Female),1144,12,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_25.dtx,707EF5D0
+Shadow's Trousers (Female),1145,14,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_26.dtx,707EF660
+Blue Businesswoman's Trousers (Female),1146,12,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_27.dtx,707EF6F0
+Blue Businesswoman's Skirt (Female),1147,12,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_28.dtx,707EF780
+Black Businesswoman's Trousers (Female),1148,12,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_29.dtx,707EF810
+Black Businesswoman's Skirt (Female),1149,12,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_30.dtx,707EF8A0
+Brown Businessman's Jacket (Male),1820,11,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_41.dtx,707F0590
+Grey Businessman's Jacket (Male),1821,11,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_42.dtx,707F0620
+Pink Businessman's Jacket (Male),1822,11,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_43.dtx,707F06B0
+White Businessman's Jacket (Male),1823,11,0,14,Torso2,Skins/Characters/Civilian/m_AVG_Torso2_44.dtx,707F0740
+Peace T-Shirt (Male),1824,13,0,14,Torso1,Skins/Characters/Civilian/m_AVG_Torso1_45.dtx,707F07D0
+Street Gang Jacket (Male),1825,11,0,14,Torso2,Skins/Characters/Civilian/m_Torso2_46.dtx,707F0860
+Investigators Trenchcoat (Male),1826,13,0,14,Torso3,Skins/Characters/Civilian/m_Torso3_47.dtx,707F08F0
+American Enterprises Trench (Male),1827,11,0,14,Torso3,Skins/Characters/AE/m_Torso3_48.dtx,707F0980
+Horse Comic's T-Shirt (Male),1828,11,0,14,Torso1,Skins/Characters/Civilian/m_Torso1_49.dtx,707F0A10
+Robe of Multi-Religions (Male),1829,11,0,14,Torso4,Skins/Characters/Civilian/m_Torso4_50.dtx,707F0AA0
+Club Trench (Male),1830,11,0,14,Torso3,Skins/Characters/Civilian/m_Torso3_51.dtx,707F0B30
+Lab Coat (Male),1831,11,0,14,Torso3,Skins/Characters/Civilian/m_Torso3_52.dtx,707F0BC0
+Backer T-Shirt (Male),1832,11,0,14,Torso1,Skins/Characters/Civilian/m_Torso1_53.dtx,707F0C50
+Peace T-Shirt (Female),1960,11,0,14,Torso1,Skins/Characters/Civilian/f_AVG_Torso1_41.dtx,707EF930
+Street Gang Shirt (Female),1961,11,0,14,Torso1,Skins/Characters/Civilian/f_Torso1_42.dtx,707EF9C0
+Inspectors Trenchcoat (Female),1962,13,0,14,Torso3,Skins/Characters/Civilian/f_Torso3_43.dtx,707EFA50
+American Enterprises Trench (Female),1963,11,0,14,Torso3,Skins/Characters/AE/f_Torso3_44.dtx,707EFAE0
+Horse Comic's T-Shirt (Female),1964,11,0,14,Torso1,Skins/Characters/Civilian/f_Torso1_45.dtx,707EFB70
+Robe of Multi-Religions (Female),1965,11,0,14,Torso4,Skins/Characters/Civilian/f_Torso4_46.dtx,707EFC00
+Club Shirt (Female),1966,11,0,14,Torso1,Skins/Characters/Civilian/f_Torso1_47.dtx,707EFC90
+Lab Coat (Female),1967,11,0,14,Torso3,Skins/Characters/Civilian/f_Torso3_48.dtx,707EFD20
+Backer T-Shirt (Female),1968,11,0,14,Torso1,Skins/Characters/Civilian/f_Torso1_49.dtx,707EFDB0
+Street Gang Pants (Male),2060,12,0,15,Legs2,Skins/Characters/Civilian/m_Legs2_32.dtx,707F0CE0
+Investigators Trousers (Male),2061,14,0,15,Legs1,Skins/Characters/Civilian/m_Legs1_33.dtx,707F0D70
+Club Pants (Male),2062,12,0,15,Legs3,Skins/Characters/Civilian/m_Legs3_34.dtx,707F0E00
+Backer Pants (Male),2063,12,0,15,Legs1,Skins/Characters/Civilian/m_Legs1_35.dtx,707F0E90
+Incognito Shoes (Male),2064,15,0,16,Shoes4,Skins/Characters/General/m_Shoes4_15.dtx,707F0F20
+Brown Businesswoman's Trousers (Female),2160,12,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_31.dtx,707EFE40
+Brown Businesswoman's Skirt (Female),2161,12,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_32.dtx,707EFED0
+Grey Businesswoman's Trousers (Female),2162,12,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_33.dtx,707EFF60
+Grey Businesswoman's Skirt (Female),2163,12,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_34.dtx,707EFFF0
+Pink Businesswoman's Trousers (Female),2164,12,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_35.dtx,707F0080
+Pink Businesswoman's Skirt (Female),2165,12,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_36.dtx,707F0110
+Purple Businesswoman's Trousers (Female),2166,12,0,15,Legs2,Skins/Characters/Civilian/f_AVG_Legs2_37.dtx,707F01A0
+Purple Businesswoman's Skirt (Female),2167,12,0,15,Legs1,Skins/Characters/Civilian/f_AVG_Legs1_38.dtx,707F0230
+Street Gang Shorts (Female),2168,12,0,15,Legs3,Skins/Characters/Civilian/f_Legs3_39.dtx,707F02C0
+Inspectors Pants (Female),2169,14,0,15,Legs2,Skins/Characters/Civilian/f_Legs2_40.dtx,707F0350
+Club Skirt (Female),2170,12,0,15,Legs1,Skins/Characters/Civilian/f_Legs1_41.dtx,707F03E0
+Backer Skirt (Female),2171,12,0,15,Legs1,Skins/Characters/Civilian/f_Legs1_42.dtx,707F0470
+Incognito Shoes (Female),2172,15,0,16,Shoes4,Skins/Characters/General/f_Shoes4_15.dtx,707F0500
+Aramid Altered Gloves (Male),2980,5,0,10,Hands2,Skins/Items/EC/m_Hands2_8.dtx,707DB9B0
+Infensus Essentials Gloves (Female),2981,5,6,10,Hands2,Skins/Items/EC/f_Hands2_8.dtx,707DBA40
+Infensus Essentials Gloves (Male),2982,5,6,10,Hands2,Skins/Items/EC/m_Hands2_8.dtx,707DBAD0
+Backer Gloves (Female),2983,5,37,10,Hands2,Skins/Items/Standard/f_Hands2_11.dtx,707DBB60
+Backer Gloves (Male),2984,5,37,10,Hands2,Skins/Items/Standard/m_Hands2_12.dtx,707DBBF0

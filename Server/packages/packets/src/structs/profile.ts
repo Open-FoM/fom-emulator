@@ -5,10 +5,20 @@
 
 import { NativeBitStream, Struct, writeBitsLE, readBitsLE } from '@openfom/networking';
 
+// Matching with Appearance_ItemTemplate_Map.csv, Appearance_FaceHair.csv
 export const APPEARANCE_DEFAULTS = {
-    MALE_TORSO: 611,
-    MALE_LEGS: 760,
-    MALE_SHOES: 500,
+    // Male
+    MALE_SKIN_TONE: 0,
+    MALE_HEAD_TEX_A: 7,
+    MALE_HEAD_TEX_B: 12,
+    MALE_TORSO: 1029,
+    MALE_LEGS: 1104,
+    MALE_SHOES: 521,
+
+    // Female
+    FEMALE_SKIN_TONE: 0,
+    FEMALE_HEAD_TEX_A: 0,
+    FEMALE_HEAD_TEX_B: 0,
     FEMALE_TORSO: 797,
     FEMALE_LEGS: 907,
     FEMALE_SHOES: 510,
@@ -274,158 +284,208 @@ export class ProfileB extends Struct {
     }
 }
 
+export type ProfileCFlagBits = [boolean, boolean, boolean, boolean];
+
+export const PROFILE_C_EXTRA_SLOT_COUNT = 9;
+
+const normalizeExtraSlotIds = (values: number[] = []): number[] => {
+    const slots = values.slice(0, PROFILE_C_EXTRA_SLOT_COUNT);
+    while (slots.length < PROFILE_C_EXTRA_SLOT_COUNT) slots.push(0);
+    return slots;
+};
+
+const normalizeFlagBits = (values: boolean[] = []): ProfileCFlagBits => {
+    const flags = values.slice(0, 4);
+    while (flags.length < 4) flags.push(false);
+    return [Boolean(flags[0]), Boolean(flags[1]), Boolean(flags[2]), Boolean(flags[3])];
+};
+
+export type ProfileCAppearancePatch = Partial<ProfileCData>;
+
 export interface ProfileCData {
-    gender?: number;
-    skinColor?: number;
-    headTextureIdx?: number;
-    hairTextureIdx?: number;
-    unknownU32?: number;
-    unknown5?: number;
-    unknown6?: number;
-    unknown7?: number;
-    torsoTypeId?: number;
-    legsTypeId?: number;
-    shoesTypeId?: number;
-    accessorySlots?: number[];
-    hasAbilities?: boolean;
-    flags?: boolean[];
+    isFemale?: number;
+    skinTone?: number;
+    headTexA?: number;
+    headTexB?: number;
+    unkU32?: number;
+    unk5bit?: number;
+    unk6bit?: number;
+    unk4bit?: number;
+    torsoItemId?: number;
+    legsItemId?: number;
+    shoesItemId?: number;
+    extraSlotIds?: number[];
+    hasExtraSlots?: boolean;
+    flagBits?: boolean[];
 }
+
+export const applyProfileCAppearance = (target: ProfileC, data: ProfileCAppearancePatch = {}): ProfileC => {
+    if (data.isFemale !== undefined) target.isFemale = data.isFemale & 0x1;
+    if (data.skinTone !== undefined) target.skinTone = data.skinTone & 0x1;
+    if (data.headTexA !== undefined) target.headTexA = data.headTexA & 0x1f;
+    if (data.headTexB !== undefined) target.headTexB = data.headTexB & 0x1f;
+    if (data.unkU32 !== undefined) target.unkU32 = data.unkU32 >>> 0;
+    if (data.unk5bit !== undefined) target.unk5bit = data.unk5bit & 0x1f;
+    if (data.unk6bit !== undefined) target.unk6bit = data.unk6bit & 0x3f;
+    if (data.unk4bit !== undefined) target.unk4bit = data.unk4bit & 0xf;
+    if (data.torsoItemId !== undefined) target.torsoItemId = data.torsoItemId;
+    if (data.legsItemId !== undefined) target.legsItemId = data.legsItemId;
+    if (data.shoesItemId !== undefined) target.shoesItemId = data.shoesItemId;
+    if (data.extraSlotIds !== undefined) target.extraSlotIds = normalizeExtraSlotIds(data.extraSlotIds);
+    if (data.hasExtraSlots !== undefined) {
+        target.hasExtraSlots = Boolean(data.hasExtraSlots);
+    } else if (data.extraSlotIds !== undefined) {
+        target.hasExtraSlots = target.extraSlotIds.some(value => value !== 0);
+    }
+    if (data.flagBits !== undefined) target.flagBits = normalizeFlagBits(data.flagBits);
+    return target;
+};
 
 /**
  * ProfileC - Character appearance data.
  * Source: WorldLogin_Read/WriteProfileBlockC @ 0x67418D20 / 0x67418B80
  *
  * Bit layout:
- * 1,1,5,5,32,5,6,4,12,12,12, [if flag] 9x12, 1,1,1,1
+ * isFemale, skinTone, headTexA, headTexB, unkU32, unk5bit, unk6bit, unk4bit,
+ * torsoItemId, legsItemId, shoesItemId, [if hasExtraSlots] 9x12, flagBits[4]
+ *
+ * Refs:
+ * - Docs/Appearance/Appearance_Assets.md (head/skin lookup + resource paths)
+ * - Docs/Appearance/Appearance_ItemTemplate.csv (itemId -> skin/model)
  */
 export class ProfileC extends Struct {
-    gender: number;
-    skinColor: number;
-    headTextureIdx: number;
-    hairTextureIdx: number;
-    unknownU32: number;
-    unknown5: number;
-    unknown6: number;
-    unknown7: number;
-    torsoTypeId: number;
-    legsTypeId: number;
-    shoesTypeId: number;
-    accessorySlots: number[];
-    hasAbilities: boolean;
-    flags: boolean[];
+    isFemale: number;
+    skinTone: number;
+    headTexA: number;
+    headTexB: number;
+    unkU32: number;
+    unk5bit: number;
+    unk6bit: number;
+    unk4bit: number;
+    torsoItemId: number;
+    legsItemId: number;
+    shoesItemId: number;
+    extraSlotIds: number[];
+    hasExtraSlots: boolean;
+    flagBits: ProfileCFlagBits;
 
     constructor(data: ProfileCData = {}) {
         super();
-        this.gender = data.gender ?? 0;
-        this.skinColor = data.skinColor ?? 0;
-        this.headTextureIdx = data.headTextureIdx ?? 0;
-        this.hairTextureIdx = data.hairTextureIdx ?? 0;
-        this.unknownU32 = data.unknownU32 ?? 0;
-        this.unknown5 = data.unknown5 ?? 0;
-        this.unknown6 = data.unknown6 ?? 0;
-        this.unknown7 = data.unknown7 ?? 0;
-        this.torsoTypeId = data.torsoTypeId ?? APPEARANCE_DEFAULTS.MALE_TORSO;
-        this.legsTypeId = data.legsTypeId ?? APPEARANCE_DEFAULTS.MALE_LEGS;
-        this.shoesTypeId = data.shoesTypeId ?? APPEARANCE_DEFAULTS.MALE_SHOES;
-        this.accessorySlots = (data.accessorySlots ?? []).slice(0, 9);
-        while (this.accessorySlots.length < 9) this.accessorySlots.push(0);
-        this.hasAbilities = data.hasAbilities ?? false;
-        this.flags = data.flags ?? [false, false, false, false];
+        this.isFemale = (data.isFemale ?? 0) & 0x1;
+        this.skinTone = (data.skinTone ?? APPEARANCE_DEFAULTS.MALE_SKIN_TONE) & 0x1;
+        this.headTexA = (data.headTexA ?? APPEARANCE_DEFAULTS.MALE_HEAD_TEX_A) & 0x1f;
+        this.headTexB = (data.headTexB ?? APPEARANCE_DEFAULTS.MALE_HEAD_TEX_B) & 0x1f;
+        this.unkU32 = (data.unkU32 ?? 0) >>> 0;
+        this.unk5bit = (data.unk5bit ?? 0) & 0x1f;
+        this.unk6bit = (data.unk6bit ?? 0) & 0x3f;
+        this.unk4bit = (data.unk4bit ?? 0) & 0xf;
+        this.torsoItemId = data.torsoItemId ?? APPEARANCE_DEFAULTS.MALE_TORSO;
+        this.legsItemId = data.legsItemId ?? APPEARANCE_DEFAULTS.MALE_LEGS;
+        this.shoesItemId = data.shoesItemId ?? APPEARANCE_DEFAULTS.MALE_SHOES;
+        this.extraSlotIds = normalizeExtraSlotIds(data.extraSlotIds ?? []);
+        this.hasExtraSlots = data.hasExtraSlots ?? this.extraSlotIds.some(value => value !== 0);
+        this.flagBits = normalizeFlagBits(data.flagBits ?? []);
     }
 
     encode(bs: NativeBitStream): void {
-        writeBitsLE(bs, this.gender, 1);
-        writeBitsLE(bs, this.skinColor, 1);
-        writeBitsLE(bs, this.headTextureIdx, 5);
-        writeBitsLE(bs, this.hairTextureIdx, 5);
+        writeBitsLE(bs, this.isFemale, 1);
+        writeBitsLE(bs, this.skinTone, 1);
+        writeBitsLE(bs, this.headTexA, 5);
+        writeBitsLE(bs, this.headTexB, 5);
 
         const u32Buf = Buffer.alloc(4);
-        u32Buf.writeUInt32LE(this.unknownU32 >>> 0, 0);
+        u32Buf.writeUInt32LE(this.unkU32 >>> 0, 0);
         bs.writeBits(u32Buf, 32, true);
 
-        writeBitsLE(bs, this.unknown5, 5);
-        writeBitsLE(bs, this.unknown6, 6);
-        writeBitsLE(bs, this.unknown7, 4);
+        writeBitsLE(bs, this.unk5bit, 5);
+        writeBitsLE(bs, this.unk6bit, 6);
+        writeBitsLE(bs, this.unk4bit, 4);
 
-        writeBitsLE(bs, this.torsoTypeId, 12);
-        writeBitsLE(bs, this.legsTypeId, 12);
-        writeBitsLE(bs, this.shoesTypeId, 12);
+        writeBitsLE(bs, this.torsoItemId, 12);
+        writeBitsLE(bs, this.legsItemId, 12);
+        writeBitsLE(bs, this.shoesItemId, 12);
 
-        const hasExtra = this.accessorySlots.some(v => v !== 0);
+        const hasExtra = this.extraSlotIds.some(v => v !== 0);
         bs.writeBit(hasExtra);
         if (hasExtra) {
-            for (let i = 0; i < 9; i++) {
-                writeBitsLE(bs, this.accessorySlots[i] ?? 0, 12);
+            for (let i = 0; i < PROFILE_C_EXTRA_SLOT_COUNT; i++) {
+                writeBitsLE(bs, this.extraSlotIds[i] ?? 0, 12);
             }
         }
 
         for (let i = 0; i < 4; i++) {
-            writeBitsLE(bs, this.flags[i] ? 1 : 0, 1);
+            writeBitsLE(bs, this.flagBits[i] ? 1 : 0, 1);
         }
     }
 
     static decode(bs: NativeBitStream): ProfileC {
-        const gender = readBitsLE(bs, 1);
-        const skinColor = readBitsLE(bs, 1);
-        const headTextureIdx = readBitsLE(bs, 5);
-        const hairTextureIdx = readBitsLE(bs, 5);
+        const isFemale = readBitsLE(bs, 1);
+        const skinTone = readBitsLE(bs, 1);
+        const headTexA = readBitsLE(bs, 5);
+        const headTexB = readBitsLE(bs, 5);
 
         const u32Buf = bs.readBits(32, true);
-        const unknownU32 = u32Buf.readUInt32LE(0);
+        const unkU32 = u32Buf.readUInt32LE(0);
 
-        const unknown5 = readBitsLE(bs, 5);
-        const unknown6 = readBitsLE(bs, 6);
-        const unknown7 = readBitsLE(bs, 4);
+        const unk5bit = readBitsLE(bs, 5);
+        const unk6bit = readBitsLE(bs, 6);
+        const unk4bit = readBitsLE(bs, 4);
 
-        const torsoTypeId = readBitsLE(bs, 12);
-        const legsTypeId = readBitsLE(bs, 12);
-        const shoesTypeId = readBitsLE(bs, 12);
+        const torsoItemId = readBitsLE(bs, 12);
+        const legsItemId = readBitsLE(bs, 12);
+        const shoesItemId = readBitsLE(bs, 12);
 
-        const hasAbilities = bs.readBit();
-        const accessorySlots: number[] = [];
-        if (hasAbilities) {
-            for (let i = 0; i < 9; i++) {
-                accessorySlots.push(readBitsLE(bs, 12));
+        const hasExtraSlots = bs.readBit();
+        const extraSlotIds: number[] = [];
+        if (hasExtraSlots) {
+            for (let i = 0; i < PROFILE_C_EXTRA_SLOT_COUNT; i++) {
+                extraSlotIds.push(readBitsLE(bs, 12));
             }
         } else {
-            for (let i = 0; i < 9; i++) accessorySlots.push(0);
+            for (let i = 0; i < PROFILE_C_EXTRA_SLOT_COUNT; i++) extraSlotIds.push(0);
         }
 
-        const flags = Array(4).fill(false).map(() => readBitsLE(bs, 1) === 1);
+        const flagBits = Array(4).fill(false).map(() => readBitsLE(bs, 1) === 1);
 
         return new ProfileC({
-            gender,
-            skinColor,
-            headTextureIdx,
-            hairTextureIdx,
-            unknownU32,
-            unknown5,
-            unknown6,
-            unknown7,
-            torsoTypeId,
-            legsTypeId,
-            shoesTypeId,
-            accessorySlots,
-            hasAbilities,
-            flags,
+            isFemale,
+            skinTone,
+            headTexA,
+            headTexB,
+            unkU32,
+            unk5bit,
+            unk6bit,
+            unk4bit,
+            torsoItemId,
+            legsItemId,
+            shoesItemId,
+            extraSlotIds,
+            hasExtraSlots,
+            flagBits,
         });
     }
 
     static defaultMale(): ProfileC {
         return new ProfileC({
-            gender: 0,
-            torsoTypeId: APPEARANCE_DEFAULTS.MALE_TORSO,
-            legsTypeId: APPEARANCE_DEFAULTS.MALE_LEGS,
-            shoesTypeId: APPEARANCE_DEFAULTS.MALE_SHOES,
+            isFemale: 0,
+            skinTone: APPEARANCE_DEFAULTS.MALE_SKIN_TONE,
+            headTexA: APPEARANCE_DEFAULTS.MALE_HEAD_TEX_A,
+            headTexB: APPEARANCE_DEFAULTS.MALE_HEAD_TEX_B,
+            torsoItemId: APPEARANCE_DEFAULTS.MALE_TORSO,
+            legsItemId: APPEARANCE_DEFAULTS.MALE_LEGS,
+            shoesItemId: APPEARANCE_DEFAULTS.MALE_SHOES,
         });
     }
 
     static defaultFemale(): ProfileC {
         return new ProfileC({
-            gender: 1,
-            torsoTypeId: APPEARANCE_DEFAULTS.FEMALE_TORSO,
-            legsTypeId: APPEARANCE_DEFAULTS.FEMALE_LEGS,
-            shoesTypeId: APPEARANCE_DEFAULTS.FEMALE_SHOES,
+            isFemale: 1,
+            skinTone: APPEARANCE_DEFAULTS.FEMALE_SKIN_TONE,
+            headTexA: APPEARANCE_DEFAULTS.FEMALE_HEAD_TEX_A,
+            headTexB: APPEARANCE_DEFAULTS.FEMALE_HEAD_TEX_B,
+            torsoItemId: APPEARANCE_DEFAULTS.FEMALE_TORSO,
+            legsItemId: APPEARANCE_DEFAULTS.FEMALE_LEGS,
+            shoesItemId: APPEARANCE_DEFAULTS.FEMALE_SHOES,
         });
     }
 }

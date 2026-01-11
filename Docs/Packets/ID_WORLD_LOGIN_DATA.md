@@ -151,6 +151,7 @@ Note: Offsets are struct offsets; read order follows `ID_WORLD_LOGIN_Read`.
 - Head texture arrays (static, used as `off_*[3*idx]`):
   - `off_10142B98` / `off_10142A48` (headTexA, female/male, 0x1C entries)
   - `off_10142E08` / `off_10142CE8` (headTexB, female/male, 0x17 entries)
+- Asset mapping: see `Docs/Appearance/Appearance_Assets.md` (head/hair tables + runtime item template dump).
 - AppearanceTable type codes (entry->type at +0x08):
   - 11/13: torso models
   - 12/14: legs models

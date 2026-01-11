@@ -16,6 +16,7 @@ import {
     ProfileB,
     ProfileC,
     ProfileCData,
+    applyProfileCAppearance,
     ProfileD,
 } from './structs/profile';
 import {
@@ -90,12 +91,14 @@ export class IdRegisterClientReturnPacket extends Packet {
         
         this.profileA = ProfileA.empty();
         this.profileB = ProfileB.empty();
-        this.profileC = data.appearance ? new ProfileC(data.appearance) : ProfileC.defaultMale();
+        this.profileC = applyProfileCAppearance(ProfileC.defaultMale(), data.appearance ?? {});
         this.profileD = ProfileD.empty();
         this.stringBundle = StringBundleE.empty();
         this.flagA = 3;
         this.flagB = 0;
-        this.profileEntries = (data.profileEntries ?? []).map(entry => new ProfileC(entry));
+        this.profileEntries = (data.profileEntries ?? []).map(entry =>
+            applyProfileCAppearance(ProfileC.defaultMale(), entry)
+        );
         this.baseSpawnEnabled = true;
         this.position1 = new CompactVec3();
         this.currencyA = 0;
