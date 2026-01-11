@@ -66,6 +66,27 @@ WORLD SELECTION (two paths):
     -> sets SharedMem[0x1EEC0] = 1
     -> shows "Connecting..." UI (message 11)
 
+### RESOLVED (2026-01-10): Auto 0x7B after 0x79 causes forced leave
+
+Symptom:
+- Client loads into world, then "Migrating servers..." and leaves ~2s later.
+- Client sends 0x74 WORLD_LOGOUT shortly after entering world.
+
+Root cause:
+- World server sent 0x7B WORLD_SELECT immediately after 0x79 REGISTER_CLIENT_RETURN.
+- 0x7B subId=4 triggers the travel state machine in object.lto.
+- TravelMgr receives msgId 111 (0x6F) with msgType=0 stateId=11, which arms a 2s timer
+  and then calls LeaveWorld.
+
+Evidence (client hook):
+- OnMessagePacket bytes: 0D 6F 00 00 00 00 0B 00 00 00 ...
+  -> msgId=0x6F (111), msgType=0, stateId=11
+- Hook logs: [TravelMgr] msgType=0 stateId=11
+
+Fix:
+- Do not send 0x7B during initial login.
+- Reserve 0x7B for explicit travel requests only.
+
 STATE MACHINE (WorldLogin_StateMachineTick, state==1):
   -> builds 0x72 WORLD_LOGIN (worldId, worldInst, playerId, worldConst)
   -> sends to master  ----------------------------------------------------->
