@@ -166,6 +166,7 @@ Note: Offsets are struct offsets; read order follows `ID_WORLD_LOGIN_Read`.
   - ctor sets u32[53] at +0x2B4 to 0
   - ctor copies default u32[53] tables at +0x00 and +0xD4
 - On-wire: exactly 53 u32c values (no extra headers/flags).
+- Stat table dump (names + stringId + scale) exported to `Docs/Exports/stat_table_profiled.csv`.
 - Stat index map (0x00..0x34) - names from `Docs/Exports/item_stats_client_display.csv` header,
   plus cshell call-site inference for 0x31..0x34 (notes below).
 
