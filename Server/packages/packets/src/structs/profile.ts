@@ -433,27 +433,166 @@ export class ProfileC extends Struct {
 /**
  * ProfileD - 53 compressed u32 values (stats/attributes).
  * Source: WorldLogin_ReadProfileBlockD @ 0x674334A0
+ * Stat index map: Docs/Packets/ID_WORLD_LOGIN_DATA.md
  */
+export const PROFILE_D_STAT_COUNT = 53;
+
+export type ProfileDStatDef = {
+    index: number;
+    name: string;
+    stringId?: number;
+    notes?: string;
+};
+
+export enum ProfileDStatIndex {
+    Health = 0x00,
+    Stamina = 0x01,
+    BioEnergy = 0x02,
+    Aura = 0x03,
+    UniversalCredits = 0x04,
+    FactionCredits = 0x05,
+    Penalty = 0x06,
+    PrisonerStatus = 0x07,
+    HighestPenalty = 0x08,
+    MostWantedStatus = 0x09,
+    WantedStatus = 0x0A,
+    Agility = 0x0B,
+    BallisticDamage = 0x0C,
+    EnergyDamage = 0x0D,
+    BioDamage = 0x0E,
+    AuraDamage = 0x0F,
+    Destruction = 0x10,
+    WeaponRecoil = 0x11,
+    Armor = 0x12,
+    Shielding = 0x13,
+    Resistance = 0x14,
+    Reflection = 0x15,
+    HealthRegen = 0x16,
+    StaminaRegen = 0x17,
+    BioRegen = 0x18,
+    AuraRegen = 0x19,
+    Coins = 0x1A,
+    HealingCooldown = 0x1B,
+    FoodCooldown = 0x1C,
+    XenoDamage = 0x1D,
+    HealthDrain = 0x1E,
+    StaminaDrain = 0x1F,
+    BioEnergyDrain = 0x20,
+    AuraDrain = 0x21,
+    ProtectionBypass = 0x22,
+    EffectiveRange = 0x23,
+    WeaponFireDelay = 0x24,
+    Blank1 = 0x25,
+    Blank2 = 0x26,
+    Weight = 0x27,
+    JumpVelocityMultiplier = 0x28,
+    FallDamageMultiplier = 0x29,
+    Nightvision = 0x2A,
+    SoundlessMovement = 0x2B,
+    ActivationDistance = 0x2C,
+    SprintSpeedMultiplier = 0x2D,
+    MaxStamina = 0x2E,
+    BioEnergyReplenishingCooldown = 0x2F,
+    AuraHealingCooldown = 0x30,
+    ShieldSettingOverrideFlag = 0x31,
+    Unknown0x32 = 0x32,
+    VortexEmitterCooldownFlag = 0x33,
+    VortexEmitterCooldownSeconds = 0x34,
+}
+
+export const PROFILE_D_STATS: ReadonlyArray<ProfileDStatDef> = Object.freeze([
+    { index: 0x00, name: 'Health', stringId: 6300 },
+    { index: 0x01, name: 'Stamina', stringId: 6301 },
+    { index: 0x02, name: 'Bio Energy', stringId: 6302 },
+    { index: 0x03, name: 'Aura', stringId: 6303 },
+    { index: 0x04, name: 'Universal Credits', stringId: 6304, notes: 'currencyA - currencyB' },
+    { index: 0x05, name: 'Faction Credits', stringId: 22103 },
+    { index: 0x06, name: 'Penalty', stringId: 6306 },
+    { index: 0x07, name: 'Prisoner Status', stringId: 6307, notes: "blocks item 'j' (msg 5668)" },
+    { index: 0x08, name: 'Highest Penalty', stringId: 6308 },
+    { index: 0x09, name: 'Most-Wanted Status', stringId: 6309 },
+    { index: 0x0A, name: 'Wanted Status', stringId: 6310 },
+    { index: 0x0B, name: 'Agility', stringId: 6311 },
+    { index: 0x0C, name: 'Ballistic Damage', stringId: 6312 },
+    { index: 0x0D, name: 'Energy Damage', stringId: 6313 },
+    { index: 0x0E, name: 'Bio Damage', stringId: 6314 },
+    { index: 0x0F, name: 'Aura Damage', stringId: 6315 },
+    { index: 0x10, name: 'Destruction', stringId: 6316 },
+    { index: 0x11, name: 'Weapon Recoil', stringId: 6317 },
+    { index: 0x12, name: 'Armor', stringId: 29905 },
+    { index: 0x13, name: 'Shielding', stringId: 6319 },
+    { index: 0x14, name: 'Resistance', stringId: 6320 },
+    { index: 0x15, name: 'Reflection', stringId: 6321 },
+    { index: 0x16, name: 'Health Regeneration', stringId: 6322 },
+    { index: 0x17, name: 'Stamina Regeneration', stringId: 6323 },
+    { index: 0x18, name: 'Bio Regeneration', stringId: 6324 },
+    { index: 0x19, name: 'Aura Regeneration', stringId: 6325 },
+    { index: 0x1A, name: 'Coins', stringId: 6326 },
+    { index: 0x1B, name: 'Healing Cooldown', stringId: 6427 },
+    { index: 0x1C, name: 'Food Cooldown', stringId: 6428 },
+    { index: 0x1D, name: 'Xeno Damage', stringId: 6329 },
+    { index: 0x1E, name: 'Health Drain', stringId: 6330 },
+    { index: 0x1F, name: 'Stamina Drain', stringId: 6331 },
+    { index: 0x20, name: 'Bio Energy Drain', stringId: 6332 },
+    { index: 0x21, name: 'Aura Drain', stringId: 6333 },
+    { index: 0x22, name: 'Protection Bypass', stringId: 6334 },
+    { index: 0x23, name: 'Effective Range', stringId: 6335 },
+    { index: 0x24, name: 'Weapon Fire Delay', stringId: 6336 },
+    { index: 0x25, name: 'Blank 1', stringId: 6337 },
+    { index: 0x26, name: 'Blank 2', stringId: 6338 },
+    { index: 0x27, name: 'Weight', stringId: 6339 },
+    { index: 0x28, name: 'Jump Velocity Multiplier', stringId: 6340 },
+    { index: 0x29, name: 'Fall Damage Multiplier', stringId: 6341 },
+    { index: 0x2A, name: 'Nightvision', stringId: 6342 },
+    { index: 0x2B, name: 'Soundless Movement', stringId: 6343 },
+    { index: 0x2C, name: 'Activation Distance', stringId: 6344 },
+    { index: 0x2D, name: 'Sprint Speed Multiplier', stringId: 6345 },
+    { index: 0x2E, name: 'Max Stamina', stringId: 6346 },
+    { index: 0x2F, name: 'Bio Energy Replenishing Cooldown', stringId: 6347 },
+    { index: 0x30, name: 'Aura Healing Cooldown', stringId: 6348 },
+    { index: 0x31, name: 'Shield Setting Override Flag' },
+    { index: 0x32, name: 'Unknown' },
+    { index: 0x33, name: 'Vortex Emitter Cooldown Flag' },
+    { index: 0x34, name: 'Vortex Emitter Cooldown Seconds' },
+]);
+
+export const PROFILE_D_STATS_BY_INDEX: Readonly<Record<number, ProfileDStatDef>> = Object.freeze(
+    Object.fromEntries(PROFILE_D_STATS.map(def => [def.index, def]))
+);
+
 export class ProfileD extends Struct {
-    constructor(public values: number[] = Array(53).fill(0)) {
+    constructor(public values: number[] = Array(PROFILE_D_STAT_COUNT).fill(0)) {
         super();
     }
 
     encode(bs: NativeBitStream): void {
-        for (let i = 0; i < 53; i++) bs.writeCompressedU32(this.values[i]);
+        for (let i = 0; i < PROFILE_D_STAT_COUNT; i++) bs.writeCompressedU32(this.values[i]);
     }
 
     static decode(bs: NativeBitStream): ProfileD {
-        return new ProfileD(Array(53).fill(0).map(() => bs.readCompressedU32()));
+        return new ProfileD(Array(PROFILE_D_STAT_COUNT).fill(0).map(() => bs.readCompressedU32()));
+    }
+
+    getStat(index: number): number {
+        return this.values[index] ?? 0;
+    }
+
+    setStat(index: number, value: number): void {
+        if (index >= 0 && index < PROFILE_D_STAT_COUNT) {
+            this.values[index] = value >>> 0;
+        }
     }
 
     static empty(): ProfileD {
-        const values = Array(53).fill(0);
+        const values = Array(PROFILE_D_STAT_COUNT).fill(0);
         // Basic vitals: match client stat scale caps (g_StatScaleTable[0..3]).
-        values[0] = 1000;  // Health
-        values[1] = 10000; // Stamina
-        values[2] = 1000;  // Bio Energy / Consciousness
-        values[3] = 1000;  // Aura / Morale
+        values[ProfileDStatIndex.Health] = 1000;
+        values[ProfileDStatIndex.Stamina] = 10000;
+        values[ProfileDStatIndex.BioEnergy] = 1000;
+        values[ProfileDStatIndex.Aura] = 1000;
+        // On-wire index mapping: statId >= 5 => values[statId - 1].
+        values[ProfileDStatIndex.Agility] = 800;   // 80.0%
+        values[ProfileDStatIndex.MaxStamina] = 10000;
         return new ProfileD(values);
     }
 }
