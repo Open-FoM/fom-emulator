@@ -222,7 +222,8 @@ export class IdLoginReturnPacket extends Packet {
         bs.writeCompressedU32(apt?.storageField14 ?? 0);
         bs.writeCompressedU32(apt?.storageField18 ?? 0);
         bs.writeCompressedU32(apt?.storageField1C ?? 0);
-        bs.writeCompressedU16(apt?.storageItemCount ?? 0);
+        // Client expects a full ItemList when count > 0; keep 0 until ItemList is implemented.
+        bs.writeCompressedU16(0);
 
         bs.writeBit(apt?.hasPublicInfo ?? false);
         bs.writeCompressedU32(apt?.entryPrice ?? 0);

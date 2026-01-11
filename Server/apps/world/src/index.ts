@@ -167,7 +167,7 @@ function handleWorldLogin(packet: IdWorldLoginPacket, address: RakSystemAddress)
 
     conn.playerId = playerId || 1;
     conn.worldId = worldId || 1;
-    conn.worldInst = worldInst || 0;
+    conn.worldInst = worldInst || config.worldInst;
     conn.authenticated = true;
 
     logInfo(`[World] Updated connection: playerId=${conn.playerId} worldId=${conn.worldId}`);
@@ -194,7 +194,7 @@ function handleRegisterClient(packet: IdRegisterClientPacket, address: RakSystem
     const response = new IdRegisterClientReturnPacket({
         worldId: conn.worldId,
         playerId: conn.playerId,
-        flags: 0,
+        returnCode: 1,
     });
     
     const responseBuffer = response.encode();
@@ -222,7 +222,7 @@ function handleNewConnection(address: RakSystemAddress): void {
         key,
         playerId: 1,
         worldId: 1,
-        worldInst: 0,
+        worldInst: config.worldInst,
         authenticated: false,
         registered: false,
         worldTimeOrigin: Date.now(),
@@ -302,7 +302,25 @@ async function mainLoop() {
                 packetLogger.log(incomingPacket);
             } catch {}
 
-            const messageId = packet.data[0];
+            let payload = Buffer.from(packet.data);
+            let messageId = payload[0];
+            let timestamp: bigint | null = null;
+
+            if (messageId === RakNetMessageId.ID_TIMESTAMP) {
+                if (payload.length >= 6) {
+                    // RakNetTime is 32-bit unless __GET_TIME_64BIT is defined.
+                    timestamp = BigInt(payload.readUInt32LE(1));
+                    payload = payload.subarray(5);
+                    messageId = payload[0];
+                    if (config.debug) {
+                        logDebug(`[World] ID_TIMESTAMP -> innerId=0x${messageId.toString(16).padStart(2, '0')} ts=${timestamp.toString()} len=${payload.length}`);
+                    }
+                } else {
+                    logError(`[World] ID_TIMESTAMP too short (${payload.length} bytes)`);
+                    packet = peer.receive();
+                    continue;
+                }
+            }
 
             switch (messageId) {
                 case RakNetMessageId.ID_NEW_INCOMING_CONNECTION:
@@ -315,39 +333,57 @@ async function mainLoop() {
                     break;
 
                 case RakNetMessageId.ID_WORLD_LOGIN: {
-                    const worldLoginPacket = IdWorldLoginPacket.decode(Buffer.from(packet.data));
+                    const worldLoginPacket = IdWorldLoginPacket.decode(Buffer.from(payload));
                     handleWorldLogin(worldLoginPacket, packet.systemAddress);
                     break;
                 }
 
                 case RakNetMessageId.ID_WORLD_LOGIN_REQUEST: {
-                    handleWorldAuth(Buffer.from(packet.data), packet.systemAddress);
+                    handleWorldAuth(Buffer.from(payload), packet.systemAddress);
                     break;
                 }
 
                 case RakNetMessageId.ID_WORLDSERVICE: {
-                    const worldServicePacket = IdWorldServicePacket.decode(Buffer.from(packet.data));
+                    const worldServicePacket = IdWorldServicePacket.decode(Buffer.from(payload));
                     const key = getConnectionKey(packet.systemAddress);
                     logInfo(`[World] 0xa5 WORLDSERVICE from ${key}: ${worldServicePacket.toString()}`);
                     break;
                 }
 
                 case RakNetMessageId.ID_REGISTER_CLIENT: {
-                    const registerPacket = IdRegisterClientPacket.decode(Buffer.from(packet.data));
+                    const registerPacket = IdRegisterClientPacket.decode(Buffer.from(payload));
                     handleRegisterClient(registerPacket, packet.systemAddress);
                     break;
                 }
 
                 case LithTechMessageId.MSG_CONNECTSTAGE: {
-                    handleConnectStage(Buffer.from(packet.data), packet.systemAddress);
+                    handleConnectStage(Buffer.from(payload), packet.systemAddress);
+                    break;
+                }
+
+                case RakNetMessageId.ID_USER_PACKET_ENUM: {
+                    if (payload.length < 2) {
+                        logInfo(`[World] Unhandled 0x86 (USER_PACKET) too short (${payload.length} bytes)`);
+                        break;
+                    }
+                    const lithId = payload[1];
+                    if (config.debug) {
+                        logDebug(`[World] USER_PACKET -> lithId=0x${lithId.toString(16).padStart(2, '0')} len=${payload.length - 1}`);
+                    }
+                    const lithPayload = payload.subarray(1);
+                    if (lithId === LithTechMessageId.MSG_CONNECTSTAGE) {
+                        handleConnectStage(Buffer.from(lithPayload), packet.systemAddress);
+                    } else {
+                        logInfo(`[World] Unhandled Lith msg 0x${lithId.toString(16).padStart(2, '0')} (len=${lithPayload.length})`);
+                    }
                     break;
                 }
 
                 default:
                     const addr = addressToString(packet.systemAddress);
-                    logInfo(`[World] Unhandled 0x${messageId.toString(16).padStart(2, '0')} from ${addr} (${packet.length} bytes)`);
-                    if (packet.length <= 32) {
-                        const hex = Array.from(packet.data)
+                    logInfo(`[World] Unhandled 0x${messageId.toString(16).padStart(2, '0')} from ${addr} (${payload.length} bytes)`);
+                    if (payload.length <= 32) {
+                        const hex = Array.from(payload)
                             .map((b) => b.toString(16).padStart(2, '0'))
                             .join(' ');
                         logInfo(`         ${hex}`);

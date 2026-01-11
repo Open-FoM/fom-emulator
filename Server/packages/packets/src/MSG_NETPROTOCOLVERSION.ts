@@ -27,6 +27,10 @@ export class MsgNetProtocolVersion extends LithMessage {
         return writer.getData();
     }
 
+    get payloadBits(): number {
+        return 64;
+    }
+
     static decode(buffer: Buffer): MsgNetProtocolVersion {
         using reader = new LithPacketRead(buffer);
         const messageId = reader.readUint8();

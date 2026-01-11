@@ -3,11 +3,13 @@ import { LithTechMessageId } from './shared';
 import { LithMessage } from './base';
 
 export enum PreloadType {
-    MODEL = 0x10,
-    SPRITE = 0x11,
-    TEXTURE = 0x12,
-    SOUND = 0x14,
-    END = 0x13,
+    MODEL = 0,
+    SPRITE = 1,
+    TEXTURE = 2,
+    SOUND = 3,
+    UNKNOWN_4 = 4,
+    UNKNOWN_5 = 5,
+    END = 6,
 }
 
 export interface MsgPreloadListData {

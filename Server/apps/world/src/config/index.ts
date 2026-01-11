@@ -6,6 +6,7 @@ export interface ServerConfig {
     maxConnections: number;
     password: string;
     debug: boolean;
+    worldInst: number;
 }
 
 export interface PacketLogConfig {
@@ -74,6 +75,7 @@ export function loadRuntimeConfig(): RuntimeConfig {
         maxConnections: parseInt(env.MAX_CONNECTIONS || '100', 10),
         password: env.SERVER_PASSWORD || '37eG87Ph',
         debug: parseBool(env.DEBUG, true),
+        worldInst: parseInt(env.WORLD_INST || '0', 10),
     };
 
     const quiet = parseBool(env.QUIET_MODE, false);

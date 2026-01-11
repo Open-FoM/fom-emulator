@@ -15,66 +15,236 @@ export const APPEARANCE_DEFAULTS = {
 } as const;
 
 /**
- * ProfileA - Character profile header and inventory slots.
- * Source: sub_100EAAF0 (offset 0x43C)
+ * SkillEntry - 48B slot payload (on-wire fields + local padding).
+ * Source: WorldLogin_ReadSkillEntry @ 0x6742B820
  */
-export class ProfileA extends Struct {
+export class SkillEntry extends Struct {
     constructor(
-        public headerField0: number = 0,
+        public abilityItemId: number = 0,
+        public field2: number = 0,
+        public field4: number = 0,
+        public field6: number = 0,
+        public field8: number = 0,
+        public field9: number = 0,
+        public field12: number = 0,
+        public field16: number = 0,
         public field20: number = 0,
         public field24: number = 0,
-        public field28: number = 0,
-        public itemSlots12: boolean[] = Array(12).fill(false),
-        public itemSlots3: boolean[] = Array(3).fill(false),
-        public itemSlots6: boolean[] = Array(6).fill(false),
-        public secondHeaderField0: number = 0,
-        public secondField20: number = 0,
-        public secondField24: number = 0,
-        public secondField28: number = 0
+        public field25: number = 0,
+        public field26: number = 0,
+        public extra: number[] = [0, 0, 0, 0]
     ) {
         super();
     }
 
     encode(bs: NativeBitStream): void {
-        bs.writeCompressedU16(this.headerField0);
-        bs.writeCompressedU32(this.field20);
-        bs.writeCompressedU32(this.field24);
-        bs.writeCompressedU32(this.field28);
-        bs.writeCompressedU16(0);
-        
-        for (let i = 0; i < 12; i++) bs.writeBit(this.itemSlots12[i]);
-        for (let i = 0; i < 3; i++) bs.writeBit(this.itemSlots3[i]);
-        for (let i = 0; i < 6; i++) bs.writeBit(this.itemSlots6[i]);
-        
-        bs.writeCompressedU16(this.secondHeaderField0);
-        bs.writeCompressedU32(this.secondField20);
-        bs.writeCompressedU32(this.secondField24);
-        bs.writeCompressedU32(this.secondField28);
-        bs.writeCompressedU16(0);
+        bs.writeCompressedU16(this.abilityItemId & 0xffff);
+        bs.writeCompressedU16(this.field2 & 0xffff);
+        bs.writeCompressedU16(this.field4 & 0xffff);
+        bs.writeCompressedU16(this.field6 & 0xffff);
+        bs.writeCompressedU8(this.field8 & 0xff);
+        bs.writeCompressedU8(this.field9 & 0xff);
+        bs.writeCompressedU32(this.field12 >>> 0);
+        bs.writeCompressedU32(this.field16 >>> 0);
+        bs.writeCompressedU32(this.field20 >>> 0);
+        bs.writeCompressedU8(this.field26 & 0xff);
+        bs.writeCompressedU8(this.field25 & 0xff);
+        bs.writeCompressedU8(this.field24 & 0xff);
+        for (let i = 0; i < 4; i++) {
+            bs.writeCompressedU8((this.extra[i] ?? 0) & 0xff);
+        }
     }
 
-    static decode(bs: NativeBitStream): ProfileA {
+    static decode(bs: NativeBitStream): SkillEntry {
+        const abilityItemId = bs.readCompressedU16();
+        const field2 = bs.readCompressedU16();
+        const field4 = bs.readCompressedU16();
+        const field6 = bs.readCompressedU16();
+        const field8 = bs.readCompressedU8();
+        const field9 = bs.readCompressedU8();
+        const field12 = bs.readCompressedU32();
+        const field16 = bs.readCompressedU32();
+        const field20 = bs.readCompressedU32();
+        const field26 = bs.readCompressedU8();
+        const field25 = bs.readCompressedU8();
+        const field24 = bs.readCompressedU8();
+        const extra = [] as number[];
+        for (let i = 0; i < 4; i++) extra.push(bs.readCompressedU8());
+        return new SkillEntry(
+            abilityItemId,
+            field2,
+            field4,
+            field6,
+            field8,
+            field9,
+            field12,
+            field16,
+            field20,
+            field24,
+            field25,
+            field26,
+            extra
+        );
+    }
+}
+
+/**
+ * SkillSlot - Optional slot entry.
+ * Source: WorldLogin_ReadSkillSlot @ 0x6742B940
+ */
+export class SkillSlot extends Struct {
+    constructor(public slotId: number = 0, public entry: SkillEntry = new SkillEntry()) {
+        super();
+    }
+
+    encode(bs: NativeBitStream): void {
+        bs.writeCompressedU32(this.slotId >>> 0);
+        this.entry.encode(bs);
+    }
+
+    static decode(bs: NativeBitStream): SkillSlot {
+        const slotId = bs.readCompressedU32();
+        const entry = SkillEntry.decode(bs);
+        return new SkillSlot(slotId, entry);
+    }
+}
+
+/**
+ * SkillTable - Table of optional slots (12/3/6).
+ * Source: WorldLogin_ReadSkillTable* @ 0x6743BA60 / 0x67451AB0 / 0x67451D60
+ */
+export class SkillTable extends Struct {
+    constructor(public slotCount: number, public slots: Array<SkillSlot | null> = Array(slotCount).fill(null)) {
+        super();
+    }
+
+    encode(bs: NativeBitStream): void {
+        for (let i = 0; i < this.slotCount; i++) {
+            const slot = this.slots[i];
+            const present = Boolean(slot && slot.slotId !== 0);
+            bs.writeBit(present);
+            if (present) {
+                slot?.encode(bs);
+            }
+        }
+    }
+
+    static decodeWithCount(bs: NativeBitStream, slotCount: number): SkillTable {
+        const slots: Array<SkillSlot | null> = [];
+        for (let i = 0; i < slotCount; i++) {
+            const present = bs.readBit();
+            slots.push(present ? SkillSlot.decode(bs) : null);
+        }
+        return new SkillTable(slotCount, slots);
+    }
+
+    static empty(slotCount: number): SkillTable {
+        return new SkillTable(slotCount);
+    }
+}
+
+/**
+ * SkillTree - Entry + list of skill IDs.
+ * Source: WorldLogin_ReadSkillTree @ 0x6741C190
+ */
+export class SkillTree extends Struct {
+    constructor(public entry: SkillEntry = new SkillEntry(), public skillIds: number[] = []) {
+        super();
+    }
+
+    encode(bs: NativeBitStream): void {
+        this.entry.encode(bs);
+        bs.writeCompressedU16(this.skillIds.length & 0xffff);
+        for (const skillId of this.skillIds) {
+            bs.writeCompressedU32(skillId >>> 0);
+        }
+    }
+
+    static decode(bs: NativeBitStream): SkillTree {
+        const entry = SkillEntry.decode(bs);
+        const count = bs.readCompressedU16();
+        const skillIds: number[] = [];
+        for (let i = 0; i < count; i++) {
+            skillIds.push(bs.readCompressedU32());
+        }
+        return new SkillTree(entry, skillIds);
+    }
+}
+
+/**
+ * SkillTreeList - Container with header + list of SkillTree entries.
+ * Source: WorldLogin_ReadSkillTreeList @ 0x6741E500
+ */
+export class SkillTreeList extends Struct {
+    constructor(
+        public headerField0: number = 0,
+        public field20: number = 0,
+        public field24: number = 0,
+        public field28: number = 0,
+        public entries: SkillTree[] = []
+    ) {
+        super();
+    }
+
+    encode(bs: NativeBitStream): void {
+        bs.writeCompressedU16(this.headerField0 & 0xffff);
+        bs.writeCompressedU32(this.field20 >>> 0);
+        bs.writeCompressedU32(this.field24 >>> 0);
+        bs.writeCompressedU32(this.field28 >>> 0);
+        bs.writeCompressedU16(this.entries.length & 0xffff);
+        for (const entry of this.entries) {
+            entry.encode(bs);
+        }
+    }
+
+    static decode(bs: NativeBitStream): SkillTreeList {
         const headerField0 = bs.readCompressedU16();
         const field20 = bs.readCompressedU32();
         const field24 = bs.readCompressedU32();
         const field28 = bs.readCompressedU32();
-        bs.readCompressedU16();
-        
-        const itemSlots12 = Array(12).fill(false).map(() => bs.readBit());
-        const itemSlots3 = Array(3).fill(false).map(() => bs.readBit());
-        const itemSlots6 = Array(6).fill(false).map(() => bs.readBit());
-        
-        const secondHeaderField0 = bs.readCompressedU16();
-        const secondField20 = bs.readCompressedU32();
-        const secondField24 = bs.readCompressedU32();
-        const secondField28 = bs.readCompressedU32();
-        bs.readCompressedU16();
-        
-        return new ProfileA(
-            headerField0, field20, field24, field28,
-            itemSlots12, itemSlots3, itemSlots6,
-            secondHeaderField0, secondField20, secondField24, secondField28
-        );
+        const count = bs.readCompressedU16();
+        const entries: SkillTree[] = [];
+        for (let i = 0; i < count; i++) {
+            entries.push(SkillTree.decode(bs));
+        }
+        return new SkillTreeList(headerField0, field20, field24, field28, entries);
+    }
+
+    static empty(): SkillTreeList {
+        return new SkillTreeList();
+    }
+}
+
+/**
+ * ProfileA - Skill trees + slot tables (1084 bytes in memory).
+ * Source: WorldLogin_ReadProfileBlockA @ 0x6743AB40
+ */
+export class ProfileA extends Struct {
+    constructor(
+        public skillTreeA: SkillTreeList = SkillTreeList.empty(),
+        public skillTable12: SkillTable = SkillTable.empty(12),
+        public skillTable3: SkillTable = SkillTable.empty(3),
+        public skillTable6: SkillTable = SkillTable.empty(6),
+        public skillTreeB: SkillTreeList = SkillTreeList.empty()
+    ) {
+        super();
+    }
+
+    encode(bs: NativeBitStream): void {
+        this.skillTreeA.encode(bs);
+        this.skillTable12.encode(bs);
+        this.skillTable3.encode(bs);
+        this.skillTable6.encode(bs);
+        this.skillTreeB.encode(bs);
+    }
+
+    static decode(bs: NativeBitStream): ProfileA {
+        const skillTreeA = SkillTreeList.decode(bs);
+        const skillTable12 = SkillTable.decodeWithCount(bs, 12);
+        const skillTable3 = SkillTable.decodeWithCount(bs, 3);
+        const skillTable6 = SkillTable.decodeWithCount(bs, 6);
+        const skillTreeB = SkillTreeList.decode(bs);
+        return new ProfileA(skillTreeA, skillTable12, skillTable3, skillTable6, skillTreeB);
     }
 
     static empty(): ProfileA {
@@ -84,7 +254,7 @@ export class ProfileA extends Struct {
 
 /**
  * ProfileB - 4 u16c values.
- * Source: WorldLogin_WriteProfileBlockB @ 0x100ea9e0 (offset 0x878)
+ * Source: WorldLogin_ReadProfileBlockB @ 0x6743AA40
  */
 export class ProfileB extends Struct {
     constructor(public values: number[] = [0, 0, 0, 0]) {
@@ -92,7 +262,7 @@ export class ProfileB extends Struct {
     }
 
     encode(bs: NativeBitStream): void {
-        for (let i = 0; i < 4; i++) bs.writeCompressedU16(this.values[i]);
+        for (let i = 0; i < 4; i++) bs.writeCompressedU16(this.values[i] & 0xffff);
     }
 
     static decode(bs: NativeBitStream): ProfileB {
@@ -116,19 +286,17 @@ export interface ProfileCData {
     torsoTypeId?: number;
     legsTypeId?: number;
     shoesTypeId?: number;
+    accessorySlots?: number[];
     hasAbilities?: boolean;
     flags?: boolean[];
 }
 
 /**
  * ProfileC - Character appearance data.
- * Source: WorldLogin_WriteProfileBlockC @ 0x100c8b80 (offset 0x8B8)
- * 
+ * Source: WorldLogin_Read/WriteProfileBlockC @ 0x67418D20 / 0x67418B80
+ *
  * Bit layout:
- * bits[1]: gender, bits[1]: skinColor, bits[5]: headTextureIdx, bits[5]: hairTextureIdx,
- * bits[32]: unknownU32, bits[5]: unknown5, bits[6]: unknown6, bits[4]: unknown7,
- * bits[12]: torsoTypeId, bits[12]: legsTypeId, bits[12]: shoesTypeId,
- * bits[1]: hasAbilities, bits[1] x 4: flags
+ * 1,1,5,5,32,5,6,4,12,12,12, [if flag] 9x12, 1,1,1,1
  */
 export class ProfileC extends Struct {
     gender: number;
@@ -142,6 +310,7 @@ export class ProfileC extends Struct {
     torsoTypeId: number;
     legsTypeId: number;
     shoesTypeId: number;
+    accessorySlots: number[];
     hasAbilities: boolean;
     flags: boolean[];
 
@@ -158,6 +327,8 @@ export class ProfileC extends Struct {
         this.torsoTypeId = data.torsoTypeId ?? APPEARANCE_DEFAULTS.MALE_TORSO;
         this.legsTypeId = data.legsTypeId ?? APPEARANCE_DEFAULTS.MALE_LEGS;
         this.shoesTypeId = data.shoesTypeId ?? APPEARANCE_DEFAULTS.MALE_SHOES;
+        this.accessorySlots = (data.accessorySlots ?? []).slice(0, 9);
+        while (this.accessorySlots.length < 9) this.accessorySlots.push(0);
         this.hasAbilities = data.hasAbilities ?? false;
         this.flags = data.flags ?? [false, false, false, false];
     }
@@ -167,21 +338,27 @@ export class ProfileC extends Struct {
         writeBitsLE(bs, this.skinColor, 1);
         writeBitsLE(bs, this.headTextureIdx, 5);
         writeBitsLE(bs, this.hairTextureIdx, 5);
-        
+
         const u32Buf = Buffer.alloc(4);
-        u32Buf.writeUInt32LE(this.unknownU32, 0);
+        u32Buf.writeUInt32LE(this.unknownU32 >>> 0, 0);
         bs.writeBits(u32Buf, 32, true);
-        
+
         writeBitsLE(bs, this.unknown5, 5);
         writeBitsLE(bs, this.unknown6, 6);
         writeBitsLE(bs, this.unknown7, 4);
-        
+
         writeBitsLE(bs, this.torsoTypeId, 12);
         writeBitsLE(bs, this.legsTypeId, 12);
         writeBitsLE(bs, this.shoesTypeId, 12);
-        
-        bs.writeBit(this.hasAbilities);
-        
+
+        const hasExtra = this.accessorySlots.some(v => v !== 0);
+        bs.writeBit(hasExtra);
+        if (hasExtra) {
+            for (let i = 0; i < 9; i++) {
+                writeBitsLE(bs, this.accessorySlots[i] ?? 0, 12);
+            }
+        }
+
         for (let i = 0; i < 4; i++) {
             writeBitsLE(bs, this.flags[i] ? 1 : 0, 1);
         }
@@ -192,26 +369,45 @@ export class ProfileC extends Struct {
         const skinColor = readBitsLE(bs, 1);
         const headTextureIdx = readBitsLE(bs, 5);
         const hairTextureIdx = readBitsLE(bs, 5);
-        
+
         const u32Buf = bs.readBits(32, true);
         const unknownU32 = u32Buf.readUInt32LE(0);
-        
+
         const unknown5 = readBitsLE(bs, 5);
         const unknown6 = readBitsLE(bs, 6);
         const unknown7 = readBitsLE(bs, 4);
-        
+
         const torsoTypeId = readBitsLE(bs, 12);
         const legsTypeId = readBitsLE(bs, 12);
         const shoesTypeId = readBitsLE(bs, 12);
-        
+
         const hasAbilities = bs.readBit();
+        const accessorySlots: number[] = [];
+        if (hasAbilities) {
+            for (let i = 0; i < 9; i++) {
+                accessorySlots.push(readBitsLE(bs, 12));
+            }
+        } else {
+            for (let i = 0; i < 9; i++) accessorySlots.push(0);
+        }
+
         const flags = Array(4).fill(false).map(() => readBitsLE(bs, 1) === 1);
-        
+
         return new ProfileC({
-            gender, skinColor, headTextureIdx, hairTextureIdx,
-            unknownU32, unknown5, unknown6, unknown7,
-            torsoTypeId, legsTypeId, shoesTypeId,
-            hasAbilities, flags
+            gender,
+            skinColor,
+            headTextureIdx,
+            hairTextureIdx,
+            unknownU32,
+            unknown5,
+            unknown6,
+            unknown7,
+            torsoTypeId,
+            legsTypeId,
+            shoesTypeId,
+            accessorySlots,
+            hasAbilities,
+            flags,
         });
     }
 
@@ -236,7 +432,7 @@ export class ProfileC extends Struct {
 
 /**
  * ProfileD - 53 compressed u32 values (stats/attributes).
- * Source: WorldLogin_WriteProfileBlockD @ 0x100e3440 (offset 0x8EC)
+ * Source: WorldLogin_ReadProfileBlockD @ 0x674334A0
  */
 export class ProfileD extends Struct {
     constructor(public values: number[] = Array(53).fill(0)) {
@@ -252,6 +448,12 @@ export class ProfileD extends Struct {
     }
 
     static empty(): ProfileD {
-        return new ProfileD();
+        const values = Array(53).fill(0);
+        // Basic vitals: match client stat scale caps (g_StatScaleTable[0..3]).
+        values[0] = 1000;  // Health
+        values[1] = 10000; // Stamina
+        values[2] = 1000;  // Bio Energy / Consciousness
+        values[3] = 1000;  // Aura / Morale
+        return new ProfileD(values);
     }
 }
