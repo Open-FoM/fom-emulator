@@ -201,6 +201,7 @@ function handleRegisterClient(packet: IdRegisterClientPacket, address: RakSystem
     sendReliable(responseBuffer, address);
     logInfo(`[World] -> 0x79 REGISTER_CLIENT_RETURN (worldId=${conn.worldId}, playerId=${conn.playerId}, ${responseBuffer.length} bytes)`);
 
+    /*
     // Send 0x7B WORLD_SELECT after 0x79
     const worldSelect = new IdWorldSelectPacket({
         playerId: conn.playerId,
@@ -210,7 +211,7 @@ function handleRegisterClient(packet: IdRegisterClientPacket, address: RakSystem
     });
     const worldSelectBuffer = worldSelect.encode();
     sendReliable(worldSelectBuffer, address);
-    logInfo(`[World] -> 0x7B WORLD_SELECT (worldId=${conn.worldId}, worldInst=${conn.worldInst}, ${worldSelectBuffer.length} bytes)`);
+    logInfo(`[World] -> 0x7B WORLD_SELECT (worldId=${conn.worldId}, worldInst=${conn.worldInst}, ${worldSelectBuffer.length} bytes)`);*/
 }
 
 function handleNewConnection(address: RakSystemAddress): void {
