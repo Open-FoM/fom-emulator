@@ -189,6 +189,18 @@ Login packet dependency chains (fom_client.exe):
 - 0x005ABDE0 `RakNet_AES_Process` (was sub_FABDE0) - AES encrypt/decrypt wrapper around S-box core.
 - 0x005AADE0 `RakNet_AES_Core` (was sub_FAADE0) - AES block core using S-box at 0x071E118 (IDA 0x119E118).
 
+### RakNet send loop / sendto wrappers (Client)
+| VA | RVA | Symbol | Purpose | Evidence | Conf |
+|---|---|---|---|---|---|
+| 0x00D46780 | 0x00946780 | Net_SendLoop_Worker | Send thread worker; ticks send loop and waits on socket events | decomp | med |
+| 0x00D44520 | 0x00944520 | Net_SendLoop_Tick | Core send tick: drains recv, processes queues/timeouts, builds and sends packets | decomp | med |
+| 0x00D63570 | 0x00963570 | Net_SendPacket_Internal | Prepares packet + dispatch to sendto wrapper | decomp | low |
+| 0x00D35E90 | 0x00935E90 | Net_SendTo_WSAWrapper | WSA send wrapper (sockaddr build + sendto) | decomp | low |
+| 0x00D35E39 | 0x00935E39 | Net_SendTo_impl | Lowest sendto loop (retry until success) | decomp | low |
+| 0x00D64430 | 0x00964430 | BitStream_WritePacketPayloadBlob | Writes payload blob into bitstream buffer | decomp | low |
+| 0x00D323E0 | 0x009323E0 | BitStream_WriteBytes_Raw | Writes raw bytes into bitstream (no align) | decomp | low |
+| 0x00D328E0 | 0x009328E0 | BitStream_WriteBytes_Align | Writes raw bytes into bitstream (byte-align) | decomp | low |
+
 Packet ID notes (client side):
 - 0x05 Secured Connection Response (RSA payload, carries server part used to derive session key).
 - 0x06 Secured Connection Confirmation (size 85; cookie + RSA(random)).
