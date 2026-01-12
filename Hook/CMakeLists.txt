@@ -22,6 +22,10 @@ file(GLOB_RECURSE SOURCE_CPP CONFIGURE_DEPENDS
     "${SOURCE_DIR}/*.cpp"
     "${SOURCE_DIR}/*.c"
 )
+file(GLOB_RECURSE SOURCE_HEADERS CONFIGURE_DEPENDS
+    "${SOURCE_DIR}/*.h"
+    "${SOURCE_DIR}/*.hpp"
+)
 set(EXCLUDED_SOURCES
     ${SOURCE_DIR}/HookNetwork.cpp
     ${SOURCE_DIR}/HookSharedMem.cpp
@@ -46,6 +50,7 @@ set(DINPUT8_DEF ${SOURCE_DIR}/ProxyDInput8/DInput8Proxy.def)
 
 add_library(FoMHook SHARED
     ${SOURCE_CPP}
+    ${SOURCE_HEADERS}
     ${IMGUI_SOURCES}
     ${SOURCE_DIR}/ProxyDInput8/DInput8Proxy.cpp
     ${DINPUT8_DEF}
