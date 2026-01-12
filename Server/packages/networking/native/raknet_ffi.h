@@ -189,8 +189,8 @@ RAK_FFI_API bool rak_connect(RakPeerHandle peer, const char* host, uint16_t remo
  * @param address System address to disconnect
  * @param send_notification true to send disconnect notification
  */
-RAK_FFI_API void rak_close_connection(RakPeerHandle peer, RakSystemAddress address,
-                                       bool send_notification);
+RAK_FFI_API void rak_close_connection(RakPeerHandle peer, uint32_t binary_address, uint32_t port,
+                                       uint32_t send_notification);
 
 /**
  * Check if connected to a specific system.
@@ -198,7 +198,7 @@ RAK_FFI_API void rak_close_connection(RakPeerHandle peer, RakSystemAddress addre
  * @param address System address to check
  * @return true if connected
  */
-RAK_FFI_API bool rak_is_connected(RakPeerHandle peer, RakSystemAddress address);
+RAK_FFI_API bool rak_is_connected(RakPeerHandle peer, uint32_t binary_address, uint32_t port);
 
 /**
  * Get the number of active connections.
@@ -225,7 +225,7 @@ RAK_FFI_API uint16_t rak_get_connection_count(RakPeerHandle peer);
  */
 RAK_FFI_API bool rak_send(RakPeerHandle peer, const uint8_t* data, int32_t length,
                            RakPriority priority, RakReliability reliability,
-                           uint8_t ordering_channel, RakSystemAddress address, bool broadcast);
+                           uint8_t ordering_channel, uint32_t binary_address, uint32_t port, uint32_t broadcast);
 
 /**
  * Receive a packet from the queue.
@@ -283,7 +283,7 @@ RAK_FFI_API uint32_t rak_packet_copy_data(RakPacket* packet, uint8_t* buffer, ui
  * @param stats Output statistics structure
  * @return true if stats retrieved, false if not connected
  */
-RAK_FFI_API bool rak_get_statistics(RakPeerHandle peer, RakSystemAddress address,
+RAK_FFI_API bool rak_get_statistics(RakPeerHandle peer, uint32_t binary_address, uint32_t port,
                                      RakStatistics* stats);
 
 /**
@@ -292,7 +292,7 @@ RAK_FFI_API bool rak_get_statistics(RakPeerHandle peer, RakSystemAddress address
  * @param address System address
  * @return Ping in ms, or -1 if unknown
  */
-RAK_FFI_API int32_t rak_get_last_ping(RakPeerHandle peer, RakSystemAddress address);
+RAK_FFI_API int32_t rak_get_last_ping(RakPeerHandle peer, uint32_t binary_address, uint32_t port);
 
 /**
  * Get this peer's internal address.

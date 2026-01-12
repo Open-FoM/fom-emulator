@@ -147,11 +147,11 @@ const lib = dlopen(libPath, {
     },
     rak_close_connection: {
         returns: FFIType.void,
-        args: [FFIType.ptr, FFIType.u32, FFIType.u16, FFIType.bool],
+        args: [FFIType.ptr, FFIType.u32, FFIType.u32, FFIType.u32],
     },
     rak_is_connected: {
         returns: FFIType.bool,
-        args: [FFIType.ptr, FFIType.u32, FFIType.u16],
+        args: [FFIType.ptr, FFIType.u32, FFIType.u32],
     },
     rak_get_connection_count: {
         returns: FFIType.u16,
@@ -169,8 +169,8 @@ const lib = dlopen(libPath, {
             FFIType.i32, // reliability
             FFIType.u8, // ordering_channel
             FFIType.u32, // address.binary_address
-            FFIType.u16, // address.port
-            FFIType.bool, // broadcast
+            FFIType.u32, // address.port
+            FFIType.u32, // broadcast
         ],
     },
     rak_receive: {
@@ -201,7 +201,7 @@ const lib = dlopen(libPath, {
     // Statistics
     rak_get_last_ping: {
         returns: FFIType.i32,
-        args: [FFIType.ptr, FFIType.u32, FFIType.u16],
+        args: [FFIType.ptr, FFIType.u32, FFIType.u32],
     },
 
     // Utility
@@ -470,7 +470,7 @@ export class RakPeer {
             this.handle,
             address.binaryAddress,
             address.port,
-            sendNotification,
+            sendNotification ? 1 : 0,
         );
     }
 
@@ -512,7 +512,7 @@ export class RakPeer {
             orderingChannel,
             address.binaryAddress,
             address.port,
-            broadcast,
+            broadcast ? 1 : 0,
         );
     }
 

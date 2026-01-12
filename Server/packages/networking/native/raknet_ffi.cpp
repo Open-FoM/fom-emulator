@@ -103,24 +103,24 @@ RAK_FFI_API bool rak_connect(RakPeerHandle handle, const char* host, uint16_t re
     return peer->Connect(host, remote_port, password, password_length);
 }
 
-RAK_FFI_API void rak_close_connection(RakPeerHandle handle, RakSystemAddress address,
-                                       bool send_notification) {
+RAK_FFI_API void rak_close_connection(RakPeerHandle handle, uint32_t binary_address, uint32_t port,
+                                       uint32_t send_notification) {
     if (!handle) return;
     RakPeerInterface* peer = static_cast<RakPeerInterface*>(handle);
     
     SystemAddress sa;
-    sa.binaryAddress = address.binary_address;
-    sa.port = address.port;
-    peer->CloseConnection(sa, send_notification);
+    sa.binaryAddress = binary_address;
+    sa.port = static_cast<unsigned short>(port);
+    peer->CloseConnection(sa, send_notification != 0);
 }
 
-RAK_FFI_API bool rak_is_connected(RakPeerHandle handle, RakSystemAddress address) {
+RAK_FFI_API bool rak_is_connected(RakPeerHandle handle, uint32_t binary_address, uint32_t port) {
     if (!handle) return false;
     RakPeerInterface* peer = static_cast<RakPeerInterface*>(handle);
     
     SystemAddress sa;
-    sa.binaryAddress = address.binary_address;
-    sa.port = address.port;
+    sa.binaryAddress = binary_address;
+    sa.port = static_cast<unsigned short>(port);
     return peer->IsConnected(sa);
 }
 
@@ -136,13 +136,13 @@ RAK_FFI_API uint16_t rak_get_connection_count(RakPeerHandle handle) {
 
 RAK_FFI_API bool rak_send(RakPeerHandle handle, const uint8_t* data, int32_t length,
                            RakPriority priority, RakReliability reliability,
-                           uint8_t ordering_channel, RakSystemAddress address, bool broadcast) {
+                           uint8_t ordering_channel, uint32_t binary_address, uint32_t port, uint32_t broadcast) {
     if (!handle) return false;
     RakPeerInterface* peer = static_cast<RakPeerInterface*>(handle);
     
     SystemAddress sa;
-    sa.binaryAddress = address.binary_address;
-    sa.port = address.port;
+    sa.binaryAddress = binary_address;
+    sa.port = static_cast<unsigned short>(port);
     
     return peer->Send(
         reinterpret_cast<const char*>(data),
@@ -151,7 +151,7 @@ RAK_FFI_API bool rak_send(RakPeerHandle handle, const uint8_t* data, int32_t len
         static_cast<PacketReliability>(reliability),
         ordering_channel,
         sa,
-        broadcast
+        broadcast != 0
     );
 }
 
@@ -216,14 +216,14 @@ RAK_FFI_API uint32_t rak_packet_copy_data(RakPacket* packet, uint8_t* buffer, ui
 // Statistics & Info
 // =============================================================================
 
-RAK_FFI_API bool rak_get_statistics(RakPeerHandle handle, RakSystemAddress address,
+RAK_FFI_API bool rak_get_statistics(RakPeerHandle handle, uint32_t binary_address, uint32_t port,
                                      RakStatistics* stats) {
     if (!handle || !stats) return false;
     RakPeerInterface* peer = static_cast<RakPeerInterface*>(handle);
     
     SystemAddress sa;
-    sa.binaryAddress = address.binary_address;
-    sa.port = address.port;
+    sa.binaryAddress = binary_address;
+    sa.port = static_cast<unsigned short>(port);
     
     RakNetStatistics* rns = peer->GetStatistics(sa);
     if (!rns) return false;
@@ -244,13 +244,13 @@ RAK_FFI_API bool rak_get_statistics(RakPeerHandle handle, RakSystemAddress addre
     return true;
 }
 
-RAK_FFI_API int32_t rak_get_last_ping(RakPeerHandle handle, RakSystemAddress address) {
+RAK_FFI_API int32_t rak_get_last_ping(RakPeerHandle handle, uint32_t binary_address, uint32_t port) {
     if (!handle) return -1;
     RakPeerInterface* peer = static_cast<RakPeerInterface*>(handle);
     
     SystemAddress sa;
-    sa.binaryAddress = address.binary_address;
-    sa.port = address.port;
+    sa.binaryAddress = binary_address;
+    sa.port = static_cast<unsigned short>(port);
     
     return peer->GetLastPing(sa);
 }
