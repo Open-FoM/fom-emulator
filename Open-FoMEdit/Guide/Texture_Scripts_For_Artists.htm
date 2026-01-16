@@ -1,0 +1,266 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Texture_Scripts_For_Artists2_files/filelist.xml">
+<link rel=Edit-Time-Data
+href="./Texture_Scripts_For_Artists2_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>Texture Scripts For Artists:</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Johno</o:Author>
+  <o:LastAuthor>Jonathan Gramlich</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>72</o:TotalTime>
+  <o:Created>2003-03-11T20:57:00Z</o:Created>
+  <o:LastSaved>2003-03-11T20:57:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>994</o:Words>
+  <o:Characters>5669</o:Characters>
+  <o:Company>MONOLITH</o:Company>
+  <o:Lines>47</o:Lines>
+  <o:Paragraphs>11</o:Paragraphs>
+  <o:CharactersWithSpaces>6961</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Arial;
+	mso-font-kerning:16.0pt;}
+h3
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:13.0pt;
+	font-family:Arial;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1><a name="texture_scripts_for_artists">Texture Scripts For Artists</a></h1>
+
+<span style='mso-bookmark:texture_scripts_for_artists'></span>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3><a name="what_is_a_texture_script">What is a Texture Script?</a></h3>
+
+<span style='mso-bookmark:what_is_a_texture_script'></span>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>A texture script is a small program
+that can be written by engineers in order to create a specific type of effect
+on textures. In the old system there were effect such as pan and warble. The scripts
+act in a very similar manner, but instead of using the pan effect, you would
+use a script, which tells the engine how to pan the texture. Each texture
+script has a list of parameters that it allows artists to set in order to
+customize behavior for a desired effect, which is again very similar to the old
+pan effect where a velocity would specified to control how fast it should
+actually pan. Texture scripts are essentially different types of effects that
+the engine can use to dynamically update textures and can be controlled through
+a set of parameters.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3><a name="what_is_a_texture_effect_group">What is a Texture Effect Group?</a></h3>
+
+<span style='mso-bookmark:what_is_a_texture_effect_group'></span>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>The engine itself does not use the
+scripts directly. Instead scripts are contained within an object called a
+Texture Effect Group. The texture effect group dictates what scripts will be
+used, what parameters will be provided to them, and to which texture the script
+applies. Each effect group has a unique name as well as a series of stages.
+Each stage represents a script and to what it applies. To clarify here is an
+example: when rendering a polygon with a detail texture, there are two textures
+involved, the base texture and the detail texture. Each one of these textures
+can have a script with its own parameters applied, so the base texture could
+for example pan, while the detail texture warbled. The settings of the texture
+type, script, and parameters are called a stage. This will be clarified further
+in the section Creating and Editing Texture Groups. In addition, if you want
+one stage to act exactly like a different stage, so that it has the exact same
+script and parameters, you can specify that the stage is overridden, and
+specify which stage it should copy all the information from. When a stage is
+overridden, it does not have any parameters of its own, so changes to the
+parameters must be done to the overriding stage.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3><a name="assigning_texture_groups_in_dedit">Assigning Texture Groups in
+DEdit</a></h3>
+
+<span style='mso-bookmark:assigning_texture_groups_in_dedit'></span>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>Texture groups can be assigned to
+brushes in DEdit through the TextureEffect property. Pressing the browse button
+on the property causes the Texture Group dialog to appear as shown below:</p>
+
+<p class=MsoNormal><img width=474 height=111 id="_x0000_i1025"
+src="Images/textureartist002.jpg"></p>
+
+<p class=MsoNormal>From the dropdown you can select any existing effect groups,
+and through the buttons new effect groups can be created or existing ones
+edited. Pressing OK will assign the currently selected effect group to all
+selected brushes.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3><a name="creating_and_editing_texture_groups">Creating and Editing Texture
+Groups</a></h3>
+
+<span style='mso-bookmark:creating_and_editing_texture_groups'></span>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>When a new effect group is created,
+or an existing one edited, it brings up the Edit Effect Group dialog shown
+below:</p>
+
+<p class=MsoNormal><img width=524 height=410 id="_x0000_i1026"
+src="Images/textureartist004.jpg"></p>
+
+<p class=MsoNormal>As can be seen, the effect group has a name, which can be
+edited when creating a new effect. In addition it has two stages for setting up
+how the effect will actually work. First stage one will be examined, which in
+the diagram is set up to have a warble effect played on the base texture. The
+channel field indicates which texture will have the script applied to it, in
+this case it is the Base Texture, but it can also be the Detail Texture,
+Environment Map, Light Map, or can also be set to Disabled if this entire stage
+should be ignored and nothing effected. The next drop down specifies what stage
+overrides this one, and in this case there is nothing overriding it, indicating
+that it provides its own script and parameters for controlling the effect. The
+script is the actual effect itself, which in the example shows a warble script
+selected, which will cause the texture to move around in an odd fashion based
+upon the parameters provided. The script name cannot be edited directly, but by
+pressing the button to the right it allows the user to select a script through
+a file dialog. Once a script is selected, it will be looked at to determine
+what parameters it supports. Upon finding those it will display them below the
+script allowing the user to enter custom values in order to customize the
+script for the particular instance. These parameters are dependant upon the
+script itself.</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>Stage two
+shown below stage one is an example of modifying a different texture channel so
+that both can be animating. However, for this one it has been overridden to
+copy stage one. This means that it will use the exact same script and
+parameters as the first script, and if any of those parameters were to change,
+it would change for stage two as well. Essentially overriding allows one stage
+to piggyback on a different stage but apply it to a different texture channel.
+If this stage was not overridden though, it could provide its own effect and
+parameters allowing the detail texture to animate independently of its base texture.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3><a name="adding_support_for_triggers">Adding Support for Triggers</a></h3>
+
+<span style='mso-bookmark:adding_support_for_triggers'></span>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Texture scripts can have their parameters changed during
+runtime through triggers, allowing such effects as a player walking through a
+doorway and causing conveyer belt textures to begin panning or other such
+dynamic effects. In order to do this, a TextureFX object must be placed in the
+level. The TextureFX has a single property, which should be filled out with the
+name of the group that it is corresponding to. This object can then receive
+messages of the form:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><i>SETVAR (&lt;stage&gt; &lt;variable&gt; &lt;value&gt;)<o:p></o:p></i></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>This will change the effect group’s parameter to the
+specified value. Stage represents the stage that is having the parameter change
+and can be either 1 or 2. Note that it cannot be a stage that is disabled or a stage
+that is overridden. Variable represents the index of the variable that is to be
+changed and corresponds to the order in which they are listed in DEdit going
+from left to right, top to bottom and must be from one to six. The value is the
+value that is to be stored at the specified location. So for example, if we had
+a panning script whose parameters were: DirX, DirY, DirZ, Velocity, Offset, and
+that was part of the effect group ConveyorBelt.tfg, we would first need to
+create a TextureFX object named ConveyorBelt whose parameter TextureEffect was
+assigned to ConveyorBelt.tfg so that it would know to modify the conveyor belt
+effect group. We could then set up a trigger in a doorway that would start the
+conveyor belt up by changing its velocity from 0 to 5. The conveyor belt uses
+stage one, and since velocity is the fourth parameter, our message would look
+like this:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><i>Msg ConveyorBelt SETVAR (1 4 5.0)<o:p></o:p></i></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3><a name="complete_overview">Complete Overview</a></h3>
+
+<span style='mso-bookmark:complete_overview'></span>
+
+<p class=MsoNormal>Below is a diagram that illustrates the process of creating
+texture effects:</p>
+
+<p class=MsoNormal><img width=458 height=708 id="_x0000_i1027"
+src="Images/textureartist006.gif"></p>
+
+</div>
+
+</body>
+
+</html>

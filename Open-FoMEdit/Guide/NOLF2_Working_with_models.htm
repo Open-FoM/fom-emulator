@@ -1,0 +1,1783 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./NOLF2_Working_with_models_files/filelist.xml">
+<title>Working with models</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Scott Albaugh</o:Author>
+  <o:LastAuthor>Jonathan Gramlich</o:LastAuthor>
+  <o:Revision>3</o:Revision>
+  <o:TotalTime>1029</o:TotalTime>
+  <o:Created>2003-01-02T19:04:00Z</o:Created>
+  <o:LastSaved>2003-02-27T19:45:00Z</o:LastSaved>
+  <o:Pages>6</o:Pages>
+  <o:Words>5117</o:Words>
+  <o:Characters>29172</o:Characters>
+  <o:Lines>243</o:Lines>
+  <o:Paragraphs>58</o:Paragraphs>
+  <o:CharactersWithSpaces>35825</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:14.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Arial;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:0pt;
+	mso-bidi-font-weight:normal;}
+h2
+	{mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-bidi-font-family:"Times New Roman";}
+h3
+	{mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Arial;
+	mso-bidi-font-family:"Times New Roman";
+	font-style:italic;
+	mso-bidi-font-style:normal;}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:12.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoToc3, li.MsoToc3, div.MsoToc3
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:24.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoToc4, li.MsoToc4, div.MsoToc4
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoToc5, li.MsoToc5, div.MsoToc5
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:48.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoToc6, li.MsoToc6, div.MsoToc6
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:60.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoToc7, li.MsoToc7, div.MsoToc7
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:1.0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoToc8, li.MsoToc8, div.MsoToc8
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:84.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoToc9, li.MsoToc9, div.MsoToc9
+	{mso-style-update:auto;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:96.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:304429474;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-2058990948 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l1
+	{mso-list-id:677660062;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-2058990948 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l1:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l2
+	{mso-list-id:685138456;
+	mso-list-type:hybrid;
+	mso-list-template-ids:338603500 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l2:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l3
+	{mso-list-id:818182510;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1636612134 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l3:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l4
+	{mso-list-id:991837147;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1079260328 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l4:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l5
+	{mso-list-id:1304501979;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-398274038 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l5:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l6
+	{mso-list-id:1618022814;
+	mso-list-type:hybrid;
+	mso-list-template-ids:466399644 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l6:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l7
+	{mso-list-id:1645623657;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1760871302 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l7:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1><a name="working_with_models">Working with models</a></h1>
+
+<p class=MsoNormal><span style='mso-bookmark:working_with_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:working_with_models'></span>
+
+<h2><a name="basic_model_creation">Basic model creation</a></h2>
+
+<p class=MsoNormal><span style='mso-bookmark:basic_model_creation'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:basic_model_creation'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>All of the models in NOLF2 were modeled, textured and
+animated in Maya 4.0.<span style="mso-spacerun: yes">  </span>We currently have
+working exporters for Maya3.0/4.0, and 3dStudioMax3.0/4.0.<span
+style="mso-spacerun: yes">  </span>All of the basics of model creation
+mentioned here are specific to Maya, but the concepts apply to Max-created
+models.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:basic_model_creation'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:basic_model_creation'></span>
+
+<h3><a name="models_and_polycounts">Models and Polycounts</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:models_and_polycounts'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>Models should be created using polygons.<span
+style="mso-spacerun: yes">  </span>There are limits on the number of polygons
+of a particular model depending on the function and necessary detail level of
+that model.<span style="mso-spacerun: yes">   </span>In NOLF2, the character
+models ranged from 1700 to 2700 triangles.<span style="mso-spacerun: yes"> 
+</span>This is a good range for most characters, but the limit could go as high
+as 4-5000 triangles in isolated situations.<span style="mso-spacerun: yes"> 
+</span>In addition to the main models, NOLF2 used hand-built level-of-detail
+(LOD) models for most of the gameplay characters (and all of the multiplayer
+models).<span style="mso-spacerun: yes">  </span>The rule of thumb used was to
+create two duplicate models and reduce on to 60% and the other to 25% of the
+original model’s polycount.<span style="mso-spacerun: yes">  </span>LODs are
+not necessary, but are an optimization that will improve rendering speed when
+many models are onscreen simultaneously.<span style="mso-spacerun: yes"> 
+</span>More will be mentioned later about setting up LODs for a model.<span
+style="mso-spacerun: yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:models_and_polycounts'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:models_and_polycounts'></span>
+
+<h3><a name="textures_and_renderstyles">Textures and RenderStyles</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:textures_and_renderstyles'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:textures_and_renderstyles'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>Textures can be created using any digital painting tool and
+should have dimensions that are a power of 2 pixels in length (…64,128,256,
+512…).<span style="mso-spacerun: yes">  </span>Model textures are generally
+kept square, but rectangular shaped textures are ok as long as the dimensions
+fill this requirement.<span style="mso-spacerun: yes">  </span>A Photoshop
+plugin is included to allow creation of Lithtech’s DTX texture format.<span
+style="mso-spacerun: yes">  </span>In addition, plugins for Maya and Max are
+included to allow the use of DTX textures (Maya: IMFLithDTX.dll, MAX:
+MaxDTXLoader40.bmi).<span style="mso-spacerun: yes">  </span>A model can
+theoretically have up to 16 textures, but each part of the model using a
+different texture needs to be separated into a unique piece.<span
+style="mso-spacerun: yes">  </span>A model can be made up of as many as 64
+separate pieces, but keeping as few as possible is desirable to avoid slowing
+model rendering down.<span style="mso-spacerun: yes">  </span>Most NOLF2
+characters have only two pieces, a head and a body, for this reason.<span
+style="mso-spacerun: yes">  </span>In addition to simple textures, each piece
+can have a unique “render style”.<span style="mso-spacerun: yes">  </span>There
+are a lot of these that were created for very specific purposes, but the ones most
+commonly used for models are: envmap.ltb (for adding an alpha masked
+environment map, like with super soldiers), glass.ltb (for creating gray-scale
+alpha masked transparency, like eyeglasses, and even Cate’s eyelashes),
+transparent.ltb (for creating things like trees with alpha mask), furfins.ltb
+and furshell.ltb (basically another way of doing alpha masked transparency,
+used for things like Armstrong’s beard).<span style="mso-spacerun: yes"> 
+</span>There isn’t currently a way to duplicate the effects of these in Maya,
+but they’re not too bad to set up by just checking them in the game.<span
+style="mso-spacerun: yes">  </span>One model piece can have only one render
+style, and usually pieces are combined based on the way model’s render styles
+are distributed.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:textures_and_renderstyles'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:textures_and_renderstyles'></span>
+
+<h3><a name=skeletons>Skeletons</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:skeletons'><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoBodyText><span style='mso-bookmark:skeletons'>After creating the
+model and textures, the model geometry is bound to a skeleton.<span
+style="mso-spacerun: yes">  </span>In Maya, this consists of a hierarchy of one
+or more joints.<span style="mso-spacerun: yes">  </span>All Maya models should
+be attached to skeletons using ‘smooth bind’ in the Skin menu.<span
+style="mso-spacerun: yes">  </span>By default, the exporter will only export
+joints that are bound to geometry, or the parents of such joints.<span
+style="mso-spacerun: yes">  </span>In some cases it is necessary have other
+joints in the hierarchy exported.<span style="mso-spacerun: yes">  </span>This
+is done by creating a Boolean attribute called ‘ForcedNode’ on the joint and
+setting its value to 1.<span style="mso-spacerun: yes">  </span>Every exported
+model must have at least one joint.<span style="mso-spacerun: yes"> 
+</span>Inanimate models, such as lamps, chairs, etc. will need only one
+joint.<span style="mso-spacerun: yes">  </span>Most NOLF2 characters have
+35.<span style="mso-spacerun: yes">  </span>Again it’s possible to use a lot of
+joints, but keeping the number as low as possible will improve
+performance.<span style="mso-spacerun: yes">  </span>Model LODs can be made
+even more efficient by removing unneeded joints from the lower detail
+models.<span style="mso-spacerun: yes">  </span>This can be done in Maya by
+using the ‘Edit Smooth Skin &gt; Remove Influence’ function.<span
+style="mso-spacerun: yes">  </span>A sample Maya4.0 scene has been provided to
+use as a starting point for further experimentation (Tools\Docs\Character_sample.mb).<span
+style="mso-spacerun: yes">  </span>This file is exactly the same as the
+multiplayer version of the pilot model (\chars\models\multi\pilot.ltb).<span
+style="mso-spacerun: yes">  </span>(Unfortunately, we have no sample MAX model scenes.)</span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='mso-bookmark:skeletons'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='mso-bookmark:skeletons'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:skeletons'></span>
+
+<h2><a name="exporting_models">Exporting models</a></h2>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><span style='mso-tab-count:1'>            </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>To use the exporter plugin in Maya, place the file
+‘MayaModelExport40.mll’ in the Maya bin\plugins\ folder and the file
+‘LithTechModelExportOptions.mel’ in the Maya scripts\others\ folder.<span
+style="mso-spacerun: yes">  </span>Make sure the plugin is loaded in Maya’s
+Plugin Manager window.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>The exporter plugin exports a text version of the Lithtech
+file format, ‘.lta’.<span style="mso-spacerun: yes">  </span>It will also
+export a compressed version, ‘.ltc’, to save disk space.<span
+style="mso-spacerun: yes">  </span>The format should be specified in the
+filename supplied to the plugin.<span style="mso-spacerun: yes">   </span>The
+exporter uses the command line format:<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>lithtechModelExport –all [-usePlaybackRange <i
+style='mso-bidi-font-style:normal'>&lt;bool&gt;</i> -append <i
+style='mso-bidi-font-style:normal'>&lt;bool&gt;</i> -ignoreBindPose
+&lt;bool&gt; -exportWorldNode <i style='mso-bidi-font-style:normal'>&lt;bool&gt;</i>
+-scale <i style='mso-bidi-font-style:normal'>&lt;float&gt;</i><span
+style='mso-bidi-font-style:italic'>]</span><i style='mso-bidi-font-style:normal'>
+</i>&lt;animation name&gt; &lt;file name&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>The optional flags are defined as follows:<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><span style='mso-tab-count:1'>            </span><span
+style="mso-spacerun: yes"> </span><o:p></o:p></span></span></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l5 level1 lfo3;tab-stops:list .5in'><span
+     style='mso-bookmark:exporting_models'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>-usePlaybackRange</span></b></span><span
+     style='mso-bookmark:exporting_models'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – setting this to ‘1’ will export only the visible range of an animation.
+     ‘0’ will export all keyframes in the scene.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l5 level1 lfo3;tab-stops:list .5in'><span
+     style='mso-bookmark:exporting_models'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>-append</span></b></span><span
+     style='mso-bookmark:exporting_models'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – setting this to ‘1’ will append the animation to an existing file,
+     allowing models to contain many animations.<span style="mso-spacerun:
+     yes">  </span>Setting it to ‘0’ (the default) will overwrite the file if
+     it exists.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l5 level1 lfo3;tab-stops:list .5in'><span
+     style='mso-bookmark:exporting_models'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>-ignoreBindPose</span></b></span><span
+     style='mso-bookmark:exporting_models'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – This option determines whether the bind pose of a model or the first
+     frame of an animation is used as a base for deformation.<span
+     style="mso-spacerun: yes">  </span>This was set to ‘1’ for nearly all
+     NOLF2 models because of the child model workflow described below.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l5 level1 lfo3;tab-stops:list .5in'><span
+     style='mso-bookmark:exporting_models'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>-exportWorldNode</span></b></span><span
+     style='mso-bookmark:exporting_models'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – This allows multiple skeletons in a scene to be exported as one model if
+     set to ‘1’.<span style="mso-spacerun: yes">  </span>It adds a ‘world node’
+     as a parent to all exported skeletons.<span style="mso-spacerun: yes"> 
+     </span>It was generally set to ‘0’ for NOLF2 models.<span
+     style="mso-spacerun: yes">   </span><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l5 level1 lfo3;tab-stops:list .5in'><span
+     style='mso-bookmark:exporting_models'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>-scale</span></b></span><span
+     style='mso-bookmark:exporting_models'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – this will scale a model by the specified float value.<span
+     style="mso-spacerun: yes">  </span>This can be helpful since it can be
+     tricky to scale animations in Maya. <o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l5 level1 lfo3;tab-stops:list .5in'><span
+     style='mso-bookmark:exporting_models'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>animation
+     name</span></b></span><span style='mso-bookmark:exporting_models'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – the name of an animation.<span
+     style="mso-spacerun: yes">  </span>When appending animations, if there is
+     an existing animation of the same name, it will need to be deleted in
+     ModelEdit before it can be used. <o:p></o:p></span></span></li>
+</ul>
+
+<p class=MsoBodyTextIndent style='text-indent:-.25in;mso-list:l5 level1 lfo3;
+tab-stops:list .5in'><span style='mso-bookmark:exporting_models'><![if !supportLists]><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><b>file name</b> – this should contain the entire path
+to the desired file.<span style="mso-spacerun: yes">  </span>The format should
+be either ‘.lta’, or ‘.ltc”.<span style="mso-spacerun: yes">  </span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>The exporter will use these options to decide which
+skeleton(s) should be exported, and will include all visible geometry bound to
+it. <o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>The concept of ‘child models’ was used for most characters
+in NOLF2.<span style="mso-spacerun: yes">  </span>The child model is a model
+that is used solely to store animations (and animation specific data).<span
+style="mso-spacerun: yes">  </span>When a child model is applied to another
+model, that model will share all the animation data from the child model.<span
+style="mso-spacerun: yes">  </span>This allows continual edits to be made on
+models without needing to worry about re-exporting large numbers of animations.<span
+style="mso-spacerun: yes">  </span>It also allows many different models to use
+the same animation set.<span style="mso-spacerun: yes">  </span>The base
+character should be exported unanimated at its bind pose with the animation
+called ‘base’.<span style="mso-spacerun: yes">  </span>A child model is created
+by using the ‘append’ option in the exporter.<span style="mso-spacerun: yes"> 
+</span><span style='color:red'>Be very careful, since accidentally not setting
+the append flag will simply overwrite the file without warning.<span
+style="mso-spacerun: yes">  </span></span>Also, when joint names are
+case-specific when appending and must match exactly the names of the
+model.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>A Maya script that eases the export/model setup workflow
+described here was created by the NOLF2 animator.<span style="mso-spacerun:
+yes">  </span>It creates an interface to save many of the settings described
+here and in the next section in a Maya scene.<span style="mso-spacerun: yes"> 
+</span>It was used for nearly all the models that were exported throughout
+production and is presented here as is… it worked for me - I hope it works for
+others.<span style="mso-spacerun: yes">  </span>If nothing else it provides a
+starting point for others to understand how the lta format can be used.<span
+style="mso-spacerun: yes">  </span>It is described mode fully in another
+section.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:exporting_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:exporting_models'></span>
+
+<h2><a name="model_setup_using_modeledit">Model setup using ModelEdit</a></h2>
+
+<p class=MsoNormal><span style='mso-bookmark:model_setup_using_modeledit'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:model_setup_using_modeledit'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>After exporting a character model, a few things need to be
+done to get it to appear in the game.<span style="mso-spacerun: yes"> 
+</span>These things are done in ModelEdit.<span style="mso-spacerun: yes"> 
+</span>This tool has been around for a few years and hasn’t changed a lot, in
+spite of our workflow changing a lot.<span style="mso-spacerun: yes"> 
+</span>What that means is that there are a lot of options that probably haven’t
+been used in a while and may be obsolete.<span style="mso-spacerun: yes">  
+</span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:model_setup_using_modeledit'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:model_setup_using_modeledit'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>The new Lithtech file format exists in two forms.<span
+style="mso-spacerun: yes">  </span>The exporter creates a user-friendly data
+file (lta or ltc), but this needs to be compiled as an ltb file for use in the
+engine.<span style="mso-spacerun: yes">  </span>An lta file is a text file
+containing all the model and animation data.<span style="mso-spacerun: yes"> 
+</span>An ltc file is a compressed version of this, and is what was used for
+most NOLF2 models.<span style="mso-spacerun: yes">  </span>ModelEdit only reads
+lta or ltc files, not ltb files.<span style="mso-spacerun: yes">  
+</span>ModelEdit can be used to convert between ltc and lta files.<span
+style="mso-spacerun: yes">  </span>In addition to this, a command line tool,
+LTC.exe, can be used to convert between lta and ltc files.<span
+style="mso-spacerun: yes">  </span>For help using this tool, execute the
+command ‘LTC’.<span style="mso-spacerun: yes">  </span>ModelPacker.exe is used
+by ModelEdit to create ltb files.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:model_setup_using_modeledit'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:model_setup_using_modeledit'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>There are several things that need to be set up in ModelEdit
+to get models working.<span style="mso-spacerun: yes">  </span>As an example, a
+fully setup character, Game\Chars\Models\Character_Sample.lta, has been
+provided that is the exported version of the Maya scene Character_Sample.mb. <span
+style="mso-spacerun: yes"> </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:model_setup_using_modeledit'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:model_setup_using_modeledit'></span>
+
+<h3><a name="user_dims">User Dims</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:user_dims'><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:user_dims'><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>The
+most basic thing that needs to be set on models is the User Dims.<span
+style="mso-spacerun: yes">  </span>This is basically a bounding box for each
+model.<span style="mso-spacerun: yes">  </span>To see this box in ModelEdit,
+select ‘Options &gt; Show User Dimensions’.<span style="mso-spacerun: yes"> 
+</span>By default the dims are a long box.<span style="mso-spacerun: yes"> 
+</span>This needs to be changed to more closely match the size of the
+model.<span style="mso-spacerun: yes">  </span>This can be done either by
+adjusting the ‘+’ and ‘-‘ buttons in the ‘Animation Edit’ section of ModelEdit
+or by selecting ‘Animation &gt; Dimensions…’ and entering appropriate
+values.<span style="mso-spacerun: yes">  </span>One thing to know about user
+dims is that the X value must always equal the Z value.<span
+style="mso-spacerun: yes">  </span>If not the engine will pick one and apply it
+to both, producing strange results.<span style="mso-spacerun: yes"> 
+</span>Another thing to notice is that user dims can be set per animation.<span
+style="mso-spacerun: yes">  </span>To avoid possible timing issues with
+changing dims, they are usually set the same for all animations on a character.<span
+style="mso-spacerun: yes">  </span>The only exception in NOLF2 is the crouching
+animations for player characters.<span style="mso-spacerun: yes">  </span>All
+human characters in NOLF2 have X=24, Y=53, Z=24.<span style="mso-spacerun:
+yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:user_dims'><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:user_dims'></span>
+
+<h3><a name="weight_sets">Weight Sets</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:weight_sets'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:weight_sets'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>In order to render in the engine, character models need to
+have several ‘weight sets’ created.<span style="mso-spacerun: yes">  </span>Weight
+Sets are used by the programmers to tell a character to play more than one
+animation at a time, such as the recoil animations or the upper/lower body
+blending in multiplayer.<span style="mso-spacerun: yes">  </span>Select ‘Model
+&gt; Edit Weighted Animation Blending’ in ModelEdit.<span style="mso-spacerun:
+yes">  </span>Weight Sets are created one at a time by clicking the ‘Add Set’
+button and entering the name.<span style="mso-spacerun: yes">  </span>The
+following sets need to be added to every character model:<span
+style="mso-spacerun: yes">  </span>Null, Upper, Lower, blink, twitch.<span
+style="mso-spacerun: yes">  </span>To set the Weight Sets, select one or more
+nodes in the ‘Nodes’ window and set the appropriate value in the ‘Current Node
+Weight’ window.<span style="mso-spacerun: yes">  </span>(When setting this
+number, don’t press enter, as it will exit the dialogue and frustrate
+you).<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:weight_sets'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l7 level1 lfo6;tab-stops:list .5in'><span
+     style='mso-bookmark:weight_sets'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Twitch</span></b></span><span
+     style='mso-bookmark:weight_sets'><span style='font-size:10.0pt;mso-bidi-font-size:
+     12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'> - select
+     all the nodes in the node window and set the Weight to ‘2’.<span
+     style="mso-spacerun: yes">  </span>Setting the weight to ‘2’ tells the
+     engine to additively blend animations and in this case allows the twitch
+     on dead bodies and recoil on shot enemies.<span style="mso-spacerun:
+     yes">  </span><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l7 level1 lfo6;tab-stops:list .5in'><span
+     style='mso-bookmark:weight_sets'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Blink</span></b></span><span
+     style='mso-bookmark:weight_sets'><span style='font-size:10.0pt;mso-bidi-font-size:
+     12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'> – select
+     the Eyelid node (if one exists) and set its value to 2.<span
+     style="mso-spacerun: yes">  </span>This will cause the engine to play an
+     animation called ‘blink’ if it exists constantly as long as the character
+     is alive and blend it over whatever the character is doing.<span
+     style="mso-spacerun: yes">  </span>This could be used creatively…<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l7 level1 lfo6;tab-stops:list .5in'><span
+     style='mso-bookmark:weight_sets'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Upper</span></b></span><span
+     style='mso-bookmark:weight_sets'><span style='font-size:10.0pt;mso-bidi-font-size:
+     12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'> – select
+     all the nodes in the upper body of the character and set the weight to
+     ‘1’.<span style="mso-spacerun: yes">  </span>This tells the engine to
+     replace the animation on these nodes with the desired upper body
+     animation. <o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l7 level1 lfo6;tab-stops:list .5in'><span
+     style='mso-bookmark:weight_sets'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Lower</span></b></span><span
+     style='mso-bookmark:weight_sets'><span style='font-size:10.0pt;mso-bidi-font-size:
+     12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'> – select
+     all the nodes in the lower body of the character and set the weight to
+     ‘1’.<span style="mso-spacerun: yes">  </span>Note that if there is a node
+     controlling the translation of the model, it should be in the lower
+     body.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l7 level1 lfo6;tab-stops:list .5in'><span
+     style='mso-bookmark:weight_sets'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Null</span></b></span><span
+     style='mso-bookmark:weight_sets'><span style='font-size:10.0pt;mso-bidi-font-size:
+     12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'> – leave
+     all nodes set to zero.<o:p></o:p></span></span></li>
+</ul>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='mso-bookmark:weight_sets'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:weight_sets'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>Note that other than the Upper and Lower sets in multiplayer
+characters, all of these can be left at zero and the models will work
+fine.<span style="mso-spacerun: yes">  </span>The sets just need to exist for
+the engine to be able to set up each character.<span style="mso-spacerun:
+yes">  </span>Non-character models do not need weight sets.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:weight_sets'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:weight_sets'></span>
+
+<h3><a name=sockets>Sockets</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:sockets'><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:sockets'><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Sockets
+are created to define locations where other models or FX can be attached to
+characters.<span style="mso-spacerun: yes">  </span>The most noticeable place
+where sockets are used is in the gun hands of character models.<span
+style="mso-spacerun: yes">  </span>This is the only socket I can think of that
+is necessary for a character to function properly.<span style="mso-spacerun:
+yes">  </span>This socket must be named ‘RightHand’, but can be attached to any
+node in the model (for example, the laser shooting super soldier has a
+RightHand socket attached to his Head node.)<span style="mso-spacerun: yes"> 
+</span>To create this socket in ModelEdit, select the desired node (usually the
+right hand) in the Nodes window.<span style="mso-spacerun: yes">  </span>Then
+select ‘Sockets &gt; Add Socket…’,<span style="mso-spacerun: yes">  </span>and
+enter the name ‘RightHand’.<span style="mso-spacerun: yes">  </span>The socket
+will be created at the location and orientation of it’s parent node.<span
+style="mso-spacerun: yes">  </span>Usually this will need to be edited.<span
+style="mso-spacerun: yes">  </span>This is most easily done by showing
+attachment models in ModelEdit.<span style="mso-spacerun: yes"> 
+</span>(Unfortunately, new sockets don’t show attachments until the model is
+saved and re-opened.)<span style="mso-spacerun: yes">  </span>Select ‘Options
+&gt; Show Sockets’ and ‘Options &gt; Show Attachments’.<span
+style="mso-spacerun: yes">  </span>Now double click the socket name (RightHand)
+in the ‘Sockets’ window.<span style="mso-spacerun: yes">  </span>In the
+‘Attachment’ field of this properties window, enter or browse to the location
+of an attachment model lta file (gun, flashlight…).<span style="mso-spacerun:
+yes">  </span>Also in this window are entry boxes for orientation, translation,
+and scale values.<span style="mso-spacerun: yes">  </span>These are very
+helpful when you know exactly what they need to be, but can be a little
+counterintuitive when starting from scratch since they are based on the
+orientation of the parent node.<span style="mso-spacerun: yes">  </span>It’s
+easier to use the ‘Transform Edit’ controls.<span style="mso-spacerun: yes"> 
+</span>The Red, Green, and Blue boxes correspond to the colored axes of the
+socket in the ModelEdit viewport.<span style="mso-spacerun: yes"> 
+</span>Translation and Rotation are usually all that is needed to position the
+attachment into place.<span style="mso-spacerun: yes">  </span>Scale is usually
+only used if an attachment that is shared among several characters needs to be
+adjusted to fit onto larger (or smaller) body part.<span style="mso-spacerun:
+yes">  </span>All the sockets that you create are listed in the ‘Sockets’
+window in ModelEdit.<span style="mso-spacerun: yes">  </span>Other important
+sockets that every character should have are LeftFoot and RightFoot.<span
+style="mso-spacerun: yes">  </span>These are needed to create footprints and
+accurately located footstep sounds.<span style="mso-spacerun: yes"> 
+</span>Other than this the main uses for sockets are hats, glasses, holstered
+weapons.<span style="mso-spacerun: yes">  </span>To see how these and other
+sockets are set up, examine the sample character.<span style="mso-spacerun:
+yes">  </span>Most characters have about a dozen sockets even though many of
+them aren’t used by all the characters.<span style="mso-spacerun: yes"> 
+</span>This is for consistency, so no one needs to remember which character
+gets which sockets.<span style="mso-spacerun: yes">  </span>A socket name will
+not be valid unless it is appears on a list determined by game code.<span
+style="mso-spacerun: yes">  </span>The full available list can be seen by
+opening DEdit, selecting an AI and opening the attachments property.<span
+style="mso-spacerun: yes">  </span>One other thing… the exporter plug-in allows
+sockets to be created and exported from Maya.<span style="mso-spacerun: yes"> 
+</span>To do this create an object (usually a locator) and add a Boolean
+attribute called ‘sockets’ and set it to ‘1’.<span style="mso-spacerun: yes"> 
+</span>This object can be used to orient objects within Maya and may be easier
+to work with than ModelEdit’s controls.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:sockets'><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:sockets'></span>
+
+<h3><a name="importing_sockets_and_weight_sets">Importing Sockets and Weight
+Sets</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:importing_sockets_and_weight_sets'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:importing_sockets_and_weight_sets'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>Sockets and Weight Sets are two things that are commonly
+imported from similar existing models.<span style="mso-spacerun: yes"> 
+</span>This can be done by selecting ‘File &gt; Import…’.<span
+style="mso-spacerun: yes">  </span>To import only Sockets and Weight Sets,
+check the boxes next to those options, and uncheck Animations.<span
+style="mso-spacerun: yes">  </span>Then browse to a previously set up model
+with a matching skeleton and click ‘Open’.<span style="mso-spacerun: yes"> 
+</span>This can save a lot of tedious work, but some sockets may still need to
+be adjusted depending on the situation.<span style="mso-spacerun: yes"> 
+</span>Among the other options, Animations can also be imported from one model
+to another (instead of using a child model).<span style="mso-spacerun: yes"> 
+</span>When importing Animations, you should always import User Dims and
+Translations simultaneously to avoid needing to reset this information.<span
+style="mso-spacerun: yes">  </span>The ‘UV Coords’ is no longer used.<span
+style="mso-spacerun: yes">   </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:importing_sockets_and_weight_sets'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:importing_sockets_and_weight_sets'></span>
+
+<h3><a name="child_models">Child Models</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:child_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:child_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>Child models are added in ModelEdit by selecting ‘Child
+Model &gt; Add ChildModel…’ and browsing to the desired lta or ltc file.<span
+style="mso-spacerun: yes">  </span>The only requirement for a model to be a
+valid child model is that the hierarchy must match exactly that of the parent
+model.<span style="mso-spacerun: yes">  </span>A model can have as many as 32
+child models, some of which can be added in game code as needed.<span
+style="mso-spacerun: yes">  </span>Generally, only 1-3 child models are needed,
+depending on the character, and they will be listed in the ‘Child models’
+window in ModelEdit.<span style="mso-spacerun: yes">  </span>If a child model
+has drastically different proportions than a character, you may notice the
+character distorting to match those proportions.<span style="mso-spacerun:
+yes">  </span>This can be corrected by checking the box next to the distorted
+nodes in ModelEdit’s Nodes window.<span style="mso-spacerun: yes">  </span>This
+tells the engine to ignore the translation information from the child model for
+this node and use only the rotation.<span style="mso-spacerun: yes">  </span>In
+most NOLF2 characters, all the nodes are checked except translation, movement,
+and most Face nodes.<span style="mso-spacerun: yes">  </span>These nodes contain
+mostly translation animation, so ignoring translation will kill the
+animation.<span style="mso-spacerun: yes">  </span>The Face nodes that should
+be checked are the eye nodes and the eyelid node, since they only contain
+rotation animation.<span style="mso-spacerun: yes">  </span>Note that this only
+works if a character shares the exact face setup as the child model.<span
+style="mso-spacerun: yes">  </span>If this is not the case, all the face nodes
+should be checked.<span style="mso-spacerun: yes">   </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:child_models'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:child_models'></span>
+
+<h3><a name="texture_setup">Texture Setup</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:texture_setup'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:texture_setup'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>Setting up textures and render styles in ModelEdit is done
+in the Piece Info window.<span style="mso-spacerun: yes">  </span>This is
+accessed by highlighting a model piece in the ‘Pieces’ window and selecing
+‘Piece &gt; Piece Info…’.<span style="mso-spacerun: yes">  </span>This can be
+the most confusing part of setting up a model.<span style="mso-spacerun: yes"> 
+</span>The main things to understand here are the Texture Indices and Render
+Style Index.<span style="mso-spacerun: yes">  </span>All of the textures and
+render styles associated with a model are listed in an attribute file.<span
+style="mso-spacerun: yes">  </span>Characters are in modelbutes.txt and props
+are in proptypes.txt.<span style="mso-spacerun: yes">  </span>Here is an
+example of a Super Soldier’s texture list:<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:texture_setup'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-bookmark:texture_setup'><span
+style='font-size:8.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New"'>Skin0<span
+style='mso-tab-count:2'>         </span>= &quot;chars\skins\SSLtBody.dtx&quot;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-bookmark:texture_setup'><span
+style='font-size:8.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New"'>Skin1<span
+style='mso-tab-count:2'>         </span>= &quot;chars\skins\SSLtHead.dtx&quot;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-bookmark:texture_setup'><span
+style='font-size:8.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New"'>Skin2<span
+style='mso-tab-count:2'>         </span>= &quot;chars\skins\SSLtPack.dtx&quot;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-bookmark:texture_setup'><span
+style='font-size:8.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New"'>Skin3<span
+style='mso-tab-count:2'>         </span>= &quot;chars\skins\shinyspot.dtx&quot;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-bookmark:texture_setup'><span
+style='font-size:8.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New"'>RenderStyle0<span
+style='mso-tab-count:1'>  </span>= &quot;RS\default.ltb&quot;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-bookmark:texture_setup'><span
+style='font-size:8.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New"'>RenderStyle1<span
+style='mso-tab-count:1'>  </span>= &quot;RS\envmap.ltb&quot;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-bookmark:texture_setup'><span
+style='font-size:8.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New"'>RenderStyle2<span
+style='mso-tab-count:1'>  </span>= &quot;RS\glass.ltb&quot;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in;mso-layout-grid-align:none;
+text-autospace:none'><span style='mso-bookmark:texture_setup'><span
+style='font-size:8.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New"'>RenderStyle3<span
+style='mso-tab-count:1'>  </span>= &quot;RS\Glow.ltb&quot;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:texture_setup'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:texture_setup'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>The Texture Index refers to the Skin number in this
+list.<span style="mso-spacerun: yes">  </span>The Render Style Index refers to
+the Render Style number in this list.<span style="mso-spacerun: yes"> 
+</span>For example the ‘body’ piece of the model will use Skin0 and
+RenderStyle0, so the indices will stay at the default values of zero.<span
+style="mso-spacerun: yes">  </span>Some render styles use multiple
+textures.<span style="mso-spacerun: yes">  </span>The only commonly used render
+style like this is envmap.ltb.<span style="mso-spacerun: yes">  </span>An
+example of its use would be the Super Soldier’s backpack.<span
+style="mso-spacerun: yes">  </span>This uses RenderStyle1, Skin2 as the main
+texture map, and Skin3 as the environment map.<span style="mso-spacerun: yes"> 
+</span>To set this up, the ‘Number of Textures’ option needs to be set to
+‘2’.<span style="mso-spacerun: yes">  </span>Then Texture Index 0 should be set
+to ‘2’ (for Skin2) and Texture Index 1 should be set to ‘3’ (for Skin3’).<span
+style="mso-spacerun: yes">  </span>The Render Style Index should be set to ‘1’
+(for RenderStyle1).<span style="mso-spacerun: yes">  </span>There is also an
+option for ‘Render Priority’.<span style="mso-spacerun: yes">  </span>This is
+used to insure proper sorting of transparent models.<span style="mso-spacerun:
+yes">  </span>All non-transparent models should have this set to ‘0’.<span
+style="mso-spacerun: yes">  </span>Most models using alpha transparency render
+styles should have this set to ‘1’ to insure that that piece will always be
+rendered properly when it is in front of an opaque piece.<span
+style="mso-spacerun: yes">  </span>Complex model setups, like Armstrong’s
+beard, can have a wide range of render priorities to sort the pieces properly.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:texture_setup'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:texture_setup'></span>
+
+<h3><a name="saving_and_compiling">Saving and Compiling</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:saving_and_compiling'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:saving_and_compiling'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>The last thing that needs to happen in ModelEdit is to save
+and compile the model.<span style="mso-spacerun: yes">  </span>To Save and
+Compile, select ‘File &gt; Save and Compile…’.<span style="mso-spacerun: yes"> 
+</span>There are several options here, but only a couple that are ever actually
+used.<span style="mso-spacerun: yes">  </span>One is the compression type.<span
+style="mso-spacerun: yes">  </span>The default compression type is (RLE 16)
+which in the case of some animations, is too much compression.<span
+style="mso-spacerun: yes">  </span>I generally compress unanimated models at
+‘(RLE 16)’ and compress any thing with subtle animations using
+‘(RLE16)PlayerView’.<span style="mso-spacerun: yes">  </span>This difference is
+that with (RLE16)PlayerView, everything is compressed to 16bit except
+translation which stays at 32bits. <span style="mso-spacerun: yes"> </span>This
+basically results in smoother animations.<span style="mso-spacerun: yes"> 
+</span>The other commonly used option is ‘Exclude Model Geometry’.<span
+style="mso-spacerun: yes">  </span>This can be used for any model that is
+exclusively a child model and allows for really good data compression since the
+geometry is simply thrown out.<span style="mso-spacerun: yes">  </span>The good
+news about the compile window is that all the settings are saved per model, so
+the only need to be set when first exported, if at all.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:saving_and_compiling'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><span style="mso-spacerun: yes">    </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:saving_and_compiling'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:saving_and_compiling'></span>
+
+<h2><a name="other_modeledit_functions">Other ModelEdit functions</a></h2>
+
+<p class=MsoNormal><span style='mso-bookmark:other_modeledit_functions'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:other_modeledit_functions'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>Here are the other most commonly used ModelEdit functions.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:other_modeledit_functions'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:other_modeledit_functions'></span>
+
+<h3><a name="animation_editing">Animation Editing</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:animation_editing'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoBodyText><span style='mso-bookmark:animation_editing'>ModelEdit has
+a number of functions to allow simple editing of animation data.<span
+style="mso-spacerun: yes">  </span>An animation cannot be edited if it is being
+shared from a child model.<span style="mso-spacerun: yes">  </span>In the
+‘Animations’ window, the animations are listed with a check mark in the box
+next to the name if they can be edited.<span style="mso-spacerun: yes"> 
+</span>Right clicking on the name of an animation will bring up a menu with
+options to rename, duplicate, or delete the animation.<span
+style="mso-spacerun: yes">  </span>The animation time slider displays the
+keyframes of an animation as red (or green) ticks.<span style="mso-spacerun:
+yes">  </span>For editing purposes, ModelEdit allows you to ‘tag’ a group of
+keyframes.<span style="mso-spacerun: yes">  </span>Keyframes can be tagged
+individually by double clicking the red ticks in the time slider.<span
+style="mso-spacerun: yes">  </span>This actually toggles the tagged state, so
+double clicking again will untag the keyframe.<span style="mso-spacerun: yes"> 
+</span>Tagged keyframes will appear as blue ticks.<span style="mso-spacerun:
+yes">  </span>Groups of keyframes can be tagged by holding down the ‘Shift’ key
+and click-dragging the mouse across the group of red ticks.<span
+style="mso-spacerun: yes">  </span>The tagged state of keyframes is not saved
+with the file.<span style="mso-spacerun: yes">  </span>Right clicking the time
+slider opens a menu.<span style="mso-spacerun: yes">  </span>Here are the
+useful options in this menu:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='mso-bookmark:animation_editing'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l6 level1 lfo9;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Delete
+     Keyframe</span></b></span><span style='mso-bookmark:animation_editing'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – This will delete the current
+     keyframe from the animation.<span style="mso-spacerun: yes">  </span>It
+     will not work on the first or last frame of the animation.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l6 level1 lfo9;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Delete
+     Tagged Keyframes</span></b></span><span style='mso-bookmark:animation_editing'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – This allows multiple keyframes to
+     be tagged and deleted simultaneously.<span style="mso-spacerun: yes"> 
+     </span>Deleting unnecessary keyframes is a useful file size optimization.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l6 level1 lfo9;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Clip
+     After Keyframe</span></b></span><span style='mso-bookmark:animation_editing'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – This will delete all the
+     keyframes after the current keyframe.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l6 level1 lfo9;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Clip
+     Before Keyframe</span></b></span><span style='mso-bookmark:animation_editing'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – This will delete all the keyframes
+     before the current keyframe.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l6 level1 lfo9;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Insert
+     Time Delay</span></b></span><span style='mso-bookmark:animation_editing'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – This will allow a time delay
+     between two keyframes to be specified, and is used a lot in tweaking the
+     timing of animations in cut-scenes.<span style="mso-spacerun: yes">  
+     </span><o:p></o:p></span></span></li>
+</ul>
+
+<p class=MsoNormal><span style='mso-bookmark:animation_editing'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:animation_editing'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>More useful functions can be found in the ‘Animation’ menu:<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:animation_editing'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l3 level1 lfo12;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Set
+     Animation Rate</span></b></span><span style='mso-bookmark:animation_editing'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – This changes the keyframe rate
+     of an animation.<span style="mso-spacerun: yes">  </span>Most NOLF2
+     animations come from motion capture data, which has 30 frames per
+     second.<span style="mso-spacerun: yes">  </span>This function is used to
+     reduce that rate.<span style="mso-spacerun: yes">  </span>Most NOLF2 AI
+     animations are reduced to 7.5 frames per second, while cut-scene
+     animations are 10 frames per second.<span style="mso-spacerun: yes"> 
+     </span>Tagged frames are protected from this function, so if there are
+     rapid motions in the animation, tagging those frames will allow them to
+     retain the full rate.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l3 level1 lfo12;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Set
+     Animation Length</span></b></span><span style='mso-bookmark:animation_editing'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – This will scale the speed of an
+     animation.<span style="mso-spacerun: yes">  </span>During NOLF2
+     production, it was the easiest way to accurately set the timing of
+     animations.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l3 level1 lfo12;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Set
+     Animation Interpolation</span></b></span><span style='mso-bookmark:animation_editing'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – Interpolation is what the
+     engine does to blend from one animation to another.<span
+     style="mso-spacerun: yes">  </span>This function allows the time of this
+     blend to be set.<span style="mso-spacerun: yes">  </span>The default is
+     200 ms, and that is good for most purposes.<span style="mso-spacerun:
+     yes">  </span>Looping animations and cut-scene animations usually have 0
+     interpolation.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l3 level1 lfo12;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Make
+     Continuous</span></b></span><span style='mso-bookmark:animation_editing'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> <b><span style="mso-spacerun:
+     yes"> </span>- </b>This will duplicate the first frame of an animation and
+     place it at the end to create a rough looping effect.<span
+     style="mso-spacerun: yes">  </span>This isn’t perfect in most cases, but
+     is a quick way to get a looping animation for testing purposes.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l3 level1 lfo12;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Reverse</span></b></span><span
+     style='mso-bookmark:animation_editing'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – This will reverse the frames of an animation so that it plays backwards.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l3 level1 lfo12;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Create
+     Single Frame</span></b></span><span style='mso-bookmark:animation_editing'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – This creates a one frame
+     animation from the current frame of an existing animation.<span
+     style="mso-spacerun: yes">  </span><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l3 level1 lfo12;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Translation</span></b></span><span
+     style='mso-bookmark:animation_editing'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – This is used to add a positional offset to an animation.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l3 level1 lfo12;tab-stops:list .5in'><span
+     style='mso-bookmark:animation_editing'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Rotate</span></b></span><span
+     style='mso-bookmark:animation_editing'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – This is used to add a rotational offset to an animation.<o:p></o:p></span></span></li>
+</ul>
+
+<p class=MsoNormal><span style='mso-bookmark:animation_editing'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:animation_editing'></span>
+
+<h3><a name="frame_strings">Frame Strings</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:frame_strings'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:frame_strings'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>It is also possible to add commands to animations so that
+they are executed at a desired keyframe.<span style="mso-spacerun: yes"> 
+</span>This is done in ModelEdit by setting the animation to the desired
+keyframe and entering the command in the ‘Frame String’ text field (at the
+bottom of the ModelEdit interface).<span style="mso-spacerun: yes">  </span>A
+keyframe that has a Frame String will appear as a green tick in the animation
+timeslider, as opposed to the default red tick.<span style="mso-spacerun:
+yes">  </span>Multiple commands can be added to the same keyframe by separating
+the commands with a semicolon.<span style="mso-spacerun: yes">  </span>There
+are many possible commands that can be used here – pretty much any command that
+can be sent to a character through triggers in the game will also work
+here.<span style="mso-spacerun: yes">  </span>The most common ones are:<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:frame_strings'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo15;tab-stops:list .5in'><span
+     style='mso-bookmark:frame_strings'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>FOOTSTEP_KEY
+     1 </span></b></span><span style='mso-bookmark:frame_strings'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'>– Right Footstep.<span
+     style="mso-spacerun: yes">  </span>This will play the appropriate sound
+     effect when the right foot hits the ground and should be placed that point
+     in the animation.<span style="mso-spacerun: yes">  </span>It will also
+     leave a footprint at the correct place in the snow.<span
+     style="mso-spacerun: yes">  </span><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo15;tab-stops:list .5in'><span
+     style='mso-bookmark:frame_strings'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>FOOTSTEP_KEY
+     2</span></b></span><span style='mso-bookmark:frame_strings'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> – Left Footstep.<span
+     style="mso-spacerun: yes">  </span>This should be placed when the left
+     foot hits the ground.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo15;tab-stops:list .5in'><span
+     style='mso-bookmark:frame_strings'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>DOOR</span></b></span><span
+     style='mso-bookmark:frame_strings'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – Activate a door object.<span style="mso-spacerun: yes">  </span>This
+     should be placed at the keyframe where the door should start opening. <o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo15;tab-stops:list .5in'><span
+     style='mso-bookmark:frame_strings'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>OPEN</span></b></span><span
+     style='mso-bookmark:frame_strings'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – This command is used with smart objects to activate an object associated
+     with the smart object.<span style="mso-spacerun: yes">  </span>An example
+     of this is the ‘Desk’ smart object where the OPEN command activates a
+     chair to move when the animation pulls it from under the desk.<span
+     style="mso-spacerun: yes">  </span>For more information on smart objects
+     see the AI docs.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo15;tab-stops:list .5in'><span
+     style='mso-bookmark:frame_strings'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>FX
+     <i>&lt;fx name&gt;</i></span></b></span><span style='mso-bookmark:frame_strings'><span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;
+     mso-bidi-font-family:"Times New Roman"'> - This will play an FX object at
+     the desired keyframe.<span style="mso-spacerun: yes">  </span>An example
+     of this in action is the dissolve body FX (FX AIBodyRemove).<i> </i><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo15;tab-stops:list .5in'><span
+     style='mso-bookmark:frame_strings'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Attach
+     <i>&lt;socket name&gt; &lt;attachment name&gt;</i></span></b></span><span
+     style='mso-bookmark:frame_strings'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>
+     – This will cause an attachment to be spawned at the specified socket and
+     keyframe.<span style="mso-spacerun: yes">  </span>An example is the
+     cigarette appearing in an AI’s hand at the appropriate time (Attach
+     LeftHand cigarette).<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l2 level1 lfo15;tab-stops:list .5in'><span
+     style='mso-bookmark:frame_strings'><b><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Detach
+     <i>&lt;socket name&gt;</i></span></b></span><span style='mso-bookmark:
+     frame_strings'><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+     font-family:Arial;mso-bidi-font-family:"Times New Roman"'> – This will
+     remove an attachment from a character at the desired keyframe.<span
+     style="mso-spacerun: yes">  </span><o:p></o:p></span></span></li>
+</ul>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='mso-bookmark:frame_strings'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:frame_strings'></span>
+
+<h3><a name="importing_lods">Importing LODs</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:importing_lods'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:importing_lods'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>Model LODs are another confusing part of model setup.<span
+style="mso-spacerun: yes">  </span>Since they are not necessary, they may not
+be worth the trouble when experimenting.<span style="mso-spacerun: yes"> 
+</span>Nevertheless, here is how they can be imported using ModelEdit.<span
+style="mso-spacerun: yes">  </span>LOD models should first be exported as a
+separate lta file, and the pieces should be named exactly as the pieces in the
+main file.<span style="mso-spacerun: yes">  </span>LODs are imported on a
+piece-by-piece basis from this file.<span style="mso-spacerun: yes">  </span>In
+ModelEdit, highlight the desired piece in the ‘Pieces’ window and select ‘File
+&gt; Import Custom LODs…’.<span style="mso-spacerun: yes">  </span>Browse to
+the file containing the LOD pieces and click ‘Open’.<span style="mso-spacerun:
+yes">  </span>A window will open containing a list of all the pieces in that
+file.<span style="mso-spacerun: yes">  </span>Select the appropriate piece and
+click ‘OK’.<span style="mso-spacerun: yes">  </span>Now open the ‘+’ sign next
+to the piece name in the Pieces window.<span style="mso-spacerun: yes"> 
+</span>It should open to two ‘0.00’ children.<span style="mso-spacerun: yes"> 
+</span>Here’s the tricky part that will be frustrating.<span
+style="mso-spacerun: yes">  </span>One of these is the original and the other
+is the LOD, but it can be difficult to guess which one.<span
+style="mso-spacerun: yes">   </span>Usually the top 0.00 piece is the LOD, so
+highlight it and select ‘Piece &gt; Piece Info…’.<span style="mso-spacerun:
+yes">  </span>The Texture and Render Style information should match the
+original Piece.<span style="mso-spacerun: yes">  </span>In the LOD Properties
+section, set the Distance to a value other than 0.<span style="mso-spacerun:
+yes">  </span>This will be the distance where the original model piece will
+swap with the new LOD.<span style="mso-spacerun: yes">  </span>This process
+will need to be repeated for each piece of each LOD.<span style="mso-spacerun:
+yes">  </span>Most of the characters in NOLF2 have two full LODs, one at 250
+units, and on at 550.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='mso-bookmark:importing_lods'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:importing_lods'></span>
+
+<h3><a name="command_string">Command String</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:command_string'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoBodyText><span style='mso-bookmark:command_string'>The model’s
+Command String is used to store various commands and settings used by the
+engine when setting up a model.<span style="mso-spacerun: yes">  </span>In
+previous versions of Lithtech, there were many commonly used commands that were
+placed here, but many of those are now obsolete.<span style="mso-spacerun:
+yes">  </span>The only thing the Command String is currently being used for is
+enabling shadows on a model.<span style="mso-spacerun: yes">  </span>To access
+the Command String in ModelEdit, select ‘Model &gt; Command String…’.<span
+style="mso-spacerun: yes">  </span>To turn in shadow casting simply enter
+“ShadowEnable” in the text field.<span style="mso-spacerun: yes">  </span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:command_string'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><span style='mso-tab-count:1'>            </span><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:command_string'></span>
+
+<h3><a name="piece_merging">Piece Merging</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:piece_merging'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:piece_merging'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>A piece-merging feature was added to help optimize the
+number of geometry pieces in a model.<span style="mso-spacerun: yes"> 
+</span>It will merge all pieces that share a render style and texture.<span
+style="mso-spacerun: yes">  </span>To use it highlight the desired pieces in
+the ‘Pieces’ window and select ‘Piece &gt; Merge Selected’.<span
+style="mso-spacerun: yes">  </span>This allows modelers to keep models in
+separate pieces in the modeling software if desired and wait to combine them in
+the exported model for optimization.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:piece_merging'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:piece_merging'></span>
+
+<h3><a name="null_lods">Null LODs</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:null_lods'><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>It
+is possible to have model pieces disappear when models are a certain distance
+from the player.<span style="mso-spacerun: yes">  </span>This is done in
+ModelEdit by highlighting the desired piece in the ‘Pieces’ window and
+selecting ‘Piece &gt; Create Null LOD…’,<span style="mso-spacerun: yes"> 
+</span>then enter the desired distance.<span style="mso-spacerun: yes"> 
+</span>This was used as an optimization in Armstrong’s beard, which mostly
+disappears at about 600 units.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:null_lods'><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'><span
+style="mso-spacerun: yes">  </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:null_lods'><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:null_lods'></span>
+
+<h2><a name="bute_files">Bute Files</a></h2>
+
+<p class=MsoNormal><span style='mso-bookmark:bute_files'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:bute_files'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>All models in the game need to be defined in an attribute
+file.<span style="mso-spacerun: yes">  </span>Characters are defined in
+‘modelbutes.txt’, props are defined in ‘proptypes.txt’, and attachments are
+defined in ‘attachments.txt’. <span style="mso-spacerun: yes"> </span>There is
+a not a lot that needs to be understood about these files in order to add to
+them, but not following the format exactly can cause disastrous results.<span
+style="mso-spacerun: yes">  </span>For this reason, they should be modified at
+your own risk, and never without first backup them up.<span
+style="mso-spacerun: yes">  </span>Most new models are created by simply
+cutting and pasting new model listings from existing, similar models and
+changing the number, Name, the model filename, the Skin and RenderStyle lines.<span
+style="mso-spacerun: yes">  </span>It is very important that each model has a
+unique number and name, and that each attribute file contains no gaps in
+numbers (example: a file that contains [Model56] and [Model58], but not
+[Model57] will crash the game.<span style="mso-spacerun: yes">  </span>Also, a
+file that contains two [Model56] listings will crash the game).<span
+style="mso-spacerun: yes">  </span>This is pretty important, but it’s really
+all that needs to be understood to add most new models.<span
+style="mso-spacerun: yes">  </span>Characters can be a little more complex for
+two reasons.<span style="mso-spacerun: yes">  </span>One is the Skeleton
+section, which is used to define hit detection per skeleton and can be
+enormously painful to deal with.<span style="mso-spacerun: yes">  </span>For
+this reason, it is recommended that experimenting with new characters should
+stick to the existing sample skeleton (Character_Sample.mb).<span
+style="mso-spacerun: yes">  </span>A lot can be done with it without any
+changes.<span style="mso-spacerun: yes">  </span>The other extra piece of
+information for characters is the ‘DeathmatchModels’ section.<span
+style="mso-spacerun: yes">  </span>To add new multiplayer models, in addition
+to the model listing already described, the model must be added to this list
+using the ‘Name’ of the model listing (example ‘Name36 = “NewModelName”’).<span
+style="mso-spacerun: yes">  </span>This covers all the needed basics for model
+setup in NOLF2, but again modify at your own risk and be sure to backup the
+originals.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:bute_files'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:bute_files'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:bute_files'></span>
+
+<h2><a name="ltexport.mel_script">LtExport.mel Script</a></h2>
+
+<p class=MsoNormal><span style='mso-bookmark:"ltexport\.mel_script"'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:"ltexport\.mel_script"'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>As mentioned in the exporter section, as MEL script was
+created to help streamline our workflow and give the ability to store a lot of
+settings in the Maya scene that would otherwise need to be set in ModelEdit
+every time a model is re-exported.<span style="mso-spacerun: yes">  </span>It
+is intended to be an interface to the exporter plugin.<span
+style="mso-spacerun: yes">  </span>This is 100% artist created tool and most of
+it was created as a means to learn MEL scripting.<span style="mso-spacerun:
+yes">  </span>Because of this, it is unsupported and may not be the best way to
+do everything… but it works for us, and nearly all NOLF2 (and TRON) models were
+exported using this script as an interface.<span style="mso-spacerun: yes"> 
+</span>The script requires the file ‘LTC.exe’ to support the compressed ltc
+version of the lta file format.<span style="mso-spacerun: yes">  </span>To use
+this script, place it in a user script directory, or Maya’s Scripts\Others\
+folder.<span style="mso-spacerun: yes">  </span>Enter the command ‘ltExport’ to
+open the interface.<span style="mso-spacerun: yes">  </span>Included is a brief
+description of options, settings, and known limitations in the script.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='mso-bookmark:"ltexport\.mel_script"'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:"ltexport\.mel_script"'></span>
+
+<h3><a name="edit_options">Edit Options</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:edit_options'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><span style="mso-spacerun: yes"> </span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:edit_options'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>The ‘Edit Options’ section contains functions that attempt
+to mimic ModelEdit functionality:<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:edit_options'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo18;tab-stops:list .5in'><span
+     style='mso-bookmark:edit_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>UserDims
+     – This button creates a bounding box that can be scaled normally to set
+     the dims.<span style="mso-spacerun: yes">  </span>It correctly locks the X
+     and Z values to avoid bad dims.<span style="mso-spacerun: yes"> 
+     </span>The scale values will be saved on the skeleton so that they can
+     always be exported correctly.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo18;tab-stops:list .5in'><span
+     style='mso-bookmark:edit_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Sockets
+     – This opens a window that will give options to create and delete sockets
+     and works very much like the ModelEdit dialogue.<span style="mso-spacerun:
+     yes">  </span><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo18;tab-stops:list .5in'><span
+     style='mso-bookmark:edit_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Piece
+     Info – For texture setup, this works exactly like ModelEdit’s Piece info
+     window.<span style="mso-spacerun: yes">  </span>Select a Piece and press
+     this button and the window will open to allow settings to be made.<span
+     style="mso-spacerun: yes">  </span>It also has a place to enter the
+     correct game texture path so that textures will show up in ModelEdit
+     automatically (This may not be usable except during production).<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo18;tab-stops:list .5in'><span
+     style='mso-bookmark:edit_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>CommandString
+     – This is exactly like the ModelEdit Command String window.<span
+     style="mso-spacerun: yes">  </span>Anything entered here will be saved
+     with the skeleton.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo18;tab-stops:list .5in'><span
+     style='mso-bookmark:edit_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>ChildModels
+     – This allows child models to be specified.<span style="mso-spacerun:
+     yes">  </span>A list of child models is saved with the skeleton.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo18;tab-stops:list .5in'><span
+     style='mso-bookmark:edit_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>NodeFlags
+     – This mimics the ‘Nodes’ window of ModelEdit, allowing the node check box
+     setting to be saved with the skeleton.<o:p></o:p></span></span></li>
+</ul>
+
+<p class=MsoNormal><span style='mso-bookmark:edit_options'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:edit_options'></span>
+
+<h3><a name="other_setting_options">Other Setting Options</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:other_setting_options'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:other_setting_options'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>Here are the other available setting options:<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:other_setting_options'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo21;tab-stops:list .5in'><span
+     style='mso-bookmark:other_setting_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Append
+     Animation – When checked on, this will cause the exporter to always append
+     animations without warning.<span style="mso-spacerun: yes">  </span>When
+     off, a warning will come up to prevent accidentally overwriting files.<span
+     style="mso-spacerun: yes">  </span>This sets the ‘-append’ flag of the
+     exporter flag of the exporter plugin.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo21;tab-stops:list .5in'><span
+     style='mso-bookmark:other_setting_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Use
+     TimeSlider range – This sets the ‘-usePlaybackRange’ flag of the exporter
+     plugin.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo21;tab-stops:list .5in'><span
+     style='mso-bookmark:other_setting_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>ExportWeightSets
+     – This will create (but not correctly set) the default set of weight sets
+     needed to for characters to work in the game.<span style="mso-spacerun:
+     yes">  </span><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo21;tab-stops:list .5in'><span
+     style='mso-bookmark:other_setting_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Export
+     Child Models – This was added to allow a model to have child models in
+     Maya, but export without them if needed.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo21;tab-stops:list .5in'><span
+     style='mso-bookmark:other_setting_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>CompileModel
+     – This will automatically compile the model as an ltb file.<span
+     style="mso-spacerun: yes">   </span>When checked on, an option is exposed
+     to ‘Compile with no geometry’.<span style="mso-spacerun: yes"> 
+     </span>This is used when exporting many animations to a child model.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo21;tab-stops:list .5in'><span
+     style='mso-bookmark:other_setting_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Dims
+     – This provides a numerical input for setting User Dims.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo21;tab-stops:list .5in'><span
+     style='mso-bookmark:other_setting_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Scale
+     – This sets the ‘-scale’ flag of the exporter plugin.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo21;tab-stops:list .5in'><span
+     style='mso-bookmark:other_setting_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Interpolation
+     – This sets the interpolation time of an animation.<span
+     style="mso-spacerun: yes">  </span>It is the same as using ‘Set Animation
+     Interpolation’ in ModelEdit. <o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo21;tab-stops:list .5in'><span
+     style='mso-bookmark:other_setting_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>ToolPath
+     – This should provide the folder where the file ‘LTC.exe’ exists<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo21;tab-stops:list .5in'><span
+     style='mso-bookmark:other_setting_options'><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>GamePath
+     – This may not be usable, but shouldn’t affect the working of the script.<o:p></o:p></span></span></li>
+</ul>
+
+<p class=MsoNormal><span style='mso-bookmark:other_setting_options'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:other_setting_options'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>In addition to these options, the script will export LODs
+for models by looking for a very specific naming convention in the Maya
+scene.<span style="mso-spacerun: yes">  </span>I can’t think of a better way to
+describe this setup than to point to the sample Maya character setup scene
+(Character_Sample.mb).<span style="mso-spacerun: yes">  </span>It contains LOD
+pieces that have been hidden to prevent them from exporting.<span
+style="mso-spacerun: yes">  </span>Unhiding them and exporting this scene using
+the ltExport Script will result in fully set up LODs.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:other_setting_options'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<span style='mso-bookmark:other_setting_options'></span>
+
+<h3><a name=limitations>Limitations</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:limitations'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:limitations'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'>There are lots of issues that were never addressed due to
+lack of time.<span style="mso-spacerun: yes">  </span>Here are a couple that
+you’ll probably notice:<o:p></o:p></span></span></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l4 level1 lfo24;tab-stops:list .5in'><span
+     style='mso-bookmark:limitations'><span style='font-size:10.0pt;mso-bidi-font-size:
+     12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>There are
+     a lot of ‘Browse’ buttons in the interface.<span style="mso-spacerun:
+     yes">  </span>Most of them don’t work at all and the main File Browser
+     will only work if you select an existing lta or ltc file.<span
+     style="mso-spacerun: yes">  </span>I never did figure out how to get file
+     browsing to work correctly.<o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l4 level1 lfo24;tab-stops:list .5in'><span
+     style='mso-bookmark:limitations'><span style='font-size:10.0pt;mso-bidi-font-size:
+     12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>The
+     script will give an error if it is run when there are no skeletons in the
+     scene. <o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l4 level1 lfo24;tab-stops:list .5in'><span
+     style='mso-bookmark:limitations'><span style='font-size:10.0pt;mso-bidi-font-size:
+     12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>The
+     script recognizes the first skeletal hierarchy in the scene to be the
+     export skeleton.<span style="mso-spacerun: yes">  </span>This is always
+     the top joint listed in the outliner or the leftmost one in the
+     hypergraph.<span style="mso-spacerun: yes">  </span>Occasionally a hidden
+     skeleton could be listed before the desired one and cause a lot of
+     confusion. <o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l4 level1 lfo24;tab-stops:list .5in'><span
+     style='mso-bookmark:limitations'><span style='font-size:10.0pt;mso-bidi-font-size:
+     12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>There is
+     a weird bug that occurs when child models are specified and exported using
+     this script… the normals are destroyed.<span style="mso-spacerun: yes"> 
+     </span>Fortunately this can be remedied in ModelEdit by selecting ‘Model
+     &gt; Generate Vertex Normals’.<span style="mso-spacerun: yes"> 
+     </span>Because of this, unless there are several child models, I don’t
+     really use the child model part of the script much.<span
+     style="mso-spacerun: yes">  </span><o:p></o:p></span></span></li>
+ <li class=MsoNormal style='mso-list:l4 level1 lfo24;tab-stops:list .5in'><span
+     style='mso-bookmark:limitations'><span style='font-size:10.0pt;mso-bidi-font-size:
+     12.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>The ‘Node
+     Flags’ option will be made invalid if the skeleton is changed after
+     setting the flags.<span style="mso-spacerun: yes">  </span>The exporter
+     won’t notice this, and may cause an assortment of problems if invalid
+     values are exported.<o:p></o:p></span></span></li>
+</ul>
+
+<p class=MsoNormal><span style='mso-bookmark:limitations'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:limitations'><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:limitations'><b><span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-bidi-font-family:
+"Times New Roman";color:red'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></span></p>
+
+</div>
+
+</body>
+
+</html>

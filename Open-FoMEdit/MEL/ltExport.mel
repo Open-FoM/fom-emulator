@@ -1,0 +1,2499 @@
+/*
+	LTA/LTC Exporter
+
+*/
+global proc string getSceneName()
+{
+	string $buffer[], $textureIndex;
+	string $sceneName = `file -q -sn`;
+	tokenize($sceneName, ".", $buffer);
+	string $scenePath = $buffer[0];
+	tokenize($scenePath, "/", $buffer);
+	string $scene = $buffer[size($buffer)-1];
+
+	return $scene;
+}
+
+global proc string getChar(string $line, int $index)
+{
+	$index++;
+	string $char = `substring $line $index $index`;
+	return $char;
+}
+
+global proc getNewFilename()
+{
+	string $newFilename = `fileDialog -dm "~/*.lt*"`;
+	print($newFilename=="");
+	if($newFilename != "")
+	{
+		optionVar -sv lt_defaultFilename $newFilename;
+		textFieldButtonGrp -e -fi $newFilename lt_filename;
+	}
+}
+
+global proc getDirectory( string $field)
+{
+	global string $targetDirectory;
+	string $targetNtDirectory;
+	string $targetPathElements[];
+	int $i, $pathElementsCount;
+	
+	fileBrowser "getTargetDirectory" "Choose Tool Path" "directory" 4;
+	tokenize $targetDirectory "/" $targetPathElements;
+	$pathElementsCount=size($targetPathElements);
+
+	for ($i=0;$i<$pathElementsCount;$i++)
+      		$targetNtDirectory=$targetNtDirectory+$targetPathElements[$i]+"\\";
+
+	optionVar -sv $field $targetNtDirectory;
+	textFieldButtonGrp -e -fi $targetNtDirectory $field;
+}
+
+global proc getTargetDirectory ( string $directory , string $type)
+{
+	global string $targetDirectory;
+	$targetDirectory=$directory + "/";
+}
+
+
+global proc string getModelString()
+{
+	float $times[];
+	float $keyTimes[];
+	string $modelStrings[], $buffer[], $root[] = `ls -dag -type joint`;
+	if((!`objExists ($root[0] + ".modelStrings")`) || (!`objExists ($root[0] + ".keyTimes")`))
+		return "";
+	
+	string $timeString = `getAttr ($root[0] + ".keyTimes")`;
+	tokenize($timeString, " ", $buffer);
+	for($i = 0; $i < size($buffer); $i++)
+	{
+		$times[$i] = (float($buffer[$i]));
+		setKeyframe -t $times[$i] ($root[0] + ".tx"); 
+	}
+	string $modelString = `getAttr ($root[0] + ".modelStrings")`;
+	tokenize($modelString, "\"", $buffer);
+
+	
+	$j=$k=0;
+	$modelString = "";
+	$keyTimeString = "";
+	for($i = 0; $i < size($buffer); $i++)
+	{
+		if(size($buffer[$j]) > 1)
+		{
+			$modelStrings[$k] = $buffer[$j];
+			$k++;	$j++;
+		}
+		$j++;
+	}
+
+
+	
+	int $j = 1;
+	$keyTimes[0] = -9999;
+	select -r (`ls -type animCurveTA -type animCurveTL`);
+
+	int $stringHere;
+	string $string = "\t\t\t\t(values \n\t\t\t\t\t("; 
+	while($keyTimes[$j] > $keyTimes[$j-1])
+	{
+		for($i = 1; $i <= size($times); $i++)
+		{	
+			if(abs($keyTimes[$j] - $times[$i-1]) < 0.005) 
+			{	$stringHere = $i;  break;	}
+			else $stringHere = 0;
+		}
+		if($stringHere)
+			$string = $string  + "\"" + $modelStrings[$stringHere-1] + "\" ";
+		else 
+			$string = $string + "\"\" ";
+		$j++;
+		$keyTimes[$j] = `findKeyframe -time $keyTimes[$j-1] -which next`;
+	}
+	$string = $string + " )\n\t\t\t\t)\n";
+	select -cl; 
+	return $string;
+}
+
+global proc findLTCconverter()
+{
+	$path = `optionVar -q lt_toolPath`;
+	if(!`file -q -ex ($path + "LTC.exe")`)
+		error("Can't proceed. Make sure the Tool Path folder contains LTC.exe\n");
+}
+
+global proc renameFile(string $infile, string $outfile)
+{
+	string $buffer[];
+	tokenize($infile, "\\/", $buffer);
+	$sysInfile = $buffer[0];
+	for($i=1; $i<size($buffer); $i++)
+		$sysInfile = $sysInfile + "\\\\" + $buffer[$i];
+	
+
+	tokenize($outfile, "\\/", $buffer);
+	$sysOutfile = $buffer[(size($buffer) - 1)];
+
+	$cmd = "system(\"ren \\\"" + $sysInfile + "\\\" \\\"" + $sysOutfile + "\\\"\")";
+	eval($cmd);
+}
+
+global proc copyFile(string $infile, string $outfile)
+{
+	string $buffer[];
+	tokenize($infile, "\\/", $buffer);
+	$sysInfile = $buffer[0];
+	for($i=1; $i<size($buffer); $i++)
+		$sysInfile = $sysInfile + "\\\\" + $buffer[$i];
+
+	tokenize($outfile, "\\/", $buffer);
+	$sysOutfile = $buffer[0];
+	for($i=1; $i<size($buffer); $i++)
+		$sysOutfile = $sysOutfile + "\\\\" + $buffer[$i];
+
+	$cmd = "system(\"copy \\\"" + $sysInfile + "\\\" \\\"" + $sysOutfile + "\\\"\")";
+	eval($cmd);
+}
+
+global proc deleteFile(string $infile)
+{
+	string $buffer[];
+	tokenize($infile, "\\/", $buffer);
+	$sysInfile = $buffer[0];
+	for($i=1; $i<size($buffer); $i++)
+		$sysInfile = $sysInfile + "\\\\" + $buffer[$i];
+
+	$cmd = "system(\"del \\\"" + $sysInfile + "\\\"\")";
+	eval($cmd);
+}
+
+
+global proc string getActiveModelPanel()
+{
+	string $activeModelPanel = "";
+	string $panel = `getPanel -wf`;
+	if ("modelPanel" == `getPanel -to $panel`)
+		$activeModelPanel = $panel;
+	return $activeModelPanel;
+}
+
+
+
+global proc modelPacker(string $file)
+{
+	string $buffer[];
+	string $noGeom = "";
+	if((`checkBox -q -en lt_compileNoGeomCheck`) && (`checkBox -q -v lt_compileNoGeomCheck`))
+		$noGeom = " -nogeom";	
+
+	tokenize($file, "\\/", $buffer);
+	$sysFile = $buffer[0];
+	for($i=1; $i<size($buffer); $i++)
+		$sysFile = $sysFile + "\\\\" + $buffer[$i];
+
+	string $path = `optionVar -q lt_toolPath`;
+
+	tokenize($path, "\\/", $buffer);
+	$toolPath = $buffer[0];
+	for($i = 1;$i < size($buffer); $i++)
+		$toolPath = $toolPath + "\\\\" + $buffer[$i];
+	$toolPath = $toolPath + "\\\\model_packer d3d -acpv" + $noGeom + " -inplace";
+
+	$cmd = "system(\"" + $toolPath + " \\\"" + $sysFile + "\\\" \")"; // -verbose\")";
+	evalEcho($cmd);
+}
+
+
+
+global proc string getFileType(string $filename)
+{
+	string $buffer[];
+	tokenize($filename, ".", $buffer);
+	if(size($buffer) < 2 || size($buffer[(size($buffer))-1]) != 3)
+		error "Unknown filetype\n";
+ 
+	return $buffer[size($buffer)-1];
+}
+
+global proc string getTempLtaFile(string $filename)
+{
+	string $buffer[];
+	tokenize ($filename, "\\/", $buffer);
+	$filename = $buffer[0];
+	for($i = 1; $i < size($buffer); $i++)
+		$filename = $filename + "/" + $buffer[$i];
+
+	string $tmpLtaFilename;
+	$filetype = `getFileType $filename`;
+	if($filetype != "lta" && $filetype != "ltc")
+		error "Only works on ltc or lta files";
+	if($filetype == "ltc")
+	{
+		$tmpFilename = $filename + "temp.ltc";
+		$tmpLtaFilename = $filename + "temp.lta";
+		copyFile $filename $tmpFilename;
+		ltcConvert $tmpFilename "ltc";
+		return $tmpLtaFilename;
+	}
+	else 
+	{
+		$tmpLtaFilename = $filename + "temp.lta";
+		copyFile $filename $tmpLtaFilename;
+		return $tmpLtaFilename;
+	}
+}
+
+global proc cleanUpTempLtaFile(string $filename)
+{	
+	string $tempLtc = (`substring $filename 1 ((size($filename))-1)`) + "c";
+	deleteFile $filename; 
+	deleteFile $tempLtc;
+}
+
+
+global proc string getUniqueAnimName(string $filename, string $animName)
+{
+	int $fileId = `fopen $filename "r"`;
+	if($fileId ==0) 
+	{
+		fclose $fileId;
+		error("The programmer has failed you");			
+	}
+
+	string $line, $buffer[], $animList[];
+	int  $index, $i, $len, $animNum = 0;
+
+	while(!`feof $fileId`)
+	{
+		$line = `fgetline $fileId`;
+		
+		if(`gmatch $line "*animset*"`)
+		{
+			tokenize($line, "\"", $buffer);
+			$animList[$animNum] = $buffer[1];
+			$animNum++;
+		}
+	}
+	string $sortedList[] = `sort $animList`;
+
+	for($i=0; $i<$animNum; $i++)
+	{		
+		if($sortedList[$i] == $animName)
+			$animName = $animName + "0";
+	}
+	fclose $fileId;
+	return $animName;
+}
+
+global proc renameLtaAnim(string $oldName, string $newName, string $filename) 
+{
+	string $fileType = `getFileType $filename`;
+	if($fileType == "lta")
+	{
+		string $line, $buffer[], $animList[];
+		string $tmpLtaFilename = `getTempLtaFile $filename`;
+
+		int $oldFileId = `fopen $tmpLtaFilename "r"`;
+		int $newFileId = `fopen $filename "w"`;
+
+		if($oldFileId ==0)
+		{ 		
+			fclose $oldFileId;
+			error("The programmer has failed you");
+		}
+
+
+		while(!`feof $oldFileId`)
+		{
+			$line = `fgetline $oldFileId`;
+			if (`gmatch $line ("*\\\"" + $oldName + "\\\"*")`)
+			{
+				tokenize ($line, "\"", $buffer);
+				$line = $buffer[0] + "\"" + $newName + "\"" + $buffer[2];
+				print $line;
+			}
+			fprint $newFileId $line;
+		}
+
+		fclose $oldFileId;
+		fclose $newFileId;
+
+		cleanUpTempLtaFile $tmpLtaFilename;
+	}
+	else if($fileType == "ltc")
+		print "RenameAnim doesn'twork with ltc files yet\n";
+	else
+		error "Invalid filetype\n";
+	print "Done\n";
+}
+
+global proc deleteLtaAnim(string $animName, string $filename) 
+{
+	string $fileType = `getFileType $filename`;
+	if($fileType == "lta")
+	{
+		string $line, $buffer[], $animList[];
+		string $tmpLtaFilename = `getTempLtaFile $filename`;
+
+		int $oldFileId = `fopen $tmpLtaFilename "r"`;
+		int $newFileId = `fopen $filename "w"`;
+
+		if($oldFileId ==0)
+		{ 		
+			fclose $oldFileId;
+			error("The programmer has failed you");
+		}
+
+		while(!`feof $oldFileId`)
+		{
+			$line = `fgetline $oldFileId`;
+			if (`gmatch $line ("*animset*\\\"" + $animName + "\\\"*")`)
+			{
+				$line = `fgetline $oldFileId`;
+				while((!`gmatch $line "*animset*"`) && (!`feof $oldFileId`))
+				{
+					$line = `fgetline $oldFileId`;
+				}
+				print $line;
+			}
+			fprint $newFileId $line;
+		}
+
+		fclose $oldFileId;
+		fclose $newFileId;
+
+		cleanUpTempLtaFile $tmpLtaFilename;
+	}
+	else if($fileType == "ltc")
+		print "DeleteAnim doesn't work with ltc files yet\n";
+	else
+		error "Invalid filetype\n";
+	print "Done\n";
+}
+
+
+
+
+
+
+
+global proc ltaExportNoAppend(string $filename, int $append)
+{
+	string $textureIndex, $sockets, $weightSets, $buffer[];
+	string $sockets, $weightSets, $childModels, $keepFile, $ltcName;
+	string $lastLine, $tmpFilename, $defaultAnimName, $exportJoint[];
+	int  $timeRange, $weightSetExport, $deleteExistingAnim;
+	float $xDim, $yDim, $zDim, $scale;
+
+	$fileType = `substring $filename (size($filename)-2) (size($filename))`;
+	$fileBase = `substring $filename 1 (size($filename)-4)`;
+	$ltaName = $filename;
+	if($fileType == "ltc")
+	{
+		findLTCconverter;
+		$keepFile = $filename;
+		ltcConvert $filename "ltc";  
+		$filename = `substitute "ltc" $filename "lta"`;
+		$ltaName = $filename;
+		if(`file -q -ex $keepFile`) 
+			deleteFile $keepFile;
+		if(`file -q -ex $filename`)		
+		{	
+			$filename = $fileBase + "tmp_del.lta"; 
+			$ltcName = $fileBase + "tmp_del.ltc"; 
+		}
+
+	}
+	else if($fileType != "lta")
+		$filename = $filename + ".lta";
+
+		
+	$tmpFilename = "temp_tmp.lta";
+
+	if(`window -ex ExportLtaUI`)
+		$defaultAnimName = `textFieldGrp -q -text lt_animName`;   
+	else
+		$defaultAnimName = `optionVar -q lt_defaultAnimName`;
+
+	if($append)
+	{
+		$tmpFilename = $fileBase + $tmpFilename;
+		renameFile $ltaName $tmpFilename;
+//		$defaultAnimName = getUniqueAnimName($tmpFilename, $defaultAnimName);
+//
+//
+//
+		string $uniqueAnimName = getUniqueAnimName($tmpFilename, $defaultAnimName);
+		if($uniqueAnimName != $defaultAnimName)
+			$deleteExistingAnim = 1;
+		else $deleteExistingAnim = 0;
+//
+//
+//
+	}
+
+	string $root[] = `ls -dag -type joint`;
+
+	if($defaultAnimName == "")
+	{ $defaultAnimName = "default";  optionVar -sv lt_defaultAnimName "default";  }
+
+	$scale = `floatFieldGrp -q -v1 lt_scale`;
+	$timeRange = `optionVar -q lt_defaultTimeRangeStatus`;
+	$weightSetExport = `optionVar -q lt_defaultSocketExportStatus`;
+	$childModelExport = `optionVar -q lt_defaultChildModelExportStatus`;
+	$compile = `optionVar -q lt_defaultCompileModelStatus`;
+//
+//
+//
+
+	int $ignoreBindPose = 1;
+	int $exportWorldNode = 0;
+
+
+
+	$visiblePanels = `getPanel -vis`;
+	for($panel in $visiblePanels)
+		if(`modelPanel -q -ex $panel`)
+			modelEditor -e -pm 0 $panel;
+
+	string $cmd = "lithtechModelExport -all ";
+	
+	if($timeRange) 
+		$cmd = $cmd + "-usePlaybackRange ";
+	if($append)
+		$cmd = $cmd + "-append ";
+	if($ignoreBindPose)
+		$cmd = $cmd + "-ignoreBindPose ";
+	if($exportWorldNode)
+		$cmd = $cmd + "-exportWorldNode ";
+	
+	$cmd = $cmd + "-scale " + $scale + " \"" + $defaultAnimName + "\" \"" + $tmpFilename + "\"";
+	evalEcho($cmd);
+
+	for($panel in $visiblePanels)
+		if(`modelPanel -q -ex $panel`)
+			modelEditor -e -pm 1 $panel;
+
+
+	$xDim = `optionVar -q lt_defaultUserDimX`;
+	$yDim = `optionVar -q lt_defaultUserDimY`;
+	$zDim = `optionVar -q lt_defaultUserDimZ`;
+	$exportJoint = `getSkeleton`;
+
+	int $tmpFileId = `fopen $tmpFilename "r"`;
+	int $FileId = `fopen $filename "w"`;
+
+	if(($tmpFileId != 0) && ($FileId !=0))
+	{
+		int $looking = 0;
+		$prevLine = "";
+		$lastLine = `fgetline $tmpFileId`;
+		while(!`feof $tmpFileId`)
+		{
+			$prevLine = $lastLine;
+			$lastLine = `fgetline $tmpFileId`;
+			fprint $FileId $prevLine;
+
+			if(`gmatch $lastLine "*on-load-cmds*"`)
+			{
+				if(`gmatch $lastLine "*(on-load-cmds )*"`)
+					$lastLine = "(on-load-cmds \n";
+				if($append)
+				{ 
+					string $tmp1 = `fgetline $tmpFileId`;
+					string $tmp2 = `fgetline $tmpFileId`;
+					if(`gmatch $tmp2 "*anim*"`)
+						fgetline $tmpFileId;
+				}
+					
+				$lastLine = $lastLine + "\t(anim-bindings \n\t(\n\t\t";
+				 
+					
+				$lastLine = $lastLine + "(anim-binding \n\t\t\t(name \""
+							+ $defaultAnimName + "\" )\n\t\t\t(dims \n\t\t\t\t("
+							+ ($scale * $xDim) + " " + ($scale * $yDim) + " " + ($scale * $zDim) + " ))\n";
+
+		
+				
+				if(`objExists ($exportJoint[0] + ".translation")`)
+				{
+					$trans = `getAttr ($exportJoint[0] + ".translation")`; 
+					$lastLine = $lastLine + " (translation ( " + $trans + " ) )\n";
+				}
+				if(`objExists ($exportJoint[0] + ".interpolation")`)
+				{
+					$interp = `getAttr ($exportJoint[0] + ".interpolation")`; 
+					$lastLine = $lastLine + " (interp-time " + $interp + " )\n";
+				}
+				$lastLine = $lastLine + ")\n";
+
+				if(!$append) $lastLine = $lastLine + "))\n";
+				
+				if(!$append)	
+				{
+				
+
+					if(`objExists ($exportJoint[0] + ".nodeFlags")` )
+					{
+						string $nodeFlags = `getAttr ($exportJoint[0] + ".nodeFlags")`;
+						if((size($nodeFlags)) == (size($exportJoint)))
+						{
+							$lastLine = $lastLine + "\t\t(set-node-flags\n\t\t\t(\n";
+							for($i = 0; $i < size($exportJoint); $i++)
+							{
+								$flag = `substring $nodeFlags ($i+1) ($i+1)`;
+								$lastLine = $lastLine + "\t\t\t\t(\"" + $exportJoint[$i] + "\" " + $flag + " )\n";
+							}
+							$lastLine = $lastLine + "\t\t\t)\n\t\t)\n";
+						}
+						else 
+							print "Error adding node flag settings\n";
+					}
+		
+					
+					if(`objExists ($exportJoint[0] + ".cmdString")` )
+					{	
+						string $cmdString = `getAttr ($exportJoint[0] + ".cmdString")`;
+						if($cmdString != "")
+							$lastLine = $lastLine + "\t\t(set-command-string \"" + $cmdString + "\" )\n";
+					}
+
+					if(`objExists ($exportJoint[0] + ".internalRadius")` )
+					{	
+						string $internalRadius = `getAttr ($exportJoint[0] + ".internalRadius")`;
+						if($internalRadius != "")
+							$lastLine = $lastLine + "\t\t(set-global-radius " + $internalRadius + " )\n";
+					}
+			
+					
+					
+					if(`objExists ($exportJoint[0] + ".childModels")` && $childModelExport)
+					{
+						string $childModels = `getAttr ($exportJoint[0] + ".childModels")`;
+						if($childModels != "")
+						{
+							tokenize($childModels, " ", $buffer);
+							$lastLine = $lastLine + "\t\t(add-childmodels\n\t\t\t(\n";
+							for($i = 0; $i < size($buffer); $i++)
+							{
+								$lastLine = $lastLine + "\t\t\t\t(child-model\n\t\t\t\t\t";
+								$lastLine = $lastLine + "(filename \"" + $buffer[$i] + "\" ) )\n";
+							}
+							$lastLine = $lastLine + "\t\t\t)\n\t\t)\n";
+						}
+		
+					}
+
+					string $LODGroups[] = `getLODInfo`;
+					if(size($LODGroups) > 0)
+					{
+						$lastLine = $lastLine + "\t\t(lod-groups\n\t\t\t(\n";
+						for($i = 0; $i < size($LODGroups); $i++)
+						{
+							tokenize($LODGroups[$i], " ", $buffer);
+							$lastLine = $lastLine + "\t\t\t\t(create-lod-group \"" + $buffer[0] + "\"\n\t\t\t\t\t(lod-dists\n\t\t\t\t\t\t(";
+							for($j = 0; $j < (size($buffer))/2; $j++)
+								$lastLine = $lastLine + $buffer[2*$j+1] + " " ;
+							$lastLine = $lastLine + ")\n\t\t\t\t\t)\n\t\t\t\t\t(shapes\n\t\t\t\t\t\t(";
+							for($j = 0; $j < (size($buffer))/2; $j++)
+								$lastLine = $lastLine + "\"" + $buffer[2*$j] + "\" " ;
+							$lastLine = $lastLine + ")\n\t\t\t\t\t)\n\t\t\t\t)\n";
+
+						}
+						$lastLine = $lastLine + "\t\t\t)\n\t\t)\n";
+					}
+
+
+				}
+
+				if($weightSetExport && !$append)
+				{
+					$weightSets = `getDefaultWeightSets`;
+					$lastLine = $lastLine + $weightSets;
+				}
+
+			}
+
+			
+			if((`gmatch $lastLine "*tools-info*"`) && !$append)
+			{
+				if(`objExists ($exportJoint[0] + ".DTXInfo")`)
+				{
+					string $DTXInfo = `getAttr ($exportJoint[0] + ".DTXInfo")`;
+					tokenize($DTXInfo, " ", $buffer);
+					fgetline $tmpFileId;
+					$lastLine = $lastLine + "\t(\n\t\t(texture-bindings \n\t\t\t(\n";
+					for($i = 0; $i < size($buffer); $i++)
+					{
+						if($buffer[$i] != "" && $buffer[$i] != "XXXX")
+							$lastLine = $lastLine + "\t\t\t\t(" + $i + " \"" + $buffer[$i] + "\" )\n";
+					}
+					$lastLine = $lastLine + "\t\t\t)\n\t\t)\n\t)\n";
+				}
+			}
+			
+			if(`gmatch $lastLine ("*animset \"" + $defaultAnimName + "\"*")`)
+			{
+//
+//
+//
+				if($deleteExistingAnim)
+				{
+					$lastLine = `fgetline $tmpFileId`;
+					while((!`gmatch $lastLine "*animset*"`) && (!`feof $tmpFileId`))
+					{
+						$lastLine = `fgetline $tmpFileId`;
+					}
+					print $lastLine;
+
+
+					$deleteExistingAnim = 0;
+				}
+				else
+				{
+//
+//
+//
+					if((`objExists ($exportJoint[0] + ".modelStrings")`)&&(`objExists ($exportJoint[0] + ".keyTimes")`))
+					{
+						$lastLine = $lastLine + (`fgetline $tmpFileId`);
+						$lastLine = $lastLine + (`fgetline $tmpFileId`);
+						$lastLine = $lastLine + (`fgetline $tmpFileId`);
+						fprint $FileId $lastLine;
+
+						string $modelString = `getAttr ($exportJoint[0] + ".modelStrings")`;
+						string $keyTime = `getAttr ($exportJoint[0] + ".keyTimes")`;
+
+						string $modelStrings[];
+						float $keyTimes[];
+						tokenize($modelString, "#", $modelStrings);
+						tokenize($keyTime, " ", $buffer);
+						
+						for($i = 0; $i < size($buffer); $i++)
+							$keyTimes[$i] = int( ( ( int($buffer[$i]) )/10 ) + 0.5 ) * 10;
+
+						$lastLine = $animLine = "";
+						while(!`gmatch $animLine "*\t)*"`)
+						{
+							$animLine = `fgetline $tmpFileId`;
+							$lastLine = $lastLine + $animLine;
+						}
+						tokenize ($lastLine, "( )\n\t", $buffer);
+						$lastLine = $lastLine + "\t\t\t(values\n\t\t\t\t(";
+
+						int $minBuffer = 0;
+						int $j = $minBuffer;
+						for($i = 0; $i < size($keyTimes); $i++)
+						{
+							print ($buffer[$j] + " " + $keyTimes[$i] + "\n");
+							for($j = $minBuffer; $j < size($buffer); $j++)
+							{
+								if(float($buffer[$j]) >= $keyTimes[$i])
+								{
+									$lastLine = $lastLine + $modelStrings[$i] +  " ";	
+									$j++;
+									break;
+								}
+								else 
+									$lastLine = $lastLine + "\"\" ";
+							}
+							$minBuffer = $j;
+						}
+						$lastLine = $lastLine + " )\n\t\t\t)\n";
+					}
+//
+//
+//
+				}
+//
+//
+//
+			}
+		}
+		fprint $FileId $lastLine;
+	}
+
+		fclose $FileId;
+		fclose $tmpFileId;
+
+	if($fileType == "ltc")
+	{
+		ltcConvert $filename "lta"; 
+		renameFile $ltcName $keepFile; 
+		if(`file -q -ex $ltaName`)
+			deleteFile $ltaName;
+	}
+
+	deleteFile $tmpFilename; 
+
+	if($compile)
+	{
+		if($fileType == "ltc")
+			modelPacker $keepFile;
+		if($fileType == "lta")
+			modelPacker $filename;
+	}
+	if(`window -ex ExportLtaUI`)
+		deleteUI ExportLtaUI;
+	if(`window -ex ltaWarningUI`)
+		deleteUI ltaWarningUI;
+
+	print("Done\n");
+}
+
+global proc ltaWarning()
+{
+	$ui_Width = 255;
+	$ui_Height= 125;
+
+	if(`window -ex ltaWarningUI`)
+		deleteUI ltaWarningUI;
+
+	window
+		-menuBar false 
+		-maximizeButton 0
+		-minimizeButton 0
+		-sizeable 0
+		-rtf 1
+		-w $ui_Width
+		-h $ui_Height
+		-title "ScottTech2000"
+		ltaWarningUI;
+	
+	columnLayout;
+		frameLayout
+			-label "Warning!"
+			-w ($ui_Width-10)
+			-h ($ui_Height-70);	
+			text -label "\nYou are about to overwrite an existing file...\n" -align "center";		
+		setParent ..;	
+		rowLayout
+			-numberOfColumns 3
+			-rat 1 "top" 2
+			-rat 2 "top" 2
+			-rat 3 "top" 2
+			-columnWidth 1 82
+			-columnWidth 2 82;
+			button -label "Overwrite" -al "center"
+				-w 80	-h 30
+				-c "string $filename = (`optionVar -q lt_defaultFilename`); ltaExportNoAppend $filename 0; if(`window -ex ltaWarningUI`) deleteUI ltaWarningUI;";
+
+			button -label "Append" -al "center"
+				-w 80	-h 30
+				-c "string $filename = (`optionVar -q lt_defaultFilename`); ltaExportNoAppend $filename 1; if(`window -ex ltaWarningUI`) deleteUI ltaWarningUI;";
+
+			button	-label "Cancel" -al "center"
+				-w 80	-h 30
+	//			-c "deleteUI ltaWarningUI";
+				-c "string $filename = (`optionVar -q lt_defaultFilename`); getHierarchy $filename; deleteUI ltaWarningUI;";				
+
+		setParent;
+	setParent ..;
+
+	showWindow ltaWarningUI;
+}
+
+global proc string[] getHierarchy(string $filename)
+{	
+	string $line, $char, $joint[], $buffer[];
+	int  $index, $i, $jin[], $jout[], $looking = 0;
+
+	$tmpLtaFilename = `getTempLtaFile $filename`;
+	int $fileId = `fopen $tmpLtaFilename "r"`;
+	if($fileId == 0) { print "Error opening file\n"; fclose $fileId; return {"",""}; }
+
+	while(!`feof $fileId`)
+	{
+		$line = `fgetline $fileId`;
+		if(`gmatch $line "*hierarchy*"`)
+		{
+			$index = 0;
+			$looking = 1;
+		}
+
+		if($looking)
+		{
+			if(`gmatch $line "*transform*"`)
+			{
+				tokenize($line, "\"", $buffer);
+				$joint[$index] = $buffer[1];
+
+				$tabCount = 0;
+				for($i = 0; $i <size($line); $i++)
+				{
+					$char = `getChar $line $i`;
+					if($char == "\t") 
+						$tabCount++;
+					else break;
+				}
+				
+				$joint[$index+1] = string(($tabCount-1)/3-1);	
+				$index = $index + 2;
+			}
+			if((`gmatch $line "*shape*"`) || (`gmatch $line "*animset*"`))
+			{
+				break;
+			}					
+		}		
+	}
+	fclose $fileId;
+	cleanUpTempLtaFile $tmpLtaFilename;
+
+	for($i = 1; $i < (size($joint)); $i=$i+2)
+		$jin[($i-1)/2] = int($joint[$i]);
+	$jout[0] = 0;
+	for($i = 1; $i < size($jin); $i++)
+	{
+		if($jin[$i] != ($jin[$i-1] + 1))
+		{	
+			for($k = ($i-1); $k>=0; $k--)
+				if($jin[$k] == ($jin[$i]-1))
+				{
+					$jout[$i] = $k;
+					break;
+				}
+		}
+		else
+			$jout[$i] = $i-1;
+		
+		$joint[2*$i +1] = string($jout[$i]);
+	}
+		$joint[1] = "0";
+		return $joint;
+	}
+
+
+global proc getSceneHierarchy()
+{	
+	string $skel[];
+	$selection = `ls -sl`;
+	$skelNodes = `ls -dag -type joint`;
+	select -hi $skelNodes[0];
+	$skel = `ls -sl -type joint`;
+	print $skel;
+	select -r $selection; 
+}
+
+global proc string[] getLTAInfo(string $input, string $filename)
+{
+	string $line, $newLine, $buffer[], $output[];
+	int $searching = 0, $fileId = `fopen $filename "r"`;
+	int $i = 0, $open, $close, $diff;
+	if($fileId == 0)  error("Something's afoul");
+	$input = "*" + $input + "*";
+	$line = `fgetline $fileId`;
+
+	while(!`feof $fileId`)
+	{
+		$line = `fgetline $fileId`;
+	
+		if(`gmatch $line $input` && !$searching)
+		{
+			$searching = 1;
+			$open = 0;
+			$close = 0;
+			$output[$i] = "";	
+		}
+
+		if($searching)
+		{
+			tokenize($line, "\t\r\n", $buffer);
+			for($chunk in $buffer)
+				$newLine = $newLine + $chunk;
+			$line = $newLine;
+			$newLine = "";
+
+			$open = $open + `howMany "(" $line`;
+			$close = $close + `howMany ")" $line`;
+
+			if($open <= $close)
+			{
+				$output[$i] = $output[$i] + $line;
+				$searching = 0;
+				$i++;
+
+				if(($open < $close) && ($output[$i] != ""))
+				{
+					$len = size($output[$i]); 
+					if(`substring $output[$i] $len $len` == " ")
+						$len = $len - $close + $open + 1;
+					else
+						$len = $len - $close + $open;
+					$output[$i] = `substring $output[$i] 1 $len`;
+				}
+			}
+			else
+				$output[$i] = $output[$i] + $line;
+		}
+	}
+	fclose $fileId; 
+	return $output;
+}
+
+global proc int howMany(string $input, string $searchString)
+{
+	string $buffer[];
+	int $inLen, $outLen, $output;
+
+	$input = `substring $input 1 1`;
+	$inLen = size($searchString);
+	$outLen = 0;
+	tokenize($searchString, $input, $buffer);
+		
+	for($i in $buffer)
+		$outLen = $outLen + size($i);
+	$output = $inLen - $outLen;
+	return $output;	
+}
+
+global proc setInterp()
+{
+	string $root[] = `ls -dag -type joint`;
+	if(!`objExists ($root[0] + ".interpolation")`)
+		addAttr -ln "interpolation" -at "float" $root[0];
+	setAttr ($root[0] + ".interpolation") (`floatFieldGrp -q -v1 lt_interp`);
+}
+
+global proc setAnimName()
+{
+	string $root[] = `ls -dag -type joint`;
+	if(!`objExists ($root[0] + ".animName")`)
+		addAttr -ln "animName" -dt "string" $root[0];
+	setAttr ($root[0] + ".animName") -type "string" (`textFieldGrp -q -text lt_animName`);
+}
+
+global proc setFileName()
+{
+	string $root[] = `ls -dag -type joint`;
+	if(!`objExists ($root[0] + ".fileName")`)
+		addAttr -ln "fileName" -dt "string" $root[0];
+	setAttr ($root[0] + ".fileName") -type "string" (`textFieldButtonGrp -q -text lt_filename`);
+	
+}
+
+global proc setScale()
+{
+	string $root[] = `ls -dag -type joint`;
+	if(!`objExists ($root[0] + ".ltScale")`)
+		addAttr -ln "ltScale" -at "float" $root[0];
+	setAttr ($root[0] + ".ltScale") (`floatFieldGrp -q -v1 lt_scale`);
+}
+
+
+
+
+
+
+global proc lta_Export()
+{
+	string $filename = `textFieldButtonGrp -q -fi lt_filename`;
+	optionVar -sv lt_defaultFilename $filename;
+
+
+	if(`file -q -ex $filename`)
+	{
+//		if(`file -q -w $filename`)
+//		{
+			if(`optionVar -q lt_defaultAppendStatus`)
+			{
+				ltaExportNoAppend $filename 1;
+			}
+			else 
+				ltaWarning;
+//		}
+//		else error("File is read-only");
+	}
+
+
+	else if(!(`file -q -ex $filename`))
+			ltaExportNoAppend $filename 0;	
+
+}
+
+
+
+global proc ltExport()
+{
+	int $ui_Width = 470;
+	int $ui_Height = 320;
+	string $buffer[], $textureIndex, $fileName;
+	string $sceneName = `file -q -sn`;
+	tokenize($sceneName, ".", $buffer);
+	string $scenePath = $buffer[0];
+	$scene = `getSceneName`;
+
+/////////////////////////////////////////////
+// Create defaults if they don't exist
+/////////////////////////////////////////////
+
+	if(!`optionVar -ex lt_defaultFilename`)
+		optionVar -sv lt_defaultFilename ($scenePath+".lta");
+
+	if(!`optionVar -ex lt_defaultAppendStatus`)
+		optionVar -iv lt_defaultAppendStatus 0;
+
+	if(!`optionVar -ex lt_defaultTimeRangeStatus`)
+		optionVar -iv lt_defaultTimeRangeStatus 1;
+
+	if(!`optionVar -ex lt_defaultSocketExportStatus`)
+		optionVar -iv lt_defaultSocketExportStatus 0;
+	if(!`optionVar -ex lt_defaultChildModelExportStatus`)
+		optionVar -iv lt_defaultChildModelExportStatus 0;
+	if(!`optionVar -ex lt_defaultCompileModelStatus`)
+		optionVar -iv lt_defaulCcompileModelStatus 0;
+	if(!`optionVar -ex lt_defaultCompileNoGeomStatus`)
+		optionVar -iv lt_defaultCompileNoGeomStatus 0;
+
+	if(!`optionVar -ex lt_defaultUserDimX`)
+		optionVar -fv lt_defaultUserDimX 128;
+	if(!`optionVar -ex lt_defaultUserDimY`)
+		optionVar -fv lt_defaultUserDimY 16;
+	if(!`optionVar -ex lt_defaultUserDimZ`)
+		optionVar -fv lt_defaultUserDimZ 16;
+	if(`optionVar -q lt_defaultUserDimX` == 0)
+		optionVar -fv lt_defaultUserDimX 128;
+	if(`optionVar -q lt_defaultUserDimY` == 0)
+		optionVar -fv lt_defaultUserDimY 16;
+	if(`optionVar -q lt_defaultUserDimZ` == 0)
+		optionVar -fv lt_defaultUserDimZ 16;
+
+	if(!`optionVar -ex lt_defaultUserDimPrec`)
+		optionVar -iv lt_defaultUserDimPrec 0;
+	
+	string $root[] = `ls -dag -type joint`;
+	if($root[0] != "")
+	{
+		if(`objExists ($root[0] + ".dimX")`)
+			optionVar -fv lt_defaultUserDimX (`getAttr ($root[0] + ".dimX")`);
+		if(`objExists ($root[0] + ".dimY")`)
+			optionVar -fv lt_defaultUserDimY (`getAttr ($root[0] + ".dimY")`);
+		if(`objExists ($root[0] + ".dimZ")`)
+			optionVar -fv lt_defaultUserDimZ (`getAttr ($root[0] + ".dimZ")`);
+	}
+
+	if(!`optionVar -ex lt_defaultAnimName`)
+		optionVar -sv lt_defaultAnimName $scene;
+			
+	if(!`optionVar -ex lt_toolPath`)
+		optionVar -sv lt_toolPath "";
+	if(!`optionVar -ex lt_gamePath`)
+		optionVar -sv lt_gamePath "";
+
+
+	float $scale = 1.0;
+	if(`objExists ($root[0] + ".ltScale")`)
+		$scale = `getAttr ($root[0] + ".ltScale")`;
+	else
+	{
+		addAttr -ln "ltScale" -at "float" $root[0];
+		setAttr ($root[0] + ".ltScale") $scale;	
+	}
+
+
+	if(`objExists ($root[0] + ".animName")`)
+		$animName = `getAttr ($root[0] + ".animName")`;
+	else
+	{
+		$animName = `optionVar -q lt_defaultAnimName`;
+		addAttr -ln "animName" -dt "string" $root[0];
+		setAttr ($root[0] + ".animName") -type "string" $animName;
+	}
+
+
+	if(`objExists ($root[0] + ".fileName")`)
+	{
+		$fileName = `getAttr ($root[0] + ".fileName")`;
+//		if(`gmatch $fileName "*TO2*"`)
+//		{
+//			$fileName = `substitute "TO2" $fileName "NOLF2"`;
+//			setAttr ($root[0] + ".fileName") -type "string" $fileName;
+//		}
+	}
+	else
+	{
+		$fileName = `optionVar -q lt_defaultFilename`;
+		addAttr -ln "fileName" -dt "string" $root[0];
+		setAttr ($root[0] + ".fileName") -type "string" $fileName;
+	}
+
+	
+	float $interp = 200;
+	if(`objExists ($root[0] + ".interpolation")`)
+		$interp = `getAttr ($root[0] + ".interpolation")`;
+
+
+	fixShapePieceInfo;
+
+
+
+	if(`window -ex ExportLtaUI`)
+		deleteUI ExportLtaUI;
+	window
+		-menuBar false 
+		-maximizeButton false
+		-sizeable 1
+		-w 5//$ui_Width
+		-h 5//$ui_Height
+		-rtf 1
+		-title "ScottTech2000"
+		ExportLtaUI;
+	columnLayout;	
+		frameLayout
+			-label "Filename"
+			-w 460
+			-h 45;
+			textFieldButtonGrp
+				-cw 1 10
+				-cw 2 390	
+				-label " "
+				-fi $fileName
+				-cc "setFileName"
+				-buttonLabel "Browse..."
+				-buttonCommand getNewFilename
+				lt_filename;
+		setParent ..;
+	rowLayout
+		-numberOfColumns 2
+		-cw 1 368
+		-cw 2 120;	
+		columnLayout;
+			frameLayout
+				-label "Lta Export Options"
+				-w (362)
+				-h ($ui_Height-50);
+				columnLayout;
+					textFieldGrp
+						-cw 1 100
+						-cw 2 200
+						-label "Animation Name:" 
+						-text 	$animName
+						-cc 	"optionVar -sv lt_defaultAnimName (`textFieldGrp -q -text lt_animName`); setAnimName;"
+						lt_animName;
+					rowLayout
+						-numberOfColumns 2
+						-cw 1 100
+						-rat 1 "top" 5
+						-rat 2 "top" 5;
+						text -label "Options:" -al "right";
+						columnLayout;
+							checkBox 
+								-label "Append animation if file exists?"
+								-al "right"
+								-value `optionVar -q lt_defaultAppendStatus`
+								-cc 	"optionVar -iv lt_defaultAppendStatus (`checkBox -q -v lt_appendCheck`)"
+								lt_appendCheck;
+							checkBox 
+								-label "Use time slider range?"
+								-al "right"
+								-value `optionVar -q lt_defaultTimeRangeStatus`
+								-cc 	"optionVar -iv lt_defaultTimeRangeStatus (`checkBox -q -v lt_timeRangeCheck`)"
+								lt_timeRangeCheck;
+							checkBox 
+								-label "Export weight-sets (ignored if appending)"
+								-al "right"
+								-value `optionVar -q lt_defaultSocketExportStatus`
+								-cc 	"optionVar -iv lt_defaultSocketExportStatus (`checkBox -q -v lt_socketExportCheck`)"
+								lt_socketExportCheck;
+							checkBox 
+								-label "Export child models (ignored if appending)"
+								-al "right"
+								-value `optionVar -q lt_defaultChildModelExportStatus`
+								-cc 	"optionVar -iv lt_defaultChildModelExportStatus (`checkBox -q -v lt_childModelExportCheck`)"
+								lt_childModelExportCheck;
+							checkBox 
+								-label "Compile model"
+								-al "right"
+								-value `optionVar -q lt_defaultCompileModelStatus`
+								-cc 	"optionVar -iv lt_defaultCompileModelStatus (`checkBox -q -v lt_compileModelCheck`); checkBox -e -en (`optionVar -q lt_defaultCompileModelStatus`) lt_compileNoGeomCheck;"
+								lt_compileModelCheck;
+							checkBox 
+								-label "Compile with no geometry"
+								-al "right"
+								-en	`optionVar -q lt_defaultCompileModelStatus`
+								-value	`optionVar -q lt_defaultCompileNoGeomStatus`
+								-cc 	"optionVar -iv lt_defaultCompileNoGeomStatus (`checkBox -q -v lt_compileNoGeomCheck`)"
+								lt_compileNoGeomCheck;
+							floatFieldGrp 
+								-numberOfFields 3
+								-label "User Dims (XYZ)"
+								-cat 1 left 0 -cw 1 90 
+								-cat 2 left 0 -cw 2 50		
+								-cat 3 left 0 -cw 3 50
+								-cat 4 left 0 -cw 4 50			
+								-value1 `optionVar -q lt_defaultUserDimX` 
+								-value2 `optionVar -q lt_defaultUserDimY` 
+								-value3 `optionVar -q lt_defaultUserDimZ`
+								-pre `optionVar -q lt_defaultUserDimPrec`
+								-cc 	"setUserDims"
+								lt_userDims;
+								popupMenu;
+									menuItem -l "0" -c "floatFieldGrp -e -pre 0 lt_userDims; updateUserDims; optionVar -iv lt_defaultUserDimPrec 0;";
+									menuItem -l "0.0" -c "floatFieldGrp -e -pre 1 lt_userDims; updateUserDims; optionVar -iv lt_defaultUserDimPrec 1;";
+									menuItem -l "0.00" -c "floatFieldGrp -e -pre 2 lt_userDims; updateUserDims; optionVar -iv lt_defaultUserDimPrec 2;";
+									menuItem -l "0.000" -c "floatFieldGrp -e -pre 3 lt_userDims; updateUserDims; optionVar -iv lt_defaultUserDimPrec 3;";
+							floatFieldGrp
+								-numberOfFields 1
+								-label "Scale"
+								-pre 3
+								-cat 1 left 0 -cw 1 90
+								-cat 2 left 0 -cw 2 100
+								-value1 $scale		
+								-cc 	"setScale"
+								lt_scale;  
+							floatFieldGrp
+								-numberOfFields 1
+								-label "Interpolation"
+								-cat 1 left 0 -cw 1 90
+								-cat 2 left 0 -cw 2 100
+								-value1 $interp		
+							//	-cc 	"optionVar -fv lt_defaultScale (`floatFieldGrp -q -v1 lt_interp`);"
+								-cc	"string $root[] = `ls -dag -type joint`;
+									if(!`objExists ($root[0] + \".interpolation\")`)
+										addAttr -ln \"interpolation\" -at \"float\" $root[0];
+									setAttr ($root[0] + \".interpolation\") (`floatFieldGrp -q -v1 lt_interp`);"
+							//	-cc "setInterp"
+								lt_interp;  
+						setParent ..;
+					setParent ..;
+					textFieldButtonGrp 
+						-cw 1 80
+						-cw 2 220
+						-label "Tool Path:" 
+						-buttonLabel "Browse..."
+						-bc "getDirectory \"lt_toolPath\""
+						-fi `optionVar -q lt_toolPath`
+						-cc "optionVar -sv lt_toolPath (`textFieldGrp -q -text lt_toolPath`)"
+						lt_toolPath;
+					textFieldButtonGrp 
+						-cw 1 80
+						-cw 2 220
+						-label "Game Path:" 
+						-buttonLabel "Browse..."
+						-bc "getDirectory \"lt_gamePath\""
+						-fi `optionVar -q lt_gamePath`
+						-cc "optionVar -sv lt_gamePath (`textFieldGrp -q -text lt_gamePath`)"
+						lt_gamePath;
+				setParent ..;	
+			setParent ..;
+			rowLayout
+				-numberOfColumns 2
+				-rat 1 "top" 2
+				-rat 2 "top" 2
+				-columnWidth 1 170;
+				button  -label "Export" -w 160 -h 20 -c "lta_Export";
+				button  -label "Close"  -w 160 -h 20 -c "deleteUI ExportLtaUI";
+			setParent ..;
+		setParent ..;
+		columnLayout;
+			frameLayout
+				-label "Edit Options"
+				-w 92
+				-h ($ui_Height-50);			
+				columnLayout
+					-rs 2
+					-cat "left" 5;
+					button -label "User Dims" -w 79 -h 22 -c "showUserDims"; 
+					button -label "Sockets" -w 79 -h 22 -c "editSocketWin"; 
+					button -label "Child Models" -w 79 -h 22 -c "childModelWin"; 
+					button -label "Piece Info" -w 79 -h 22 -c "editPieceInfoWin";
+					button -label "CommandString" -w 79 -h 22 -c "editCommandStringWin";
+					button -label "Node Flags" -w 79 -h 22 -c "editNodeFlagsWin";
+				setParent ..;
+			setParent ..;
+		setParent ..;
+	setParent ..;			
+	showWindow ExportLtaUI;
+	scriptJob -p ExportLtaUI -e "SceneOpened" "optionVar -sv lt_defaultAnimName (`getSceneName`)";
+//	source "ltaImport.mel";
+	setUserDims;
+}
+
+
+global proc string[] getSkeleton()
+{
+	string $outSkel[];
+	
+	string $sel[] = `ls -sl`;
+	string $top[] = `ls -dag -type joint`;
+	
+	select -r -hi $top[0];
+	string $skel[] = `ls -sl -type joint`;
+	$outSkel[0] = $skel[(size($skel))-1];
+	for ($i = 1; $i < size($skel); $i++)
+		$outSkel[$i] = $skel[$i-1];
+	
+	select -r $sel;
+	return $outSkel;
+}
+
+global proc showUserDims()
+{	
+	float $dimX, $dimY, $dimZ;
+	$selection = `ls -dag -typ joint`;
+	$root = $selection[0];
+	if($root == "")
+	{ 	print "Nothing in this scene is exportable\n";   return; }
+
+	$rootDimX = $root + ".dimX";
+	$rootDimY = $root + ".dimY";
+	$rootDimZ = $root + ".dimZ";
+	
+	if(!`objExists $rootDimX`)
+	{
+		addAttr  -ln "dimX" -at "float" $root;	
+		setAttr $rootDimX ( `floatFieldGrp -q -v1 lt_userDims`);
+	}
+	else if((`getAttr -type $rootDimX`)!= "float")
+	{
+		deleteAttr $rootDimX;
+		addAttr  -ln "dimX" -at "float" $root;	
+		setAttr $rootDimX ( `floatFieldGrp -q -v1 lt_userDims`);
+	}
+	if(!`objExists $rootDimY`)
+	{
+		addAttr  -ln "dimY" -at "float" $root;	
+		setAttr $rootDimY (`floatFieldGrp -q -v2 lt_userDims`);
+	}
+	else if((`getAttr -type $rootDimY`)!= "float")
+	{
+		deleteAttr $rootDimY;
+		addAttr  -ln "dimY" -at "float" $root;	
+		setAttr $rootDimY ( `floatFieldGrp -q -v2 lt_userDims`);
+	}
+	if(!`objExists $rootDimZ`)
+	{
+		addAttr  -ln "dimZ" -at "float" $root;	
+		setAttr $rootDimZ (`floatFieldGrp -q -v3 lt_userDims`);
+	}
+	else if((`getAttr -type $rootDimZ`)!= "float")
+	{
+		deleteAttr $rootDimZ;
+		addAttr  -ln "dimZ" -at "float" $root;	
+		setAttr $rootDimZ ( `floatFieldGrp -q -v3 lt_userDims`);
+	}
+	
+	if(!`objExists "userDimsBox"`)
+	{	
+		polyCube -w 2 -h 2 -d 2 -n "userDimsBox";
+		toggle -template userDimsBox;
+		setAttr -lock 1 userDimsBox.translate;
+		setAttr -lock 1 userDimsBox.rotate;
+		transformLimits -sx 0.1 1 -esx 1 0 -sy 0.1 1 -esy 1 0 -sz 0.1 1 -esz 1 0 userDimsBox;
+
+		setAttr userDimsBox.scaleX (`getAttr $rootDimX`);
+		setAttr userDimsBox.scaleY (`getAttr $rootDimY`);
+		setAttr userDimsBox.scaleZ (`getAttr $rootDimZ`);
+
+		connectAttr userDimsBox.scaleX $rootDimX;
+		connectAttr userDimsBox.scaleY $rootDimY;
+		connectAttr userDimsBox.scaleZ $rootDimZ;
+		connectAttr userDimsBox.scaleX userDimsBox.scaleZ;
+	}
+	select -r userDimsBox;
+
+	updateUserDims;
+	scriptJob -ac "userDimsBox.scale" "updateUserDims";
+}
+
+global proc updateUserDims()
+{
+	$dims = `getAttr userDimsBox.scale`;
+	optionVar -fv lt_defaultUserDimX $dims[0];
+	optionVar -fv lt_defaultUserDimY $dims[1];
+	optionVar -fv lt_defaultUserDimZ $dims[2];
+
+	if(`floatFieldGrp -ex lt_userDims`)
+	{	
+		floatFieldGrp -e -v1 $dims[0] lt_userDims;	
+		floatFieldGrp -e -v2 $dims[1] lt_userDims;	
+		floatFieldGrp -e -v3 $dims[2] lt_userDims;
+	}
+}
+
+global proc setUserDims()
+{
+	string $root[] = `ls -dag -typ joint`;
+
+	$newX = `floatFieldGrp -q -v1 lt_userDims`;
+	$newY = `floatFieldGrp -q -v2 lt_userDims`;
+	$newZ = `floatFieldGrp -q -v3 lt_userDims`;
+	$oldX = `optionVar -q lt_defaultUserDimX`;
+	$oldY = `optionVar -q lt_defaultUserDimY`;
+	$oldZ = `optionVar -q lt_defaultUserDimZ`;
+	
+	if($newX <=0) 
+	{	floatFieldGrp -e -v1 $oldX lt_userDims; $newX = $oldX; }
+	if($newY <=0) 
+	{	floatFieldGrp -e -v2 $oldY lt_userDims; $newY = $oldY; }
+	if($newZ <=0) 
+	{	floatFieldGrp -e -v3 $oldZ lt_userDims; $newZ = $oldZ; }
+
+	if($newX != $oldX)
+	{
+		optionVar -fv lt_defaultUserDimX $newX;
+		optionVar -fv lt_defaultUserDimZ $newX;
+		floatFieldGrp -e -v3 $newX lt_userDims;
+	}
+	else if($newZ != $oldZ)
+	{
+		optionVar -fv lt_defaultUserDimX $newZ;
+		optionVar -fv lt_defaultUserDimZ $newZ;		
+		floatFieldGrp -e -v1 $newZ lt_userDims;
+	}
+	optionVar -fv lt_defaultUserDimY 	(`floatFieldGrp -q -v2 lt_userDims`);
+
+	if(`objExists userDimsBox`)
+	{
+		setAttr userDimsBox.scaleX (`floatFieldGrp -q -v1 lt_userDims`);
+		setAttr userDimsBox.scaleY (`floatFieldGrp -q -v2 lt_userDims`);
+	}
+	else if(`objExists ($root[0] + ".dimX")`)
+	{
+		setAttr ($root[0] + ".dimX") (`floatFieldGrp -q -v1 lt_userDims`);
+		setAttr ($root[0] + ".dimY") (`floatFieldGrp -q -v2 lt_userDims`);
+		setAttr ($root[0] + ".dimZ") (`floatFieldGrp -q -v3 lt_userDims`);
+	}
+}
+
+
+global proc string[] getLODInfo()
+{
+	string $longShape[], $root[] = `getSkeleton`;
+	string $tmp[],  $shape[], $clusters[], $buffer[], $groupName[], $shapeName[];
+	int $match, $count = 0;
+
+	for ($node in $root)
+	{
+		$skinCluster = `listConnections -type skinCluster $node`;
+		for($i = 0; $i < size($skinCluster); $i++)
+		{
+			for($j = 0; $j < size($clusters); $j++)
+			{	
+				if($skinCluster[$i] == $clusters[$j])
+				{
+					$match = 1;
+					break;
+				}
+			}
+			if(!$match)
+			{
+				$clusters[$count] = $skinCluster[$i];
+				$count++;
+			}
+			else
+				$match = 0;
+		}
+	}
+	int $match = 0;
+	int $numGroups = 0;
+	string $LODGroups[];
+	int $numDistance = 0;
+	string $LODDistance[];
+	$clusters = sort($clusters);
+
+//print $clusters;
+
+	for($i = 0; $i < size($clusters); $i++)
+	{
+		$shape = `skinCluster -q -g $clusters[$i]`;
+		$piece = `listRelatives -fullPath -parent $shape[0]`;
+		$longShape = `ls -l $piece[0]`;
+		tokenize($longShape[0], "|", $buffer);
+		
+		$groupName[$i] = $buffer[1];
+		$shapeName[$i] = $buffer[(size($buffer))-1];
+//print ($groupName[$i] + " " + $shapeName[$i] + " " + $clusters[$i] + "\n");
+
+		tokenize($groupName[$i], "_", $buffer);
+		
+
+
+		for($j = 0; $j < size($LODDistance); $j++)
+		{
+			if($buffer[1] == $LODDistance[$j])
+			{
+				$match = 1;
+				break;
+			}
+		}
+		if(!$match) 
+		{
+			$LODDistance[$numDistance] = $buffer[1];
+			$numDistance++;
+		}
+		else
+			$match = 0;
+			
+
+		if($buffer[1] == "0")
+		{
+			$LODGroups[$numGroups] = $shapeName[$i];
+			$numGroups++;			
+		}
+	}
+	for($i = 0; $i < $numDistance; $i++)
+	{
+		$LODGroups[$i] = "";
+		for($j = 0; $j < size($groupName); $j++)
+		{
+			tokenize($groupName[$j], "_", $buffer);
+			if($buffer[1] == $LODDistance[$i])
+			{
+				$LODGroups[$i] = $LODGroups[$i] + $shapeName[$j] + " ";
+			}
+		}
+	}
+	
+	string $newLODGroups[];
+	for($i = 0; $i < $numDistance; $i++)
+	{
+		for($j = 0; $j < $numGroups; $j++)
+		{
+			tokenize($LODGroups[$i], " ", $buffer);
+			$newLODGroups[$j] = $newLODGroups[$j] + $buffer[$j] + " " + $LODDistance[$i] + " " ;
+		}
+	}
+
+	return $newLODGroups;
+
+}
+
+
+
+
+
+global proc editSocketWin()
+{
+	string $socketData[];
+	if(`window -ex SocketsUI`)
+		deleteUI SocketsUI;
+	string $root[] = `getSkeleton`;
+	
+	if (!`objExists ($root[0] + ".sockets")`)
+		addAttr -ln "sockets" -dt "string" $root[0];
+
+	showSockets;
+
+	string $currentSockets = `getAttr ($root[0] + ".sockets")`;
+	tokenize($currentSockets, " ", $socketData);
+
+	window 
+		-menuBar false
+		-maximizeButton false
+		-w 5 
+		-h 5
+		-rtf 1
+		-title "ScottTech2000: Sockets"
+		SocketsUI;	
+		columnLayout;
+			paneLayout
+				-w 190
+				-h 140;
+				textScrollList 
+					-w 190
+					-nr 10
+					lt_socketList;
+				for($i = 0; $i< (size($socketData))/8; $i++)
+					textScrollList -e -append $socketData[$i * 8 + 1] lt_socketList;
+			setParent ..;
+			rowLayout 
+				-numberOfColumns 3
+				-rat 1 "top" 2
+				-rat 2 "top" 2
+				-rat 3 "top" 2
+				-cw 1 65
+				-cw 2 65
+				-cw 3 65;
+				button -label "Add" -w 60 -h 25 -c "addSocketWin";
+				button -label "Remove" -w 60 -h 25 -c "removeSocket";
+				button -label "Import" -w 60 -h 25 -c "";
+			setParent ..;
+			rowLayout 
+				-numberOfColumns 3
+				-rat 1 "top" 2
+				-rat 2 "top" 2
+				-rat 3 "top" 2
+				-cw 1 65
+				-cw 2 65
+				-cw 3 65 ;
+				button -label "Show All" -w 60 -h 25 -c "showSockets";
+				button -label "Hide All" -w 60 -h 25 -c "hideSockets";
+				button -label "Close" -w 60 -h 25 -c "deleteUI SocketsUI";
+			setParent ..;
+		setParent ..;
+
+	showWindow SocketsUI;
+}
+
+
+
+global proc addSocketWin()
+{
+	string $root[] = `getSkeleton`;
+	if(`window -ex AddSocketUI`)
+		deleteUI AddSocketUI;
+
+	showSockets;
+
+	string $addJoint[] = `ls -sl`;
+	int $valid = 0;
+	for($i = 0; $i < size($root); $i++)
+		if($root[$i] == $addJoint[0]) $valid = 1;
+	if(!$valid) error("Select an exportable joint");
+
+	window 
+		-menuBar false
+		-maximizeButton false
+		-w 5 
+		-h 5
+		-rtf 1
+		-title "Add Socket"
+		AddSocketUI;
+		columnLayout;
+			columnLayout;	
+				textFieldGrp 
+					-cw 1 60 
+					-cw 2 150 
+					-label "Socket"
+					-tx "NewSocket"
+					-cc 	""
+					lt_SocketName;
+				textFieldGrp
+					-cw 1 60
+					-cw 2 150
+					-label "Node"
+					-tx $addJoint[0]
+					-cc 	""
+					lt_NodeName;
+			setParent ..;
+			rowLayout
+				-numberOfColumns 2
+				-rat 1 "top" 2
+				-rat 2 "top" 2
+				-columnWidth 1 100;
+				button  -label "Add" -w 90 -h 25 -c "addSocket;";
+				button  -label "Cancel"  -w 90 -h 25 -c "deleteUI AddSocketUI";
+			setParent ..;
+		setParent ..;
+	showWindow AddSocketUI;
+	
+}
+
+
+global proc addSocket()
+{
+	
+	string $socketData[];
+	string $root[] = `getSkeleton`;
+	if (!`objExists ($root[0] + ".sockets")`)
+		addAttr -ln "sockets" -dt "string" $root[0];
+
+	
+	
+	
+	string $currentSockets = `getAttr ($root[0] + ".sockets")`;
+	tokenize($currentSockets, " ", $socketData);
+
+
+	
+	
+	string $addJoint = `textFieldGrp -q -text lt_NodeName`;
+	int $valid = 0;
+	for($i = 0; $i < size($root); $i++)
+		if($root[$i] == $addJoint) 
+			$valid = 1;
+	if(!$valid) 
+		error("Select an exportable joint");
+
+
+	
+	
+	string $addSocket = `textFieldGrp -q -text lt_SocketName`;
+	$valid = 1;
+	for($i = 0; $i < (size($socketData))/8; $i++)
+		if($addSocket == $socketData[$i * 8 + 1]) 
+			$valid = 0;
+	if(!$valid) 
+		error("Enter unique socket name");
+	if(`objExists $addSocket`) 
+		error("Socket name conflicts with existing scene object");
+	
+
+	
+	spaceLocator -n $addSocket;
+	parent $addSocket $addJoint;
+
+	addAttr -ln "Socket" -at bool $addSocket;
+	setAttr ($addSocket + ".Socket") 1;
+	setAttr ($addSocket + ".translate") 0 0 0;
+	setAttr ($addSocket + ".rotate") 0 0 0;
+//	setAttr ($addSocket + ".scale") 10 10 10;
+
+
+
+	$currentSockets = $currentSockets + " " + $addJoint + " " + $addSocket + " 0 0 0 0 0 0";
+	setAttr ($root[0] + ".sockets") -type "string" $currentSockets;
+	textScrollList -e -append $addSocket lt_socketList;
+
+	select -r $addJoint;
+
+	deleteUI AddSocketUI;
+}
+
+global proc removeSocket()
+{	
+	string $socketData[];
+	string $root[] = `getSkeleton`;
+		
+	string $currentSockets = `getAttr ($root[0] + ".sockets")`;
+	tokenize($currentSockets, " ", $socketData);
+	
+	string $deleteSocket[] = `textScrollList -q -si lt_socketList`;
+	int $index[] = `textScrollList -q -sii lt_socketList`;
+
+	textScrollList -e -ri $deleteSocket[0] lt_socketList;
+	delete $deleteSocket[0];
+
+	string $newSockets = "";
+	for($i = 0; $i < (size($socketData))/8; $i++)
+	{
+		if($i != ($index[0] - 1))
+		{
+			for($j = 0; $j < 8; $j++)
+				$newSockets = $newSockets + $socketData[8 * $i + $j] + " ";
+		}
+	}
+
+	setAttr ($root[0] + ".sockets") -type "string" $newSockets;
+}
+
+global proc showSockets()
+{
+	$sel = `ls -sl`;
+	string $socketData[];
+	string $root[] = `getSkeleton`;
+	string $currentSockets = `getAttr ($root[0] + ".sockets")`;
+	tokenize($currentSockets, " ", $socketData);
+
+	for($i = 0; $i < (size($socketData))/8; $i++)
+	{
+		$socketName = $socketData[$i * 8 + 1];
+		if(!`objExists $socketName`)
+		{
+			spaceLocator -n $socketName;
+			parent $socketName $socketData[$i * 8];
+
+			addAttr -ln "Socket" -at bool $socketData[$i * 8 + 1];
+			setAttr ($socketName + ".Socket") 1;
+			setAttr ($socketName + ".tx") (float($socketData[$i * 8 + 2]));
+			setAttr ($socketName + ".ty") (float($socketData[$i * 8 + 3]));
+			setAttr ($socketName + ".tz") (float($socketData[$i * 8 + 4]));
+			setAttr ($socketName + ".rx") (float($socketData[$i * 8 + 5]));
+			setAttr ($socketName + ".ry") (float($socketData[$i * 8 + 6]));
+			setAttr ($socketName + ".rz") (float($socketData[$i * 8 + 7]));
+	//		setAttr ($socketName + ".scale") 10 10 10;
+		}
+	}
+	select -r $sel;
+}
+
+global proc hideSockets()
+{	
+	$sel = `ls -sl`;
+	string $socketData[];
+	string $root[] = `getSkeleton`;
+	string $currentSockets = `getAttr ($root[0] + ".sockets")`;
+	tokenize($currentSockets, " ", $socketData);
+
+	string $newSockets = "";
+	for($i = 0; $i < (size($socketData))/8; $i++)
+	{
+		$socketName = $socketData[$i * 8 + 1];
+		$newSockets = $newSockets + $socketData[$i * 8] + " " + $socketName + " " ;
+
+		$tx = `getAttr ($socketName + ".tx")`;
+		$newSockets = $newSockets + $tx + " " ;
+		$ty = `getAttr ($socketName + ".ty")`;
+		$newSockets = $newSockets + $ty + " " ;
+		$tz = `getAttr ($socketName + ".tz")`;
+		$newSockets = $newSockets + $tz + " " ;
+		$rx = `getAttr ($socketName + ".rx")`;
+		$newSockets = $newSockets + $rx + " " ;
+		$ry = `getAttr ($socketName + ".ry")`;
+		$newSockets = $newSockets + $ry + " " ;
+		$rz = `getAttr ($socketName + ".rz")`;
+		$newSockets = $newSockets + $rz + " " ;
+		delete $socketName;
+	}
+	setAttr ($root[0] + ".sockets") -type "string" $newSockets;
+	select -r $sel;
+}
+
+
+
+
+
+
+
+
+global proc childModelWin()
+{
+	string $buffer[];
+	if(`window -ex ChildModelUI`)
+		deleteUI ChildModelUI;
+	string $root[] = `getSkeleton`;
+
+	if (!`objExists ($root[0] + ".childModels")`)
+		addAttr -ln "childModels" -dt "string" $root[0];
+
+	string $childModel = `getAttr ($root[0] + ".childModels")`;
+	tokenize($childModel, " ", $buffer);
+
+	window 
+		-menuBar false
+		-maximizeButton false
+		-w 5 
+		-h 5
+		-rtf 1
+		-title "ScottTech2000: Child Models"
+		ChildModelUI;	
+		columnLayout;
+			paneLayout
+				-w 190
+				-h 140;
+				textScrollList 
+					-w 190
+					-nr 10
+					lt_childModelList;
+				for($i = 0; $i< size($buffer); $i++)
+					textScrollList -e -append $buffer[$i] lt_childModelList;
+			setParent ..;
+			rowLayout 
+				-numberOfColumns 3
+				-rat 1 "top" 2
+				-rat 2 "top" 2
+				-rat 3 "top" 2
+				-cw 1 65
+				-cw 2 65 
+				-cw 3 65;
+				button -label "Add" -w 60 -h 25 -c "addChildModel";
+				button -label "Remove" -w 60 -h 25 -c "removeChildModel";
+				button -label "Close" -w 60 -h 25 -c "deleteUI ChildModelUI";
+			setParent ..;
+		setParent ..;
+
+	showWindow ChildModelUI;
+}
+
+global proc addChildModel()
+{
+
+	string $buffer[],$root[] = `getSkeleton`;
+	string $filepath = dirname (`textFieldButtonGrp -q -fi lt_filename`);
+
+	string $filename = `fileDialog -directoryMask "~/*.lt*"`;
+	if ( $filename == "" )
+		error "No file selected";
+
+	if(!`gmatch $filename ("*" + $filepath + "*")`)
+		error("Please don't use child models outside of model directory");
+	
+	int $pathLen = size($filepath);
+	int $filenameLen = size($filename);
+
+	$newfilename = `substring $filename ($pathLen+2) ($filenameLen-4)`;
+	$newfilename = `substituteAllString $newfilename "/" "\\"`;
+
+	if (!`objExists ($root[0] + ".childModels")`)
+		addAttr -ln "childModels" -dt "string" $root[0];
+	string $childModel = `getAttr ($root[0] + ".childModels")`;
+	$childModel = $childModel + $newfilename + " ";
+	
+
+	setAttr ($root[0] + ".childModels") -type "string" $childModel;
+	textScrollList -e -append $newfilename lt_childModelList;
+
+}
+
+global proc removeChildModel()
+{
+	string $buffer[],$root[] = `getSkeleton`;
+	string $childModel = `getAttr ($root[0] + ".childModels")`;
+	tokenize($childModel, " ", $buffer);
+	
+	$childModel = "";
+	$removeIndex = `textScrollList -q -sii lt_childModelList`;
+	for($i = 0; $i<size($buffer); $i++)
+		if($i != ($removeIndex[0]-1))
+			$childModel = $childModel + $buffer[$i] + " ";
+
+	setAttr ($root[0] + ".childModels") -type "string" $childModel;
+	textScrollList -e -rii $removeIndex[0] lt_childModelList;
+}
+
+global proc editNodeFlagsWin()
+{
+	string $nodeFlags ="", $buffer[];
+	if(`window -ex NodeFlagsUI`)
+		deleteUI NodeFlagsUI;
+
+	string $root[] = `getSkeleton`;
+
+	if(!`objExists ($root[0] + ".nodeFlags")`)
+	{
+		addAttr -ln "nodeFlags" -dt "string" $root[0];
+		for ($i = 0; $i < size($root); $i++)
+			$nodeFlags = $nodeFlags + "0";
+		setAttr ($root[0] + ".nodeFlags") -type "string" $nodeFlags;
+	}
+	else
+		$nodeFlags = `getAttr ($root[0] + ".nodeFlags")`;
+	window 
+		-menuBar false
+		-maximizeButton false
+		-w 5 
+		-h 5
+		-rtf 1
+		-title "ScottTech2000: Node Flags"
+		NodeFlagsUI;	
+			scrollLayout
+				-h 300
+				-w 270;	
+				columnLayout;
+					checkBox 
+						-label $root[0] 
+						-v 0
+						("lt_nodeFlag0");
+					for($i = 1; $i < size($root); $i++)
+					{ 
+						checkBox 
+							-label $root[$i] 
+							-v (int(`substring $nodeFlags ($i+1) ($i+1)`))
+							-cc "setNodeFlags"
+							("lt_nodeFlag" + $i);
+					}
+					setParent ..;
+				setParent ..;
+			setParent ..;
+	showWindow NodeFlagsUI; 
+
+}
+
+
+global proc setNodeFlags()
+{
+	string $root[] = `getSkeleton`;
+	string $nodeFlags = "1";
+	for($i =1; $i < size($root); $i++)
+	{	
+		$flag = 2 * (`checkBox -q -v ("lt_nodeFlag" + $i)`);
+		$nodeFlags = $nodeFlags + $flag;
+	}
+
+	setAttr ($root[0] + ".nodeFlags") -type "string" $nodeFlags;
+}
+
+
+global proc editCommandStringWin()
+{
+	string $cmdString, $buffer[];
+	$root = `ls -dag -type joint`;
+	if(`window -ex CmdStringUI`)
+		deleteUI CmdStringUI;
+
+	if(!`objExists ($root[0] + ".cmdString")`)
+	{
+		addAttr -ln "cmdString" -dt "string" $root[0];
+		$cmdString = "";
+	}
+	else
+		$cmdString = `getAttr ($root[0] + ".cmdString")`;
+
+	tokenize($cmdString, ";", $buffer);
+	$cmdString = "";
+	for($cmd in $buffer)
+		$cmdString = $cmdString + $cmd + "\n"; 
+	window 
+		-menuBar false
+		-maximizeButton false
+		-w 5 
+		-h 5
+		-rtf 1
+		-title "ScottTech2000: Command String"
+		CmdStringUI;	
+		columnLayout;
+			text -label "Edit Command String:";
+			paneLayout 
+				-h 120
+				-w 400
+				-cn "single";
+				scrollField
+					-wordWrap true
+					-text 	$cmdString
+					-c 	"setCommandString;"
+					lt_cmdString;
+				setParent ..;
+			setParent ..;
+			rowLayout
+				-numberOfColumns 3
+				-rat 1 "top" 2
+				-rat 2 "top" 2
+				-rat 3 "top" 2
+				-columnWidth 1 110
+				-columnWidth 2 110;
+				button  -label "Enter" -w 100 -h 30 -c "setCommandString;";
+				button  -label "Enter/Close"  -w 100 -h 30 -c "setCommandString; deleteUI CmdStringUI";
+				button  -label "Close"  -w 100 -h 30 -c "deleteUI CmdStringUI";
+
+	showWindow CmdStringUI;		
+}
+
+
+global proc setCommandString()
+{
+	string $buffer[], $root[] = `ls -dag -type joint`;
+	string $cmdString = `scrollField -q -text lt_cmdString`;
+
+	tokenize($cmdString, "\n\r\t", $buffer); 
+	$cmdString = "";
+	for($cmd in $buffer)
+		$cmdString = $cmdString + $cmd + ";"; 
+	if(size($cmdString) == 1)
+	{
+		//$cmdString = "";
+		deleteAttr ($root[0] + ".cmdString");
+		return;
+	}
+	if(!`objExists ($root[0] + ".cmdString")`)
+		addAttr -ln "cmdString" -dt "string" $root[0];
+	setAttr ($root[0] + ".cmdString") -type "string" $cmdString;
+
+}
+
+
+global proc editPieceInfoWin()
+{	
+	int $numTex;
+	string $rsData[], $sel[] = `ls -sl -l`;
+
+	if(size($sel) == 0) return;
+	if(`nodeType $sel[0]` != "transform") return;
+
+	if(`window -ex PieceInfoUI`)
+		deleteUI PieceInfoUI;
+
+	for($item in $sel)
+	{
+		if(`objExists ($item + ".renderStyles")`)
+			deleteAttr ($item + ".renderStyles");
+		if(!`objExists ($item + ".RenderStyle")`)
+		{ 	
+			addAttr -ln "RenderStyle" -at long $item;
+			setAttr ($item + ".RenderStyle")  0;
+		}
+		if(!`objExists ($item + ".RenderPriority")`)
+		{ 	
+			addAttr -ln "RenderPriority" -at long $item;
+			setAttr ($item + ".RenderPriority")  0;
+		}
+
+		string $texAttr[] = `listAttr -st Texture0 -st Texture1 -st Texture2 -st Texture3 $sel[0]`;
+		$numTex = size($texAttr);
+
+		if((size($texAttr)!= 0) && $texAttr[0] != "Texture0")
+		{
+			for($i = 0; $i < size($texAttr); $i++)
+				deleteAttr ($item + "." + $texAttr[$i]);
+		}
+		if(!`objExists ($item + ".Texture0")`)
+		{ 	
+			addAttr -ln "Texture0" -at short $item;
+			setAttr ($item + ".Texture0")  0;
+		}
+
+	}
+
+	int $rsAttr = `getAttr ($sel[0] + ".RenderStyle")`;
+	int $renderPriority = `getAttr ($sel[0] + ".RenderPriority")`;
+
+	window 
+		-menuBar false
+		-maximizeButton false
+		-sizeable 0
+		-w 5 
+		-h 5
+		-rtf 1
+		-title "ScottTech2000: Piece Info"
+		PieceInfoUI;
+	columnLayout;
+		frameLayout
+			-label "Texture Properties"
+			-w 200
+			-h 120;
+			columnLayout;
+				optionMenu 
+					-label "Number of Textures"
+					-cc "updateTexIdState (int(`optionMenu -q -v st_numTex`))"
+					st_numTex;
+
+					menuItem -label "1";
+					menuItem -label "2";
+					menuItem -label "3";
+					menuItem -label "4";
+				text -label "\nTexture Indices:";
+				rowLayout 
+					-numberOfColumns 2
+					-cw 1 100
+					-cw 2 100;
+					columnLayout;
+						intFieldGrp 
+							-numberOfFields 1
+							-label "0:"
+							-cw 1 30 -cw 2 50
+							-ct2 left left 
+							-co2 5 5
+							-value1 (`getTexID $sel[0] 1`)
+							st_texID1;
+						intFieldGrp 
+							-numberOfFields 1
+							-label "2:"
+							-en1 0
+							-ct2 left left 
+							-co2 5 5
+							-cw 1 30 -cw 2 50
+							-value1 (`getTexID $sel[0] 3`)
+							st_texID3; 
+					setParent ..;
+					columnLayout;
+						intFieldGrp 						
+							-numberOfFields 1
+							-label "1:"
+							-en1 0
+							-cw 1 30 -cw 2 50
+							-ct2 left left 
+							-co2 5 5
+							-value1 (`getTexID $sel[0] 2`)
+							st_texID2;
+						intFieldGrp 
+							-numberOfFields 1
+							-label "3:"
+							-en1 0
+							-cw 1 30 -cw 2 50
+							-ct2 left left 
+							-co2 5 5
+							-value1 (`getTexID $sel[0] 4`)
+							st_texID4; 
+					setParent ..;
+				setParent ..; 	
+
+			setParent ..;
+		setParent ..;
+		frameLayout
+			-label "RenderStyle Properties"
+			-w 200
+			-h 80;
+			columnLayout;
+				intFieldGrp 
+					-numberOfFields 1
+					-label "     RenderStyle Index:"
+					-cw 1 130 -cw 2 50
+					-ct2 left left 
+					-co2 5 5
+					-value1 $rsAttr
+					st_rsID;	
+				intFieldGrp 
+					-numberOfFields 1
+					-label "     Render Priority:"
+					-cw 1 130 -cw 2 50
+					-ct2 left left 
+					-co2 5 5
+					-value1 $renderPriority
+					st_renderpriority;	
+			setParent ..;
+		setParent ..;
+		frameLayout
+			-label "ModelEdit Texture"
+			-w 200
+			-h 70;
+			columnLayout;
+				textField
+					-w 190
+					-text (`getDTXInfo`)
+					-cc "setDTXInfo"
+					st_textureInfo;	
+				button
+					-w 190
+					-l "Browse...(BROKEN)";
+			setParent ..;
+		setParent ..;
+		rowLayout
+			-numberOfColumns 2
+			-rat 1 "top" 2
+			-rat 2 "top" 2
+			-columnWidth 1 100;
+			button  -label "Save" -w 95 -h 20 -c "updateRenderStyles";
+			button  -label "Close" -w 95 -h 20 -c "deleteUI PieceInfoUI";
+		setParent ..;
+	setParent ..;	
+	showWindow PieceInfoUI;
+
+	updateTexIdState $numTex;
+	optionMenu -e -sl $numTex st_numTex;
+}
+
+
+global proc string getDTXInfo()
+{
+	string $buffer[];
+	string $root[] = `getSkeleton`;
+	if(`objExists ($root[0] + ".DTXInfo")`)
+	{
+		string $DTXInfo = `getAttr ($root[0] + ".DTXInfo")`;
+		int $texID = `intFieldGrp -q -value1 st_texID1`;
+		tokenize($DTXInfo, " ", $buffer);
+		if($buffer[$texID] != "XXXX")
+			return $buffer[$texID];
+	}
+
+	return "";
+}
+
+
+global proc setDTXInfo()
+{
+	string $buffer[], $root[] = `getSkeleton`;
+	string $DTXInfo = "", $newDTXInfo = `textField -q -text st_textureInfo`;
+	int $texID = `intFieldGrp -q -value1 st_texID1`;
+
+	if(`objExists ($root[0] + ".DTXInfo")`)
+	{
+		$DTXInfo = `getAttr ($root[0] + ".DTXInfo")`;
+		tokenize ($DTXInfo, " ", $buffer);
+		int $numTextures =  max( (size($buffer)), ($texID + 1 ) );
+		$buffer[$texID] = $newDTXInfo;
+		$DTXInfo = "";
+
+		for($i = 0; $i < $numTextures; $i++)
+		{
+			if($buffer[$i] == "" || $buffer[$i] == "XXXX")
+				$DTXInfo = $DTXInfo + "XXXX ";
+			else 
+				$DTXInfo = $DTXInfo + $buffer[$i] + " ";
+		}
+	}
+	else 
+	{
+		addAttr -ln "DTXInfo" -dt "string" $root[0];
+		if($texID > 0)
+		{
+			for($i = 0; $i < $texID; $i++)
+			{
+				$DTXInfo = $DTXInfo + "XXXX ";
+			}
+			$DTXInfo = $DTXInfo + $newDTXInfo;
+		}
+		else
+			$DTXInfo = $newDTXInfo;
+	}
+
+	setAttr -type "string" ($root[0] + ".DTXInfo") $DTXInfo;
+
+}
+
+
+global proc int getTexID(string $sel, int $number)
+{
+	int $texID;
+	$number--;
+	if(`objExists ($sel + ".Texture" + $number)`)
+		$texID = `getAttr ($sel + ".Texture" + $number)`;
+	else 
+		$texID = 0;
+	return $texID;
+}
+
+
+global proc updateTexIdState(int $num)
+{	
+	switch($num)
+	{
+		case 1: 
+			intFieldGrp -e -en 0 st_texID2;
+			intFieldGrp -e -en 0 st_texID3;
+			intFieldGrp -e -en 0 st_texID4;
+			break;
+		case 2: 
+			intFieldGrp -e -en 1 st_texID2;
+			intFieldGrp -e -en 0 st_texID3;
+			intFieldGrp -e -en 0 st_texID4;
+			break;
+		case 3:
+			intFieldGrp -e -en 1 st_texID2;
+			intFieldGrp -e -en 1 st_texID3;
+			intFieldGrp -e -en 0 st_texID4;
+			break;
+		case 4:	
+			intFieldGrp -e -en 1 st_texID2;
+			intFieldGrp -e -en 1 st_texID3;
+			intFieldGrp -e -en 1 st_texID4;
+			break;
+	}			
+	optionMenu -e -sl (int($num)) st_numTex;
+}
+
+global proc updateRenderStyles()
+{
+	int $newRenStAtt = `intFieldGrp -q -v1 st_rsID`;
+	
+	$sel = `ls -sl`;
+	for($item in $sel)
+	{
+		setAttr ($item + ".RenderStyle")  (`intFieldGrp -q -v1 st_rsID`);
+		setAttr ($item + ".RenderPriority")  (`intFieldGrp -q -v1 st_renderpriority`);
+		setAttr ($item + ".Texture0") (`intFieldGrp -q -v1 st_texID1`);
+		if(`intFieldGrp -q -en1 st_texID2`)
+		{
+			if(!`objExists ($item + ".Texture1")`)
+				addAttr -ln "Texture1" -at short $item;
+			setAttr ($item + ".Texture1") (`intFieldGrp -q -v1 st_texID2`);
+		}
+		else
+			if(`objExists ($item + ".Texture1")`)
+				deleteAttr ($item + ".Texture1");
+		if(`intFieldGrp -q -en1 st_texID3`)
+		{
+			if(!`objExists ($item + ".Texture2")`)
+				addAttr -ln "Texture2" -at short $item;
+			setAttr ($item + ".Texture2") (`intFieldGrp -q -v1 st_texID3`);
+		}
+		else
+			if(`objExists ($item + ".Texture2")`)
+				deleteAttr ($item + ".Texture2");
+		if(`intFieldGrp -q -en1 st_texID4`)
+		{
+			if(!`objExists ($item + ".Texture3")`)
+				addAttr -ln "Texture3" -at short $item;
+			setAttr ($item + ".Texture3") (`intFieldGrp -q -v1 st_texID4`);
+		}
+		else
+			if(`objExists ($item + ".Texture3")`)
+				deleteAttr ($item + ".Texture3");
+	}
+
+	deleteUI PieceInfoUI;
+}
+
+
+global proc fixShapePieceInfo()
+{
+	string $root[] = `getSkeleton`;
+	string $tmp[], $piece[], $shape[], $clusters[], $buffer[];
+	int $match, $count = 0;
+
+	for ($node in $root)
+	{
+		$skinCluster = `listConnections -type skinCluster $node`;
+		for($i = 0; $i < size($skinCluster); $i++)
+		{
+			for($j = 0; $j < size($clusters); $j++)
+			{	
+				if($skinCluster[$i] == $clusters[$j])
+				{
+					$match = 1;
+					break;
+				}
+			}
+			if(!$match)
+			{
+				$clusters[$count] = $skinCluster[$i];
+				$count++;
+			}
+			else
+				$match = 0;
+		}
+	}
+	for($i = 0; $i < size($clusters); $i++)
+	{
+		$shape = `skinCluster -q -g $clusters[$i]`;
+		$piece = `listRelatives -fullPath -parent $shape[0]`;
+
+		if(`objExists ($piece[0] + ".renderStyles")`)
+		{
+			string $rStyles = `getAttr ($piece[0] + ".renderStyles")`;
+			deleteAttr ($piece[0] + ".renderStyles");
+
+			tokenize($rStyles, " ", $buffer);
+
+			addAttr -ln "RenderStyle" -at short $piece[0];
+			setAttr ($piece[0] + ".RenderStyle") (int($buffer[0]));
+
+			for($j = 0; $j < (size($buffer) - 2); $j++)
+			{
+				addAttr -ln ("Texture" + $j) -at short $piece[0];
+				setAttr ($piece[0] + ".Texture" + $j)  (int($buffer[$j + 2])) ;
+				if ($j == 3) break; 
+			}
+
+		}
+	}
+}
+
+
+
+global proc string getDefaultWeightSets()
+{
+	string $skel[] = `getSkeleton`;
+	string $setNames[] = {"Null", "Upper", "Lower", "blink", "twitch", "Morph0", "Morph100"};
+
+	string	$weightSets =  "\t\t\t(anim-weightsets\n\t\t\t\t(\n";
+	
+	for($name in $setNames)
+	{
+		$weightSets = $weightSets +    "\t\t\t\t\t(anim-weightset\n\t\t\t\t\t\t(name \"" + $name + "\" )\n\t\t\t\t\t\t(weights\n\t\t\t\t\t\t\t(";
+		
+		for($joint in $skel)
+		{
+			if($name == "twitch")
+				$weightSets = $weightSets + "2.000000 ";
+			else if($name == "blink" && $joint == "Face_Eyelid")
+				$weightSets = $weightSets + "2.000000 ";
+			else
+				$weightSets = $weightSets + "0.000000 ";
+		}
+
+		$weightSets = $weightSets +    ")\n\t\t\t\t\t\t)\n\t\t\t\t\t)\n";
+	}
+	$weightSets = $weightSets +    "\t\t\t\t)\n\t\t\t)\n";
+	
+	return $weightSets;
+}
+
+
+global proc ltcConvert(string $filename, string $type)
+{
+
+	string $buffer[];
+	string $path = `optionVar -q lt_toolPath`;
+
+	tokenize($path, "\\/", $buffer);
+	$ltcPath = $buffer[0];
+	for($i = 1;$i < size($buffer); $i++)
+		$ltcPath = $ltcPath + "\\\\" + $buffer[$i];
+	$ltcPath = $ltcPath + "\\\\LTC";
+
+	tokenize($filename, "/\\", $buffer);
+	$newFilename = $buffer[0];
+	for($i = 1;$i < size($buffer); $i++)
+		$newFilename = $newFilename + "\\\\" + $buffer[$i];
+	
+	$cmd = "system(\"" + $ltcPath + " \\\"" + $newFilename + "\\\"\")";
+	eval($cmd); 
+
+	if($type == "lta")
+		deleteFile $filename;
+
+}
+
+

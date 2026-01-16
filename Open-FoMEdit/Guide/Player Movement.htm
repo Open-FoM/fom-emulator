@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0066)file://\\Proj\TO2\ss_Documentation\temp\NOLF2_Player_Movementt.htm -->
+<HTML><HEAD><TITLE>Player Movement</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="MSHTML 6.00.2800.1141" name=GENERATOR>
+<STYLE>@font-face {
+	font-family: Wingdings;
+}
+@page Section1 {size: 8.5in 11.0in; margin: 1.0in 1.25in 1.0in 1.25in; }
+P.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+LI.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+DIV.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+DIV.Section1 {
+	page: Section1
+}
+</STYLE>
+</HEAD>
+<BODY lang=EN-US>
+<DIV class=Section1>
+<P class=MsoNormal style="TEXT-ALIGN: center" align=center><B><SPAN 
+style="FONT-SIZE: 14pt; FONT-FAMILY: Arial">Player Movement</SPAN></B></P>
+<P class=MsoNormal style="TEXT-ALIGN: center" align=center><B><SPAN 
+style="FONT-SIZE: 14pt; FONT-FAMILY: Arial"></SPAN></B>&nbsp;</P>
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial">
+<H2><A NAME="overview">Overview</A></H2>
+</SPAN></B></P>
+<P class=MsoNormal>This document will briefly discuss how to modify the movement 
+of the player.&nbsp; It will go over changes that can be made that don’t require 
+code changes and rebuild of the game.&nbsp; It will also go into a few minor 
+modifications to code that can help you get on your way to adding to and 
+changing the player movement for your needs.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial">
+<H2><A NAME="non_code_changes">Non Code Changes</A></H2></SPAN></B></P>
+<P class=MsoNormal>There are several movement property values located in the 
+Player section of serverbutes.txt that you can modify to effect the movement of 
+the player.&nbsp; Changing these values will effect the velocity and 
+acceleration of the player.&nbsp; You can also affect the gravity of the player 
+through the Console Variable, PlayerGravity.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Here is the list of properties in serverbutes.txt relevant to 
+player movement:</P>
+<TABLE class=MsoTableGrid 
+style="BORDER-RIGHT: medium none; BORDER-TOP: medium none; BORDER-LEFT: medium none; BORDER-BOTTOM: medium none; BORDER-COLLAPSE: collapse" 
+cellSpacing=0 cellPadding=0 border=1>
+  <TBODY>
+  <TR>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>WalkSpeed</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 275.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=367>
+      <P class=MsoNormal>The maximum velocity the player walks at.</P></TD></TR>
+  <TR>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>RunSpeed</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 275.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=367>
+      <P class=MsoNormal>The maximum velocity the player runs at.</P></TD></TR>
+  <TR>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>JumpSpeed</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 275.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=367>
+      <P class=MsoNormal>The upwards velocity given to the player when he 
+      jumps.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </P></TD></TR>
+  <TR>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>LadderSpeed</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 275.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=367>
+      <P class=MsoNormal>The maximum velocity when the player is climbing a 
+      ladder.</P></TD></TR>
+  <TR>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>SwimSpeed</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 275.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=367>
+      <P class=MsoNormal>The maximum velocity when the player is 
+  swimming.</P></TD></TR></TBODY></TABLE>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial">
+<H2><A NAME="code_changes">Code Changes</A></H2></SPAN></B></P>
+<P class=MsoNormal>For anything more advanced than just modifying the velocities 
+you will need to edit the source files for player movement.&nbsp; Most of the 
+movement code is contained within the CMoveMgr module.&nbsp; Lets make a simple 
+change to the code to allow double jumping in the game.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>First we will need to edit 
+“Game\ClientShellDLL\ClientShellShared\CMoveMgr.h” to add a Boolean double jump 
+member variable.</P>
+<P class=MsoNormal>Place this code:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<B>bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+m_bCanDoubleJump;</B></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>within the protected member section of our CMoveMgr 
+class.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>That’s it for 
+“Game\ClientShellDLL\ClientShellShared\CMoveMgr.h”.&nbsp; Now we’ll take a look 
+at “Game\ClientShellDLL\ClientShellShared\CMoveMgr.cpp” to hook our new variable 
+up to allow double jumps.</P>
+<P class=MsoNormal>First we need to initialize our new variable to true.</P>
+<P class=MsoNormal>Place this code:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<B>m_bCanDoubleJump = true;</B></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>in the constructor of CMoveMgr:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Now lets look at the function 
+“CMoveMgr::UpdateNormalMotion()”&nbsp; This is where most of the player movement 
+happens and any other changes you make will probably be within this function or 
+one of the functions it calls.</P>
+<P class=MsoNormal>We need to make sure we can jump again if a jump had been 
+requested and we are allowed to double jump.</P>
+<P class=MsoNormal>Simply change this line:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+bJumping = g_bJumpRequested &amp;&amp; !m_bJumped;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>to this:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+bJumping = g_bJumpRequested &amp;&amp; <B>(!m_bJumped || 
+m_bCanDoubleJump);</B></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>In order to actually jump we will need to make sure it is ok 
+to jump.&nbsp; For this example we will assume it is ok to jump if we have 
+already jumped and are allowed to double jump.</P>
+<P class=MsoNormal>Change this line:</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+bOkayToJump = (m_bSwimmingJump || (m_bOnGround &amp;&amp; !m_bBodyInLiquid 
+&amp;&amp; !m_bBodyOnLadder));</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>to this:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+bOkayToJump = (m_bSwimmingJump || <B>(m_bCanDoubleJump &amp;&amp; m_bJumped)</B> 
+|| (m_bOnGround &amp;&amp; !m_bBodyInLiquid &amp;&amp; !m_bBodyOnLadder));</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Now that it is actually ok to jump we need to make sure we 
+don’t allow more than two jumps.&nbsp; This is a double jump example after all, 
+not a quadruple jump <SPAN style="FONT-FAMILY: Wingdings">J</SPAN>.</P>
+<P class=MsoNormal>In order we will need to set our member variable, 
+m_bCanDoubleJump to false once we have applied the jump velocity.</P>
+<P class=MsoNormal>Change these lines:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+vel.y = fJumpVel;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+m_bJumped&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 
+LTTRUE;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+m_bSwimmingOnSurface = LTFALSE;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+g_bJumpRequested&nbsp;&nbsp;&nbsp;&nbsp; = LTFALSE;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>to this:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+vel.y = fJumpVel;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<B>if( m_bCanDoubleJump &amp;&amp; m_bJumped )</B></P>
+<P 
+class=MsoNormal><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+{</B></P>
+<P 
+class=MsoNormal><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Can't 
+double jump more than once...</B></P>
+<P class=MsoNormal><B></B>&nbsp;</P>
+<P 
+class=MsoNormal><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+m_bCanDoubleJump = false;</B></P>
+<P 
+class=MsoNormal><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+}</B></P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+m_bJumped&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 
+LTTRUE;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+m_bSwimmingOnSurface = LTFALSE;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+g_bJumpRequested&nbsp;&nbsp;&nbsp;&nbsp; = LTFALSE;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>So that will enable us to only double jump.&nbsp; But we also 
+need to make sure we are allowed to double jump again once we have landed after 
+a jump.</P>
+<P class=MsoNormal>Now we will need to take a look at the function 
+“CMoveMgr::UpdateOnGround()”.&nbsp; If we are now on the ground after previously 
+jumping it is safe to assume that we should now be able to double jump 
+again.</P>
+<P class=MsoNormal>Change these lines:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+// Handle landing after jumping...</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+if (m_bJumped)</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+{</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_bJumped = 
+LTFALSE;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+UpdateStartMotion(LTTRUE);</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+}</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>to these:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+// Handle landing after jumping...</P>
+<P class=MsoNormal>&nbsp;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+if (m_bJumped)</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+{</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <B>// We can 
+double jump again...</B></P>
+<P 
+class=MsoNormal><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+m_bCanDoubleJump = true;</B></P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_bJumped = 
+LTFALSE;</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+UpdateStartMotion(LTTRUE);</P>
+<P 
+class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+}</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial">
+<H2><A NAME="conclusion">Conclusion</A></H2>
+</SPAN></B></P>
+<P class=MsoNormal>That’s all we need to do to add a double jump to the 
+game.&nbsp; Just compile and build “CShell.dll” and you can begin to test your 
+changes.&nbsp; Keep in mind this is a very simple and easy way to add double 
+jumping, and probably not the best way.&nbsp; This example was just supposed to 
+get you familiar with the movement code and show you what needs to be done to 
+add desired functionality.&nbsp; Now that you know how to add a double jump you 
+may want to try and add something a little more advance like long jumping.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P></DIV></BODY></HTML>

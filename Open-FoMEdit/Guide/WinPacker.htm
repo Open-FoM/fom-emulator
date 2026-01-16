@@ -1,0 +1,551 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 10 (filtered)">
+<title>Document Title</title>
+
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:Arial;}
+h2
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h3
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:13.0pt;
+	font-family:Arial;}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{margin-top:.25in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:Arial;
+	text-transform:uppercase;
+	font-weight:bold;}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+p.MsoToc3, li.MsoToc3, div.MsoToc3
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:12.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc4, li.MsoToc4, div.MsoToc4
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:24.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc5, li.MsoToc5, div.MsoToc5
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc6, li.MsoToc6, div.MsoToc6
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:48.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc7, li.MsoToc7, div.MsoToc7
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:60.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc8, li.MsoToc8, div.MsoToc8
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:1.0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoToc9, li.MsoToc9, div.MsoToc9
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:84.0pt;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p.MsoDocumentMap, li.MsoDocumentMap, div.MsoDocumentMap
+	{margin:0in;
+	margin-bottom:.0001pt;
+	background:navy;
+	font-size:12.0pt;
+	font-family:Tahoma;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<A NAME="winpacker"><h1>WinPacker</h1></A>
+
+<h2><a name="overview">Overview</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The purpose of this document is to describe the capabilities
+and command line options available for the WinPacker program. WinPacker serves
+as a front end user interface to a program called a packer. This packer serves
+the role of taking a resource file, such as a level, and performing any up
+front processing and conversion necessary for the resource to be able to be used
+by the engine at runtime. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="packers">Packers</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>There are many instances of packers used by the engine, such
+as for models, worlds, and even effects. Currently only the world packing has
+been converted over to a module that is compatible with WinPacker, although more
+may be converted in the future. The benefit of breaking apart the packers into
+a module that communicates with WinPacker is that then all packers can have a
+single unified interface, and the feature set of WinPacker can be shared across
+all packers, providing a much more powerful interface than time would allow for
+developing with each packer. These compatible packers are stored in a DLL file,
+often in the Packers directory beneath where WinPacker is located.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="opening_winpacker">Opening WinPacker</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>When launching WinPacker, it must take a file to pack. In
+some cases this file may be provided already, such as when launching it through
+DEdit, or through another script that has provided the information. If the file
+is not provided, it will prompt the user for one using the standard file open
+dialog. Once a resource has been specified, WinPacker will determine the type
+of resource the file is, and attempt to find an appropriate Packer to convert
+the resource into an engine readable format. The rules for this packer finding
+are simple. It first checks under any user specified packer directory. This is
+discussed more in the command line portion. If none is specified, or no
+appropriate packer resides there, it will then check underneath the Packers
+directory in the same directory that WinPacker was located in. If this should
+fail, WinPacker will prompt the user to locate the directory where the
+appropriate packer resides, and will continue to do so until either a packer is
+found or the user cancels the packing operation.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="property_dialog">Property Dialog</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Below is a screenshot of the property interface presented by
+WinPacker. This interface allows for the configuring of any and all properties
+that the packer needs. The packer is able to configure which properties are
+presented to the user, how they are grouped, and as the user changes
+parameters, handle validation of data and updating of any relevant properties,
+such as graying out properties that conflict with the current settings. After
+every time the packer is run, the last settings used will be saved so that they
+will be used as the default settings the next time that WinPacker is run with
+the same packer file. Therefore WinPacker will remember how you last ran a
+packing for a world file, and a model file, and any other resources supported.
+Each item of the property dialog will be described below.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=416
+height=524 src="Images/WinPacker001.jpg"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="the_property_panes">1: The Property Panes</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Each packer has the option to group the properties that it
+contains into different panes. These panes serve only to help categorize
+properties and make their use easier and more intuitive. The same property can
+be listed on multiple panes, and in such a case changing the value on one pane
+will also change the value on any other panes that it is listed on. There can
+only be one active pane at a time, and it is that active pane’s properties that
+will be shown in the property area <b>(2)</b>. Clicking on the name of a
+different property pane will change to that pane and allow editing of its
+properties.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="the_property_area">2: The Property Area</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>For the active property pane, the properties of that pane
+will be shown in this area. Different properties can have different types, such
+as numbers, or check boxes, or text that must be entered. The meaning of which
+can be determined by looking at the name of the property which is located on
+the left, and also by hovering the mouse over one of the property’s controls,
+such as a button or checkbox. After hovering for a second or two, a small text
+box will pop up with text describing what the purpose of this property is. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="preset_controls">3: Preset Controls</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>In addition to WinPacker remembering the most recently used
+settings, it also allows for creation of custom presets that can be saved and
+loaded. These presets allow for a quick, easy, and less error prone way of
+performing different types of packing. Before a preset can be selected, it must
+first be created. This can by done by pressing the ‘+’ button. When this is
+pressed, it will prompt the user for a name. If a name is entered, it will
+create a new preset under that name that holds all the current properties.
+Therefore in the future, all the user needs to do is to click on the down
+arrow, select the preset of the name they entered and they will have the exact
+same settings as when they created the preset. In addition, after a preset has
+been selected, it can also be deleted by pressing the ‘-‘ button. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="external_configuration_controls">4: External Configuration Controls</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>These controls act very similar to presets, but it saves the
+preset out to a file on disk. These presets can then be later loaded, or used
+in automating the packing process. When pressing the disk icon, WinPacker will
+prompt the user for a file where the configuration will be stored. Once this is
+entered it will create a file that can be loaded at a later time to use the
+exact same configuration as was saved.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="process">5: Process</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Pressing this button will begin the packing process using
+the resource and properties specified. Once this button is pressed, the
+property dialog will disappear and will be replaced with the packing dialog
+that reports information about the packing process and is explained below.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="packing_dialog">Packing Dialog</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>During the packing process, the packing dialog will be
+displayed. This allows the packer to communicate to the user what tasks it is
+performing, any issues that have arisen during packing, and also the overall
+progress of the packing process. This dialog does not require any user input,
+and is meant only to provide information to the user. Each component of the
+dialog will be described below.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><img width=576 height=383 src="Images/WinPacker002.jpg"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="tasks">1:  Tasks</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The packer has the option to break apart the packing process
+into smaller pieces called tasks. Each task is generally much more specific,
+and only one task can be active at a time. This active task is controlled by
+the packer, and is usually performed in a sequential manner, so it will perform
+a task, move onto the next task, and so on. Messages can also be reported by
+the packer, and as these messages are reported, they are associated with the
+currently active task. So for example, if the current task is “creating
+polygons” and the packer reports how long it took, this message will be
+associated with the “creating polygons” task. The user can change the task that
+they are viewing by selecting a task from this list. This will change the
+messages listed to those related to the selected task in the messages window <b>(2)</b>.
+The current task being viewed is the task in the list with they grey background
+behind it.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="message_window">2: Message Window</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This window displays all messages associated with the task
+that the user is viewing. Each message can be color coded based upon its
+severity which is described more in item <b>(6)</b>. The contents and meanings
+of these messages are dependant upon the packer that is being used to pack the
+current resource.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="message_filter">3: Message Filter</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>If there are too many messages in the window, or only severe
+messages want to be seen, this filter can be used to hide messages of lesser
+importance. Each message is associated with a severity. These are listed here
+in order of least severe to most severe: Debug, Verbose, Normal, Warning, High,
+and Critical. Therefore the user can set the filter at Normal and the message
+window <b>(2)</b> will only show messages of severity Normal or higher, and
+will not show any messages of severity Debug or Verbose. This can be a very
+useful tool for trying to find any issues that the packer might be reporting if
+a resource is not functioning properly.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="active_task_information">4: Active Task Information</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This area of the dialog shows the currently active task’s
+name as well as the progress. The name may not match exactly the tasks name, as
+each task can be broken apart into subtasks to provide better information to
+the user about what is precisely occurring and also aid in isolating areas of
+the packing process that are taking abnormally long periods of time.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="thread_priority">5: Thread Priority</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This control allows the changing of how important this
+processing is to the operating system. The higher this value is, the faster the
+process will go, but the less the user will be able to do while it is
+processing since it will be taking nearly all of the computer’s resources. It
+is generally best to leave this on low which allows for processes to occur in
+the background with minimal impact on the current task the user may be doing. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="color_and_log_controls">6: Color and Log Controls</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>These controls allow for two important operations to be
+done. The first button on the left allows for changing the color of the
+different message severities. This helps the user to quickly identify high
+severity errors from warnings or normal text. Pressing this button will bring
+up a dialog that allows assigning both a color and a prefix to each severity
+level. The prefix allows placement of user specified text in front of the
+message. This is often useful for scripting purposes, but otherwise generally
+should not be used. The other button next to the color settings button allows
+the saving of all the messages from the packing process to a specified text
+file. This is useful for when reporting issues to engineering.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h3><a name="ok">7: OK</a></h3>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This button will close the dialog and is presented once the
+packing process is complete. If the packing process needs to be cancelled while
+it is still packing, the ‘X’ in the upper right hand corner of the dialog can
+be pressed. Doing so can cause issues with the resource, and it generally
+should not be used until after a different successful packing is completed. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="command_line_parameters">Command Line Parameters</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>One benefit of WinPacker is that in addition to the
+graphical user interface, it also allows for command line access to nearly all
+of its functionality. This allows for scripting and automation of the packing
+process, and this portion of the document is for users looking to setup
+situations like this.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The proper usage of WinPacker from the command line is:</p>
+
+<p class=MsoNormal>WinPacker <b><i>[options]</i></b></p>
+
+<p class=MsoNormal><b><i>&nbsp;</i></b></p>
+
+<p class=MsoNormal>where <b><i>[options]</i></b> is one or more of the
+following command line options.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>-File <i>&lt;resource file&gt;</i> </b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This option specifies the resource that should be packed by
+WinPacker. The filename can be either absolute or relative.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>-PackerDir <i>&lt;directory&gt;</i></b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This option indicates which directory should be checked in
+order to find a packer for the associated resource.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>-SkipPropDlg</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This option indicates that the property dialog should
+immediately be skipped, and processing should be done with the last used
+settings, and any settings specified through the command line.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>-NoPauseWhenDone</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This option indicates that the program should exit
+immediately after the packing process has completed. Therefore when packing is
+done, it will not wait for the user to press the OK button on the packing
+dialog and will immediately exit.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>-LoadOptions <i>&lt;options file&gt;</i></b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This option specifies a previously saved options file (see <b>(4)</b>
+on the property dialog section) that should be used for this packing process.
+Any properties listed in here will be used for this packing process.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b><i>-&lt;property&gt; &lt;value&gt;</i></b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>In addition, any property that is listed on any of the
+property panes of the property dialog, can be specified directly on the command
+line. The command line is evaluated in a left to right order, so if a property
+is set to one value, and later set to another value, the second value will be
+used. The same applies to the loaded options. So for example a configuration
+can be loaded from disk, and then after that load options command is specified,
+a parameter can be set to a different value on the command line, thus
+overriding the value it obtained from the file.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Several command line examples are listed below:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-autospace:none'>This will specify a file to be
+packed, and will use the last settings, and immediately exit, which is useful
+for scripting the packing of a large number of resources.</p>
+
+<p class=MsoNormal style='text-autospace:none'><i>Winpacker -File SomeLevel.ltc
+-SkipPropDlg -NoPauseWhenDone</i></p>
+
+<p class=MsoNormal style='text-autospace:none'>&nbsp;</p>
+
+<p class=MsoNormal style='text-autospace:none'>This example will do the same as
+above, but use some settings that had been previously saved.</p>
+
+<p class=MsoNormal style='text-autospace:none'><i>Winpacker -File SomeLevel.ltc
+-SkipPropDlg -NoPauseWhenDone -LoadOptions Options.txt</i></p>
+
+<p class=MsoNormal style='margin-left:.75in;text-autospace:none'>&nbsp;</p>
+
+<p class=MsoNormal style='text-autospace:none'>This version will do the as the
+above example, but override the value for the ProjectPath property.</p>
+
+<p class=MsoNormal style='text-autospace:none'><i>Winpacker -File SomeLevel.ltc
+-SkipPropDlg -NoPauseWhenDone -LoadOptions Options.txt -ProjectPath
+&quot;c:\somedir&quot;</i></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

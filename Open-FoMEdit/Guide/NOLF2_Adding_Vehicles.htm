@@ -1,0 +1,1580 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 10 (filtered)">
+<title>Changing and Adding Vehicles</title>
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:Arial;}
+h2
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h3
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:13.0pt;
+	font-family:Arial;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US>
+
+<div class=Section1>
+
+<h1>Changing and Adding Vehicles</h1>
+
+<A NAME="overview"><h3>Overview</h3></A>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>This
+document will detail the steps needed to change the current vehicles or add a
+new vehicle into the game No One Lives Forever 2 (NOLF2).  This document will
+go into changing the source code so proficiency in C++ and Microsoft Visual C++
+6.0 will be needed for most of the changes and additions.  In NOLF2 there were
+two types of vehicles, the snowmobile and the PlayerLure that was used for the
+bicycle chase.  For this document we will only get into adding vehicles like
+the snowmobile.  Within the document, any place ‘new vehicle’ or ‘NewVehicle’ is
+mentioned you should replace with the name of your new vehicle such as, Truck,
+ATV, or Tricycle.  When asked to add code you will only need to add the code
+that is in bold type.  The other code is there as reference so it is easier to
+see where to add the new code.</span></p>
+
+<A NAME="playervehicle"><h3>PlayerVehicle</h3></A>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>If you want
+to add a new vehicle to NOLF2 you will first need to add the ability to place
+the new vehicle in the levels.  The object that level designers use to place
+vehicles in the levels in PlayerVehicle.  The source for PlayerVehicle is in
+the files \Game\ObjectDLL\ObjectShared\PlaeryVehicle.cpp/.h </span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In order to
+get your new vehicle to show up in the drop down list of the VehicleType
+property on the PlayerVehicle object you will first need to add a new type to
+the PlayerPhysicsModel enum and to the list of PlayerPhysicsModel types that
+are considered vehicles in the function IsVehicleModel() found in Game\Shared\SharedMovement.h. 
+Add these two lines:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            enum
+PlayerPhysicsModel</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            PPM_FIRST=0,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            PPM_NORMAL=0,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            PPM_SNOWMOBILE,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            PPM_LURE,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            PPM_LIGHTCYCLE,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            <b>PPM_NEWVEHICLE,</b></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            PPM_NUM_MODELS</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>};</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>inline LTBOOL IsVehicleModel(PlayerPhysicsModel eModel)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            switch (eModel)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            {</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>                        case PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>                        case PPM_LURE :</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>                        case PPM_LIGHTCYCLE :</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>                        <b>case PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            return LTTRUE;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>                        break;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>                        default : break;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            }</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>    return LTFALSE;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>}</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Next, you
+will need to add the name of your new vehicle to the array of vehicle names
+found in Game\Shared\SharedMovement.cpp.  Add the one line:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            char*
+aPPMStrings[] =</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            &quot;Normal&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            &quot;Snowmobile&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            &quot;Lure&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>            &quot;LightCycle&quot;<b>,</b></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>            “NewVehicle”</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>};</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Now you
+need to specify the model filename, skins and renderstyles to use for your
+vehicle.  These are set within the PlayerVehicle::PostPropRead() found in \Game\ObjectDLL\ObjectShared\PlaeryVehicle.cpp. 
+The current filenames for the snowmobile are defined in the player section of
+serverbutes.txt.  You will want to create new entries for your new vehicle in
+this section.  Open the file \Game\ObjectDLL\ObjectShared\PlayerButes.h and add
+the following #defines:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            #define
+PLAYER_BUTE_SNOWMOBILETRANSLUCENT              &quot;SnowmobileTranslucent&quot;</span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>#define PLAYER_BUTE_NEWVEHICLEMODEL              &quot;NewVehicleModel&quot;</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>#define PLAYER_BUTE_NEWVEHICLESKIN                              &quot;NewVehicleSkin&quot;</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>#define PLAYER_BUTE_NEWVEHICLERS                                 &quot;NewVehicleRS&quot;</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>#define PLAYER_BUTE_NEWVEHICLETRANSLUCENT  &quot;NewVehicleTranslucent&quot;</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>#define PLAYER_BUTE_WALKVOLUME                                     &quot;WalkFootstepVolume&quot;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>You will
+now need to add these entries to the player section in serverbutes.txt.  You
+will probably want to create a new model for your vehicle but for now, we will
+just use the tricycle:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            SnowmobileTranslucent                          =
+1</span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>NewVehicleModel                               =
+&quot;Props\Models\InTricycle.ltb&quot;</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>NewVehicleSkin                                  =
+&quot;Props\Skins\InTricycle.dtx&quot;</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>NewVehicleRS                                     = &quot;RS\default.ltb&quot;</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>NewVehicleRS2                                   = &quot;RS\transparent.ltb&quot;</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>NewVehicleTranslucent                       = 1</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>WalkFootstepVolume                             = 0.0</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Next, you
+need to setup the PlayerVehicle object to use your new filenames for your new
+vehicle.  All of the file names are set in PlayerVehicle::PostReadProp().  Add
+the new PlayerPhysicsModel you created to the switch statement there and set
+the appropriate char pointers for the serverbute entries you made:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            switch
+(m_ePPhysicsModel)</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pModelAttribute             =
+PLAYER_BUTE_SNOWMOBILEMODEL;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pSkin1Attribute              =
+PLAYER_BUTE_SNOWMOBILESKIN;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pSkin2Attribute              =
+PLAYER_BUTE_SNOWMOBILESKIN2;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pSkin3Attribute              =
+PLAYER_BUTE_SNOWMOBILESKIN3;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pRenderStyle1Bute        =
+PLAYER_BUTE_SNOWMOBILERS;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pRenderStyle2Bute        =
+PLAYER_BUTE_SNOWMOBILERS2;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pRenderStyle3Bute        =
+PLAYER_BUTE_SNOWMOBILERS3;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pModelTranslucent         =
+PLAYER_BUTE_SNOWMOBILETRANSLUCENT;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        <b>case
+PPM_NEWVEHICLE :</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                    pModelAttribute           =
+PLAYER_BUTE_NEWVEHICLEMODEL;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                    pSkin1Attribute            =
+PLAYER_BUTE_NEWVEHICLESKIN;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                    pRenderStyle1Bute      =
+PLAYER_BUTE_NEWVEHICLERS;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                    pRenderStyle2Bute      =
+PLAYER_BUTE_NEWVEHICLERS2;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                    pModelTranslucent      =
+PLAYER_BUTE_SNOWMOBILETRANSLUCENT;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        default
+:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>You will
+now be able to place your new vehicle in your levels by adding a PlayerView
+object and selecting NewVehicle in the VehicleType dropdpwn list property. 
+However if you try to activate your new vehicle you will notice that you are
+unable to actually ride it.  This is because you have not yet added the physics
+for your new vehicle.  Adding physics is discussed in the next section.</span></p>
+
+<A NAME="vehicle_physics"><h3>Vehicle Physics</h3></A>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Once you
+have your vehicle in the level you will now need to create the player view
+model for the vehicle and setup the physics.  Most of the necessary code you
+will need to add will be to the class CVehicleMgr located in the source files \Game\ClientShellDLL\ClientShellShared\VehicleMgr.cpp/h. 
+CVehicleMgr is where you will need to add code for getting on your new vehicle,
+physics for your new vehicle, creating and updating the player view model, and
+dismounting from your vehicle and switching to normal player physics.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The first
+thing you will want to do is setup the player view model for your vehicle.  The
+code for creating the model is in the function, CVehicleMgr::CreateVehicleModel(). 
+You will probably want to create your own player view model that more closely
+resembles the vehicle you are adding.  You will need to add the following code
+to CVehicleMgr::CreateVehicleModel():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        createStruct.m_ObjectType
+= OT_MODEL;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        createStruct.m_Flags    
+= FLAG_VISIBLE | FLAG_REALLYCLOSE;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        createStruct.m_Flags2  
+= FLAG2_FORCETRANSLUCENT | FLAG2_DYNAMICDIRLIGHT;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        SAFE_STRCPY(createStruct.m_Filename,
+&quot;Guns\\Models_PV\\ NewVehicle.ltb&quot;);</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        SAFE_STRCPY(createStruct.m_SkinNames[1],
+&quot;Guns\\Skins_PV\\ NewVehicle.dtx&quot;);</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        SAFE_STRCPY(createStruct.m_RenderStyleNames[0],
+&quot;RS\\default.ltb&quot;);</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        </span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        CCharacterFX*
+pCharFX = g_pMoveMgr-&gt;GetCharacterFX();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        if
+(pCharFX  )</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                           
+SAFE_STRCPY(createStruct.m_SkinNames[0], g_pModelButeMgr-&gt;GetHandsSkinFilename(pCharFX-&gt;GetModelId()));</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Once your
+player view model is created you will need to make sure that it will get
+updated properly.  Updating of the vehicle model happens in the function CVehicleMgr::UpdateVehicleModel(). 
+You will need to change the following line:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            </span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            if
+(!m_hVehicleModel || (m_ePPhysicsModel != PPM_SNOWMOBILE) ) return;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>To:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            if
+(!m_hVehicleModel || <b>((m_ePPhysicsModel != PPM_SNOWMOBILE) &amp;&amp; (m_ePPhysicsModel
+!= PPM_NEWVEHICLE))</b> ) return;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>That’s it
+for creating and updating your player view model.  You will need to add a call
+to CreateVehicleModel() when you set your new vehicle physics model which is
+discussed a little later in this document.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The next
+thing you will need to do is create some console variables for your new vehicle
+that control a lot of the behavior.  Console variables are used so you will be
+able to change their value while in the game, allowing you to tweak the
+variables until the vehicle feels the way you want it to behave.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In VehicleMgr.cpp
+there is already a long list of VarTrack variables, you will need to add the
+following lines to the list of VarTracks:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>VarTrack          g_vtNewVehicleInfoTrack;</b></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleVel;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleAccel;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleAccelTime;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleMaxDecel;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleDecel;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleDecelTime;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleMaxBrake;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleBrakeTime;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleOffsetX;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleOffsetY;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleOffsetZ;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleStoppedPercent;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleStoppedTurnPercent;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleMaxSpeedPercent;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleAccelGearChange;</span></b></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>VarTrack          g_vtNewVehicleMinTurnAccel;            </span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>You will
+need to initialize these variables so add the following lines to CVehicleMgr::Init():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>g_vtNewVehicleInfoTrack.Init(
+g_pLTClient, &quot;NewVehicleInfo&quot;, NULL, 0.0f );</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleVel.Init(
+g_pLTClient, &quot;NewVehicleVel&quot;, NULL, 600.0f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleAccel.Init(
+g_pLTClient, &quot;NewVehicleAccel&quot;, NULL, 3000.0f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleAccelTime.Init(
+g_pLTClient, &quot;NewVehicleAccelTime&quot;, NULL, 3.0f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleMaxDecel.Init(
+g_pLTClient, &quot;NewVehicleDecelMax&quot;, LTNULL, 22.5f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleDecel.Init(
+g_pLTClient, &quot;NewVehicleDecel&quot;, LTNULL, 37.5f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleDecelTime.Init(
+g_pLTClient, &quot;NewVehicleDecelTime&quot;, LTNULL, 0.5f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleMaxBrake.Init(
+g_pLTClient, &quot;NewVehicleBrakeMax&quot;, LTNULL, 112.5f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleBrakeTime.Init(
+g_pLTClient, &quot;NewVehicleBrakeTime&quot;, LTNULL, 1.0f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleMinTurnAccel.Init(
+g_pLTClient, &quot;NewVehicleMinTurnAccel&quot;, LTNULL, 0.0f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            </span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>g_vtNewVehicleOffsetX.Init( g_pLTClient, &quot;NewVehicleOffsetX&quot;,
+LTNULL, 0.0f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleOffsetY.Init(
+g_pLTClient, &quot;NewVehicleOffsetY&quot;, LTNULL, -0.8f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleOffsetZ.Init(
+g_pLTClient, &quot;NewVehicleOffsetZ&quot;, LTNULL, 0.6f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            </span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>g_vtNewVehicleStoppedPercent.Init( g_pLTClient, &quot;NewVehicleStoppedPercent&quot;,
+LTNULL, 0.05f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleMaxSpeedPercent.Init(
+g_pLTClient, &quot;NewVehicleMaxSpeedPercent&quot;, LTNULL, 0.95f );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            g_vtNewVehicleAccelGearChange.Init(
+g_pLTClient, &quot;NewVehicleAccelGearChange&quot;, LTNULL, 1.0f );</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Once all of
+your console variables are set up you can add the code that will make sure your
+vehicle will use the proper values for things like velocity and acceleration. 
+A lot of the functions that are looking for physics related values are set up
+as switch statements based on the PlayerPhysicsModel so adding your vehicle
+requires you to add your NewVehicle PhysicsModel, PPM_NEWVEHICLE, to these
+switch statements and that the proper values are set to the console variable
+values.  To begin you should add your velocity console variable to the function
+CVehicleMgr::GetMaxVelMag().  Add these lines to that function:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        fMaxVel
+= g_vtSnowmobileVel.GetFloat();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        fMaxVel
+= g_vtNewVehicleVel.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Now do the
+same for CVehicleMgr::GetMaxAccelMag():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        fMaxVel
+= g_vtSnowmobileAccel.GetFloat();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        fMaxVel
+= g_vtNewVehicleAccel.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the
+function CVehicleMgr::GetVehicleAccelTime() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        fTime
+= g_vtSnowmobileAccelTime.GetFloat();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        fTime
+= g_vtNewVehicleAccelTime.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the
+function CVehicleMgr::GetVehicleMaxDecel() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        fValue
+= g_vtSnowmobileMaxDecel.GetFloat();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        fValue
+= g_vtNewVehicleMaxDecel.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the
+function CVehicleMgr::GetVehicleDecelTime() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        fValue
+= g_vtSnowmobileDecelTime.GetFloat();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        fValue
+= g_vtNewVehicleDecelTime.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the function
+CVehicleMgr::GetVehicleMaxBrake() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>case PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        fValue
+= g_vtSnowmobileMaxBrake.GetFloat();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        fValue
+= g_vtNewVehicleMaxBrake.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;  </span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the
+function CVehicleMgr::GetVehicleBrakeTime() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        fValue
+= g_vtSnowmobileBrakeTime.GetFloat();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        fValue
+= g_vtNewVehicleBrakeTime.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the
+function CVehicleMgr::GetVehicleMinTurnAccel() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        fValue
+= g_vtSnowmobileMinTurnAccel.GetFloat();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        fValue
+= g_vtNewVehicleMinTurnAccel.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>That’s it
+for adding code for getting the values specified in console variables.  Now you
+should add code to the functions that are looking for specific sounds.  You
+will need to add the following code.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the function
+CVehicleMgr::GetIdleSnd() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        return
+&quot;Snd\\Vehicle\\Snowmobile\\idle.wav&quot;;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        return
+&quot;Snd\\Vehicle\\ NewVehicle \\idle.wav&quot;;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the
+function CVehicleMgr::GetAccelSnd() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        return
+&quot;Snd\\Vehicle\\Snowmobile\\accel.wav&quot;;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        return
+&quot;Snd\\Vehicle\\ NewVehicle \\accel.wav&quot;;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the
+function CVehicleMgr::GetDecelSnd() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        return
+&quot;Snd\\Vehicle\\Snowmobile\\decel.wav&quot;;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        </span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE :</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        return
+&quot;Snd\\Vehicle\\ NewVehicle \\decel.wav&quot;;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the
+function CVehicleMgr::GetBrakeSnd() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        return
+&quot;Snd\\Vehicle\\Snowmobile\\brake.wav&quot;;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE :</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        return
+&quot;Snd\\Vehicle\\NewVehicle\\brake.wav&quot;;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>In the function
+CVehicleMgr::GetImpactSnd() add:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        if
+(fCurVelocityPercent &gt; 0.1f &amp;&amp; fCurVelocityPercent &lt; 0.4f)</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pSound
+= &quot;Snd\\Vehicle\\Snowmobile\\slowimpact.wav&quot;;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        else
+if (fCurVelocityPercent &lt; 0.7f)</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pSound
+= &quot;Snd\\Vehicle\\Snowmobile\\medimpact.wav&quot;;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        else</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    pSound
+= &quot;Snd\\Vehicle\\Snowmobile\\fastimpact.wav&quot;;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE :</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        if
+(fCurVelocityPercent &gt; 0.1f &amp;&amp; fCurVelocityPercent &lt; 0.4f)</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                    pSound
+= &quot;Snd\\Vehicle\\NewVehicle\\slowimpact.wav&quot;;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        else
+if (fCurVelocityPercent &lt; 0.7f)</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                    pSound
+= &quot;Snd\\Vehicle\\NewVehicle\\medimpact.wav&quot;;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        else</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                    pSound
+= &quot;Snd\\Vehicle\\NewVehicle\\fastimpact.wav&quot;;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Now you
+should have all of the sound functions that are dependent on which vehicle the
+player is riding up to date.  You will want to make sure that the sounds
+actually get used and the correct ones play at the correct time.  To do this
+add the following line to CVehicleMgr::UpdateSound():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE :</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        UpdateVehicleSounds();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The physics
+for your new vehicle should be added next.  You will first need to add code for
+switching to and from your PPM_NEWVEHICLE PlayerPhysicsModel, which is setting
+up what happens when the player gets on and off your vehicle.  The function, CVehicleMgr::SetPhysicsModel()
+gets called when the player wants to switch their PlayerPhysicsModel, such as
+getting on or off a vehicle.  CVehicleMgr::SetPhysicsModel() proceeds to call CVehicleMgr::PreSetPhysicsModel()
+first to do some preliminary setup for the vehicles.  You should look at this
+function first and add the following code for when the player first gets on the
+vehicle:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            //
+Check if we should disable the weapon.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            switch
+(eModel)</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    EnableWeapon(
+false );</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                    EnableWeapon(
+false );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        case
+PPM_LURE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        case
+PPM_NORMAL :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        default
+:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The above
+code will disable the player’s weapon when getting on your vehicle.  Now you
+will also need to add the following block of code to the same function for when
+the player gets off your vehicle:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:10.0pt;
+font-family:Arial'>case PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        g_pClientSoundMgr-&gt;PlaySoundLocal(&quot;Snd\\Vehicle\\Snowmobile\\turnoff.wav&quot;,
+SOUNDPRIORITY_PLAYER_HIGH, PLAYSOUND_CLIENT);</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        PlayVehicleAni(&quot;Deselect&quot;);</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        //
+Can't move until deselect is done...</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        g_pMoveMgr-&gt;AllowMovement(LTFALSE);</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        //
+Wait to change modes...</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        bRet
+= LTFALSE;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE :</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        g_pClientSoundMgr-&gt;PlaySoundLocal(&quot;Snd\\Vehicle\\NewVehicle\\turnoff.wav&quot;,
+SOUNDPRIORITY_PLAYER_HIGH, PLAYSOUND_CLIENT);</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        PlayVehicleAni(&quot;Deselect&quot;);</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        //
+Can't move until deselect is done...</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        g_pMoveMgr-&gt;AllowMovement(LTFALSE);</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        //
+Wait to change modes...</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        bRet
+= LTFALSE;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The above
+code will play a sound for turning off the engine of your vehicle and will play
+the deselect animation on the player view model showing the player they are
+getting off the vehicle.  Getting back to CVehicleMgr::SetPhysicsModel() you
+will need to add code for actually setting the physics model for your new
+vehicle.  Add the following code to CVehicleMgr::SetPhysicsModel():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        SetSnowmobilePhysicsModel();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        if
+(g_vtSnowmobileInfoTrack.GetFloat())</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        {</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                                    g_pLTClient-&gt;CPrint(&quot;Snowmobile
+Physics Mode: ON&quot;);</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            }</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        SetNewVehiclePhysicsModel();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>            break;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Note that
+you are now making a call to a function that does not yet exist.  You will need
+to write this function next.  Open the header file for the class CVehicleMgr, \Game\ClientShellDLL\ClientShellShared\VehicleMgr.h
+and add the following line to the CVehicleMgr’s protected function definitions:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            void                   SetSnowmobilePhysicsModel();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            void                   SetPlayerLurePhysicsModel(
+);</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            void                   SetNormalPhysicsModel();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>void                 SetNewVehiclePhysicsModel();</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Now you
+will need to go back to \Game\ClientShellDLL\ClientShellShared\VehicleMgr.cpp
+and write the actual function CVehicleMgr::SetNewVehicelPhysicsModel().  Add
+the following function:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>void CVehicleMgr::SetNewVehiclePhysicsModel()</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>{</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        if
+(!m_hVehicleStartSnd)</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        {</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                     uint32
+dwFlags = PLAYSOUND_GETHANDLE | PLAYSOUND_CLIENT;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                                    m_hVehicleStartSnd
+= g_pClientSoundMgr-&gt;PlaySoundLocal(&quot;Snd\\Vehicle\\NewVehicle\\startup.wav&quot;,
+SOUNDPRIORITY_PLAYER_HIGH, dwFlags);</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        }</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        CreateVehicleModel();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        m_vVehicleOffset.x
+= g_vtNewVehicleOffsetX.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        m_vVehicleOffset.y
+= g_vtNewVehicleOffsetY.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        m_vVehicleOffset.z
+= g_vtNewVehicleOffsetZ.GetFloat();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        //
+Reset acceleration so we don't start off moving...</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        m_fVehicleBaseMoveAccel
+= 0.0f;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        ShowVehicleModel(LTTRUE);</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        PlayVehicleAni(&quot;Select&quot;);</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        //
+Can't move until select ani is done...</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        g_pMoveMgr-&gt;AllowMovement(LTFALSE);</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        m_bSetLastAngles
+= false;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        m_vLastPlayerAngles.Init();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        m_vLastCameraAngles.Init();</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        m_vLastVehiclePYR.Init();</span></b></p>
+
+<p class=MsoNormal style='text-indent:.5in'><b><span style='font-size:10.0pt;
+font-family:Arial'>}</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The above
+function will play an initial sound for starting up your vehicle, it will then
+create the vehicle model that you setup before, play a select or getting on
+animation and finally resets some data members.  You still won’t be able to
+ride your vehicle at this point but you are getting closer to getting
+everything setup.  Next you will need to add a few more lines of code to
+functions that deal with the motion of the vehicle.  Add the following line to CVehicleMgr::MoveLocalSolidObject(
+):</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            //
+These guys don't handle movement.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_NORMAL:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        return
+false;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Add this
+line to CVehicleMgr::MoveVehicleObject():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            //
+These guys don't handle movement.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>You
+probably won’t need to do any camera displacement so add the following line to CVehicleMgr::CalculateVehicleCameraDisplacment():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_NORMAL:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_LIGHTCYCLE:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        return;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Now you
+will need to make sure your vehicle is able to accelerate, brake and turn when
+the player presses those commands.  You will need to make sure the commands are
+properly read.  Add the following line to CVehicleMgr::UpdateControlFlags():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE :</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        UpdateSnowmobileControlFlags();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;
+</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Notice that
+your new vehicle is calling the function for updating the snowmobile control
+flags.  Since the behavior you want is similar to the snowmobile and you will
+want to check the same control flags this is perfectly fine.  If you decide you
+would want to have different behavior for your new vehicle then you would
+create a separate function to read in the control flags while riding your new
+vehicle.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Now you
+need to make sure the vehicle actually moves.  Add the following line to CVehicleMgr::UpdateMotion():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE :</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        UpdateVehicleMotion();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Add the
+following line to CVehicleMgr::UpdateVehicleGear():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            </span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE :</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        UpdateSnowmobileGear();</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>And the
+following line to CVehicleMgr::UpdateFriction():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            </span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE :</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE :</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        UpdateVehicleFriction(SNOWMOBILE_SLIDE_TO_STOP_TIME);</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>That takes
+care of updating the movement for your new vehicle.  Now you’ll want to make
+sure the rotation gets updated properly.  Add the following code to CVehicleMgr::CalculateVehicleRotation():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        CalculateBankingVehicleRotation(
+vPlayerPYR, vPYR, fYawDelta );</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        CalculateVehicleContourRotation(
+vPlayerPYR, vPYR );</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            </span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        CalculateBankingVehicleRotation(
+vPlayerPYR, vPYR, fYawDelta );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        CalculateVehicleContourRotation(
+vPlayerPYR, vPYR );</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:10.0pt;font-family:Arial'>                        break;</span></b></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>That takes
+care of all the steps needed to get the physics working on your new vehicle. 
+You may want to change some of the console variable values until you get the
+feel of the vehicle you want.  You might also want to adjust how the vehicle banks,
+rotates and contours depending on what type of vehicle you are adding.</span></p>
+
+<A NAME="player"><h3>Player</h3></A>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The final
+steps in adding a new vehicle involve how the player interacts with the vehicle. 
+The CPlayerObj also needs to change some behavior depending on what PlayerPhysicsModel
+it is in.  Open \Game\ObjectDLL\ObjectShared\PlaeryObj.cpp and change the
+following lines of code.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Just like CVehicleMgr
+needs to change the physics model so does CPlayerObj.  Add the following line
+to CPlayerObj::SetPhysicsModel():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE</b>:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_LIGHTCYCLE:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>                        SetVehiclePhysicsModel(eModel);</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            break;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>This will
+let the player know they are actually riding a vehicle.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>You will
+also need to make sure that other players, when in a multiplayer game, know
+that the player is riding a vehicle.  Change the following line in CPlayerObj::SetPhysicsModel():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            if
+(m_ePPhysicsModel == PPM_SNOWMOBILE)</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>To:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            </span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            if<b>(</b>
+(m_ePPhysicsModel == PPM_SNOWMOBILE) || <b>(m_ePPhysicsModel == PPM_NEWVEHICLE)
+)</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            </span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>This will
+set the USRFLG_PLAYER_SNOWMOBILE user flag on any player that is riding your vehicle. 
+This is fine because this flag is just used to see if the player is on a vehicle,
+not just the snowmobile.  If you need to distinguish a difference between the
+snowmobile and your new vehicle, you will need to add a new user flag (none is
+currently available) or change how this is handled by going through the SpecialFX
+message.</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>CPlayerObj also
+needs to keep track of where the vehicle is and let the AI know its on a vehicle. 
+Add the following line to CPlayerObj::UpdateVehicleMovement():</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            case
+PPM_SNOWMOBILE:</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            <b>case
+PPM_NEWVEHICLE:</b></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>            </span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>CPlayerObj controls
+what animation the player should be in while riding vehicles so you’ll have to
+make sure </span></p>
+
+<A NAME="conclusion"><h3>Conclusion</h3></A>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>You have
+now just added a new vehicle to NOLF2.  Now that you are familiar with the
+vehicle systems, you should be able to change some values and create the
+vehicle you want.  You will want to create new sounds, models and skins for
+your vehicle so it looks the way you want.  Adding more vehicles should now be
+very simple for you and you could even create a mod with several different
+vehicles to choose form.  Have fun!</span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>&nbsp;</span></p>
+
+</div>
+
+</body>
+
+</html>

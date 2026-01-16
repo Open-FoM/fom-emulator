@@ -1,0 +1,518 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Texture_Scripts_for_Engineers_files/filelist.xml">
+<title>Texture Scripts for Engineers:</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Johno</o:Author>
+  <o:LastAuthor>Jonathan Gramlich</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>82</o:TotalTime>
+  <o:Created>2003-02-27T20:04:00Z</o:Created>
+  <o:LastSaved>2003-02-27T20:04:00Z</o:LastSaved>
+  <o:Pages>3</o:Pages>
+  <o:Words>771</o:Words>
+  <o:Characters>4395</o:Characters>
+  <o:Company>MONOLITH</o:Company>
+  <o:Lines>36</o:Lines>
+  <o:Paragraphs>8</o:Paragraphs>
+  <o:CharactersWithSpaces>5397</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Arial;
+	mso-font-kerning:16.0pt;}
+h3
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:13.0pt;
+	font-family:Arial;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<A NAME="texture_scripts_for_engineers"><h1>Texture Scripts for Engineers</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>The texture script consists of a
+single text file that contains a single function script whose purpose is to
+take in input from user defined variables and create a single transformation
+matrix of which to generate texture coordinates. Scripts are case and white
+space insensitive and have a commenting style of # denoting a comment and
+extending to the end of a line. There are two primary parts to a script, a
+header and a body. The header is used to designate what the script expects as
+input, and what it produces as output. The body of the script consists of
+instructions to generate the actual matrix.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<A NAME="the_header"><h3>The Header</h3></A>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>The header has three fields that
+must be specified in the order of UserParams, Input, and Output. UserParams is
+a comma-delimited list of the names of the user parameters that the script can
+use and have accessible through game code. The current limit of this is six
+although it may be increased in the future. The input specifies the type of
+vector that the matrix will be multiplied by in order to obtain the output
+values. These can be one of the following:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td width=115 valign=top style='width:1.2in;border:solid windowtext .5pt;
+  background:#D9D9D9;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Input</p>
+  </td>
+  <td width=475 valign=top style='width:4.95in;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;background:#D9D9D9;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Description</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=115 valign=top style='width:1.2in;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>UV</p>
+  </td>
+  <td width=475 valign=top style='width:4.95in;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>The UV coordinates of the vertex for that channel.
+  Anything beyond what is provided is 0, so for 2 texture coordinates, the 3<sup>rd</sup>
+  and 4<sup>th</sup> components being multiplied are 0</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=115 valign=top style='width:1.2in;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>WSPos</p>
+  </td>
+  <td width=475 valign=top style='width:4.95in;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>The position of the vertex in world space. The 4<sup>th</sup>
+  parameter is 1</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=115 valign=top style='width:1.2in;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>WSNormal</p>
+  </td>
+  <td width=475 valign=top style='width:4.95in;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>The normal of the vertex in world space. Note that this is
+  only applicable for vertices that specify a normal (currently only
+  environment mapped polygons)</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=115 valign=top style='width:1.2in;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>WSReflection</p>
+  </td>
+  <td width=475 valign=top style='width:4.95in;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>The vector from the camera to the vertex reflected over
+  the normal. The same constraints that apply to the normal apply to this.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=115 valign=top style='width:1.2in;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>CSPos</p>
+  </td>
+  <td width=475 rowspan=3 valign=top style='width:4.95in;border-top:none;
+  border-left:none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>These parameters are the same as above, but are provided
+  in camera space instead of world space</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=115 valign=top style='width:1.2in;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>CSNormal</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=115 valign=top style='width:1.2in;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>CSReflection</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>The output specifies how the
+product of the matrix and input should be used. It can be one of the following
+values:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  background:#E0E0E0;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Output</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;background:#E0E0E0;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Description</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>TexCoord2</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>UV texture coordinates</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>TexCoord3</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>UVW texture coordinates</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>TexCoord3Proj</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>U/W V/W texture coordinates</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>TexCoord4Proj</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>U/X V/X W/X texture coordinates</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<A NAME="the_body"><h3>The Body</h3></A>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>The body of the script must be
+enclosed within the words BeginScript and EndScript. Inside of this block is a
+list of semicolon-delimited assignments. The operations supported by the
+language are listed below:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  background:#E0E0E0;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Operator</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;background:#E0E0E0;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Meaning</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>+</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Addition</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>-</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Subtraction or negation</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>*</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Multiplication</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>/</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Division</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>%</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Bind/Modulo (maps left to 0..right)</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>&lt;</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Min (returns smaller of two parameters)</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>&gt;</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Max (returns larger of two parameters)</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>=</p>
+  </td>
+  <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>Assign</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>In addition it also supports the
+use of functions. Currently the only functions supported are sin, cos, and tan.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<A NAME="parameters"><h3>Parameters</h3></A>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>Inside of the script body the
+script has access to a number of variables. There are the user variables that
+were defined, and can be used by the exact same name. In addition, there are
+the matrix variables that represent to components of the matrix that is being
+filled out. These can be accessed by the variables MatRC where R is the row,
+and C the column. Both of these fields range from 0 to 3. For example, to
+access the upper left element in the matrix, Mat00 can be used. To access the
+upper right element, Mat03 can be used. In addition, there are two special
+parameters that scripts have access to. These are Time, which represents the
+total number of seconds the script has been running, and Elapsed, which
+represents the number of seconds since the last update. In addition,
+preprocessor is allowed to shift the level as close to the origin as possible,
+and this needs to be adjusted for on any parameters that require level
+coordinates. To facilitate this, the scripts support three variables:
+LevelOffsetX, LevelOffsetY, LevelOffsetZ, which contain the X, Y, and Z offsets
+of the level respectively. So if there was a user parameter such as a center to
+rotate about it could compensate for the offset in the following manner:</p>
+
+<p class=MsoNormal style='text-indent:.5in'>Mat03 = RotationX + LevelOffsetX;</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<A NAME="hints_and_tips"><h3>Hints and Tips</h3></A>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'>The fewer number of operations
+done, the faster the script will execute. Therefore it is best to try and
+reduce terms as much as possible by doing things such as performing math on
+constants by hand, and caching temporary results. These results can be cached
+in unused matrix elements and later replaced. Most of the complexity of the
+scripts comes from the underlying matrix math, so it is best to have a book
+with a good explanation of linear algebra nearby to operate on matrices.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<A NAME="sample_script"><h3>Sample Script</h3></A>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Below is a sample script heavily commented to help clarify
+the above explanation.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>#########################################</p>
+
+<p class=MsoNormal># Warble</p>
+
+<p class=MsoNormal>#</p>
+
+<p class=MsoNormal>#<span style="mso-spacerun: yes">  </span>This script causes
+the UV coordinates to</p>
+
+<p class=MsoNormal># warble around as if underwater based upon</p>
+
+<p class=MsoNormal># the user parameters.</p>
+
+<p class=MsoNormal>##########################################</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>#Our parameters:</p>
+
+<p class=MsoNormal>#<span style="mso-spacerun: yes">  </span>XFreq, YFreq How
+many cycles per second for X and Y</p>
+
+<p class=MsoNormal>#<span style="mso-spacerun: yes">  </span>XScale, YScale,
+The amount to offset for each X and Y</p>
+
+<p class=MsoNormal>UserParams XFreq, YFreq, XScale, YScale;</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>#We want to take the original UV coordinates in as
+parameters for our script</p>
+
+<p class=MsoNormal>Input UV;</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>#We are going to output 2 texture coordinates, a U and a V</p>
+
+<p class=MsoNormal>Output TexCoord2;</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>#Here is our actual script block</p>
+
+<p class=MsoNormal>BeginScript</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>#Now setup
+the appropriate matrix components to warble</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>Mat01 =
+cos((Time * XScale) % (2 * 3.14159)) * XScale;</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>Mat10 =
+sin((Time * YScale) % (2 * 3.14159)) * YScale;</p>
+
+<p class=MsoNormal>EndScript</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

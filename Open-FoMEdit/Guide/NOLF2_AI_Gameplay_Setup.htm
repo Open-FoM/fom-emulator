@@ -1,0 +1,1007 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:st1="urn:schemas-microsoft-com:office:smarttags"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 10">
+<meta name=Originator content="Microsoft Word 10">
+<link rel=File-List href="NOLF2_AI_Gameplay_Setup_files/filelist.xml">
+<title>NOLF2 AI Gameplay Setup</title>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="country-region"/>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="City"/>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="place"/>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="date"/>
+<!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if !mso]><object
+ classid="clsid:38481807-CA0E-42D2-BF39-B33AF135CC4D" id=ieooui></object>
+<style>
+st1\:*{behavior:url(#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:18.0pt;
+	font-family:Arial;
+	text-decoration:underline;
+	text-underline:single;}
+h2
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:18.0pt;
+	font-family:Verdana;}
+h3
+	{mso-style-link:"Heading 3 Char";
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:13.0pt;
+	font-family:Arial;}
+span.Heading3Char
+	{mso-style-name:"Heading 3 Char";
+	mso-style-link:"Heading 3";
+	mso-ansi-font-size:13.0pt;
+	mso-bidi-font-size:13.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	mso-ansi-language:EN-US;
+	mso-fareast-language:EN-US;
+	mso-bidi-language:AR-SA;
+	font-weight:bold;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1><a name="nolf2_ai_gameplay_setup">NOLF2 AI Gameplay Setup</a></h1>
+
+<p class=MsoNormal><span style='mso-bookmark:nolf2_ai_gameplay_setup'>Last
+Updated:&nbsp; </span><st1:date Year="2002" Day="27" Month="9"><span
+ style='mso-bookmark:nolf2_ai_gameplay_setup'>09/27/02</span></st1:date><span
+style='mso-bookmark:nolf2_ai_gameplay_setup'></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:nolf2_ai_gameplay_setup'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:nolf2_ai_gameplay_setup'>This
+document describes how the nolf2 AI systems were used to setup basic
+gameplay.&nbsp; This is not an exhaustive description of every piece of the AI
+systems, but instead an overview of the most commonly used pieces, highlighting
+things that may not be obvious by looking at the code or <span class=SpellE>Dedit</span>
+properties.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:nolf2_ai_gameplay_setup'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:nolf2_ai_gameplay_setup'>&nbsp;</span></p>
+
+<span style='mso-bookmark:nolf2_ai_gameplay_setup'></span>
+
+<h2><a name=goalsets>GoalSets</a></h2>
+
+<p class=MsoNormal><span style='mso-bookmark:goalsets'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:goalsets'>In general, AI in nolf2 <span
+class=GramE>are</span> assigned either the Patrol, Guard, or Reinforcement <span
+class=SpellE>GoalSet</span>.&nbsp; There are a total of 46 <span class=SpellE>GoalSets</span>
+defined in aigoals.txt, but most are variations of Patrol or Guard for special
+characters (e.g. Ninjas, <span class=SpellE>SuperSoldiers</span>, Roots,
+etc).&nbsp; Please see aigoals.txt for details of what Goals are in each <span
+class=SpellE>GoalSet</span>.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:goalsets'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:goalsets'>Patrol, Guard, and
+Reinforcement share identical combat behavior, but vary in their relaxed and
+investigative behaviors.&nbsp; Below are descriptions of the expected behaviors
+with each of these <span class=SpellE>GoalSets</span>.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:goalsets'>&nbsp;</span></p>
+
+<span style='mso-bookmark:goalsets'></span>
+
+<h3><a name="patrol_goalset">Patrol </a><span class=SpellE><span
+style='mso-bookmark:patrol_goalset'>GoalSet</span></span><span
+style='mso-bookmark:patrol_goalset'></span></h3>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:patrol_goalset'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:patrol_goalset'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The Patrol <span class=SpellE>GoalSet</span> includes the <span
+class=SpellE>DefaultRequired</span> and <span class=SpellE>DefaultBasic</span> <span
+class=SpellE>GoalSets</span> to define the standard combat behavior.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:patrol_goalset'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:patrol_goalset'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Patrol’s relaxed behaviors are defined by the Goals Patrol and Work.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:patrol_goalset'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:patrol_goalset'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>AI will walk along a patrol path defined by <span class=SpellE>LevelDesign</span>
+through <span class=SpellE>AINodePatrols</span>.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:patrol_goalset'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:patrol_goalset'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>A patrolling AI owns his path, and no other AI can use it until he dies
+or otherwise relinquishes it.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:patrol_goalset'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:patrol_goalset'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>A patrol path can be assigned by specifying a node on the path in the
+AI’s Initial Command:&nbsp; <span class=SpellE>goal_patrol</span>
+node=AINodePatrol9.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:patrol_goalset'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:patrol_goalset'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If no node is specified, AI will find the nearest <span class=SpellE>unowned</span>
+<span class=SpellE>AINodePatrol</span>, and take ownership of that node’s path.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:patrol_goalset'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:patrol_goalset'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>A patrolling AI may not own an <span class=SpellE>AINodeGuard</span>.&nbsp;
+Patrol and Guard are mutually exclusive.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:patrol_goalset'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:patrol_goalset'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>If</span> a patrolling AI walks near an <span
+class=SpellE>unowned</span> work node (<span class=SpellE>AINodeUseObject</span>
+with <span class=SpellE>SmartObject</span> set to Work), he will stop
+patrolling to do some “work,” then continue patrolling.&nbsp; Patrolling AI
+will ignore any work nodes that are owned by an <span class=SpellE>AINodeGuard</span>.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:patrol_goalset'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:patrol_goalset'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>A patrolling AI may animate an investigative walk rather than the
+routine patrol walk through the command:&nbsp; <span class=SpellE>goal_patrol</span>
+awareness=investigate.&nbsp; This is useful for levels where AI <span
+class=GramE>are</span> intended to be eternally suspicious regardless of
+stimuli.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:patrol_goalset'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:patrol_goalset'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Patrolling AI will turn off lights as they leave an <span class=SpellE>AINodePatrol</span>,
+and turn on lights at a destination <span class=SpellE>AINodePatrol</span>.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:patrol_goalset'>&nbsp;</span></p>
+
+<span style='mso-bookmark:patrol_goalset'></span>
+
+<h3><a name=guard>Guard </a></h3>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The Guard <span class=SpellE>GoalSet</span> includes the <span
+class=SpellE>DefaultRequired</span> and <span class=SpellE>DeafultBasic</span> <span
+class=SpellE>GoalSets</span> to define the standard combat behavior.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The Guard <span class=SpellE>GoalSet</span> includes the Sniper Goal.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Guard’s relaxed behaviors are defined by the Goals Guard, Work, and
+Menace.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>A</span> guarding AI will stay within the return
+radius of his guard node.&nbsp; If he is drawn outside of this radius, he will
+walk to return to it.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>A guarding AI owns his guard node, and no other AI can use it until he
+dies or otherwise relinquishes it.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>An <span class=SpellE>AINodeGuard</span> can be assigned by specifying a
+node in the AI’s Initial Command:&nbsp; <span class=SpellE>goal_guard</span>
+node=AINodeGuard22.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If no node is specified, AI will find the nearest <span class=SpellE>unowned</span>
+<span class=SpellE>AINodeGuard</span>.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>A guarding AI may not own any <span class=SpellE>AINodePatrols</span>.&nbsp;
+Patrol and Guard are mutually exclusive.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>The</span> guarding AI owns his guard node, and the
+guard node may own additional nodes.&nbsp; Owned nodes are <span class=SpellE>AINodeUseObjects</span>
+used for the Work, Menace, and Sniper Goals.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>An AI that owns a guard node will randomly select work nodes owned by
+his guard node, rather than always going to the next nearest work node.&nbsp;
+This AI may not use any <span class=SpellE>unowned</span> work nodes.&nbsp; The
+same applies to menace nodes.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Menace nodes are used exactly like work nodes, but are used in levels
+where the AI is supposed to already be aware of the enemy’s presence, and
+should appear permanently agitated, even when the AI system thinks the AI is
+relaxed. &nbsp;In other words, when the AI is not in combat he will run between
+menace nodes (<span class=SpellE>AINodeUseObjects</span> with <span
+class=SpellE>SmartObject</span> set to Menace), and play aggressive animations.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>When</span> a guarding AI investigates a disturbance,
+he will stop at the edge of his guard radius and play an alert animation,
+rather than walking all the way to the disturbance.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>A Guarding AI will not go to search nodes outside of his guard radius.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If the guarding AI has previously seen the player, heard an alarm, or
+been shot, he will ignore his guard radius and investigate anywhere.&nbsp; Once
+the AI returns to a relaxed state of awareness, he will start paying attention
+to his guard radius again.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>If</span> the AI notices a disturbance outside of his
+guard radius, he will not speak.&nbsp; This prevents an AI from repeatedly
+saying “I hear you<span class=GramE>!,</span>” “What was that!,” “I know you’re
+there!,” but never coming to investigate.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:guard'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:guard'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>If</span> an AI currently owns a talk node, he will
+ignore his guard node.&nbsp; This is covered in more detail later in the
+section about the Talk Goal and conversations.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:guard'>&nbsp;</span></p>
+
+<span style='mso-bookmark:guard'></span>
+
+<h3><a name=reinforcement>Reinforcement</a></h3>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:reinforcement'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:reinforcement'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The Reinforcement <span class=SpellE>GoalSet</span> is used for AIs who
+spawned as reinforcements, usually from a command in an alarm.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:reinforcement'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:reinforcement'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The Reinforcement <span class=SpellE>GoalSet</span> includes the <span
+class=SpellE>DefaultRequired</span> and <span class=SpellE>DeafultBasic</span> <span
+class=SpellE>GoalSets</span> to define the standard combat behavior.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:reinforcement'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:reinforcement'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The Reinforcement <span class=SpellE>GoalSet</span> includes the Sniper
+Goal.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:reinforcement'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:reinforcement'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Reinforcement’s relaxed behaviors are defined by the Goals Guard, Work, <span
+class=SpellE>ExitLevel</span>, and Menace.&nbsp; (See the Guard <span
+class=SpellE>GoalSet</span> above for more info on Menace).</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:reinforcement'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:reinforcement'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>A</span> reinforcement AI will enter the level and
+respond to whatever is currently going on.&nbsp; Once the situation dies down,
+and the AI returns to a relaxed state of awareness, he will look for unclaimed
+guard and patrol nodes.&nbsp; If one is found, he will claim a node and
+activate the Guard or Patrol goal, and behave like an ordinary AI that is
+guarding or patrolling.&nbsp; </span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:reinforcement'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:reinforcement'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Nodes may be unclaimed because the AI that previously owned them <span
+class=GramE>have</span> died.&nbsp; In this case the reinforcements are
+replenishing the level to maintain some number of AI, and keep the level at
+approximately the same difficulty.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:reinforcement'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:reinforcement'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>Alternatively</span>, the level may intentionally
+contain a surplus of nodes, so that the level will become harder once
+reinforcements are brought in.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:reinforcement'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:reinforcement'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>If</span> no unclaimed nodes are found, the AI will
+look for an <span class=SpellE>AINodeExitLevel</span>.&nbsp; If an <span
+class=SpellE>ExitLevel</span> node is found, the AI will walk to the node and
+get removed from the level.&nbsp; These are normally placed in areas the player
+cannot get to, so it is not obvious the AI is getting instantly removed from
+the game.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:reinforcement'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:reinforcement'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The AI will not look for an <span class=SpellE>ExitLevel</span> node
+until he has been in the level for at least 5 seconds.&nbsp; This restriction
+prevents an AI from spawning near an <span class=SpellE>ExitLevel</span> node,
+and immediately removing himself before noticing an alarm sounding, or other
+stimuli.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:reinforcement'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:reinforcement'>&nbsp;</span></p>
+
+<span style='mso-bookmark:reinforcement'></span>
+
+<h2><a name=scripting>Scripting</a></h2>
+
+<p class=MsoNormal><span style='mso-bookmark:scripting'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:scripting'>Scripting was avoided
+as much as possible in nolf2, but there were situations where some amount of
+scripting was necessary to drive the story or vary the gameplay for specific
+levels.&nbsp; Here are the ways we accomplished scripted behaviors without
+breaking the autonomy of the AI.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:scripting'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:scripting'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:scripting'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Enable/Disable Node Commands</b>:&nbsp; The majority of scripting in
+nolf2 involved enabling and disabling nodes, or assigning new nodes with
+command, such as:&nbsp; <span class=SpellE>goal_guard</span>
+node=AINodeGuard45.&nbsp; This gives control over where AI are idling while
+still allowing some randomness and allows them to react normally to whatever
+situation they find themselves in.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:scripting'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:scripting'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=SpellE><b>GoalScripts</b></span>:&nbsp; <span class=SpellE>GoalScripts</span>
+supply an AI with a sequence of Goals to complete.&nbsp; When one Goal is
+satisfied (e.g. the AI has arrived at the destination node of a <span
+class=SpellE>Goto</span> Goal), the next Goal activates.&nbsp; <span
+class=SpellE>GoalScripts</span> may be interrupted if the AI notices a
+disturbance, and the <span class=SpellE>GoalScript</span> will continue once
+the AI returns to a relaxed state of awareness.&nbsp; <span class=SpellE>GoalScripts</span>
+are useful for making an AI go fro place-to-place and animate.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:scripting'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:scripting'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Search</b>:&nbsp; Normally AI search after activating other Goals
+(e.g. after investigating or chasing and losing the target).&nbsp; In cases
+where AI <span class=GramE>are</span> spawned with the intention of immediately
+searching, they may be given the Search Goal, which is a scripted Search.&nbsp;
+AI with the Search Goal can be given a list of comma-separated regions to
+search:&nbsp; <span class=SpellE>addgoal</span> search region=airegion01<span
+class=GramE>,airegion02,airegion03</span>.&nbsp; AI who <span class=GramE>search</span>
+through normal means will only search their current region.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:scripting'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:scripting'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Patrol</b>:&nbsp; Another way to script searching behavior is to
+spawn AI and assign them patrol routes.&nbsp; The Patrol Goal may be instructed
+to play investigative walking animations:&nbsp; <span class=SpellE>addgoal</span>
+patrol awareness=investigate.&nbsp; In some nolf2 levels, we periodically spawn
+a patrolling AI to ensure the level will never be completely empty (and boring
+to the player), even when all AI have been killed leaving no one to sound
+alarms.&nbsp; An AI may be spawned, instructed to patrol, and then removed
+through a command on a destination patrol node.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:scripting'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:scripting'>&nbsp;</span></p>
+
+<span style='mso-bookmark:scripting'></span>
+
+<h3><a name=conversations>Conversations</a></h3>
+
+<p class=MsoNormal><span style='mso-bookmark:conversations'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:conversations'>The Talk Goal
+allows AI to coordinate meeting up, having a <span class=GramE>conversation,</span>
+and going on to do other things.&nbsp; The Talk Goal also handles responding to
+interruptions, and possibly returning to have the conversation later.&nbsp;
+There are basically two options for setting up AI to have a conversation:</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:conversations'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:conversations'><b>Statically Positioned
+Conversation Participants:</b></span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>AI are placed at <span class=SpellE>AINodeTalk</span> nodes and given
+initial commands of:&nbsp; <span class=SpellE>addgoal</span> talk
+node=AINodeTalk04.&nbsp; AI will walk to Talk nodes and wait for a dialogue
+object to be triggered.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>If</span> both AI are within the radii of their Talk
+nodes when the corresponding dialogue object is triggered, they will have their
+conversation.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>When</span> the conversation ends, the dialogue object
+will run its finished and cleanup commands.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>An AI with a Talk Goal and Talk node will ignore his Guard and Patrol
+Goals.&nbsp; The Talk Goal overrides other relaxed goals, so the AI may still
+have a full <span class=SpellE>GoalSet</span>, such as Patrol or Guard.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If an AI is at a Talk node, and notices a disturbance, he will
+investigate. &nbsp;Guard node radii will be ignored.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>If</span> the dialogue object is triggered while one
+or both of the dialogue participants are not relaxed, the dialogue will not
+play, and the dialogue object’s cleanup command will be run.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If the dialogue object was not triggered while the AI was investigating,
+when the AI returns to a relaxed state of awareness, he returns to his Talk
+node and continues waiting for the dialogue to be triggered.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The Talk Goal parameter disposable=1 tells the AI not to return to his Talk
+node if he was disturbed while waiting for the conversation.&nbsp; In this
+case, the AI will simply return to his normal relaxed behaviors and forget
+about having the dialogue.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:conversations'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:conversations'><b>Dynamically
+Positioned Conversation Participants:</b></span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>AI may be anywhere in the level, running various Goals.&nbsp; They do
+not need to be near their Talk nodes.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>When a dialogue object is triggered, commands are sent to the dialogue
+participants:&nbsp; <span class=SpellE>addgoal</span> talk node=AINodeTalk09
+retrigger=1.&nbsp; If either AI <span class=GramE>are</span> outside of their
+Talk node radii, the dialogue will not start.&nbsp; The parameter retrigger=1
+tells the AI to retrigger the dialogue object once the AI arrive at their Talk
+nodes.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>Once</span> both AI are in position, the conversation
+starts.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>When</span> the conversation ends, the dialogue object
+will run its finished and cleanup commands.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The above steps may be used to get AI to walk towards each other and
+start talking, or to make an AI stop working and start talking to someone.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:conversations'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:conversations'>A couple more
+general notes about the Talk Goal:</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span class=GramE><span style='font-family:
+Symbol'>·</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>While the Talk Goal is active, AI will face each other and talk while
+playing their basic idle animation (usually 3StGd).</span></span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>AI may be instructed to play gesture animations at key points in the
+conversation.&nbsp; From the dialogue object, send a command to the AI:&nbsp; <span
+class=SpellE>goal_talk</span> gesture=NameOfAnim.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:conversations'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:conversations'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>If</span> a dialogue object is triggered, and one or
+more of the dialogue participants does not exist (probably because he is dead),
+the dialogue will not play and the dialogue object’s cleanup command will run.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:conversations'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:conversations'>&nbsp;</span></p>
+
+<span style='mso-bookmark:conversations'></span>
+
+<h2><a name="goal_notes">Goal Notes</a></h2>
+
+<p class=MsoNormal><span style='mso-bookmark:goal_notes'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:goal_notes'>Below are points of
+interest about various Goals:</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:goal_notes'>&nbsp;</span></p>
+
+<span style='mso-bookmark:goal_notes'></span>
+
+<h3><a name=chase>Chase</a></h3>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:chase'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:chase'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Once the Chase Goal is activated (by seeing the enemy) the AI will never
+lose interest in chasing, with the exceptions described below.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:chase'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:chase'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>An AI may lose interest in chasing if another goal activates that puts
+the AI in a state of awareness other than alert (so, relaxed or
+suspicious).&nbsp; Normally any Goals that activate in favor of Chase are other
+alert Goals, such as <span class=SpellE>AttackRanged</span>.&nbsp; The exceptions
+are Goals like <span class=SpellE>SpecialDamage</span>, which incapacitate the
+AI and then send him searching for his attacker.&nbsp; When an AI wakes up from
+<span class=SpellE>SpecialDamage</span>, he is investigative and loses interest
+in chasing.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:chase'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:chase'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>An AI may lose interest in chasing if he loses his target in a Junction
+volume, and gives up.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:chase'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:chase'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Chase Goal Parameters:</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:chase'><span class=GramE><span style='font-family:"Courier New"'>o</span></span></span><span
+style='mso-bookmark:chase'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=SpellE><b>SeekPlayer</b></span><b>=1</b>:<b> </b>This
+parameter instructs the AI to immediately start chasing a player, even if no
+stimuli have been sensed.&nbsp; This allows the AI to cheat in combat levels where
+the AI is intended to already know where the player is.&nbsp; The AI ignores
+Junction volumes while seeking the player.&nbsp; Once the player has been seen,
+the AI falls back to normal chasing behavior where he can get lost in Junction
+volumes.</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:chase'><span class=GramE><span style='font-family:"Courier New"'>o</span></span></span><span
+style='mso-bookmark:chase'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=SpellE><b>NeverGiveUp</b></span><b>=1</b>:<b> </b>This
+parameter instructs the AI to cheat indefinitely.&nbsp; The AI will always know
+where the player is, and will never lose interest in chasing.&nbsp; This
+parameter was used for the nolf2 ninja trailer park level, where combat should
+never stop, but ninjas may get temporarily incapacitated when hit with <span
+class=SpellE>SpecialDamage</span> (e.g. poison).</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:chase'>&nbsp;</span></p>
+
+<span style='mso-bookmark:chase'></span>
+
+<h3><a name=attackfromcover>AttackFromCover</a></h3>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:attackfromcover'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:attackfromcover'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Cover nodes have an optional parameter Object.&nbsp; This Object may be
+an object like a table that can be flipped on its side to use for cover.&nbsp;
+If an <span class=SpellE>AINodeUseObject</span> also points to this object, and
+the <span class=SpellE>UseObject</span> node has a <span class=SpellE>SmartObject</span>
+set to something for cover, the <span class=SpellE>SmartObject</span> can
+specify what animation the AI should use when activating the Object.&nbsp; For
+example, <span class=SpellE>SmartObject</span> <span class=SpellE>FlipTable</span>
+tells an AI how to animate when flipping a table to use as cover.&nbsp; After
+flipping the table, the AI runs to the Cover node, and runs the normal <span
+class=SpellE>AttackFromCover</span> behavior.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:attackfromcover'>&nbsp;</span></p>
+
+<span style='mso-bookmark:attackfromcover'></span>
+
+<h3><a name=attackfromvantage>AttackFromVantage</a></h3>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:attackfromvantage'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:attackfromvantage'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=SpellE>AINodeVantage</span> may specify an optional Object
+property.&nbsp; This object will be triggered <span class=GramE>On</span>
+before the AI starts attacking from the Vantage node, and triggered Off after
+the AI attacks.&nbsp; This could be used to open and shut window shutters, for
+example.&nbsp; This Object was used in nolf2 to allow </span><st1:City><st1:place><span
+  style='mso-bookmark:attackfromvantage'>Pierre</span></st1:place></st1:City><span
+style='mso-bookmark:attackfromvantage'> to open and shut steam hatches in the underwater
+base boss-fight.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:attackfromvantage'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:attackfromvantage'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>There</span> are a couple Goals derived from <span
+class=SpellE>AttackFromVantage</span> that may be useful, or may be good
+templates for doing similar things.</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:attackfromvantage'><span class=GramE><span
+style='font-family:"Courier New"'>o</span></span></span><span style='mso-bookmark:
+attackfromvantage'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=SpellE><b>AttackFromRandomVantage</b></span> works exactly
+like <span class=SpellE>AttackFromVantage</span>, but does not require any
+stimuli to activate the Goal, and chooses valid Vantage nodes at random instead
+of choosing the nearest valid node.&nbsp; This Goal is used in nolf2 for the </span><st1:City><st1:place><span
+  style='mso-bookmark:attackfromvantage'>Pierre</span></st1:place></st1:City><span
+style='mso-bookmark:attackfromvantage'> boos-fight in the underwater base,
+where </span><st1:City><st1:place><span style='mso-bookmark:attackfromvantage'>Pierre</span></st1:place></st1:City><span
+style='mso-bookmark:attackfromvantage'> pops out of random steam hatches to
+throw knives at the player.</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:attackfromvantage'><span class=GramE><span
+style='font-family:"Courier New"'>o</span></span></span><span style='mso-bookmark:
+attackfromvantage'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=SpellE><b>AttackFromRoofVantage</b></span> works exactly
+like <span class=SpellE>AttackFromVantage</span>, but uses <span class=SpellE>AINodeVantageRoof</span>
+attractor nodes instead of normal <span class=SpellE>AINodeVantages</span>.&nbsp;
+An AI may only activate <span class=SpellE>AttackFromRoofVantage</span> if no
+other AI already has the Goal active, and only if at least 3 AI are already
+attacking the same target.&nbsp; This Goal is used in nolf2 to control when
+ninja AI attack from rooftops.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:attackfromvantage'>&nbsp;</span></p>
+
+<span style='mso-bookmark:attackfromvantage'></span>
+
+<h3><a name=attackfromview>AttackFromView</a></h3>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:attackfromview'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:attackfromview'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>An AI will attack from an <span class=SpellE>AINodeView</span> if the AI
+has sensed stimuli of the enemy’s presence, and cannot find a path to the
+enemy, and the enemy is in an <span class=SpellE>AIVolumePlayerInfo</span> that
+points to a View node that the AI can find a path to. </span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:attackfromview'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:attackfromview'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=SpellE><b>SeekPlayer</b></span><b>=1</b>: This parameter
+instructs an AI to attack from a View node without first sensing any stimuli.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:attackfromview'>&nbsp;</span></p>
+
+<span style='mso-bookmark:attackfromview'></span>
+
+<h3><a name=work>Work</a></h3>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=SpellE>AINodeUseObjects</span> set to <span class=SpellE>SmartObjects</span>
+for <span class=GramE>work are</span> used with the Work Goal.&nbsp; These
+nodes control most of nolf2’s relaxed behaviors (smoking, working at desks,
+dancing, leaning, etc).</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>There</span> are various Goals derived from Work that
+are nearly identical Goals, but are attracted to different types of Smart
+Objects:</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span class=GramE><span style='font-family:"Courier New"'>o</span></span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Sleep</b>:&nbsp; AI sleeps in a bed or chair, or while
+standing.&nbsp; Visual senses are disabled while sleeping.</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span class=GramE><span style='font-family:"Courier New"'>o</span></span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=SpellE><b>PlacePoster</b></span> and <span class=SpellE><b>EnjoyPoster</b></span>:&nbsp;
+Used in nolf2’s </span><st1:country-region><st1:place><span style='mso-bookmark:
+  work'>India</span></st1:place></st1:country-region><span style='mso-bookmark:
+work'> levels for police placing posters and civilians looking at posters.</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span class=GramE><span style='font-family:"Courier New"'>o</span></span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Destroy</b>:&nbsp; Used for nolf2’s <span class=SpellE>SuperSoldiers</span>
+to destroy things by smashing or shooting.</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span class=GramE><span style='font-family:"Courier New"'>o</span></span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Ride</b>:&nbsp; Used for nolf2’s underwater base boss-fight to
+levitate </span><st1:City><st1:place><span style='mso-bookmark:work'>Pierre</span></st1:place></st1:City><span
+style='mso-bookmark:work'> on steam bursts.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>If</span> a Work node has a <span class=SpellE>ReactivationTime</span>
+of zero, an AI may not use this node again until first using another Work
+node.&nbsp; <span class=GramE>Any <span class=SpellE>ReactivationTime</span>
+greater than zero will allow an AI to re-use the same node once the node is
+active again.</span></span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>An AI can be instructed to immediately stop working at a node by sending
+a Disable command to the node.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>If</span> an AI is interrupted in the middle of
+working, he may optionally play an interrupt animation.&nbsp; For example, an
+AI that is smoking may abruptly throw down his cigarette instead of calmly
+putting it out.&nbsp; When the Work Goal deactivates, it will play an interrupt
+animation if it exists in animationsCharacterName.txt, otherwise the AI will
+play its normal out transition if it exists.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>If</span> an AI is hit with <span class=SpellE>SpecialDamage</span>
+while working, he may optionally play a specific <span class=SpellE>SpecialDamage</span>
+animation rather than transition out of Work normally.&nbsp; For example, and
+AI may slump over and pass out at his desk, instead of standing up, pushing in
+his chair and then passing out.&nbsp; This animation actually plays in the <span
+class=SpellE>SpecialDamage</span> Goal.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:work'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:work'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>AI may play a specific death animation corresponding to his work.&nbsp;
+For example, slumping over a desk, or falling out of a chair.</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:work'>&nbsp;</span></p>
+
+<span style='mso-bookmark:work'></span>
+
+<h3><a name=specialdamage>SpecialDamage</a></h3>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:specialdamage'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The <span class=SpellE>SpecialDamage</span> Goal handles damage types
+that are specific to nolf2, but may act as a template for similar functionality
+in other titles.&nbsp; It handles both instant and progressive damage, and
+includes the following damage types:</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Sleeping</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Stun</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class=SpellE>Bear_Trap</span></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Glue</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Laughing</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Slippery</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Bleeding</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Burn</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Choke</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>ASSS (Anti <span
+class=SpellE>SuperSoldier</span> Serum)</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Poison</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span class=GramE><span style='font-family:
+"Courier New"'>o</span></span></span><span style='mso-bookmark:specialdamage'><span
+style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Electrocute</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:specialdamage'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Incapacitating animations and transition animations are defined through <span
+class=SpellE>SmartObjects</span>.&nbsp; Note that this goal uses <span
+class=SpellE>SmartObjects</span> to drive animation without the presence of an <span
+class=SpellE>AINodeUseObject</span>.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:specialdamage'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Instead of playing the normal in-transition animation, the Goal may play
+an animation specific to the AI’s current animation, as described previously in
+the Work Goal.&nbsp; This allows an AI to slump over on his desk when
+knocked-out.&nbsp; This also allows an AI to get knocked out while sleeping or
+prone without getting up first.</span></p>
+
+<p class=MsoNormal style='margin-left:.4in;text-indent:-.25in'><span
+style='mso-bookmark:specialdamage'><span style='font-family:Symbol'>·</span></span><span
+style='mso-bookmark:specialdamage'><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>AI may play a specific death animation corresponding to the
+damage.&nbsp; <span class=GramE>For example, dying instantly without moving
+while knocked out.</span></span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:specialdamage'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='mso-bookmark:specialdamage'>&nbsp;</span></p>
+
+<span style='mso-bookmark:specialdamage'></span>
+
+
+</div>
+
+</body>
+
+</html>

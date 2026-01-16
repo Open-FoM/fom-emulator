@@ -1,0 +1,3242 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:st1="urn:schemas-microsoft-com:office:smarttags"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 10">
+<meta name=Originator content="Microsoft Word 10">
+<link rel=File-List href="NOLF2_Demolition_Source_files/filelist.xml">
+<title>Adding Demolition Mod to Source</title>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="PersonName"/>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Brad Pendleton</o:Author>
+  <o:LastAuthor>Brad Pendleton</o:LastAuthor>
+  <o:Revision>24</o:Revision>
+  <o:TotalTime>92</o:TotalTime>
+  <o:Created>2003-02-12T00:42:00Z</o:Created>
+  <o:LastSaved>2003-03-01T00:02:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>3851</o:Words>
+  <o:Characters>21953</o:Characters>
+  <o:Lines>182</o:Lines>
+  <o:Paragraphs>51</o:Paragraphs>
+  <o:CharactersWithSpaces>25753</o:CharactersWithSpaces>
+  <o:Version>10.4219</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:View>Normal</w:View>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if !mso]><object
+ classid="clsid:38481807-CA0E-42D2-BF39-B33AF135CC4D" id=ieooui></object>
+<style>
+st1\:*{behavior:url(#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Courier;
+	panose-1:2 7 4 9 2 2 5 2 4 4;
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Arial;}
+h2
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h3
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:13.0pt;
+	font-family:Arial;}
+h4
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:4;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+h5
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:5;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	font-weight:normal;
+	font-style:italic;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1><a name="adding_demolition_mod_to_source">Adding Demolition Mod to Source</a></h1>
+
+<span style='mso-bookmark:adding_demolition_mod_to_source'></span>
+
+<h2><a name=overview>Overview</a></h2>
+
+<span style='mso-bookmark:overview'></span>
+
+<p class=MsoNormal>This document will describe the steps needed to modify the
+No One Lives Forever 2 source code to support the example Demolition mod.&nbsp;
+To add the Demolition game mode, we will make it take the place of Team <span
+class=SpellE>Deathmatch</span>.&nbsp; We will make the other game modes
+unavailable as well.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="adding_cres.dll_entries">Adding CRES.DLL Entries</a></h2>
+
+<span style='mso-bookmark:"adding_cres\.dll_entries"'></span>
+
+<p class=MsoNormal>The Demolition mod uses transmissions to tell the player
+what to do.&nbsp; To add these entries so that they can be used in the levels,
+you need to open the “game\clientres\to2\lang\en\clientres.rc” file in the <span
+class=SpellE>AppStudio</span> resource editor in <span class=SpellE>DevStudio</span>.&nbsp;
+Find the set of strings used for transmissions.&nbsp; We’ll add our new ones
+after the existing ones.&nbsp; We could replace some, but this is easier for
+now.&nbsp; Find “IDS_TRANSMISSIONS_7095”.&nbsp; Add a new
+“IDS_TRANSMISSIONS_7096” and make sure it has the value of 7096.&nbsp; Set the
+string to “<span style='font-size:10.0pt;font-family:Arial'>Find the bomb and
+plant it on the designated target!&quot;.&nbsp; Do the same thing for all these
+strings and values:</span></p>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;mso-padding-alt:0in 0in 0in 0in'>
+ <tr style='mso-yfti-irow:0'>
+  <td valign=top style='border:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><b>Label</b></p>
+  </td>
+  <td valign=top style='border:solid windowtext 1.0pt;border-left:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><b>Value</b></p>
+  </td>
+  <td valign=top style='border:solid windowtext 1.0pt;border-left:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><b>String</b></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>IDS_TRANSMISSIONS_7096</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>7096</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Find the
+  bomb and plant it on the designated target!</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>IDS_TRANSMISSIONS_7097</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>7097</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Prevent
+  the enemy team from planting the bomb!</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>IDS_TRANSMISSIONS_7098</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>7098</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>Your team
+  has planted the bomb! Don't let the enemy diffuse it!</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>IDS_TRANSMISSIONS_7099</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>7099</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The enemy
+  has planted a bomb! Find it and diffuse it before it goes off!</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:5'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>IDS_TRANSMISSIONS_7100</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>7100</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The enemy
+  has diffused the bomb! We'll need to try again.</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:6'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>IDS_TRANSMISSIONS_7101</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>7101</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The bomb was
+  successfully diffused. Stop them from planting another!</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:7'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  mso-border-left-alt:solid windowtext 1.0pt;mso-border-bottom-alt:solid windowtext .5pt;
+  mso-border-right-alt:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>IDS_TRANSMISSIONS_7102</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;mso-border-bottom-alt:solid windowtext .5pt;
+  mso-border-right-alt:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>7102</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;mso-border-bottom-alt:solid windowtext .5pt;
+  mso-border-right-alt:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span style='font-size:10.0pt;font-family:Arial'>The bomb
+  has detonated.&nbsp; Blue Team wins the round!</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:8'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>IDS_TRANSMISSIONS_7103</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>7103</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .5pt;
+  mso-border-left-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>The bomb has detonated.&nbsp; Red Team wins the round!</p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:9'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  mso-border-top-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>IDS_TRANSMISSIONS_7104</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>7104</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span class=SpellE><span style='font-size:10.0pt;
+  font-family:Arial'>Timelimit</span></span><span style='font-size:10.0pt;
+  font-family:Arial'> Reached.<span style='mso-spacerun:yes'>  </span>The Red
+  team has successfully defended <span class=SpellE>thier</span> base!<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:10;mso-yfti-lastrow:yes'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>IDS_TRANSMISSIONS_7105</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal>7105</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal><span class=SpellE><span style='font-size:10.0pt;
+  font-family:Arial'>Timelimit</span></span><span style='font-size:10.0pt;
+  font-family:Arial'> Reached.<span style='mso-spacerun:yes'>  </span>The Blue
+  team has successfully defended <span class=SpellE>thier</span> base!<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="changing_the_server_options">Changing the Server Options</a></h2>
+
+<span style='mso-bookmark:changing_the_server_options'></span>
+
+<p class=MsoNormal>The next step is to remove some of the server options so
+that they don’t spoil the game mode.&nbsp; First we find the function <span
+class=SpellE>CTeamDeathMatchMissionMgr::StartGame</span> in “game\<span
+class=SpellE>objectdll\objectshared\TeamDeathMatchMissionMgr.cpp</span>”.&nbsp;
+It sets up some of the server options.&nbsp; To remove the score limit, we just
+make sure its value is set to zero and to ignore any other setting.&nbsp; Since
+each side should get the chance at offense or defense, we also need to make
+sure the rounds are an even number greater than 0.&nbsp; Also, since the level
+itself determines the end of the round, we need to remove the time limit.
+Change these lines from:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>sms.m_nScoreLimit</span>
+= <span class=SpellE>sgo.GetTeamDeathmatch</span>().<span class=SpellE>m_nScoreLimit</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>sms.m_nTimeLimit</span>
+= <span class=SpellE>sgo.GetTeamDeathmatch</span>().<span class=SpellE>m_nTimeLimit</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>sms.m_nRounds</span> =
+<span class=SpellE>sgo.GetTeamDeathmatch</span>().<span class=SpellE>m_nRounds</span>;</span>&nbsp;</p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>sms.m_nScoreLimit</span>
+= 0;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>sms.m_nTimeLimit</span>
+= 0;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>sms.m_nRounds</span> =
+( <span class=SpellE>sgo.GetTeamDeathmatch</span>().<span class=SpellE>m_nRounds</span>
+&amp; 1 ) ? <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+class=SpellE><span style='font-size:8.0pt;font-family:Courier'>sgo.GetTeamDeathmatch</span></span><span
+style='font-size:8.0pt;font-family:Courier'>().<span class=SpellE>m_nRounds</span>
++ 1 : <span class=SpellE>sgo.GetTeamDeathmatch</span>().<span class=SpellE>m_nRounds</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>sms.m_nRounds</span> =
+Max( <span class=SpellE>sms.m_nRounds</span>, ( uint8 )2 );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>In <span class=SpellE>CTeamDeathMatchMissionMgr::HandleMultiplayerOptions</span>(),
+change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=SpellE>sms.m_nScoreLimit</span> = <span class=SpellE>sgo.GetTeamDeathmatch</span>().<span
+class=SpellE>m_nScoreLimit</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=SpellE>sms.m_nTimeLimit</span> = <span class=SpellE>sgo.GetTeamDeathmatch</span>().<span
+class=SpellE>m_nTimeLimit</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='mso-bidi-font-size:8.0pt'>to</span></span><span
+style='mso-bidi-font-size:8.0pt'> this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-bidi-font-size:8.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=SpellE>sms.m_nScoreLimit</span> = 0;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=SpellE>sms.m_nTimeLimit</span> = 0;<o:p></o:p></span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>For the client side, we need to open up
+“game\clientshelldll\to2\ScreenHostTDMOptions.cpp” and change <span
+class=SpellE>CScreenHostTDMOptions::CScreenHostTDMOptions</span>().&nbsp; This
+change makes the default rounds better for our mod.&nbsp; It also removes the
+time limit.<span style='mso-spacerun:yes'>  </span>Change these lines from
+this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
+style='font-size:8.0pt;font-family:Courier'>m_nScoreLimit</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = 25;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
+style='font-size:8.0pt;font-family:Courier'>m_nTimeLimit</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = 10;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
+style='font-size:8.0pt;font-family:Courier'>m_nRounds</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = 1;<o:p></o:p></span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
+style='font-size:8.0pt;font-family:Courier'>m_nScoreLimit</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = 0;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
+style='font-size:8.0pt;font-family:Courier'>m_nTimeLimit</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = 0;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span class=SpellE><span
+style='font-size:8.0pt;font-family:Courier'>m_nRounds</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = 2;<o:p></o:p></span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Then in the function <span class=SpellE>CScreenHostTDMOptions::Build</span>,
+change these lines from this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span> = <span class=SpellE>AddSlider</span>(IDS_FRAG_LIMIT,
+IDS_FRAG_LIMIT_HELP, <span class=SpellE>kColumn</span>, <span class=SpellE>kSlider</span>,
+-1, &amp;<span class=SpellE>m_nScoreLimit</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetSliderRange</span>(0,kMaxScoreLimit);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetSliderIncrement</span>(10);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetNumericDisplay</span>(LTTRUE);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span> = <span class=SpellE>AddSlider</span>(IDS_TIME_LIMIT,
+IDS_TIME_LIMIT_HELP, <span class=SpellE>kColumn</span>, <span class=SpellE>kSlider</span>,
+-1, &amp;<span class=SpellE>m_nTimeLimit</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetSliderRange</span>(0,kMaxTimeLimit);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetSliderIncrement</span>(5);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetNumericDisplay</span>(LTTRUE);</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span> = <span class=SpellE>AddSlider</span>(
+IDS_ROUNDS, IDS_ROUNDS_HELP, <span class=SpellE>kColumn</span>, <span
+class=SpellE>kSlider</span>, -1, &amp;<span class=SpellE>m_nRounds</span> );</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetSliderRange</span>(
+1, <span class=SpellE>kMaxRounds</span> );</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetSliderIncrement</span>(
+1 );</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetNumericDisplay</span>(
+LTTRUE );</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span> = <span class=SpellE>AddSlider</span>(
+IDS_ROUNDS, IDS_ROUNDS_HELP, <span class=SpellE>kColumn</span>, <span
+class=SpellE>kSlider</span>, -1, &amp;<span class=SpellE>m_nRounds</span> );</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetSliderRange</span>(
+2, <span class=SpellE>kMaxRounds</span> );</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetSliderIncrement</span>(
+2 );</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=SpellE><span
+class=GramE>pSlider</span></span>-&gt;<span class=SpellE>SetNumericDisplay</span>(
+LTTRUE );</span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Since we removed the time limit and score limit from the server
+options, we have to remove it from the SCMD system.<span
+style='mso-spacerun:yes'>  </span>Edit Game\<span class=SpellE>ObjectDLL\ObjectShared\ScmdServer.cpp</span>.<span
+style='mso-spacerun:yes'>  </span>In <span class=SpellE>ScmdServer_Impl::HandleListGameOptions</span>(),
+change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>case</span> <span class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:3'>                     </span>cMsg.Writeuint8(
+<span class=SpellE>sms.m_nRunSpeed</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:3'>                     </span>cMsg.Writeuint8(
+<span class=SpellE>sms.m_nScoreLimit</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:3'>                     </span>cMsg.Writeuint8(
+<span class=SpellE>sms.m_nTimeLimit</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:3'>                     </span>cMsg.Writeuint8(
+<span class=SpellE>sms.m_nRounds</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:3'>                     </span><span
+class=SpellE>cMsg.Writebool</span>( <span class=SpellE>sms.m_bFriendlyFire</span>)
+;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>case</span> <span class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:3'>                     </span>cMsg.Writeuint8(
+<span class=SpellE>sms.m_nRunSpeed</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:3'>                     </span>cMsg.Writeuint8(
+<span class=SpellE>sms.m_nRounds</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:3'>                     </span><span
+class=SpellE>cMsg.Writebool</span>( <span class=SpellE>sms.m_bFriendlyFire</span>)
+;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In <span class=SpellE>ScmdServer_Impl::HandleSetGameOption</span>(),
+change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>case</span></span><span style='font-size:8.0pt;font-family:Courier'> <span
+class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>switch(</span> <span
+class=SpellE>nGameOption</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>// <span class=SpellE>Runspeed</span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>case</span> 0:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE>SetGameOption</span>(
+<span class=SpellE>sms.m_nRunSpeed</span>, <span class=SpellE>atoi</span>( <span
+class=SpellE>szVal</span> ), 100, 150 );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>// Score limit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>case</span> 1:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE>SetGameOption</span>(
+<span class=SpellE>sms.m_nScoreLimit</span>, <span class=SpellE>atoi</span>( <span
+class=SpellE>szVal</span> ), 0, 255 );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>// Time limit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>case</span> 2:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE>SetGameOption</span>(
+<span class=SpellE>sms.m_nTimeLimit</span>, <span class=SpellE>atoi</span>( <span
+class=SpellE>szVal</span> ), 0, 255 );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>// Rounds.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>case</span> 3:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE>SetGameOption</span>(
+<span class=SpellE>sms.m_nRounds</span>, <span class=SpellE>atoi</span>( <span
+class=SpellE>szVal</span> ), 1, 255 );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>// Friendly fire.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>case</span> 4:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE>SetGameOption</span>(
+<span class=SpellE>sms.m_bFriendlyFire</span>, ( <span class=SpellE>bool</span>
+)( !!<span class=SpellE><span class=GramE>atoi</span></span><span class=GramE>(</span>
+<span class=SpellE>szVal</span> )), <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.5in;text-indent:.5in'><span
+class=GramE><span style='font-size:8.0pt;font-family:Courier'>false</span></span><span
+style='font-size:8.0pt;font-family:Courier'>, true );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>default</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE><span
+class=GramE>bOk</span></span> = false;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>break</span></span><span style='font-size:8.0pt;font-family:Courier'>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>case</span></span><span style='font-size:8.0pt;font-family:Courier'> <span
+class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>switch(</span> <span
+class=SpellE>nGameOption</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>// <span class=SpellE>Runspeed</span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>case</span> 0:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE>SetGameOption</span>(
+<span class=SpellE>sms.m_nRunSpeed</span>, <span class=SpellE>atoi</span>( <span
+class=SpellE>szVal</span> ), 100, 150 );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>// Rounds.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>case</span> 1:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE>SetGameOption</span>(
+<span class=SpellE>sms.m_nRounds</span>, <span class=SpellE>atoi</span>( <span
+class=SpellE>szVal</span> ), 1, 255 );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>// Friendly fire.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>case</span> 2:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE>SetGameOption</span>(
+<span class=SpellE>sms.m_bFriendlyFire</span>, ( <span class=SpellE>bool</span>
+)( !!<span class=SpellE><span class=GramE>atoi</span></span><span class=GramE>(</span>
+<span class=SpellE>szVal</span> )), <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.5in;text-indent:.5in'><span
+class=GramE><span style='font-size:8.0pt;font-family:Courier'>false</span></span><span
+style='font-size:8.0pt;font-family:Courier'>, true );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>default</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE><span
+class=GramE>bOk</span></span> = false;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>break</span></span><span style='font-size:8.0pt;font-family:Courier'>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>On the client side, edit Game\Shared\<span class=SpellE>ScmdConsole.cpp</span>.<span
+style='mso-spacerun:yes'>  </span>In the function <span class=SpellE>ScmdConsoleCommandHandler_ListGameOptions::Receive</span>,
+change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>case</span></span><span style='font-size:8.0pt;font-family:Courier'> <span
+class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>ScmdConsole::Instance</span>(
+).<span class=SpellE>GetScmdConsoleDriver</span>( ).<span class=SpellE>WriteStringResId</span>(
+<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'>IDS_TEAMDEATHMATCH );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>uint32</span> <span
+class=SpellE>nIndex</span> = 0;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>WriteOutGameOption</span>(
+<span class=SpellE>nIndex</span>++, &quot;%d&quot;, IDS_RUN_SPEED,
+msg.Readuint8( ));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>WriteOutGameOption</span>(
+<span class=SpellE>nIndex</span>++, &quot;%d&quot;, IDS_FRAG_LIMIT,
+msg.Readuint8( ));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>WriteOutGameOption</span>(
+<span class=SpellE>nIndex</span>++, &quot;%d&quot;, IDS_TIME_LIMIT,
+msg.Readuint8( ));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>WriteOutGameOption</span>(
+<span class=SpellE>nIndex</span>++, &quot;%d&quot;, IDS_ROUNDS, msg.Readuint8(
+));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>WriteOutGameOption</span>(
+<span class=SpellE>nIndex</span>++, &quot;%d&quot;, IDS_FRIENDLY_FIRE, <span
+class=SpellE>msg.Readbool</span>( ));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>break</span></span><span style='font-size:8.0pt;font-family:Courier'>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>case</span></span><span style='font-size:8.0pt;font-family:Courier'> <span
+class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>ScmdConsole::Instance</span>(
+).<span class=SpellE>GetScmdConsoleDriver</span>( ).<span class=SpellE>WriteStringResId</span>(
+<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'>IDS_TEAMDEATHMATCH );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>uint32</span> <span
+class=SpellE>nIndex</span> = 0;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>WriteOutGameOption</span>(
+<span class=SpellE>nIndex</span>++, &quot;%d&quot;, IDS_RUN_SPEED,
+msg.Readuint8( ));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>WriteOutGameOption</span>(
+<span class=SpellE>nIndex</span>++, &quot;%d&quot;, IDS_ROUNDS, msg.Readuint8(
+));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>WriteOutGameOption</span>(
+<span class=SpellE>nIndex</span>++, &quot;%d&quot;, IDS_FRIENDLY_FIRE, <span
+class=SpellE>msg.Readbool</span>( ));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>break</span></span><span style='font-size:8.0pt;font-family:Courier'>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<h2><a name=ui>UI</a></h2>
+
+<span style='mso-bookmark:ui'></span>
+
+<p class=MsoNormal>We need the menus to show the name of our new mod.&nbsp;
+Edit Shared\Lang\EN\<span class=SpellE>ResShared.rc</span>.&nbsp; Change
+IDS_TEAMDEATHMATCH from “Team <span class=SpellE>Deathmatch</span>” to
+“Demolition”.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>We don’t want people to be distracted by other game modes,
+so we’ll remove them from the menus.&nbsp; Edit “Game\ClientShellDLL\<st1:PersonName>TO2</st1:PersonName>\ScreenMain.cpp”.&nbsp;
+In the function <span class=SpellE>CScreenMain::Build</span>, change these
+lines from this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>CLTGUITextCtrl</span> *<span class=SpellE>pCtrl</span> = <span
+class=SpellE>CreateTextItem</span>(IDS_COOPERATIVE,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CMD_COOP, 0);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>m_pGameType</span>-&gt;<span class=SpellE>AddControl</span>(<span
+class=SpellE>pCtrl</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>pCtrl</span></span> = <span class=SpellE>CreateTextItem</span>(IDS_DEATHMATCH,
+CMD_DM, 0);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>m_pGameType</span>-&gt;<span class=SpellE>AddControl</span>(<span
+class=SpellE>pCtrl</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>pCtrl</span></span> = <span class=SpellE>CreateTextItem</span>(IDS_TEAMDEATHMATCH,
+CMD_TEAM_DM, 0);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>m_pGameType</span>-&gt;<span class=SpellE>AddControl</span>(<span
+class=SpellE>pCtrl</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>pCtrl</span></span> = <span class=SpellE>CreateTextItem</span>(IDS_DOOMSDAY,
+CMD_DOOM, 0);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>m_pGameType</span>-&gt;<span class=SpellE>AddControl</span>(<span
+class=SpellE>pCtrl</span>);</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>CLTGUITextCtrl</span> *<span class=SpellE>pCtrl</span> = <span
+class=SpellE>CreateTextItem</span>(IDS_TEAMDEATHMATCH, CMD_TEAM_DM, 0);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>m_pGameType</span>-&gt;<span class=SpellE>AddControl</span>(<span
+class=SpellE>pCtrl</span>);</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This internal <span class=SpellE>gamemode</span> text is
+used in <span class=SpellE>GameSpyArcade</span>.&nbsp; In “Game/shared/<span
+class=SpellE>netdefs.cpp</span>”, change these lines from this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>static</span></span><span
+style='font-size:8.0pt;font-family:Courier'> const char* <span class=SpellE>g_kaGameTypeString</span>[]
+=</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;Single&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;Cooperative&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;<span
+class=SpellE>Deathmatch</span>&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;<span
+class=SpellE>TeamDeathmatch</span>&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;<span
+class=SpellE>DoomsDay</span>&quot;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>};</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>static</span></span><span
+style='font-size:8.0pt;font-family:Courier'> const char* <span class=SpellE>g_kaGameTypeString</span>[]
+=</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;Single&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;Cooperative&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;<span
+class=SpellE>Deathmatch</span>&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;Demolition&quot;,</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;<span
+class=SpellE>DoomsDay</span>&quot;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>};</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Finally, we need to give the servers running our game mode a
+default server name.&nbsp; In “game\<span class=SpellE>clientres\shared\lang\en\clientresshared.rc</span>”,
+change IDS_HOST_NAME_TDM_DEFAULT from &quot;NOLF 2 Team <span class=SpellE>Deathmatch</span>&quot;,
+to &quot;NOLF 2 Demolition&quot;.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="limit_levels">Limit Levels</a></h2>
+
+<span style='mso-bookmark:limit_levels'></span>
+
+<p class=MsoNormal>We have to limit the levels available to play on to specific
+one’s setup for Demolition.&nbsp; We’ll give these levels the prefix
+“DE_”.&nbsp; To filter the levels correctly, edit
+“game\clientshelldll\to2\screenhostlevels.cpp”.&nbsp; In the function <span
+class=SpellE>CScreenHostLevels::MakeDefaultMissionList</span>( ), change these
+lines from this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>switch</span> (<span class=SpellE>g_pGameClientShell</span>-&gt;<span
+class=SpellE>GetGameType</span>())</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeTeamDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DM_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>AddMissionToList</span>(<span class=SpellE>nMission</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDoomsDay</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DD_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>AddMissionToList</span>(<span class=SpellE>nMission</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>default</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>AddMissionToList</span>(<span class=SpellE>nMission</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>switch</span> (<span class=SpellE>g_pGameClientShell</span>-&gt;<span
+class=SpellE>GetGameType</span>())</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DM_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>AddMissionToList</span>(<span class=SpellE>nMission</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeTeamDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DE_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>AddMissionToList</span>(<span class=SpellE>nMission</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDoomsDay</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DD_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>AddMissionToList</span>(<span class=SpellE>nMission</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>default</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE>AddMissionToList</span>(<span class=SpellE>nMission</span>);</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>In the “game\clientshelldll\to2\screenhostmission.cpp”, in
+the function <span class=SpellE>CScreenHostMission::NewCampaign</span>, change
+these lines from this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>switch</span> (<span class=SpellE>g_pGameClientShell</span>-&gt;<span
+class=SpellE>GetGameType</span>())</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeTeamDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DM_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDoomsDay</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DD_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>default</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>switch</span> (<span class=SpellE>g_pGameClientShell</span>-&gt;<span
+class=SpellE>GetGameType</span>())</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DM_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeTeamDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DE_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDoomsDay</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DD_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>default</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Edit “game\clientshelldll\to2\screenhost.cpp”.&nbsp; In the
+function <span class=SpellE>CScreenHost::CreateDefaultCampaign</span>, change <span
+class=SpellE>thes</span> lines from this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>switch</span> (<span class=SpellE>g_pGameClientShell</span>-&gt;<span
+class=SpellE>GetGameType</span>())</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeTeamDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DM_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDoomsDay</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DD_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>default</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>switch</span> (<span class=SpellE>g_pGameClientShell</span>-&gt;<span
+class=SpellE>GetGameType</span>())</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DM_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeTeamDeathmatch</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DE_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>case</span> <span class=SpellE>eGameTypeDoomsDay</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>if</span> (<span class=SpellE>strnicmp</span>(szWorldTitle,&quot;DD_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>default</span>:</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=SpellE><span class=GramE>bAdd</span></span> = true;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class=GramE>break</span>;</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>In the file “game\clientshelldll\to2\screenmulti.cpp” in the
+function <span class=SpellE>CScreenMulti::CreateDMMissionFile</span>(), change
+these lines from this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>if</span></span><span
+style='font-size:8.0pt;font-family:Courier'> (<span class=SpellE>ptr</span>-&gt;<span
+class=SpellE>m_Type</span> == TYPE_FILE)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>if</span></span><span
+style='font-size:8.0pt;font-family:Courier'> (<span class=SpellE>strnicmp</span>(<span
+class=SpellE>ptr</span>-&gt;m_pBaseFilename,&quot;DM_&quot;,3) == 0 || <span
+class=SpellE>strnicmp</span>(<span class=SpellE>ptr</span>-&gt;m_pBaseFilename,&quot;DD_&quot;,3)
+== 0)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'>{</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>if</span></span><span
+style='font-size:8.0pt;font-family:Courier'> (<span class=SpellE>ptr</span>-&gt;<span
+class=SpellE>m_Type</span> == TYPE_FILE)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=GramE>if</span>
+(<span class=SpellE>strnicmp</span>(<span class=SpellE>ptr</span>-&gt;m_pBaseFilename,&quot;DE_&quot;,3)
+== 0 )</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>
+
+<h2><a name="adding_respawn_delay_and_revive">Adding Respawn Delay and Revive</a></h2>
+
+<span style='mso-bookmark:adding_respawn_delay_and_revive'></span>
+
+<p class=MsoNormal>We want the players to be able to revive their teammates,
+like in Doomsday.<span style='mso-spacerun:yes'>  </span>We also want the
+players to have a delay before they can <span class=SpellE>respawn</span>
+themselves.<span style='mso-spacerun:yes'>  </span>The <span class=SpellE>respawn</span>
+delay works better for <span class=SpellE>gameplay</span> if only the defending
+team has to wait to <span class=SpellE>respawn</span>, so this will complicate
+how we get that part of the feature implemented.</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>First, to give the revive capabilities, edit game\shared\<span
+class=SpellE>clientservershared.cpp</span>.<span style='mso-spacerun:yes'> 
+</span>In the function <span class=SpellE>IsRevivePlayerGameType</span>(),
+change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+class=SpellE><span class=GramE><span style='font-size:8.0pt;font-family:Courier'>bool</span></span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>IsRevivePlayerGameType</span>()<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=GramE>switch(</span> <span class=SpellE>GetGameType</span>( ))<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:1'>       </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>case</span> <span class=SpellE>eGameTypeCooperative</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>case</span> <span class=SpellE>eGameTypeDoomsDay</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:3'>                     </span><span
+class=GramE>return</span> true;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>default</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:3'>                     </span><span
+class=GramE>return</span> false;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:1'>       </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+class=SpellE><span class=GramE><span style='font-size:8.0pt;font-family:Courier'>bool</span></span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>IsRevivePlayerGameType</span>()<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=GramE>switch(</span> <span class=SpellE>GetGameType</span>( ))<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:1'>       </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>case</span> <span class=SpellE>eGameTypeCooperative</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>case</span> <span class=SpellE>eGameTypeDoomsDay</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>case</span> <span class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:3'>                     </span><span
+class=GramE>return</span> true;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>default</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:3'>                     </span><span
+class=GramE>return</span> false;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:1'>       </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Then to give the players the <span class=SpellE>respawn</span>
+delay, we need to do a few things.<span style='mso-spacerun:yes'>  </span>On
+the client side, we need to use the right <span class=SpellE>respawn</span>
+time based on whether we’re the attacking team or not.<span
+style='mso-spacerun:yes'>  </span>First we’ll allow add change <span
+class=SpellE>TeamMgr</span> to store the attacking team variable.<span
+style='mso-spacerun:yes'>  </span>Edit “Game/Shared/<span class=SpellE>TeamMgr.h</span>”.<span
+style='mso-spacerun:yes'>  </span>In class <span class=SpellE>CTeam</span>,
+change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>uint32</span></span><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>        </span><span
+class=SpellE>GetModel</span>()<span style='mso-tab-count:2'>           </span>const
+{ return <span class=SpellE>m_nModel</span>; }<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>uint32</span></span><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>        </span><span
+class=SpellE>GetRoundScore</span>( ) const { return <span class=SpellE>m_nRoundScore</span>;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>#<span
+class=SpellE>ifndef</span> _CLIENTBUILD<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>void</span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>AddPlayer</span>(uint32 <span
+class=SpellE>nClientID</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>uint32</span></span><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>        </span><span
+class=SpellE>GetModel</span>()<span style='mso-tab-count:2'>           </span>const
+{ return <span class=SpellE>m_nModel</span>; }<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>uint32</span></span><span
+style='font-size:8.0pt;font-family:Courier'><span style='mso-tab-count:2'>        </span><span
+class=SpellE>GetRoundScore</span>( ) const { return <span class=SpellE>m_nRoundScore</span>;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>void</span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>SetAttacking</span>( <span
+class=SpellE>bool</span> <span class=SpellE>bValue</span> ) { <span
+class=SpellE>m_bAttackingTeam</span> = <span class=SpellE>bValue</span>; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE><span class=GramE>bool</span></span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>GetAttacking</span>( )
+const { return <span class=SpellE>m_bAttackingTeam</span>; }<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>#<span
+class=SpellE>ifndef</span> _CLIENTBUILD<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>void</span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>AddPlayer</span>(uint32 <span
+class=SpellE>nClientID</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>At the bottom of <span class=SpellE>CTeam</span>, change
+this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>std::string</span><span
+style='mso-tab-count:2'>          </span><span class=SpellE>m_sName</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>uint32<span style='mso-tab-count:3'>               </span><span
+class=SpellE>m_nModel</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>};<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>std::string</span><span
+style='mso-tab-count:2'>          </span><span class=SpellE>m_sName</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>uint32<span style='mso-tab-count:3'>               </span><span
+class=SpellE>m_nModel</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>// Team is attacking for <span
+class=SpellE>gamemode</span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE><span class=GramE>bool</span></span><span
+style='mso-tab-count:3'>                 </span><span class=SpellE>m_bAttackingTeam</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>};<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In class <span class=SpellE>CTeamMgr</span>, change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>uint8</span><span
+style='mso-tab-count:1'>  </span><span class=SpellE>GetTeamIdOfPlayer</span>(
+uint32 <span class=SpellE>nClientID</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>CTeam</span>*<span
+style='mso-tab-count:1'> </span><span class=SpellE><span class=GramE>GetTeamWithLeastPlayers</span></span><span
+class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>void</span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>UpdateClient</span>(HCLIENT
+<span class=SpellE>hClient</span> = NULL);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>void</span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>AddToScore</span>( uint8 <span
+class=SpellE>nTeamID</span>, int32 <span class=SpellE>nScore</span> = 1 );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>uint8</span><span
+style='mso-tab-count:1'>  </span><span class=SpellE>GetTeamIdOfPlayer</span>(
+uint32 <span class=SpellE>nClientID</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>CTeam</span>*<span
+style='mso-tab-count:1'> </span><span class=SpellE><span class=GramE>GetTeamWithLeastPlayers</span></span><span
+class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>// <span class=SpellE>Accessors</span> to
+the attacking team info.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>void</span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>SetAttackingTeam</span>(
+uint8 <span class=SpellE>nTeamId</span>, <span class=SpellE>bool</span> <span
+class=SpellE>bValue</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE><span class=GramE>bool</span></span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>GetAttackingTeam</span>(
+uint8 <span class=SpellE>nTeamId</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>void</span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>UpdateClient</span>(HCLIENT
+<span class=SpellE>hClient</span> = NULL);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>void</span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>UpdateClient</span>(
+HCLIENT <span class=SpellE>hClient</span>, <span class=SpellE>bool</span> <span
+class=SpellE>bScoreOnly</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>void</span><span
+style='mso-tab-count:1'>   </span><span class=SpellE>AddToScore</span>( uint8 <span
+class=SpellE>nTeamID</span>, int32 <span class=SpellE>nScore</span> = 1 );<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Edit <span class=SpellE>TeamMgr.cpp</span>.<span
+style='mso-spacerun:yes'>  </span>In <span class=SpellE>CTeam::<span
+class=GramE>CTeam</span></span><span class=GramE>(</span>), change this;</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_nRoundScore</span> =
+0;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_nModel</span> = <span
+class=SpellE>eModelIdInvalid</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_nRoundScore</span> =
+0;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_nModel</span> = <span
+class=SpellE>eModelIdInvalid</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_bAttackingTeam</span>
+= false;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In <span class=SpellE>CTeam::<span class=GramE>Init</span></span><span
+class=GramE>(</span>uint8 <span class=SpellE>nID</span>, const char *<span
+class=SpellE>szName</span>, uint32 <span class=SpellE>nModel</span>), change
+this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_sName</span> = <span
+class=SpellE>szName</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_nModel</span> = <span
+class=SpellE>nModel</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_<span class=GramE>players.clear</span></span><span
+class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_sName</span> = <span
+class=SpellE>szName</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_nModel</span> = <span
+class=SpellE>nModel</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_bAttackingTeam</span>
+= false;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_<span class=GramE>players.clear</span></span><span
+class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In <span class=SpellE>CTeam::<span class=GramE>Init</span></span><span
+class=GramE>(</span>uint8 <span class=SpellE>nID</span>, <span class=SpellE>ILTMessage_Read</span>
+*<span class=SpellE>pMsg</span>), change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_nID</span> = <span
+class=SpellE>nID</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_<span class=GramE>players.clear</span></span><span
+class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE><span class=GramE>ReadData</span></span><span
+class=GramE>(</span><span class=SpellE>pMsg</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_nID</span> = <span
+class=SpellE>nID</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_bAttackingTeam</span>
+= false;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>m_<span class=GramE>players.clear</span></span><span
+class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE><span class=GramE>ReadData</span></span><span
+class=GramE>(</span><span class=SpellE>pMsg</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In <span class=SpellE>CTeam::WriteData</span>, change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>if</span> (!<span
+class=SpellE>bScoreOnly</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE><span
+class=GramE>pMsg</span></span>-&gt;<span class=SpellE>WriteString</span>(<span
+class=SpellE>m_sName.c_str</span>());<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE><span
+class=GramE>pMsg</span></span>-&gt;Writeuint32(<span class=SpellE>m_nModel</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>if</span> (!<span
+class=SpellE>bScoreOnly</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE><span
+class=GramE>pMsg</span></span>-&gt;<span class=SpellE>WriteString</span>(<span
+class=SpellE>m_sName.c_str</span>());<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE><span
+class=GramE>pMsg</span></span>-&gt;Writeuint32(<span class=SpellE>m_nModel</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE><span
+class=GramE>pMsg</span></span>-&gt;<span class=SpellE>Writebool</span>( <span
+class=SpellE>GetAttacking</span>( ));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In <span class=SpellE>CTeam::ReadData</span>, change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>m_sName</span>
+= <span class=SpellE>szTeamName</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>m_nModel</span><span
+style='mso-tab-count:1'>      </span>= <span class=SpellE>pMsg</span>-&gt;<span
+class=GramE>Readuint32(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>m_sName</span>
+= <span class=SpellE>szTeamName</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>m_nModel</span><span
+style='mso-tab-count:1'>      </span>= <span class=SpellE>pMsg</span>-&gt;<span
+class=GramE>Readuint32(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE><span
+class=GramE>SetAttacking</span></span><span class=GramE>(</span> <span
+class=SpellE>pMsg</span>-&gt;<span class=SpellE>Readbool</span>( ));<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Completely replace <span class=SpellE>CTeamMgr::UpdateClient</span>,
+with these two new versions:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>void</span></span><span style='font-size:8.0pt;font-family:Courier'> <span
+class=SpellE>CTeamMgr::UpdateClient</span>(HCLIENT <span class=SpellE>hClient</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE><span class=GramE>UpdateClient</span></span><span
+class=GramE>(</span> <span class=SpellE>hClient</span>, false );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>void</span></span><span style='font-size:8.0pt;font-family:Courier'> <span
+class=SpellE>CTeamMgr::UpdateClient</span>( HCLIENT <span class=SpellE>hClient</span>,
+<span class=SpellE>bool</span> <span class=SpellE>bScoreOnly</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>TeamArray::iterator</span>
+<span class=SpellE>iter</span> = <span class=SpellE>m_<span class=GramE>teams.begin</span></span><span
+class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>while</span> (<span
+class=SpellE>iter</span> != <span class=SpellE>m_teams.end</span>())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>(*<span class=SpellE>iter</span>)-&gt;<span
+class=SpellE><span class=GramE>UpdateClient</span></span><span class=GramE>(</span>
+<span class=SpellE>bScoreOnly</span>, <span class=SpellE>hClient</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE><span
+class=GramE>iter</span></span>++;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Add these two functions right under the <span class=SpellE>CTeamMgr::Update</span>
+client functions:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>void</span></span><span style='font-size:8.0pt;font-family:Courier'> <span
+class=SpellE>CTeamMgr::SetAttackingTeam</span>( uint8 <span class=SpellE>nTeamId</span>,
+<span class=SpellE>bool</span> <span class=SpellE>bValue</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE>CTeam</span> *<span
+class=SpellE>pTeam</span> = <span class=SpellE><span class=GramE>GetTeam</span></span><span
+class=GramE>(</span> <span class=SpellE>nTeamId</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>if(</span></span><span
+style='font-size:8.0pt;font-family:Courier'> !<span class=SpellE>pTeam</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=GramE>return</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>// <span class=GramE>Iterate</span> over all the teams and
+set one of them as the attacker.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=SpellE><span
+style='font-size:8.0pt;font-family:Courier'>TeamArray::iterator</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>iter</span> = <span
+class=SpellE>m_<span class=GramE>teams.begin</span></span><span class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>for(</span></span><span
+style='font-size:8.0pt;font-family:Courier'> ; <span class=SpellE>iter</span>
+!= <span class=SpellE>m_teams.end</span>(); <span class=SpellE>iter</span>++ )<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=SpellE>CTeam</span>* <span class=SpellE>pTeam</span> = *<span
+class=SpellE>iter</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=SpellE><span class=GramE>pTeam</span></span>-&gt;<span class=SpellE>SetAttacking</span>((
+<span class=SpellE>pTeam</span>-&gt;<span class=SpellE>GetID</span>( ) == <span
+class=SpellE>nTeamId</span> ));<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>// <span class=GramE>Tell</span> the clients about the
+change.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=SpellE><span
+class=GramE><span style='font-size:8.0pt;font-family:Courier'>UpdateClient</span></span></span><span
+class=GramE><span style='font-size:8.0pt;font-family:Courier'>(</span></span><span
+style='font-size:8.0pt;font-family:Courier'> NULL, false );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span class=SpellE><span class=GramE><span style='font-size:
+8.0pt;font-family:Courier'>bool</span></span></span><span style='font-size:
+8.0pt;font-family:Courier'> <span class=SpellE>CTeamMgr::GetAttackingTeam</span>(
+uint8 <span class=SpellE>nTeamId</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=SpellE><span
+style='font-size:8.0pt;font-family:Courier'>CTeam</span></span><span
+style='font-size:8.0pt;font-family:Courier'> *<span class=SpellE>pTeam</span> =
+<span class=SpellE><span class=GramE>GetTeam</span></span><span class=GramE>(</span>
+<span class=SpellE>nTeamId</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>if(</span></span><span
+style='font-size:8.0pt;font-family:Courier'> !<span class=SpellE>pTeam</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=GramE>return</span> false;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>return</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>pTeam</span>-&gt;<span
+class=SpellE>GetAttacking</span>( );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Now we need to add support for a command message to change
+the attacking team.<span style='mso-spacerun:yes'>  </span>This message will be
+sent to the <span class=SpellE>worldproperties</span> object since every level
+must have one.<span style='mso-spacerun:yes'>  </span>Edit “Game/<span
+class=SpellE>ObjectDLL/ObjectShared/WorldProperties.cpp</span>”.<span
+style='mso-spacerun:yes'>  </span>In the block of code started with “CMDMGR_BEGIN_REGISTER_CLASS”,
+add this to the bottom of the list:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>CMDMGR_ADD_<span class=GramE>MSG(</span> ATTACKINGTEAM, 2,
+NULL, &quot;ATTACKINGTEAM &lt;0 or 1&gt;&quot; )<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE>Above the “CMDMGR_END_REGISTER_CLASS”.</span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In <span class=SpellE>WorldProperties::OnTrigger</span>,
+change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>static</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>CParsedMsg::CToken</span>
+<span class=SpellE>s_cTok_NextRound</span>(&quot;<span class=SpellE>NextRound</span>&quot;);<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>static</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>CParsedMsg::CToken</span>
+<span class=SpellE>s_cTok_RoundWon</span>(&quot;<span class=SpellE>RoundWon</span>&quot;);<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>static</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>CParsedMsg::CToken</span>
+<span class=SpellE>s_cTok_NextRound</span>(&quot;<span class=SpellE>NextRound</span>&quot;);<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>static</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>CParsedMsg::CToken</span>
+<span class=SpellE>s_cTok_RoundWon</span>(&quot;<span class=SpellE>RoundWon</span>&quot;);<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>static</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>CParsedMsg::CToken</span>
+<span class=SpellE>s_cTok_AttackingTeam</span>(&quot;<span class=SpellE>AttackingTeam</span>&quot;);<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In <span class=SpellE>WorldProperties::OnTrigger</span>,
+change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>else</span></span><span style='font-size:8.0pt;font-family:Courier'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>return</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>GameBase::OnTrigger</span>(<span
+class=SpellE>hSender</span>, <span class=SpellE>cMsg</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>if</span></span><span style='font-size:8.0pt;font-family:Courier'> (<span
+class=SpellE>bNotifyClient</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=SpellE><span
+class=GramE><span style='font-size:8.0pt;font-family:Courier'>SendClientsChangedValues</span></span></span><span
+class=GramE><span style='font-size:8.0pt;font-family:Courier'>(</span></span><span
+style='font-size:8.0pt;font-family:Courier'>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>else</span></span><span style='font-size:8.0pt;font-family:Courier'>
+if(<span class=SpellE>cMsg.GetArg</span>(0) == <span class=SpellE>s_cTok_AttackingTeam</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>if(</span></span><span
+style='font-size:8.0pt;font-family:Courier'> !<span class=SpellE>IsCoopMultiplayerGameType</span>(
+))<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=GramE>if(</span> <span class=SpellE>cMsg.GetArgCount</span>() &gt; 1 )<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:1'>       </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>uint8</span> <span class=SpellE>nTeamId</span> = <span
+class=SpellE>atoi</span>( <span class=SpellE>cMsg.GetArg</span>( 1 ));<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span><span
+class=GramE>if(</span> <span class=SpellE>nTeamId</span> &lt; MAX_TEAMS )<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:3'>                     </span><span
+class=SpellE>CTeamMgr::<span class=GramE>Instance</span></span><span
+class=GramE>(</span> ).<span class=SpellE>SetAttackingTeam</span>( <span
+class=SpellE>nTeamId</span>, true );<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:1'>       </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>else</span></span><span style='font-size:8.0pt;font-family:Courier'><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>return</span> <span
+class=SpellE>GameBase::OnTrigger</span>(<span class=SpellE>hSender</span>, <span
+class=SpellE>cMsg</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>if</span></span><span style='font-size:8.0pt;font-family:Courier'> (<span
+class=SpellE>bNotifyClient</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=SpellE><span class=GramE>SendClientsChangedValues</span></span><span
+class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Now we need to process the attacking team information on the
+client so they know how long to take for <span class=SpellE>respawn</span>.<span
+style='mso-spacerun:yes'>  </span>Edit game\<span class=SpellE>clientshelldll\clientshellshared\playermgr.cpp</span>.<span
+style='mso-spacerun:yes'>  </span>In the function <span class=SpellE>CPlayerMgr::HandleMsgPlayerStateChange</span>,
+change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>switch</span></span><span style='font-size:8.0pt;font-family:Courier'>
+(<span class=SpellE>g_pGameClientShell</span>-&gt;<span class=SpellE>GetGameType</span>())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeCooperative</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+class=SpellE><span style='font-size:8.0pt;font-family:Courier'>m_fEarliestRespawnTime</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = <span class=SpellE>g_pLTClient</span>-&gt;<span
+class=SpellE>GetTime</span>() +<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><span style='font-size:8.0pt;
+font-family:Courier'>((<span class=SpellE>CCharacterFX::GetNumPlayersInGame</span>()
+&gt; 1) ? <span class=SpellE>g_vtMultiplayerRespawnWaitTime.GetFloat</span>() :
+<span class=SpellE>g_vtRespawnWaitTime.GetFloat</span>());<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>} break;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeDoomsDay</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=SpellE>m_fEarliestRespawnTime</span> = <span class=SpellE>g_pLTClient</span>-&gt;<span
+class=SpellE>GetTime</span>() + <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><span style='font-size:8.0pt;
+font-family:Courier'>((<span class=SpellE>g_pInterfaceMgr</span>-&gt;<span
+class=SpellE>GetClientInfoMgr</span>()-&gt;<span class=SpellE>GetNumPlayersOnTeam</span>()
+&gt; 1) ? <span class=SpellE>g_vtDoomsdayRespawnWaitTime.GetFloat</span>() : <span
+class=SpellE>g_vtRespawnWaitTime.GetFloat</span>());<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>} break;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>default</span></span><span
+style='font-size:8.0pt;font-family:Courier'>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+class=SpellE><span style='font-size:8.0pt;font-family:Courier'>m_fEarliestRespawnTime</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = <span class=SpellE>g_pLTClient</span>-&gt;<span
+class=SpellE>GetTime</span>() + <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:.5in'><span
+class=SpellE><span style='font-size:8.0pt;font-family:Courier'>g_vtRespawnWaitTime.GetFloat</span></span><span
+style='font-size:8.0pt;font-family:Courier'>();<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>} break;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE>to</span> this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>switch</span></span><span style='font-size:8.0pt;font-family:Courier'>
+(<span class=SpellE>g_pGameClientShell</span>-&gt;<span class=SpellE>GetGameType</span>())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeCooperative</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+class=SpellE><span style='font-size:8.0pt;font-family:Courier'>m_fEarliestRespawnTime</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = <span class=SpellE>g_pLTClient</span>-&gt;<span
+class=SpellE>GetTime</span>() +<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><span style='font-size:8.0pt;
+font-family:Courier'>((<span class=SpellE>CCharacterFX::GetNumPlayersInGame</span>()
+&gt; 1) ? <span class=SpellE>g_vtMultiplayerRespawnWaitTime.GetFloat</span>() :
+<span class=SpellE>g_vtRespawnWaitTime.GetFloat</span>());<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>} break;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeDoomsDay</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'><span style='mso-tab-count:1'>       </span><span
+class=SpellE>m_fEarliestRespawnTime</span> = <span class=SpellE>g_pLTClient</span>-&gt;<span
+class=SpellE>GetTime</span>() + <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><span style='font-size:8.0pt;
+font-family:Courier'>((<span class=SpellE>g_pInterfaceMgr</span>-&gt;<span
+class=SpellE>GetClientInfoMgr</span>()-&gt;<span class=SpellE>GetNumPlayersOnTeam</span>()
+&gt; 1) ? <span class=SpellE>g_vtDoomsdayRespawnWaitTime.GetFloat</span>() : <span
+class=SpellE>g_vtRespawnWaitTime.GetFloat</span>());<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>} break;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>case</span> <span
+class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span style='mso-tab-count:1'>       </span><span
+class=SpellE>CClientInfoMgr</span>* <span class=SpellE>pCIMgr</span> = <span
+class=SpellE>g_pInterfaceMgr</span>-&gt;<span class=SpellE><span class=GramE>GetClientInfoMgr</span></span><span
+class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span style='mso-tab-count:1'>       </span><span
+class=GramE>if(</span> !<span class=SpellE>pCIMgr</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span style='mso-tab-count:1'>       </span><span
+style='mso-tab-count:1'>       </span><span class=GramE>return</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>CLIENT_INFO *<span class=SpellE>pLocalCI</span>
+= <span class=SpellE>pCIMgr</span>-&gt;<span class=SpellE><span class=GramE>GetLocalClient</span></span><span
+class=GramE>(</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>if(</span> !<span
+class=SpellE>pLocalCI</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span style='mso-tab-count:1'>       </span><span
+class=GramE>return</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:5'>                                  </span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>// <span class=GramE>Attacking</span>
+team gets to <span class=SpellE>respawn</span> quickly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>CTeam</span>* <span
+class=SpellE>pTeam</span> = <span class=SpellE>CTeamMgr::<span class=GramE>Instance</span></span><span
+class=GramE>(</span> ).<span class=SpellE>GetTeam</span>( <span class=SpellE>pLocalCI</span>-&gt;<span
+class=SpellE>nTeamID</span> );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>if(</span> !<span
+class=SpellE>pTeam</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=GramE>return</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE><span
+class=GramE>bool</span></span> <span class=SpellE>bAttackingTeam</span> = <span
+class=SpellE>pTeam</span>-&gt;<span class=SpellE>GetAttacking</span>( );<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>if(</span> <span
+class=SpellE>bAttackingTeam</span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><span class=SpellE><span
+style='font-size:8.0pt;font-family:Courier'>m_fEarliestRespawnTime</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = <span class=SpellE>g_pLTClient</span>-&gt;<span
+class=SpellE><span class=GramE>GetTime</span></span><span class=GramE>(</span>)
++<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.5in;text-indent:.5in'><span
+class=SpellE><span style='font-size:8.0pt;font-family:Courier'>g_<span
+class=GramE>vtRespawnWaitTime.GetFloat</span></span></span><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>(</span></span><span
+style='font-size:8.0pt;font-family:Courier'>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>else</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:3'>                     </span><span class=SpellE>m_fEarliestRespawnTime</span>
+= <span class=SpellE>g_pLTClient</span>-&gt;<span class=SpellE><span
+class=GramE>GetTime</span></span><span class=GramE>(</span>) + <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><span style='font-size:8.0pt;
+font-family:Courier'>((<span class=SpellE>g_pInterfaceMgr</span>-&gt;<span
+class=SpellE><span class=GramE>GetClientInfoMgr</span></span><span class=GramE>(</span>)-&gt;<span
+class=SpellE>GetNumPlayersOnTeam</span>() &gt; 1) ?<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.5in'><span class=SpellE><span
+style='font-size:8.0pt;font-family:Courier'>g_<span class=GramE>vtDoomsdayRespawnWaitTime.GetFloat</span></span></span><span
+class=GramE><span style='font-size:8.0pt;font-family:Courier'>(</span></span><span
+style='font-size:8.0pt;font-family:Courier'>) : <span class=SpellE>g_vtRespawnWaitTime.GetFloat</span>());<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span>} break;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>default</span></span><span
+style='font-size:8.0pt;font-family:Courier'>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+class=SpellE><span style='font-size:8.0pt;font-family:Courier'>m_fEarliestRespawnTime</span></span><span
+style='font-size:8.0pt;font-family:Courier'> = <span class=SpellE>g_pLTClient</span>-&gt;<span
+class=SpellE>GetTime</span>() + <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:.5in'><span
+class=SpellE><span style='font-size:8.0pt;font-family:Courier'>g_vtRespawnWaitTime.GetFloat</span></span><span
+style='font-size:8.0pt;font-family:Courier'>();<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:Courier'>} break;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<h2><a name="using_the_right_radio_messages">Using the Right Radio Messages</a></h2>
+
+<span style='mso-bookmark:using_the_right_radio_messages'></span>
+
+<p class=MsoNormal>Now that we’ve made it so we can revive players, we need to
+switch the available radio messages over to use the Doomsday radio
+messages.<span style='mso-spacerun:yes'>  </span>Edit “source\ Game/ClientShellDLL/<st1:PersonName>TO2</st1:PersonName>/HUDRadio.cpp”.<span
+style='mso-spacerun:yes'>  </span>In <span class=SpellE>CHUDRadio::Show</span>(),
+change this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>switch</span></span><span style='font-size:8.0pt;font-family:Courier'>
+(<span class=SpellE>g_pGameClientShell</span>-&gt;<span class=SpellE>GetGameType</span>())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+class=SpellE><span style='font-size:8.0pt;font-family:Courier'>m_pText</span></span><span
+style='font-size:8.0pt;font-family:Courier'>[<span class=SpellE>i</span>]-&gt;<span
+class=SpellE>GetColumn</span>(1)-&gt;<span class=SpellE>SetString</span>(<span
+class=SpellE>LoadTempString</span>(<span class=SpellE>g_TDMRadioArray</span>[<span
+class=SpellE>i</span>]));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>case</span> <span
+class=SpellE>eGameTypeDoomsDay</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>m_pText</span>[<span
+class=SpellE>i</span>]-&gt;<span class=SpellE>GetColumn</span>(1)-&gt;<span
+class=SpellE>SetString</span>(<span class=SpellE>LoadTempString</span>(<span
+class=SpellE>g_DDRadioArray</span>[<span class=SpellE>i</span>]));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>default</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>m_pText</span>[<span
+class=SpellE>i</span>]-&gt;<span class=SpellE>GetColumn</span>(1)-&gt;<span
+class=SpellE>SetString</span>(<span class=SpellE>LoadTempString</span>(<span
+class=SpellE>g_CoopRadioArray</span>[<span class=SpellE>i</span>]));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>switch</span></span><span style='font-size:8.0pt;font-family:Courier'>
+(<span class=SpellE>g_pGameClientShell</span>-&gt;<span class=SpellE>GetGameType</span>())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>case</span> <span
+class=SpellE>eGameTypeDoomsDay</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>m_pText</span>[<span
+class=SpellE>i</span>]-&gt;<span class=SpellE>GetColumn</span>(1)-&gt;<span
+class=SpellE>SetString</span>(<span class=SpellE>LoadTempString</span>(<span
+class=SpellE>g_DDRadioArray</span>[<span class=SpellE>i</span>]));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>default</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>m_pText</span>[<span
+class=SpellE>i</span>]-&gt;<span class=SpellE>GetColumn</span>(1)-&gt;<span
+class=SpellE>SetString</span>(<span class=SpellE>LoadTempString</span>(<span
+class=SpellE>g_CoopRadioArray</span>[<span class=SpellE>i</span>]));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In <span class=SpellE>CHUDRadio::Choose</span>(), change
+this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>switch</span></span><span style='font-size:8.0pt;font-family:Courier'>
+(<span class=SpellE>g_pGameClientShell</span>-&gt;<span class=SpellE>GetGameType</span>())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>g_pClientMultiplayerMgr</span>-&gt;<span
+class=SpellE>DoTaunt</span>(<span class=SpellE>nLocalID,g_TDMRadioArray</span>[<span
+class=SpellE>nChoice</span>]);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>case</span> <span
+class=SpellE>eGameTypeDoomsDay</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>g_pClientMultiplayerMgr</span>-&gt;<span
+class=SpellE>DoTaunt</span>(<span class=SpellE>nLocalID,g_DDRadioArray</span>[<span
+class=SpellE>nChoice</span>]);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>default</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>g_pClientMultiplayerMgr</span>-&gt;<span
+class=SpellE>DoTaunt</span>(<span class=SpellE>nLocalID,g_CoopRadioArray</span>[<span
+class=SpellE>nChoice</span>]);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>To this:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span class=GramE><span style='font-size:8.0pt;font-family:
+Courier'>switch</span></span><span style='font-size:8.0pt;font-family:Courier'>
+(<span class=SpellE>g_pGameClientShell</span>-&gt;<span class=SpellE>GetGameType</span>())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=GramE><span
+style='font-size:8.0pt;font-family:Courier'>case</span></span><span
+style='font-size:8.0pt;font-family:Courier'> <span class=SpellE>eGameTypeTeamDeathmatch</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>case</span> <span
+class=SpellE>eGameTypeDoomsDay</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>g_pClientMultiplayerMgr</span>-&gt;<span
+class=SpellE>DoTaunt</span>(<span class=SpellE>nLocalID,g_DDRadioArray</span>[<span
+class=SpellE>nChoice</span>]);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:1'>       </span><span class=GramE>default</span>:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=SpellE>g_pClientMultiplayerMgr</span>-&gt;<span
+class=SpellE>DoTaunt</span>(<span class=SpellE>nLocalID,g_CoopRadioArray</span>[<span
+class=SpellE>nChoice</span>]);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'><span
+style='mso-tab-count:2'>              </span><span class=GramE>break</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Courier'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<h2><a name=conclusion>Conclusion</a></h2>
+
+<span style='mso-bookmark:conclusion'></span>
+
+<p class=MsoNormal>That’s it!&nbsp; Now that we have made our edits, it’s time
+to compile them and put them into our distributable zip file.&nbsp; Refer to
+“Building the No One Lives Forever 2 Game”, on how to build the game
+executables.&nbsp; You will only need to build <span class=SpellE>clientres</span>,
+<span class=SpellE>clientshelldll</span>, and object and their
+dependencies.<span style='mso-spacerun:yes'>  </span>This will build
+“cres.dll”, “cshell.dll” and “<span class=SpellE>object.lto</span>”.<span
+style='mso-spacerun:yes'>  </span>Be sure to build the “final” targets for
+distribution.<span style='mso-spacerun:yes'>  </span>Refer to “Content Packs
+and Modifications” on how to package your files for distribution.</p>
+
+</div>
+
+</body>
+
+</html>

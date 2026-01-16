@@ -1,0 +1,2250 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0050)file://\\Proj\TO2\ss_Documentation\temp\sst657.htm -->
+<HTML xmlns="http://www.w3.org/TR/REC-html40" xmlns:o = 
+"urn:schemas-microsoft-com:office:office" xmlns:w = 
+"urn:schemas-microsoft-com:office:word" xmlns:st1 = 
+"urn:schemas-microsoft-com:office:smarttags"><HEAD><TITLE>Adding and Modifying Weapons in No One Lives Forever 2</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content=Word.Document name=ProgId>
+<META content="MSHTML 6.00.2800.1141" name=GENERATOR>
+<META content="Microsoft Word 10" name=Originator><LINK 
+href="NOLF2_Adding_and_Modifying_Weapons_files/filelist.xml" 
+rel=File-List><o:SmartTagType name="place" 
+namespaceuri="urn:schemas-microsoft-com:office:smarttags"></o:SmartTagType><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if !mso]>
+<OBJECT id=ieooui classid=clsid:38481807-CA0E-42D2-BF39-B33AF135CC4D></OBJECT>
+<STYLE>st1\:* {
+	BEHAVIOR: url(#ieooui)
+}
+</STYLE>
+<![endif]-->
+<STYLE>@page Section1 {size: 8.5in 11.0in; margin: 1.0in 1.25in 1.0in 1.25in; mso-header-margin: .5in; mso-footer-margin: .5in; mso-paper-source: 0; }
+P.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"; mso-style-parent: ""; mso-pagination: widow-orphan; mso-fareast-font-family: "Times New Roman"
+}
+LI.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"; mso-style-parent: ""; mso-pagination: widow-orphan; mso-fareast-font-family: "Times New Roman"
+}
+DIV.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"; mso-style-parent: ""; mso-pagination: widow-orphan; mso-fareast-font-family: "Times New Roman"
+}
+DIV.Section1 {
+	page: Section1
+}
+</STYLE>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]--></HEAD>
+<BODY lang=EN-US style="tab-interval: .5in">
+<DIV class=Section1>
+<P class=MsoNormal style="TEXT-ALIGN: center" align=center><B><SPAN 
+style="FONT-SIZE: 14pt; FONT-FAMILY: Arial">Adding and Modifying Weapons in No 
+One Lives Forever 2</SPAN></B></P>
+<P class=MsoNormal><B><SPAN 
+style="FONT-SIZE: 14pt; FONT-FAMILY: Arial"></SPAN></B>&nbsp;</P>
+
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial">
+<h2><A NAME="overview">Overview</A></h2>
+</SPAN></B></P>
+<P class=MsoNormal>This document will describe how to modify existing weapons 
+and adding new ones to the game No One Lives Forever 2 (NOLF2).&nbsp; It will go 
+over the necessary properties for the weapons, mods and ammo and how to add ammo 
+and mods to a weapon.&nbsp; The main file used for the weapon, ammo and mod 
+definitions is <I>weapons.txt </I>found in your NOLF2\Game\Attributes 
+directory.&nbsp; This file will also take a look at <I>FX.txt</I> so you know 
+how to create and modify the special FX for the weapons.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><B>
+
+<SPAN 
+style="FONT-FAMILY: Arial">
+<h2><A NAME="weapons.txt">Weapons.txt</A></h2>
+</SPAN></B></P>
+<P class=MsoNormal>The first section you will see in weapons.txt is the 
+WeaponOrder list.&nbsp; The WeaponOrder list allows you to specify the order of 
+all weapons and gadgets used in the game and is also used to categorize the 
+weapons into classes.&nbsp; The class numbers refer to the NextWeapon_XX command 
+binding.&nbsp; The NextWeapon_XX command will cycle through all the weapons in 
+the XX class.&nbsp; When adding or changing weapons you may want to reorganize 
+the weapon classes so like weapons are grouped together.&nbsp; The last entries 
+in the WeaponOrder list are the non-player weapons, weapons that are only used 
+by AI.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>After the WeaponOrder list is the AutoSwitch list.&nbsp; This 
+is used to set a priority to weapons when auto switching.&nbsp; When the player 
+picks up a weapon the AutoSwitch list is used to determine if they should switch 
+to that weapon.&nbsp; Leave any weapons off the list that you feel the player 
+would never want that game to automatically switch to. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><B style="mso-bidi-font-weight: normal">
+<SPAN 
+style="FONT-FAMILY: Arial">
+<h2><A NAME="mp_weapons.txt">MP_Weapons.txt</A></h2>
+<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal>NOLF2 SinglePlayer and Cooperative game types strictly used 
+weapons.txt for all of its weapon definitions.<SPAN 
+style="mso-spacerun: yes">&nbsp; </SPAN>The other multiplayer game types, 
+Deathmatch, TeamDeathmatch and DoomsDay also used an override file, 
+mp_weapons.txt the allows you to override certain properties from weapons.txt 
+for use in those game types.<SPAN style="mso-spacerun: yes">&nbsp; </SPAN>This 
+allowed us to balance singleplayer and multiplayer game types separately. <SPAN 
+style="mso-spacerun: yes">&nbsp;</SPAN>Only the properties that are going to be 
+overridden need to be listed in the weapon definition in mp_weapons.txt.<SPAN 
+style="mso-spacerun: yes">&nbsp; </SPAN>(see mp_weapons.txt for more 
+info).<o:p></o:p></P>
+<P class=MsoNormal>&nbsp;</P>
+
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial">
+<h2><A NAME="ammo">Ammo</A></h2>
+</SPAN></B></P>
+<P class=MsoNormal>The ammo section is where all of the ammo definitions are 
+listed.&nbsp; The order of the ammo list is in order of creation and doesn’t 
+pertain to the weapons that use the ammo or the priority of the ammo.&nbsp; When 
+creating a new ammo definition you must add it to the end of the already 
+existing list with a tag that is one greater than the previous definition.&nbsp; 
+If you wish to edit an existing ammo definition, you may change any of the 
+properties, listed below, to the desired value.&nbsp; However, you cannot change 
+the name of an ammo definition since that name is used to reference the ammo in 
+the weapon definitions.&nbsp; If you wish to edit any property that is an ID of 
+a localized string (stored in CRes.dll) or when adding a new ammo definition you 
+must edit the string table in CRes.dll and rebuild the game code.&nbsp; 
+(see&nbsp; the ” Building the No One Lives Forever 2 Game” document on how to 
+build the game.)</P>
+
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;<B><SPAN style="FONT-FAMILY: Arial">
+<h2><A NAME="ammo_properties">Ammo Properties</A></h2></SPAN></B></P>
+<TABLE class=MsoNormalTable 
+style="BORDER-COLLAPSE: collapse; mso-padding-alt: 0in 0in 0in 0in" 
+cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+  <TR style="mso-yfti-irow: 0">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>Name</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>This is the user friendly name that is used to 
+      reference the ammo in the weapon definitions and from within 
+  DEdit</P></TD></TR>
+  <TR style="mso-yfti-irow: 1">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>NameId</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>This is an ID that maps to a localized string for the 
+      name of the ammo (seen in game).&nbsp; </P></TD></TR>
+  <TR style="mso-yfti-irow: 2">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>DescId</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>This is an ID that maps to a localized string for the 
+      description of the ammo.</P></TD></TR>
+  <TR style="mso-yfti-irow: 3">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>Type</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the type of ammo.</P>
+      <P class=MsoNormal>0 – Vector (bullet)</P>
+      <P class=MsoNormal>1 – Projectile (grenade)</P>
+      <P class=MsoNormal>3 – Gadget (code breaker)</P></TD></TR>
+  <TR style="mso-yfti-irow: 4">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>Icon</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>File path and name of the interface icon fro the ammo 
+      that will be displayed when the ammo is selected.</P></TD></TR>
+  <TR style="mso-yfti-irow: 5">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>MaxAmount</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the maximum amount of ammo that the player 
+      can carry at any given time.&nbsp; </P></TD></TR>
+  <TR style="mso-yfti-irow: 6">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>SelectionAmount</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the amount of this ammo in a weapon when a 
+      weapon is picked up in game.</P></TD></TR>
+  <TR style="mso-yfti-irow: 7">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>SpawnedAmount</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the amount of ammo that will be in an ammo 
+      box when this ammo spawns in an ammo box. (level designers can override 
+      this value).</P></TD></TR>
+  <TR style="mso-yfti-irow: 8">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>InstDamage</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the amount of Instantaneous damage done by 
+      this type of&nbsp; ammo.</P></TD></TR>
+  <TR style="mso-yfti-irow: 9">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>InstDamageType</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the type of Instantaneous damage done by this 
+      type of ammo.&nbsp; (See valid DamageTypes in DamageTypes.txt).</P></TD></TR>
+  <TR style="mso-yfti-irow: 10">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>AreaDamage</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the Max amount of Area damage done by this 
+      type of ammo (i.e., damage done if you are in the center of the 
+      damage).</P></TD></TR>
+  <TR style="mso-yfti-irow: 11">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>AreaDamageType</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the type of Area damage done by this type of 
+      ammo.&nbsp; (See valid DamageTypes in DamageTypes.txt).</P></TD></TR>
+  <TR style="mso-yfti-irow: 12">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>AreaDamageRadius</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the radius of effect for the 
+    AreaDamage.</P></TD></TR>
+  <TR style="mso-yfti-irow: 13">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>ProgDamage</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the amount of Progressive damage done by this 
+      type of ammo.&nbsp; This is the amount of damage that is done per 
+      second.</P></TD></TR>
+  <TR style="mso-yfti-irow: 14">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>ProgDamageType</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the type of Progressive damage done by this 
+      type of ammo.&nbsp; (See valid DamageTypes in DamageTypes.txt).</P></TD></TR>
+  <TR style="mso-yfti-irow: 15">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>ProgDamageDuration</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies how long the Progressive damage is applied to 
+      the victim.</P></TD></TR>
+  <TR style="mso-yfti-irow: 16">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>ProgDamageRadius</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the radius of effect for the Progressive 
+      damage (only used if ProgDamageLifetime is greater than 0.0).</P></TD></TR>
+  <TR style="mso-yfti-irow: 17">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>ProgDamageLifetime</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the time the progressive damage radius of 
+      effect lasts (for things like poison gas).</P></TD></TR>
+  <TR style="mso-yfti-irow: 18">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>FireRecoilMult</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>This multiplier modifies the FireRecoilPitch value in a 
+      weapon firing this type of ammo (see <B>FireRecoilPitch</B> in Weapon 
+      definition below)</P></TD></TR>
+  <TR style="mso-yfti-irow: 19">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>ImpactFXName</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the impact special fx.&nbsp; The value of 
+      this </P>
+      <P class=MsoNormal>property MUST correspond to the name of an ImpactFX 
+      specified in&nbsp; the FX.txt file.</P></TD></TR>
+  <TR style="mso-yfti-irow: 20">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>UWImpactFXName</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the under water impact special fx.&nbsp; The 
+      value of this property MUST correspond to the name of an ImpactFX 
+      specified in the FX.txt file.</P></TD></TR>
+  <TR style="mso-yfti-irow: 21">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>ProjectileFXName</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies the a projectile special fx.&nbsp; The value 
+      of this property MUST correspond to the name of a ProjectileFX specified 
+      in the FX.txt file.</P></TD></TR>
+  <TR style="mso-yfti-irow: 22">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>MoveableImpactOverrideFXName</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies an effect to play if the impact occurs on a 
+      moveable object, such as a model or a door. This way you can have effects 
+      that 'stick' but not stick to moveable objects so they won't hang in the 
+      air.</P></TD></TR>
+  <TR style="mso-yfti-irow: 23">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>FireFXName</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies a fire special fx.&nbsp; The value of this 
+      property MUST correspond to the name of a FireFX specified in the FX.txt 
+      file.</P></TD></TR>
+  <TR style="mso-yfti-irow: 24">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>TracerFXName</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Specifies a tracer special fx.&nbsp; The value of this 
+      property MUST correspond to the name of a TracerFX specified in the FX.txt 
+      file.</P></TD></TR>
+  <TR style="mso-yfti-irow: 25">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>WeaponAniOverride</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Not used in NOLF2 and is unsupported</P></TD></TR>
+  <TR style="mso-yfti-irow: 26">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>CanBeDeflected</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>Ammo can be deflected by weapon.&nbsp; To deflect, the 
+      weapon must have a model string key "begindeflect" followed by a key 
+      "enddeflect".</P></TD></TR>
+  <TR style="mso-yfti-irow: 27">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>DeflectSurfaceType</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>When ammo is deflected, the impact fx used will be 
+      based on this surface type.&nbsp; Surface types found in 
+    surface.txt.</P></TD></TR>
+  <TR style="mso-yfti-irow: 28">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>CanAdjustInstDamage</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>If set to 1 the InstDamage amount may be adjusted 
+      programatically, if set to 0 the value specified by InstDamage will always 
+      be used.</P></TD></TR>
+  <TR style="mso-yfti-irow: 29; mso-yfti-lastrow: yes">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 190.1pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=253>
+      <P class=MsoNormal><B>CanServerRestrict</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 57.5pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=77>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 195.2pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=260>
+      <P class=MsoNormal>If set to 0 to not allow server options to restrict 
+      this item from the level.&nbsp; Default: 1.</P></TD></TR></TBODY></TABLE>
+<P class=MsoNormal>&nbsp;</P>
+
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial">
+<h2><A NAME="weapons">Weapons</A></h2>
+</SPAN></B></P>
+<P class=MsoNormal>The weapon section is where all of the weapon definitions are 
+listed.&nbsp; The order of the weapon list is in order of creation and doesn’t 
+pertain to the WeaponOrder list mentioned above.&nbsp; When creating a new 
+weapon definition you must add it to the end of the already existing list with a 
+tag that is one greater than the previous definition.&nbsp; If you wish to edit 
+an existing weapon definition, you may change any of the properties, listed 
+below, to the desired value.&nbsp; However, you cannot change the name of a 
+weapon definition since that name is used in the WeaponOrder list and within 
+DEdit.&nbsp; If you wish to edit any property that is an ID of a localized 
+string (stored in CRes.dll) or when adding a new weapon definition you must edit 
+the string table in CRes.dll and rebuild the game code.&nbsp; (see&nbsp; the ” 
+Building the No One Lives Forever 2 Game” document on how to build the 
+game.)</P>
+<P class=MsoNormal>&nbsp;</P>
+
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial">
+<h2><A NAME="weapon_properties">Weapon Properties</A></h2>
+</SPAN></B></P>
+<TABLE class=MsoNormalTable 
+style="BORDER-COLLAPSE: collapse; mso-padding-alt: 0in 0in 0in 0in" 
+cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+  <TR style="mso-yfti-irow: 0">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Name</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>User friendly name used in WeaponOrder above and in 
+      DEdit.</P></TD></TR>
+  <TR style="mso-yfti-irow: 1">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>NameId</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Id that maps to the weapon Localizable name (stored in 
+      CRes.dll)</P></TD></TR>
+  <TR style="mso-yfti-irow: 2">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>DescriptionId</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Id that maps to the weapon localized description 
+      (stored in CRes.dll) </P></TD></TR>
+  <TR style="mso-yfti-irow: 3">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>IsAmmoNoPickupId</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Id that maps to the string that is displayed for IsAmmo 
+      = 1 type weapons when the weapon can not be picked up (stored in 
+      CRes.dll)</P></TD></TR>
+  <TR style="mso-yfti-irow: 4">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>ClientWeaponType</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Weapon type:</P>
+      <P class=MsoNormal>0 - none (NEVER use this number)</P>
+      <P class=MsoNormal>1 - vector (bullet type weapons)</P>
+      <P class=MsoNormal>2 - projectile (like crossbows)</P></TD></TR>
+  <TR style="mso-yfti-irow: 5">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AniType</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Classify the weapon into a style of animation when 
+      holding the weapon.&nbsp; Players and AI will hold their weapons depending 
+      on the animation type of the weapon.</P>
+      <P class=MsoNormal>Values :</P>
+      <P class=MsoNormal>0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - rifle</P>
+      <P class=MsoNormal>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - pistol</P>
+      <P class=MsoNormal>2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - melee</P>
+      <P class=MsoNormal>3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - Throw</P>
+      <P class=MsoNormal>4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - Rifle2</P>
+      <P class=MsoNormal>5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - Rifle3</P>
+      <P class=MsoNormal>6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - Holster</P>
+      <P class=MsoNormal>7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - Place</P>
+      <P class=MsoNormal>8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - Gadget</P>
+      <P class=MsoNormal>9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - Throwing Stars</P></TD></TR>
+  <TR style="mso-yfti-irow: 6">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Icon</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Filename of the texture used for an icon associated 
+      with the weapon.</P>
+      <P class=MsoNormal>&nbsp;</P>
+      <P class=MsoNormal>for <st1:place>Normal</st1:place> icons</P>
+      <P class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ".dtx" is appended to 
+      the name.</P>
+      <P class=MsoNormal>for Unselected icons </P>
+      <P class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp; "U.dtx" is appended to the 
+      name.</P>
+      <P class=MsoNormal>for Disabled icons</P>
+      <P class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp; "D.dtx" is appended to the 
+      name.</P>
+      <P class=MsoNormal>for Silhouette icons</P>
+      <P class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp; "X.dtx" is appended to the 
+      name.</P></TD></TR>
+  <TR style="mso-yfti-irow: 7">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Pos</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(vector)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The player-view weapon model pos (offset from player 
+      model in x, y, and z)</P></TD></TR>
+  <TR style="mso-yfti-irow: 8">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>MuzzlePos</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(vector)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The player-view weapon model muzzle pos (offset from 
+      the player model in x, y, and z).&nbsp; This is used to determine where to 
+      place muzzle fx.</P></TD></TR>
+  <TR style="mso-yfti-irow: 9">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>BreachOffset</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(vector)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The player-view weapon breach offset which is relative 
+      to the above model muzzle pos.&nbsp; This is used to determine where shell 
+      casings will&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; be ejected from the 
+      player-view weapon.</P></TD></TR>
+  <TR style="mso-yfti-irow: 10">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>MinPerturb</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The minimum amount of perturb on each vector or 
+      projectile fired by the weapon.&nbsp; A value in range from MinPerturb to 
+      MaxPerturb</P>
+      <P class=MsoNormal>is added to the Up and Right components of the firing 
+      direction vector based on the current accuracy of the player/ai firing the 
+      weapon.</P></TD></TR>
+  <TR style="mso-yfti-irow: 11">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>MaxPerturb</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The maximum amount of perturb on each vector or 
+      projectile fired by the weapon.&nbsp; A value in range from MinPerturb to 
+      MaxPerturb is added to the Up and Right components of the firing direction 
+      vector based on the current accuracy of the player/ai firing the 
+      weapon.</P></TD></TR>
+  <TR style="mso-yfti-irow: 12">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Range</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The range of the weapon.&nbsp; The weapon is 
+      ineffective if shooting at targets beyond the range.</P></TD></TR>
+  <TR style="mso-yfti-irow: 13">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Recoil</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(vector)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The amount the weapon will recoil when fired.</P></TD></TR>
+  <TR style="mso-yfti-irow: 14">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>VectorsPerRound</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The number of vectors (rays cast) per round when the 
+      weapon is fired.&nbsp; Used for things like a shotgun.</P></TD></TR>
+  <TR style="mso-yfti-irow: 15">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PVModel</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>File path and name of the player-view weapon 
+    model.</P></TD></TR>
+  <TR style="mso-yfti-irow: 16">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PVSkin0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the player-view weapon skin(s) (NOTE: You can 
+      specify "Hands" if&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; you want to use the 
+      player-view hands texture associated with the current player model 
+      style).&nbsp; There can be any number of skins: PVSkin0, PVSkin1, …, 
+      PVSkinN.&nbsp; The PVSkinX number relates to the texture indices in the 
+      piece info dialog in ModelEdit.</P></TD></TR>
+  <TR style="mso-yfti-irow: 17">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PVRenderStyle0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the render style file ltb(s).&nbsp; There can 
+      be any number of render styles: PVRenderStyle0, PVRenderStyle1, ..., 
+      PVRenderStyleN. The PVRenderStyleX number relates to the renderstyle index 
+      in the piece info dialog in ModelEdit.</P></TD></TR>
+  <TR style="mso-yfti-irow: 18">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PVMuzzleFXName</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the optional player-view muzzle fx for this 
+      weapon.&nbsp; The value of this property MUST correspond to a name 
+      specified in the MuzzleFX definitions in the Attributes\fx.txt 
+  file.</P></TD></TR>
+  <TR style="mso-yfti-irow: 19">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PVAttachFXName0-10</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the optional player-view fx attachment for 
+      this weapon.&nbsp; The value of this property MUST correspond to an effect 
+      created with FXEd.</P></TD></TR>
+  <TR style="mso-yfti-irow: 20">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>HHModel</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>File path and name of the hand-held (and powerup) 
+      weapon model.</P></TD></TR>
+  <TR style="mso-yfti-irow: 21">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>HHSkin0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the hand-held (and powerup) weapon 
+      skin(s).&nbsp; There can be any number of skins: HHSkin0, HHSkin1, ..., 
+      HHSkinN.&nbsp; The HHSkinX number relates to the texture indices in the 
+      piece info dialog in ModelEdit.</P></TD></TR>
+  <TR style="mso-yfti-irow: 22">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>HHRendeStyle0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the render style file ltb(s).&nbsp; There can 
+      be any number of render styles: RenderStyle0, HHRenderStyle1, ..., 
+      HHRenderStyleN.&nbsp; The HHRenderStyleX number relates to the renderstyle 
+      index in the piece info dialog in ModelEdit.</P></TD></TR>
+  <TR style="mso-yfti-irow: 23">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>HHModelScale</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(vector)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The scale of the hand-held (and powerup) weapon 
+      model.</P></TD></TR>
+  <TR style="mso-yfti-irow: 24">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>HHMuzzleFXName</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the optional hand-held muzzle fx for this 
+      weapon.&nbsp; The value of this property MUST correspond to a name 
+      specified in the MuzzleFX definitions in the Attributes\fx.txt 
+  file.</P></TD></TR>
+  <TR style="mso-yfti-irow: 25">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>FireSnd</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the weapon is 
+      fired.</P></TD></TR>
+  <TR style="mso-yfti-irow: 26">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AltFireSnd</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the weapon is 
+      alt-fired.&nbsp; (<B>ALT Fire was not used in NOLF 2 and is 
+      unsupported</B>)</P></TD></TR>
+  <TR style="mso-yfti-irow: 27">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>SilencedFireSnd</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the weapon is 
+      fired with a silencer.</P></TD></TR>
+  <TR style="mso-yfti-irow: 28">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>DryFireSnd</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the weapon is dry 
+      fired.</P></TD></TR>
+  <TR style="mso-yfti-irow: 29">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>ReloadSnd1-3</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the weapon is 
+      reloaded.&nbsp; (mapped to SOUND_KEY 1 – SOUND_KEY 3)</P></TD></TR>
+  <TR style="mso-yfti-irow: 30">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>SelectSnd</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the weapon is 
+      selected.&nbsp; (mapped to SOUND_KEY 4)</P></TD></TR>
+  <TR style="mso-yfti-irow: 31">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>DeselectSnd</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the weapon is 
+      deselected.&nbsp; (mapped to SOUND_KEY 5)</P></TD></TR>
+  <TR style="mso-yfti-irow: 32">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>MiscSound1-5</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Optional miscellaneous sounds to play during weapon 
+      animations.&nbsp; (mapped to SOUND_KEY 10 – SOUND_KEY 14)</P></TD></TR>
+  <TR style="mso-yfti-irow: 33">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>FireSndRadius</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The radius of volume falloff that fire sounds are 
+      played at</P></TD></TR>
+  <TR style="mso-yfti-irow: 34">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AIFireSndRadius</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The radius of volume that fire sounds make, w.r.t to 
+      AI's senses</P></TD></TR>
+  <TR style="mso-yfti-irow: 35">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>WeaponSndRadius</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The radius of volume falloff that all other sounds, 
+      non-fire sounds, are played at</P></TD></TR>
+  <TR style="mso-yfti-irow: 36">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>EnvironmentMap</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies whether or not the weapon uses environment 
+      mapping.</P></TD></TR>
+  <TR style="mso-yfti-irow: 37">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>InfiniteAmmo</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies whether or not the weapon has unlimited 
+      ammo.&nbsp; (1 = true, 0 = false).&nbsp; Things like swords should have 
+      unlimited ammo.</P></TD></TR>
+  <TR style="mso-yfti-irow: 38">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>ShotsPerClip</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The number of rounds the weapon can fire before it must 
+      be reloaded.</P></TD></TR>
+  <TR style="mso-yfti-irow: 39">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>FireRecoilPitch</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the amount the weapon should pitch (in 
+      degrees) when fired.</P></TD></TR>
+  <TR style="mso-yfti-irow: 40">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>FireRecoilDelay</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the time (in seconds) it should take for the 
+      weapon's pitch to get back to normal after recoiling from 
+firing.</P></TD></TR>
+  <TR style="mso-yfti-irow: 41">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AmmoName#</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the type of ammo available for this 
+      weapon.&nbsp; The value of this property MUST correspond to a name of an 
+      AMMO definition.&nbsp; If the weapon uses multiple ammo types, you may 
+      specify multiple AmmoName properties.&nbsp; For example:</P>
+      <P class=MsoNormal>AmmoName0&nbsp;&nbsp; = “9mm fmj”</P>
+      <P class=MsoNormal>AmmoName1&nbsp;&nbsp; = “9mm dum dum”</P>
+      <P 
+      class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      </P>
+      <P class=MsoNormal>Note:&nbsp; The first (or only) ammo type specified is 
+      considered the “default” ammo type.&nbsp; Every weapon MUST have at least 
+      one ammo type specified.</P></TD></TR>
+  <TR style="mso-yfti-irow: 42">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>ModName#</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the optional mods available for this 
+      weapon.&nbsp; The value of this property MUST correspond to the name of a 
+      MOD definition.&nbsp; If the weapon uses multiple mods, you may specify 
+      multiple ModName properties.&nbsp; For example:</P>
+      <P class=MsoNormal>ModName0&nbsp;&nbsp;&nbsp;&nbsp; = “silencer”</P>
+      <P class=MsoNormal>ModName1&nbsp;&nbsp;&nbsp;&nbsp; = “scope”</P></TD></TR>
+  <TR style="mso-yfti-irow: 43">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PVFXName#</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the optional player-view fx available for 
+      this weapon.&nbsp; The value of this property MUST correspondd to a name 
+      specified in the PVFX definitions in the Attributes\fx.txt file.&nbsp; If 
+      the weapon uses multiple pv fx, you may specify multiple PVFXName 
+      properties.</P></TD></TR>
+  <TR style="mso-yfti-irow: 44">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AIWeaponType</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Classify the weapon for use by AI</P>
+      <P class=MsoNormal>Values :</P>
+      <P class=MsoNormal>0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - None</P>
+      <P class=MsoNormal>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - Ranged</P>
+      <P class=MsoNormal>2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - Melee</P>
+      <P class=MsoNormal>3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      - Thrown</P></TD></TR>
+  <TR style="mso-yfti-irow: 45">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AIMinBurstInterval</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the range of time (in seconds) an AI will 
+      wait in between firing a burst from a weapon. IE, the AI will shoot 
+      somewhere between Min/AIMaxBurstShots, then wait Min/AIMaxBurstInterval 
+      seconds, then shoot again.</P></TD></TR>
+  <TR style="mso-yfti-irow: 46">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AIMaxBurstInterval</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>&nbsp;</P></TD></TR>
+  <TR style="mso-yfti-irow: 47">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AIMinBurstShots</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the range of shots an AI will fire when it is 
+      firing a burst from a weapon. IE, the AI will shoot somewhere between 
+      Min/AIMaxBurstShots, then wait Min/AIMaxBurstInterval seconds, then shoot 
+      again.</P></TD></TR>
+  <TR style="mso-yfti-irow: 48">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AIMaxBurstShots</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>&nbsp;</P></TD></TR>
+  <TR style="mso-yfti-irow: 49">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AIAnimatesReload</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies whether or not an AI animates reloading this 
+      weapon.&nbsp; 1 = true, 0 = false)</P></TD></TR>
+  <TR style="mso-yfti-irow: 50">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>LooksDangerous</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies whether or not the weapon/gadget looks 
+      dangerous to AIs.&nbsp; (1 = true, 0 = false)</P></TD></TR>
+  <TR style="mso-yfti-irow: 51">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>FireDelay</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the minimum delay in milliseconds between 
+      fire keys.&nbsp; The server will not allow shots to fire quicker than the 
+      FireDelay.</P></TD></TR>
+  <TR style="mso-yfti-irow: 52">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>HideWhenEmpty</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies whether or not the weapon/gadget should be 
+      hidden when out of ammo (also implies that the deselect animation 
+      shouldn't be played when auto-switching from this weapon when it runs out 
+      of ammo) (1 = true, 0 = false)</P></TD></TR>
+  <TR style="mso-yfti-irow: 53">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>IsAmmo</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies whether or not the weapon/gadget should be 
+      treated as ammo.&nbsp; In other words is the weapon placed/thrown (e.g., 
+      grenade, bear trap, etc.).&nbsp; If set to true the weapon's pick-up 
+      message won't be displayed when the weapon is picked up unless the weapon 
+      can't be picked up.&nbsp; If the weapon can't be picked up the 
+      IsAmmoNoPickupId string is displayed.&nbsp; This should be used for 
+      "thrown" weapons so the player doesn't see both the weapon pickup message 
+      AND the ammo pick up message.&nbsp; (1 = true, 0 = false)</P></TD></TR>
+  <TR style="mso-yfti-irow: 54">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>HolsterAttachment</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies node and model to attch when weapon is 
+      holstered.&nbsp; For example:</P>
+      <P class=MsoNormal>HolsterAttachment = "BACK AK47_holster"</P></TD></TR>
+  <TR style="mso-yfti-irow: 55">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>HiddenPiece0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Names of Gadget model pieces to hide/show when the 
+      gadget is fired.&nbsp; There can be any number of pieces to 
+      hide/show.&nbsp; </P></TD></TR>
+  <TR style="mso-yfti-irow: 56">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>FireAnimRateScale</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Speeds up or slows down the rate of the Fire 
+      animation.&nbsp; By default the scale is 1.0 which will play the animation 
+      at normal speed, 2.0 will double the speed, and 0.5 will half the 
+      speed.</P></TD></TR>
+  <TR style="mso-yfti-irow: 57">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>ReloadAnimRateScale</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Speeds up or slows down the rate of the Reload 
+      animation.&nbsp; By default the scale is 1.0 which will play the animation 
+      at normal speed, 2.0 will double the speed, and 0.5 will half the 
+      speed.</P></TD></TR>
+  <TR style="mso-yfti-irow: 58">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PowerupFX</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the FxED created FX to be played when the item 
+      respawns.&nbsp; This FX will constantly loop as long as the item is 
+      waiting to be picked up.</P></TD></TR>
+  <TR style="mso-yfti-irow: 59">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>RespawnWaitVisible</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>(0 or 1) If 0 the item will become invisible once it is 
+      picked up and is waiting to respawn.&nbsp; Otherwise the item will remain 
+      visible.</P></TD></TR>
+  <TR style="mso-yfti-irow: 60">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>RespawnWaitFX</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of an FxED created FX to play once the item is 
+      picked up and is waiting to respawn.</P></TD></TR>
+  <TR style="mso-yfti-irow: 61">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>RespawnWaitSkin0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the skin files that will be associted with the 
+      mode once it is picked up and is waiting to respawn.</P></TD></TR>
+  <TR style="mso-yfti-irow: 62">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>RespawnWaitRenderstyle0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the renderstyle that will be associated with 
+      the model once it is pickedup and is waiting to respawn.</P></TD></TR>
+  <TR style="mso-yfti-irow: 63; mso-yfti-lastrow: yes">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>CanServerRestrict</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>If set to 0 to not allow server options to restrict 
+      this item from the level.&nbsp; Default: 1.</P></TD></TR></TBODY></TABLE>
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial"></SPAN></B>&nbsp;</P>
+
+
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial">
+<h2><A NAME="mods">Mods</A></h2>
+</SPAN></B></P>
+<P class=MsoNormal>The mod section is where all of the mod definitions are 
+listed.&nbsp; The order of the mod list is in order of creation and doesn’t 
+pertain to the weapons that use the mod or the priority of the mod.&nbsp; When 
+creating a new mod definition you must add it to the end of the already existing 
+list with a tag that is one greater than the previous definition.&nbsp; If you 
+wish to edit an existing mod definition, you may change any of the properties, 
+listed below, to the desired value.&nbsp; However, you cannot change the name of 
+a mod definition since that name is used in the weapon definitions and within 
+DEdit.&nbsp; If you wish to edit any property that is an ID of a localized 
+string (stored in CRes.dll) or when adding a new mod definition you must edit 
+the string table in CRes.dll and rebuild the game code.&nbsp; (see&nbsp; the ” 
+Building the No One Lives Forever 2 Game” document on how to build the 
+game.)</P>
+<P class=MsoNormal>&nbsp;</P>
+<TABLE class=MsoNormalTable 
+style="BORDER-COLLAPSE: collapse; mso-padding-alt: 0in 0in 0in 0in" 
+cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+  <TR style="mso-yfti-irow: 0">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Name</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>User friendly name used in DEdit.</P></TD></TR>
+  <TR style="mso-yfti-irow: 1">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Socket</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the weapon model socket to attach the mod model 
+      to.&nbsp; You can add and edit sockets on a model within 
+  ModelEdit.</P></TD></TR>
+  <TR style="mso-yfti-irow: 2">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>NameId</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Id that maps to the localized string for the name of 
+      the Mod.</P></TD></TR>
+  <TR style="mso-yfti-irow: 3">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>DescriptionId</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Id that maps to the localized string for the 
+      description of the mod.</P></TD></TR>
+  <TR style="mso-yfti-irow: 4">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Icon</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the interface icon associated with the ammo 
+      type.</P></TD></TR>
+  <TR style="mso-yfti-irow: 5">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Type</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Specifies the type of mod.&nbsp; Valid values are:</P>
+      <P class=MsoNormal>0 – Silencer</P>
+      <P class=MsoNormal>1 – Scope</P></TD></TR>
+  <TR style="mso-yfti-irow: 6">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AttachModel</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>File path and name of the model attachment associated 
+      with the mod.</P></TD></TR>
+  <TR style="mso-yfti-irow: 7">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AttachSkin0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the skin(s) associated with the mod attachment 
+      model. There can be any number of skins: AttachSkin0, AttachSkin1, …, 
+      AttachSkinN</P></TD></TR>
+  <TR style="mso-yfti-irow: 8">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AttachRenderStyle0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the render style file ltb(s).&nbsp; There can 
+      be any number of render styles: AttachRenderStyle0, AttachRenderStyle1, …, 
+      AttachRenderStyleN</P></TD></TR>
+  <TR style="mso-yfti-irow: 9">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AttachScale</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(vector)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Scale of the mod attachment model.</P></TD></TR>
+  <TR style="mso-yfti-irow: 10">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>ZoomLevel</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Level the weapon can zoom to (Valid levels are 1, 2, 
+      and 3. 0 = can’t zoom). Ignored for non-scope mods.</P></TD></TR>
+  <TR style="mso-yfti-irow: 11">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>NightVision</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Does the mod provide night vision (1 = true, 0 = 
+      false).&nbsp; Ignored for non-scope mods. <B>(Night vision was not used in 
+      NOLF2 and is unsupported)</B></P></TD></TR>
+  <TR style="mso-yfti-irow: 12">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Integrated</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Is the mod built into the weapon (1 = true, 0 = 
+      false).&nbsp; If this is true, any weapon that lists this mod in its list 
+      of mods will always have this mod.</P></TD></TR>
+  <TR style="mso-yfti-irow: 13">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>Priority</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>This is used for weapons that have more than one mod of 
+      the same type (e.g., two scopes).&nbsp; This field indicates which should 
+      be used if the weapon has both mods (the highest priority is used).&nbsp; 
+      NOTE: this is a number between 0 and 255, that should default to 
+  0.</P></TD></TR>
+  <TR style="mso-yfti-irow: 14">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>ZoomInSound</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the weapon is 
+      zoomed in.</P></TD></TR>
+  <TR style="mso-yfti-irow: 15">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>ZoomOutSound</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the weapon is 
+      zoomed out.</P></TD></TR>
+  <TR style="mso-yfti-irow: 16">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PickUpSound</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the mod is picked 
+      up (either absolute path to sound or name of soundbutes sound)</P></TD></TR>
+  <TR style="mso-yfti-irow: 17">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>RespawnSound</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the sound that is played when the mod respawns 
+      in multiplayer (either absolute path to sound or name of the 
+      soundbutes.txt sound)</P></TD></TR>
+  <TR style="mso-yfti-irow: 18">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PowerupModel</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the powerup model associated with the 
+      mod.&nbsp; This is what players see in the game when picking up the 
+      mod.</P></TD></TR>
+  <TR style="mso-yfti-irow: 19">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PowerupSkin0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>ame of the powerup skin(s) associated with the 
+      mod.&nbsp; There can be any number of skins: PowerupSkin0, PowerupSkin1, 
+      ..., PowerupSkinN</P></TD></TR>
+  <TR style="mso-yfti-irow: 20">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PowerupRenderStyle0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the render style file ltb(s).&nbsp; There can 
+      be any number of render styles: PowerupRenderStyle0, PowerupRenderStyle1, 
+      ..., PowerupRenderStyleN</P></TD></TR>
+  <TR style="mso-yfti-irow: 21">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PowerupModelScale</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The scaling factor used with the powerup model.&nbsp; 
+      (same model as attach model)</P></TD></TR>
+  <TR style="mso-yfti-irow: 22">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>TintColor</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(vector)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Color to tint the screen when mod is picked up (r, g, 
+      b)</P></TD></TR>
+  <TR style="mso-yfti-irow: 23">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>TintTime</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(float)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Duration in seconds of screen tint when gear is picked 
+      up</P></TD></TR>
+  <TR style="mso-yfti-irow: 24">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>AISilencedFireSndRadius</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>The radius of volume that silenced fire sounds make, 
+      w.r.t to AI's senses</P>
+      <P class=MsoNormal>NOTE: this value only works with Type = 0 
+  mods.</P></TD></TR>
+  <TR style="mso-yfti-irow: 25">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>PowerupFX</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the FxED created FX to be played when the item 
+      respawns.&nbsp; This FX will constantly loop as long as the item is 
+      waiting to be picked up.</P></TD></TR>
+  <TR style="mso-yfti-irow: 26">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>RespawnWaitVisible</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(integer)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>(0 or 1) If 0 the item will become invisible once it is 
+      picked up and is waiting to respawn.&nbsp; Otherwise the item will remain 
+      visible.</P></TD></TR>
+  <TR style="mso-yfti-irow: 27">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>RespawnWaitFX</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of an FxED created FX to play once the item is 
+      picked up and is waiting to respawn.</P></TD></TR>
+  <TR style="mso-yfti-irow: 28">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>RespawnWaitSkin0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the skin files that will be associted with the 
+      mode once it is picked up and is waiting to respawn.</P></TD></TR>
+  <TR style="mso-yfti-irow: 29; mso-yfti-lastrow: yes">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 167.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=223>
+      <P class=MsoNormal><B>RespawnWaitRenderStyle0-N</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 0.75in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=72>
+      <P class=MsoNormal>(string)</P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 221.4pt; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=295>
+      <P class=MsoNormal>Name of the renderstyle that will be associated with 
+      the model once it is pickedup and is waiting to 
+respawn.</P></TD></TR></TBODY></TABLE>
+<P class=MsoNormal>&nbsp;</P>
+
+<P class=MsoNormal><B><SPAN style="FONT-FAMILY: Arial">
+<h2><A NAME="creating_new_weapons">Creating New Weapons</A></h2>
+</SPAN></B></P>
+<P class=MsoNormal>When adding a new weapon here are a few things to keep in 
+mind.&nbsp; Your model will need a select, deselect, reload, idle_0 and fire 
+animations.&nbsp; You may also have idle_1 and idle_2 for multiple idle 
+animations, these animations are played less often and may be more 
+pronounced.&nbsp; You can also have prefire and postfire animations that, if 
+present, will play before and after the fire animation.&nbsp; These animations 
+can be used to start and stop looping sounds, be used to show a ramp up and ramp 
+down time for the weapon and may also be used to simulate holding an object to 
+throw, like the grenades.&nbsp; In order for the weapon to actually fire a round 
+it must contain a fire_key frame string on one of the keyframes of the model for 
+one of the prefire, fire, or postfire animations.&nbsp; All the valid 
+framestrings and what the are used for are listed below.</P>
+<P class=MsoNormal>&nbsp;</P>
+<TABLE class=MsoNormalTable 
+style="BORDER-COLLAPSE: collapse; mso-padding-alt: 0in 0in 0in 0in" 
+cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+  <TR style="mso-yfti-irow: 0">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: medium none" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>FIRE_KEY</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Lets the weapon know when to fire.</P></TD></TR>
+  <TR style="mso-yfti-irow: 1">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>SOUND_KEY (integer)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Tells the weapon to play a sound that is associated 
+      with the given number.&nbsp; Valid numbers and their mapping to the sound 
+      files in the weapon definition are:</P>
+      <P class=MsoNormal>1 – ReloadSnd</P>
+      <P class=MsoNormal>2 – ReloadSnd2</P>
+      <P class=MsoNormal>3 – ReloadSnd3</P>
+      <P class=MsoNormal>4 – SelectSnd</P>
+      <P class=MsoNormal>5 – DeselectSnd</P>
+      <P class=MsoNormal>6 – FireSnd</P>
+      <P class=MsoNormal>7 – DryFireSnd</P>
+      <P class=MsoNormal>8 – AltFireSnd</P>
+      <P class=MsoNormal>9 – SilencedFireSnd</P>
+      <P class=MsoNormal>10 – MiscSnd1</P>
+      <P class=MsoNormal>11 – MiscSnd2</P>
+      <P class=MsoNormal>12 – MiscSnd3</P>
+      <P class=MsoNormal>13 – MiscSnd4</P>
+      <P class=MsoNormal>14 – MiscSnd5</P></TD></TR>
+  <TR style="mso-yfti-irow: 2">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>BUTE_SOUND_KEY (string)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Tells the weapon to play a buted sound of the given 
+      name. (see soundbutes.txt for more info on soundbutes)</P></TD></TR>
+  <TR style="mso-yfti-irow: 3">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>LOOP_SOUND_KEY (integer)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Same as SOUND_KEY except the sound will begin to 
+      loop.&nbsp; To stop the looping sound use the frame string “LOOP_SOUND_KEY 
+      stop”.&nbsp; Usually you want the sound to begin looping during its 
+      prefire animation and stop during its postfire animation.</P></TD></TR>
+  <TR style="mso-yfti-irow: 4">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>FX (string)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Play the specifed FxEd created fx.</P></TD></TR>
+  <TR style="mso-yfti-irow: 5">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>FIREFX_KEY (string)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Fires the weapon and plays the specified FxEd create 
+      FX.&nbsp; Same as doing “FIRE_KEY; FIREFX_KEY (fx name)”</P></TD></TR>
+  <TR style="mso-yfti-irow: 6">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>FLASHLIGHT (string)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Lets the weapon turn the flashlight on and off.&nbsp; 
+      Valid strings:</P>
+      <P class=MsoNormal>ON</P>
+      <P class=MsoNormal>OFF</P></TD></TR>
+  <TR style="mso-yfti-irow: 7">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>DEFLECT (float)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>When a weapon hits this key it specifies the time, in 
+      seconds, that this weapon can deflect hits from other weapons that are 
+      deflecting.</P></TD></TR>
+  <TR style="mso-yfti-irow: 8">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: medium none" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>HIDE_PIECE_KEY (string)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Sets the specified piece name invisible.</P></TD></TR>
+  <TR style="mso-yfti-irow: 9">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: medium none" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>SHOW_PIECE_KEY (string)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Sets the specified piece name visible again.</P></TD></TR>
+  <TR style="mso-yfti-irow: 10">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: medium none" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>HIDE_PVATTACHFX (integer)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Hides specifed PVAttachFXName# on the weapon</P></TD></TR>
+  <TR style="mso-yfti-irow: 11">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: medium none" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>SHOW_PVATTACHFX (integer)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Shows the specified PVAttachFXName#.</P></TD></TR>
+  <TR style="mso-yfti-irow: 12">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: medium none" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>HIDE_PVATTACHMENT (integer)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Hides the specified PlayerViewAttachmentX (set on a per 
+      player model basis.&nbsp; See modelbutes.txt for more info)</P></TD></TR>
+  <TR style="mso-yfti-irow: 13; mso-yfti-lastrow: yes">
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: windowtext 1pt solid; WIDTH: 2.95in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=283>
+      <P class=MsoNormal><B>SHOW_PVATTACHMENT (integer)</B></P></TD>
+    <TD 
+    style="BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: medium none; PADDING-LEFT: 5.4pt; PADDING-BOTTOM: 0in; BORDER-LEFT: medium none; WIDTH: 3.2in; PADDING-TOP: 0in; BORDER-BOTTOM: windowtext 1pt solid" 
+    vAlign=top width=307>
+      <P class=MsoNormal>Shows the specified PlayerViewAttachmentX. &nbsp;(set 
+      on a per player model basis.&nbsp; See modelbutes.txt for more 
+  info)</P></TD></TR></TBODY></TABLE>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><B></B>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P></DIV></BODY></HTML>
