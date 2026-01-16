@@ -2,7 +2,7 @@
 
 Purpose: a small Tkinter app + standalone scripts for FoM/LithTech Jupiter assets (worlds, models, textures). This folder is intended to be self-contained and to run with stock Python 3 (no third-party deps).
 
-Note: the GUI expects scripts under `Open-FoMTools/tools/` (see `TOOLS_DIR` in `app.py`). In this repo snapshot the scripts are in the root of `Open-FoMTools/`. Either move them into `Open-FoMTools/tools/` or update `TOOLS_DIR` in `app.py`.
+Note: the GUI runs tool scripts from `Open-FoMTools/` (see `TOOLS_DIR` in `app.py`).
 
 ## Layout
 - `app.py`: Tkinter GUI shell and job runner.
@@ -178,7 +178,7 @@ python obj_triangulate_gltf.py --obj <file.obj>
 Utility for RakNet DataBlockEncryptor decryption. Not wired into the GUI.
 
 ## Adding a New Tool
-1) Drop script in `Open-FoMTools/tools/` (or update `TOOLS_DIR`).
+1) Drop script in `Open-FoMTools/`.
 2) Add `SCRIPT_...` constant in `app.py`.
 3) Create a `_page_*()` builder with inputs, command preview, and `_run_tool()` call.
 4) Add a sidebar entry in `_build_layout()` and a `page_help` tooltip string.

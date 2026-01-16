@@ -11,7 +11,7 @@ from tkinter import filedialog, messagebox, font
 
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(ROOT_DIR, ".."))
-TOOLS_DIR = os.path.join(ROOT_DIR, "tools")
+TOOLS_DIR = ROOT_DIR
 REL_ROOT = os.path.relpath(ROOT_DIR, REPO_ROOT)
 DEFAULT_OUT = os.path.join(REL_ROOT, "Output")
 
