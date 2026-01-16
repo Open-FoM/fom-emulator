@@ -14,6 +14,12 @@
 !/catalog/**
 !/Docs/
 !/Docs/**
+!/Open-FoMEdit/
+!/Open-FoMEdit/**
+!/Open-FoMTools/
+!/Open-FoMTools/**
+/Open-FoMTools/Output/
+/Open-FoMTools/Output/**
 # external sources (selective)
 !/External/**
 !/Server/packages/networking/native/raknet/
