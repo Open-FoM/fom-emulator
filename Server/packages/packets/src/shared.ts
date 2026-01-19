@@ -1,14 +1,127 @@
 /**
- * RakNet Message IDs (Transport Layer)
+ * RakNet Core Message IDs (Transport Layer)
+ *
+ * Exact values from RakNet MessageIdentifiers.h (DefaultMessageIDTypes).
+ */
+export enum RakNetCoreMessageId {
+    ID_INTERNAL_PING = 0x00,
+    ID_PING = 0x01,
+    ID_PING_OPEN_CONNECTIONS = 0x02,
+    ID_CONNECTED_PONG = 0x03,
+    ID_CONNECTION_REQUEST = 0x04,
+    ID_SECURED_CONNECTION_RESPONSE = 0x05,
+    ID_SECURED_CONNECTION_CONFIRMATION = 0x06,
+    ID_RPC_MAPPING = 0x07,
+    ID_DETECT_LOST_CONNECTIONS = 0x08,
+    ID_OPEN_CONNECTION_REQUEST = 0x09,
+    ID_OPEN_CONNECTION_REPLY = 0x0a,
+    ID_RPC = 0x0b,
+    ID_RPC_REPLY = 0x0c,
+    ID_OUT_OF_BAND_INTERNAL = 0x0d,
+
+    ID_CONNECTION_REQUEST_ACCEPTED = 0x0e,
+    ID_CONNECTION_ATTEMPT_FAILED = 0x0f,
+    ID_ALREADY_CONNECTED = 0x10,
+    ID_NEW_INCOMING_CONNECTION = 0x11,
+    ID_NO_FREE_INCOMING_CONNECTIONS = 0x12,
+    ID_DISCONNECTION_NOTIFICATION = 0x13,
+    ID_CONNECTION_LOST = 0x14,
+    ID_RSA_PUBLIC_KEY_MISMATCH = 0x15,
+    ID_CONNECTION_BANNED = 0x16,
+    ID_INVALID_PASSWORD = 0x17,
+    ID_MODIFIED_PACKET = 0x18,
+    ID_TIMESTAMP = 0x19,
+    ID_PONG = 0x1a,
+    ID_ADVERTISE_SYSTEM = 0x1b,
+    ID_REMOTE_DISCONNECTION_NOTIFICATION = 0x1c,
+    ID_REMOTE_CONNECTION_LOST = 0x1d,
+    ID_REMOTE_NEW_INCOMING_CONNECTION = 0x1e,
+    ID_DOWNLOAD_PROGRESS = 0x1f,
+    ID_FILE_LIST_TRANSFER_HEADER = 0x20,
+    ID_FILE_LIST_TRANSFER_FILE = 0x21,
+    ID_FILE_LIST_REFERENCE_PUSH_ACK = 0x22,
+    ID_DDT_DOWNLOAD_REQUEST = 0x23,
+    ID_TRANSPORT_STRING = 0x24,
+    ID_REPLICA_MANAGER_CONSTRUCTION = 0x25,
+    ID_REPLICA_MANAGER_DESTRUCTION = 0x26,
+    ID_REPLICA_MANAGER_SCOPE_CHANGE = 0x27,
+    ID_REPLICA_MANAGER_SERIALIZE = 0x28,
+    ID_REPLICA_MANAGER_DOWNLOAD_STARTED = 0x29,
+    ID_REPLICA_MANAGER_DOWNLOAD_COMPLETE = 0x2a,
+    ID_CONNECTION_GRAPH_REQUEST = 0x2b,
+    ID_CONNECTION_GRAPH_REPLY = 0x2c,
+    ID_CONNECTION_GRAPH_UPDATE = 0x2d,
+    ID_CONNECTION_GRAPH_NEW_CONNECTION = 0x2e,
+    ID_CONNECTION_GRAPH_CONNECTION_LOST = 0x2f,
+    ID_CONNECTION_GRAPH_DISCONNECTION_NOTIFICATION = 0x30,
+    ID_ROUTE_AND_MULTICAST = 0x31,
+    ID_RAKVOICE_OPEN_CHANNEL_REQUEST = 0x32,
+    ID_RAKVOICE_OPEN_CHANNEL_REPLY = 0x33,
+    ID_RAKVOICE_CLOSE_CHANNEL = 0x34,
+    ID_RAKVOICE_DATA = 0x35,
+    ID_AUTOPATCHER_GET_CHANGELIST_SINCE_DATE = 0x36,
+    ID_AUTOPATCHER_CREATION_LIST = 0x37,
+    ID_AUTOPATCHER_DELETION_LIST = 0x38,
+    ID_AUTOPATCHER_GET_PATCH = 0x39,
+    ID_AUTOPATCHER_PATCH_LIST = 0x3a,
+    ID_AUTOPATCHER_REPOSITORY_FATAL_ERROR = 0x3b,
+    ID_AUTOPATCHER_FINISHED_INTERNAL = 0x3c,
+    ID_AUTOPATCHER_FINISHED = 0x3d,
+    ID_AUTOPATCHER_RESTART_APPLICATION = 0x3e,
+    ID_NAT_PUNCHTHROUGH_REQUEST = 0x3f,
+    ID_NAT_CONNECT_AT_TIME = 0x40,
+    ID_NAT_GET_MOST_RECENT_PORT = 0x41,
+    ID_NAT_CLIENT_READY = 0x42,
+    ID_NAT_TARGET_NOT_CONNECTED = 0x43,
+    ID_NAT_TARGET_UNRESPONSIVE = 0x44,
+    ID_NAT_CONNECTION_TO_TARGET_LOST = 0x45,
+    ID_NAT_ALREADY_IN_PROGRESS = 0x46,
+    ID_NAT_PUNCHTHROUGH_FAILED = 0x47,
+    ID_NAT_PUNCHTHROUGH_SUCCEEDED = 0x48,
+    ID_DATABASE_QUERY_REQUEST = 0x49,
+    ID_DATABASE_UPDATE_ROW = 0x4a,
+    ID_DATABASE_REMOVE_ROW = 0x4b,
+    ID_DATABASE_QUERY_REPLY = 0x4c,
+    ID_DATABASE_UNKNOWN_TABLE = 0x4d,
+    ID_DATABASE_INCORRECT_PASSWORD = 0x4e,
+    ID_READY_EVENT_SET = 0x4f,
+    ID_READY_EVENT_UNSET = 0x50,
+    ID_READY_EVENT_ALL_SET = 0x51,
+    ID_READY_EVENT_QUERY = 0x52,
+    ID_LOBBY_GENERAL = 0x53,
+    ID_AUTO_RPC_CALL = 0x54,
+    ID_AUTO_RPC_REMOTE_INDEX = 0x55,
+    ID_AUTO_RPC_UNKNOWN_REMOTE_INDEX = 0x56,
+    ID_RPC_REMOTE_ERROR = 0x57,
+    ID_FILE_LIST_REFERENCE_PUSH = 0x58,
+    ID_READY_EVENT_FORCE_ALL_SET = 0x59,
+    ID_ROOMS_EXECUTE_FUNC = 0x5a,
+    ID_ROOMS_LOGON_STATUS = 0x5b,
+    ID_ROOMS_HANDLE_CHANGE = 0x5c,
+    ID_LOBBY2_SEND_MESSAGE = 0x5d,
+    ID_LOBBY2_SERVER_ERROR = 0x5e,
+    ID_INCOMPATIBLE_PROTOCOL_VERSION = 0x5f,
+    ID_FCM2_NEW_HOST = 0x60,
+    ID_FCM2_REQUEST_FCMGUID = 0x61,
+    ID_FCM2_RESPOND_FCMGUID = 0x62,
+    ID_FCM2_INFORM_FCMGUID = 0x63,
+    ID_UDP_PROXY_GENERAL = 0x64,
+    ID_SQLite3_EXEC = 0x65,
+    ID_SQLite3_UNKNOWN_DB = 0x66,
+    ID_REPLICA_MANAGER_3_SERIALIZE_CONSTRUCTION_EXISTING = 0x67,
+    ID_USER_PACKET_ENUM = 0x68,
+}
+
+/**
+ * RakNet Message IDs (FoM Protocol)
  *
  * These are the packet IDs used in the FoM protocol at the RakNet layer.
- * Internal RakNet messages (0x00-0x1b) are handled by native RakNet.
- * Game-specific messages start at 0x6c for the login flow.
+ * Game-specific messages start at 0x6b for the login flow.
  *
  * See: Docs/Packets/README.md for packet documentation index
  */
 export enum RakNetMessageId {
-    // Internal RakNet messages (0x00-0x1b)
+    // Core RakNet messages (aliases for convenience)
     ID_INTERNAL_PING = 0x00,
     ID_PING = 0x01,
     ID_PING_OPEN_CONNECTIONS = 0x02,
@@ -60,33 +173,66 @@ export enum RakNetMessageId {
 
     // World service packets (post-login gameplay)
     ID_WORLDSERVICE = 0xa5,         // 165 - Client -> World (world service interaction)
+
+    // World discovery (Master <-> World, out-of-band)
+    ID_WORLD_QUERY = 0xfe,          // 254 - Master -> World (discovery query)
+    ID_WORLD_INFO = 0xff,           // 255 - World -> Master (discovery response)
+    ID_WORLD_HEARTBEAT = 0xfd,      // 253 - World -> Master (player heartbeat relay)
 }
 
 /**
  * LithTech Message IDs (Game Layer)
  *
- * These are dispatched via the LithTech handler table at 0x006FAB50.
- * Wrapped inside RakNet USER_PACKET_ENUM (0x86) packets.
- *
- * See: Docs/Notes/CShell_Gameplay_Packets.md for handler details
+ * Derived from External/LithTech/engine/runtime/shared/src/packetdefs.h
+ * plus FoM-specific message IDs.
  */
 export enum LithTechMessageId {
-    // Server -> Client messages
-    MSG_CYCLECHECK = 4,           // 0x04 - Cycle/heartbeat check
-    MSG_NETPROTOCOLVERSION = 4,   // 0x04 - Alias: protocol version handshake
-    MSG_PROTOCOL_VERSION = 6,     // 0x06 - Protocol version (SMSG_LOADWORLD)
-    MSG_LOADWORLD = 6,            // 0x06 - Alias: load world command
-    MSG_CLIENTOBJECTID = 7,       // 0x07 - Client object ID assignment
-    MSG_UPDATE = 8,               // 0x08 - Object update (guaranteed)
-    MSG_UNGUARANTEEDUPDATE = 10,  // 0x0A - Object update (unguaranteed, position/rotation)
-    MSG_YOURID = 12,              // 0x0C - Player ID assignment
-    MSG_MESSAGE = 13,             // 0x0D - Game message wrapper (routes RakNet packet IDs to CShell)
-    MSG_MESSAGE_GROUP = 14,       // 0x0E - Grouped message container
-    MSG_SKYDEF = 16,              // 0x10 - Sky definition
-    MSG_PRELOADLIST = 19,         // 0x13 - Preload file list (textures, models, sounds)
+    // Server -> Client
+    SMSG_NETPROTOCOLVERSION = 0x04,
+    SMSG_UNLOADWORLD = 0x05,
+    SMSG_LOADWORLD = 0x06,
+    SMSG_CLIENTOBJECTID = 0x07,
+    SMSG_UPDATE = 0x08,
+    SMSG_UNGUARANTEEDUPDATE = 0x0a,
+    SMSG_YOURID = 0x0c,
+    SMSG_MESSAGE = 0x0d,
+    SMSG_PACKETGROUP = 0x0e,
+    SMSG_CONSOLEVAR = 0x0f,
+    SMSG_SKYDEF = 0x10,
+    SMSG_INSTANTSPECIALEFFECT = 0x11,
+    SMSG_PRELOADLIST = 0x13,
+    SMSG_THREADLOAD = 0x14,
+    SMSG_UNLOAD = 0x15,
+    SMSG_GLOBALLIGHT = 0x16,
+    SMSG_CHANGE_CHILDMODEL = 0x17,
 
-    // Client -> Server messages
-    MSG_CONNECTSTAGE = 9,         // 0x09 - Client connection stage notification (stage 0=loaded, 1=preloaded)
+    // Client -> Server
+    CMSG_HELLO = 0x05,
+    CMSG_GOODBYE = 0x06,
+    CMSG_UPDATE = 0x07,
+    CMSG_SOUNDUPDATE = 0x08,
+    CMSG_CONNECTSTAGE = 0x09,
+    CMSG_COMMANDSTRING = 0x0a,
+    CMSG_MESSAGE = 0x0b,
+    CMSG_TEST = 0x0c,
+
+    // Aliases used by FoM handlers
+    MSG_CYCLECHECK = SMSG_NETPROTOCOLVERSION,
+    MSG_NETPROTOCOLVERSION = SMSG_NETPROTOCOLVERSION,
+    MSG_PROTOCOL_VERSION = SMSG_LOADWORLD,
+    MSG_LOADWORLD = SMSG_LOADWORLD,
+    MSG_CLIENTOBJECTID = SMSG_CLIENTOBJECTID,
+    MSG_UPDATE = SMSG_UPDATE,
+    MSG_UNGUARANTEEDUPDATE = SMSG_UNGUARANTEEDUPDATE,
+    MSG_YOURID = SMSG_YOURID,
+    MSG_MESSAGE = SMSG_MESSAGE,
+    MSG_MESSAGE_GROUP = SMSG_PACKETGROUP,
+    MSG_SKYDEF = SMSG_SKYDEF,
+    MSG_PRELOADLIST = SMSG_PRELOADLIST,
+    MSG_CONNECTSTAGE = CMSG_CONNECTSTAGE,
+
+    // FoM-specific
+    MSG_ID_WORLD_UPDATE = 0x19,
 }
 
 export const LOGIN_PACKET_IDS = new Set<number>([
