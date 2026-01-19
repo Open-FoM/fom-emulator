@@ -30,6 +30,11 @@ CLIENT                                     WORLD SERVER
    |                                             |
    |-- MSG_ID 0x09 CONNECTSTAGE=0 ------------->|
    |                                             |
+   |<-- SMSG_PRELOADLIST (11) ------------------|
+   |       (client sends CONNECTSTAGE=1 on PRELOADLIST case=1) |
+   |                                             |
+   |-- MSG_ID 0x09 CONNECTSTAGE=1 ------------->|
+   |                                             |
    |<-- SMSG_UPDATE (8) spawn packet -----------|
    |       GroupObjUpdate w/ CF_NEWOBJECT        |
    |       + POSITION + ROTATION + MODELINFO     |
@@ -114,6 +119,23 @@ World (post-connect) begins LithTech SMSG stream:
   - SMSG_YOURID (ID 12) / SMSG_CLIENTOBJECTID (ID 7)
   - SMSG_LOADWORLD (ID 6) then SMSG_UPDATE / SMSG_MESSAGE / SMSG_PACKETGROUP
     - client sends MSG_ID 0x09 (CMSG_CONNECTSTAGE) with stage=0 after loadworld
+    - client sends MSG_ID 0x09 (CMSG_CONNECTSTAGE) with stage=1 after SMSG_PRELOADLIST case=1
+
+## CONNECTSTAGE callsites (client)
+
+- Stage 0 send:
+  - `OnLoadWorldPacket` @ fom_client.exe `0x7e66c0`
+  - builds msgId=0x09 then stage=0 and sends immediately after SMSG_LOADWORLD parse.
+- Stage 1 send:
+  - `OnPreloadListPacket` @ fom_client.exe `0x7e70d0`, switch **case 1**
+  - builds msgId=0x09 then stage=1 and sends when PRELOADLIST reaches case=1.
+
+## CONNECTSTAGE expectations (client-side)
+
+- After **stage=0**, client expects **SMSG_PRELOADLIST** to advance preload state.
+- After **stage=1**, client expects the world to be alive:
+  - **SMSG_UPDATE** spawn packet (CF_NEWOBJECT)
+  - **SMSG_UNGUARANTEEDUPDATE** heartbeat stream
 
 ## 0x7B Packet Handling (CONFIRMED)
 
