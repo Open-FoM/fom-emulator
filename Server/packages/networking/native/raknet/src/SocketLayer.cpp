@@ -9,6 +9,7 @@
 #include "raknet/SocketLayer.h"
 #include "raknet/RakAssert.h"
 #include "raknet/RakNetTypes.h"
+#include "raknet/FoMRawLogger.h"
 
 #ifndef _USE_RAKNET_FLOW_CONTROL
 #include "raknet/udt.h"
@@ -499,6 +500,7 @@ int SocketLayer::RecvFrom( const SOCKET s, RakPeer *rakPeer, int *errorCode, Rak
 		len = slo->RakNetRecvFrom(s,rakPeer,data,&sender);
 		if (len>0)
 		{
+			FomRawLoggerPush(0, (const unsigned char*)data, (uint32_t)len, sender.binaryAddress, sender.port);
 			ProcessNetworkPacket( sender.binaryAddress, sender.port, data, len, rakPeer, rakNetSocket );
 			return 1;
 		}
@@ -581,6 +583,7 @@ int SocketLayer::RecvFrom( const SOCKET s, RakPeer *rakPeer, int *errorCode, Rak
 
 	if ( len > 0 )
 	{
+		FomRawLoggerPush(0, (const unsigned char*)data, (uint32_t)len, sa.sin_addr.s_addr, portnum);
 		ProcessNetworkPacket( sa.sin_addr.s_addr, portnum, data, len, rakPeer, rakNetSocket );
 
 		return 1;
@@ -727,6 +730,11 @@ int SocketLayer::SendTo( SOCKET s, const char *data, int length, unsigned int bi
 	if ( s == (SOCKET) -1 )
 	{
 		return -1;
+	}
+
+	if (data && length > 0)
+	{
+		FomRawLoggerPush(1, (const unsigned char*)data, (uint32_t)length, binaryAddress, port);
 	}
 
 	int len=0;

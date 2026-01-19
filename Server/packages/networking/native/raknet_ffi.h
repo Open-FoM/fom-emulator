@@ -228,6 +228,29 @@ RAK_FFI_API bool rak_send(RakPeerHandle peer, const uint8_t* data, int32_t lengt
                            uint8_t ordering_channel, uint32_t binary_address, uint32_t port, uint32_t broadcast);
 
 /**
+ * Configure raw socket-level packet logging.
+ * @param enable_recv 1 to capture receives
+ * @param enable_send 1 to capture sends
+ * @param max_queue Maximum queued packets
+ * @param max_packet_bytes Maximum bytes copied per packet
+ */
+RAK_FFI_API void rak_raw_log_config(uint32_t enable_recv, uint32_t enable_send,
+                                    uint32_t max_queue, uint32_t max_packet_bytes);
+
+/**
+ * Pop next raw packet from the queue.
+ * @param buffer Destination buffer
+ * @param buffer_size Buffer size
+ * @param out_binary_address Output address (network byte order)
+ * @param out_port Output port
+ * @param out_direction 0=recv, 1=send
+ * @return Number of bytes copied (0 if none)
+ */
+RAK_FFI_API uint32_t rak_raw_log_pop(uint8_t* buffer, uint32_t buffer_size,
+                                     uint32_t* out_binary_address, uint16_t* out_port,
+                                     uint32_t* out_direction);
+
+/**
  * Receive a packet from the queue.
  * @param peer Handle from rak_create()
  * @return Pointer to packet data, or NULL if no packets waiting.
@@ -304,6 +327,45 @@ RAK_FFI_API RakSystemAddress rak_get_internal_id(RakPeerHandle peer);
 // =============================================================================
 // Utility Functions
 // =============================================================================
+
+/**
+ * Get the size of RakNetTime in bytes (depends on __GET_TIME_64BIT).
+ * @return Size in bytes (4 or 8)
+ */
+RAK_FFI_API uint32_t rak_get_raknet_time_bytes(void);
+
+/**
+ * Parse a RakNet reliable/internal frame and locate the payload.
+ * Returns 1 on success, 0 on failure.
+ * @param data Packet data buffer
+ * @param length Packet length in bytes
+ * @param out_payload_offset Byte offset to the payload
+ * @param out_payload_length Payload length in bytes
+ * @param out_payload_bits Payload length in bits (optional, can be NULL)
+ * @param out_reliability Reliability enum value (optional, can be NULL)
+ */
+RAK_FFI_API int32_t rak_parse_reliable_payload(const uint8_t* data, uint32_t length,
+                                               uint32_t* out_payload_offset,
+                                               uint32_t* out_payload_length,
+                                               uint32_t* out_payload_bits,
+                                               uint8_t* out_reliability);
+/**
+ * Parse a RakNet reliable/internal frame and locate the payload (bit-accurate offset).
+ * Returns 1 on success, 0 on failure.
+ * @param data Packet data buffer
+ * @param length Packet length in bytes
+ * @param out_payload_offset Byte offset to the payload (floor of bit offset)
+ * @param out_payload_offset_bits Bit offset to the payload (exact)
+ * @param out_payload_length Payload length in bytes
+ * @param out_payload_bits Payload length in bits (optional, can be NULL)
+ * @param out_reliability Reliability enum value (optional, can be NULL)
+ */
+RAK_FFI_API int32_t rak_parse_reliable_payload_bits(const uint8_t* data, uint32_t length,
+                                                    uint32_t* out_payload_offset,
+                                                    uint32_t* out_payload_offset_bits,
+                                                    uint32_t* out_payload_length,
+                                                    uint32_t* out_payload_bits,
+                                                    uint8_t* out_reliability);
 
 /**
  * Get an unassigned system address (for broadcast).

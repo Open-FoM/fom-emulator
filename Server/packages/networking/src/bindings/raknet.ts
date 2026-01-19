@@ -88,10 +88,17 @@ function getLibraryPath(): string {
 
 // Load the native library
 const libPath = getLibraryPath();
+const raknetLog = (process.env.FOM_RAKNET_LOG || '').toLowerCase();
 // Gate library load logging to avoid noisy console output in quiet mode.
-const shouldLogLoad = (() => {
-    const raw = process.env.FOM_RAKNET_LOG || '';
-    return raw === '1' || raw.toLowerCase() === 'true';
+const shouldLogLoad =
+    raknetLog === '1' || raknetLog === 'true' || raknetLog.includes('load');
+const shouldLogRecv =
+    raknetLog === '1' || raknetLog === 'true' || raknetLog.includes('recv');
+const recvHexMax = (() => {
+    const raw = process.env.FOM_RAKNET_LOG_RECV_MAX || '';
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) return 32;
+    return Math.min(parsed, 256);
 })();
 if (shouldLogLoad) {
     console.log(`[RakNet FFI] Loading native library from: ${libPath}`);
@@ -129,7 +136,6 @@ const lib = dlopen(libPath, {
         returns: FFIType.void,
         args: [FFIType.ptr, FFIType.ptr, FFIType.i32],
     },
-
     // Security
     rak_init_security: {
         returns: FFIType.void,
@@ -173,6 +179,20 @@ const lib = dlopen(libPath, {
             FFIType.u32, // broadcast
         ],
     },
+    rak_raw_log_config: {
+        returns: FFIType.void,
+        args: [FFIType.u32, FFIType.u32, FFIType.u32, FFIType.u32],
+    },
+    rak_raw_log_pop: {
+        returns: FFIType.u32,
+        args: [
+            FFIType.ptr, // buffer
+            FFIType.u32, // buffer_size
+            FFIType.ptr, // out_binary_address
+            FFIType.ptr, // out_port
+            FFIType.ptr, // out_direction
+        ],
+    },
     rak_receive: {
         returns: FFIType.ptr,
         args: [FFIType.ptr],
@@ -205,6 +225,14 @@ const lib = dlopen(libPath, {
     },
 
     // Utility
+    rak_get_raknet_time_bytes: {
+        returns: FFIType.u32,
+        args: [],
+    },
+    rak_parse_reliable_payload: {
+        returns: FFIType.i32,
+        args: [FFIType.ptr, FFIType.u32, FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr],
+    },
     rak_address_from_string: {
         returns: FFIType.u64, // Returns struct as 64-bit value (32-bit addr + 16-bit port)
         args: [FFIType.ptr, FFIType.u16],
@@ -363,6 +391,8 @@ const lib = dlopen(libPath, {
 export class RakPeer {
     private handle: ReturnType<typeof lib.symbols.rak_create>;
     private destroyed = false;
+    private rawLogBuffer: Uint8Array | null = null;
+    private rawLogMaxBytes = 0;
 
     constructor() {
         this.handle = lib.symbols.rak_create();
@@ -516,6 +546,63 @@ export class RakPeer {
         );
     }
 
+    configureRawLog(options: {
+        enableRecv: boolean;
+        enableSend: boolean;
+        maxQueue: number;
+        maxPacketBytes: number;
+    }): void {
+        const maxQueue = Math.max(1, options.maxQueue || 1);
+        const maxPacketBytes = Math.max(1, options.maxPacketBytes || 1);
+        this.rawLogMaxBytes = maxPacketBytes;
+        this.rawLogBuffer = new Uint8Array(maxPacketBytes);
+        lib.symbols.rak_raw_log_config(
+            options.enableRecv ? 1 : 0,
+            options.enableSend ? 1 : 0,
+            maxQueue,
+            maxPacketBytes,
+        );
+    }
+
+    drainRawLog(
+        onPacket: (evt: {
+            data: Uint8Array;
+            length: number;
+            direction: 'RECV' | 'SEND';
+            address: RakSystemAddress;
+        }) => void,
+    ): number {
+        if (!this.rawLogBuffer || this.rawLogMaxBytes <= 0) return 0;
+        let drained = 0;
+        const addrBuf = Buffer.alloc(4);
+        const portBuf = Buffer.alloc(2);
+        const dirBuf = Buffer.alloc(4);
+        while (true) {
+            const length = lib.symbols.rak_raw_log_pop(
+                ptr(this.rawLogBuffer),
+                this.rawLogBuffer.length,
+                ptr(addrBuf),
+                ptr(portBuf),
+                ptr(dirBuf),
+            );
+            if (!length || length <= 0) break;
+            const address: RakSystemAddress = {
+                binaryAddress: addrBuf.readUInt32LE(0),
+                port: portBuf.readUInt16LE(0),
+            };
+            const direction = dirBuf.readUInt32LE(0) === 1 ? 'SEND' : 'RECV';
+            const data = this.rawLogBuffer.subarray(0, length);
+            onPacket({
+                data: Uint8Array.from(data),
+                length,
+                direction,
+                address,
+            });
+            drained += 1;
+        }
+        return drained;
+    }
+
     /**
      * Receive a packet from the queue.
      * @returns Packet data or null if no packets waiting
@@ -537,6 +624,23 @@ export class RakPeer {
         const data = new Uint8Array(length);
         if (length > 0) {
             lib.symbols.rak_packet_copy_data(packetPtr, ptr(data), length);
+        }
+
+        if (shouldLogRecv && length > 0) {
+            const previewLen = Math.min(length, recvHexMax);
+            const preview = Array.from(data.subarray(0, previewLen))
+                .map((b) => b.toString(16).padStart(2, '0'))
+                .join(' ');
+            let addrLabel = `${binaryAddress}:${port}`;
+            try {
+                addrLabel = formatAddress({ binaryAddress, port });
+            } catch {}
+            const firstByte = data[0] ?? 0;
+            console.log(
+                `[RakNet FFI] recv len=${length} id=0x${firstByte
+                    .toString(16)
+                    .padStart(2, '0')} addr=${addrLabel} data=${preview}`,
+            );
         }
 
         // Deallocate the native packet
@@ -585,10 +689,10 @@ export class RakPeer {
 export function addressFromString(ip: string, port: number): RakSystemAddress {
     const ipPtr = ptr(Buffer.from(ip + '\0'));
     const result = lib.symbols.rak_address_from_string(ipPtr, port);
-    // Result is packed as (binaryAddress << 16) | port
+    // Result is a 64-bit view of RakSystemAddress { u32 binary_address; u16 port; u16 pad }.
     return {
-        binaryAddress: Number((result >> BigInt(16)) & BigInt(0xffffffff)),
-        port: Number(result & BigInt(0xffff)),
+        binaryAddress: Number(result & BigInt(0xffffffff)),
+        port: Number((result >> BigInt(32)) & BigInt(0xffff)),
     };
 }
 
@@ -605,6 +709,47 @@ export function addressToString(address: RakSystemAddress): string {
 export function getVersion(): string {
     const versionPtr = lib.symbols.rak_get_version();
     return new CString(versionPtr!).toString();
+}
+
+/**
+ * Get RakNetTime size in bytes (depends on __GET_TIME_64BIT).
+ */
+export function getRakNetTimeBytes(): number {
+    return lib.symbols.rak_get_raknet_time_bytes();
+}
+
+export interface RakReliabilityParseResult {
+    payloadOffset: number;
+    payloadLength: number;
+    payloadBitLength: number;
+    reliability: number;
+}
+
+/**
+ * Parse a RakNet reliable/internal frame and return payload offset/length.
+ */
+export function parseReliablePayload(data: Uint8Array): RakReliabilityParseResult | null {
+    if (!data || data.length === 0) return null;
+    const buf = data instanceof Buffer ? data : Buffer.from(data);
+    const offsetBuf = Buffer.alloc(4);
+    const lengthBuf = Buffer.alloc(4);
+    const bitLenBuf = Buffer.alloc(4);
+    const reliabilityBuf = Buffer.alloc(1);
+    const ok = lib.symbols.rak_parse_reliable_payload(
+        ptr(buf),
+        buf.length,
+        ptr(offsetBuf),
+        ptr(lengthBuf),
+        ptr(bitLenBuf),
+        ptr(reliabilityBuf),
+    );
+    if (!ok) return null;
+    return {
+        payloadOffset: offsetBuf.readUInt32LE(0),
+        payloadLength: lengthBuf.readUInt32LE(0),
+        payloadBitLength: bitLenBuf.readUInt32LE(0),
+        reliability: reliabilityBuf[0],
+    };
 }
 
 /**

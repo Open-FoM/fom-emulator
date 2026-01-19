@@ -15,11 +15,82 @@
 #include "raknet/MessageIdentifiers.h"
 #include "raknet/BitStream.h"
 #include "raknet/StringCompressor.h"
+#include "raknet/InternalPacket.h"
+#include "raknet/DS_RangeList.h"
+#include "raknet/FoMRawLogger.h"
 
+#include <cctype>
+#include <cstdio>
 #include <cstring>
 #include <cstdlib>
 
 using namespace RakNet;
+
+typedef uint32_t BitstreamLengthEncoding;
+
+// =============================================================================
+// Native recv logging (env-driven)
+// =============================================================================
+
+static bool g_rak_log_inited = false;
+static bool g_rak_log_enabled = false;
+static int g_rak_log_max = 32;
+static int g_rak_log_id = -1;
+static bool g_rak_parse_trace_inited = false;
+static bool g_rak_parse_trace = false;
+
+static bool rak_is_falsey(const char* v) {
+    if (!v) return true;
+    while (*v == ' ' || *v == '\t') v++;
+    if (*v == '\0') return true;
+    if ((v[0] == '0') && (v[1] == '\0')) return true;
+    if ((v[0] == 'f' || v[0] == 'F') &&
+        (v[1] == 'a' || v[1] == 'A') &&
+        (v[2] == 'l' || v[2] == 'L') &&
+        (v[3] == 's' || v[3] == 'S') &&
+        (v[4] == 'e' || v[4] == 'E') &&
+        (v[5] == '\0')) return true;
+    if ((v[0] == 'o' || v[0] == 'O') &&
+        (v[1] == 'f' || v[1] == 'F') &&
+        (v[2] == 'f' || v[2] == 'F') &&
+        (v[3] == '\0')) return true;
+    if ((v[0] == 'n' || v[0] == 'N') &&
+        (v[1] == 'o' || v[1] == 'O') &&
+        (v[2] == '\0')) return true;
+    return false;
+}
+
+static int rak_parse_int_env(const char* v, int fallback) {
+    if (!v) return fallback;
+    char* end = nullptr;
+    long val = std::strtol(v, &end, 0);
+    if (end == v) return fallback;
+    if (val < 0) return fallback;
+    return static_cast<int>(val);
+}
+
+static void rak_log_init_once() {
+    if (g_rak_log_inited) return;
+    g_rak_log_inited = true;
+
+    const char* log_env = std::getenv("FOM_RAKNET_NATIVE_LOG");
+    g_rak_log_enabled = !rak_is_falsey(log_env);
+
+    const char* max_env = std::getenv("FOM_RAKNET_NATIVE_LOG_MAX");
+    g_rak_log_max = rak_parse_int_env(max_env, 32);
+    if (g_rak_log_max < 1) g_rak_log_max = 1;
+    if (g_rak_log_max > 512) g_rak_log_max = 512;
+
+    const char* id_env = std::getenv("FOM_RAKNET_NATIVE_LOG_ID");
+    g_rak_log_id = rak_parse_int_env(id_env, -1);
+}
+
+static void rak_parse_trace_init_once() {
+    if (g_rak_parse_trace_inited) return;
+    g_rak_parse_trace_inited = true;
+    const char* trace_env = std::getenv("FOM_RAKNET_PARSE_TRACE");
+    g_rak_parse_trace = !rak_is_falsey(trace_env);
+}
 
 // =============================================================================
 // Lifecycle Functions
@@ -155,12 +226,51 @@ RAK_FFI_API bool rak_send(RakPeerHandle handle, const uint8_t* data, int32_t len
     );
 }
 
+RAK_FFI_API void rak_raw_log_config(uint32_t enable_recv, uint32_t enable_send,
+                                    uint32_t max_queue, uint32_t max_packet_bytes)
+{
+    FomRawLoggerConfigure(enable_recv ? 1 : 0,
+                          enable_send ? 1 : 0,
+                          max_queue,
+                          max_packet_bytes);
+}
+
+RAK_FFI_API uint32_t rak_raw_log_pop(uint8_t* buffer, uint32_t buffer_size,
+                                     uint32_t* out_binary_address, uint16_t* out_port,
+                                     uint32_t* out_direction)
+{
+    return FomRawLoggerPop(buffer, buffer_size, out_binary_address, out_port, out_direction);
+}
+
 RAK_FFI_API RakPacket* rak_receive(RakPeerHandle handle) {
     if (!handle) return nullptr;
     RakPeerInterface* peer = static_cast<RakPeerInterface*>(handle);
     
     Packet* p = peer->Receive();
     if (!p) return nullptr;
+
+    rak_log_init_once();
+    if (g_rak_log_enabled && p->length > 0) {
+        const uint8_t msg_id = p->data[0];
+        if (g_rak_log_id < 0 || msg_id == static_cast<uint8_t>(g_rak_log_id)) {
+            char addr_buf[64] = {0};
+            p->systemAddress.ToString(true, addr_buf);
+            std::fprintf(stderr, "[RakNet FFI][recv] len=%u id=0x%02X addr=%s data=",
+                         static_cast<unsigned>(p->length),
+                         static_cast<unsigned>(msg_id),
+                         addr_buf);
+            const unsigned max_bytes = static_cast<unsigned>(g_rak_log_max);
+            const unsigned to_dump = p->length < max_bytes ? p->length : max_bytes;
+            for (unsigned i = 0; i < to_dump; ++i) {
+                std::fprintf(stderr, "%02X", p->data[i]);
+                if (i + 1 != to_dump) std::fprintf(stderr, " ");
+            }
+            if (p->length > to_dump) {
+                std::fprintf(stderr, " ...(+%u)", static_cast<unsigned>(p->length - to_dump));
+            }
+            std::fprintf(stderr, "\n");
+        }
+    }
     
     // Allocate our wrapper packet
     RakPacket* packet = static_cast<RakPacket*>(malloc(sizeof(RakPacket)));
@@ -270,6 +380,230 @@ RAK_FFI_API RakSystemAddress rak_get_internal_id(RakPeerHandle handle) {
 // =============================================================================
 // Utility Functions
 // =============================================================================
+
+RAK_FFI_API uint32_t rak_get_raknet_time_bytes(void) {
+    return static_cast<uint32_t>(sizeof(RakNetTime));
+}
+
+static int32_t rak_parse_reliable_payload_common(const uint8_t* data, uint32_t length,
+                                                 uint32_t* out_payload_offset,
+                                                 uint32_t* out_payload_offset_bits,
+                                                 uint32_t* out_payload_length,
+                                                 uint32_t* out_payload_bits,
+                                                 uint8_t* out_reliability)
+{
+    if (!data || length == 0 || !out_payload_offset || !out_payload_length)
+    {
+        return 0;
+    }
+
+    *out_payload_offset = 0;
+    *out_payload_length = 0;
+    if (out_payload_offset_bits) *out_payload_offset_bits = 0;
+    if (out_payload_bits) *out_payload_bits = 0;
+    if (out_reliability) *out_reliability = 0;
+
+    rak_parse_trace_init_once();
+    const bool trace = g_rak_parse_trace;
+
+    RakNet::BitStream bs(reinterpret_cast<unsigned char*>(const_cast<uint8_t*>(data)), length, false);
+
+    auto trace_stage = [&](const char* stage) {
+        if (!trace) return;
+        std::fprintf(stderr,
+                     "[RakParse] stage=%s len=%u off=%u unread=%u\n",
+                     stage,
+                     static_cast<unsigned>(length),
+                     static_cast<unsigned>(bs.GetReadOffset()),
+                     static_cast<unsigned>(bs.GetNumberOfUnreadBits()));
+    };
+    auto trace_val_u64 = [&](const char* label, unsigned long long value) {
+        if (!trace) return;
+        std::fprintf(stderr,
+                     "[RakParse] %s=%llu off=%u\n",
+                     label,
+                     value,
+                     static_cast<unsigned>(bs.GetReadOffset()));
+    };
+    auto trace_val_u32 = [&](const char* label, uint32_t value) {
+        if (!trace) return;
+        std::fprintf(stderr,
+                     "[RakParse] %s=%u off=%u\n",
+                     label,
+                     static_cast<unsigned>(value),
+                     static_cast<unsigned>(bs.GetReadOffset()));
+    };
+    auto trace_val_u8 = [&](const char* label, uint8_t value) {
+        if (!trace) return;
+        std::fprintf(stderr,
+                     "[RakParse] %s=%u off=%u\n",
+                     label,
+                     static_cast<unsigned>(value),
+                     static_cast<unsigned>(bs.GetReadOffset()));
+    };
+
+    trace_stage("start");
+
+#ifdef _USE_RAKNET_FLOW_CONTROL
+    bool hasAcks = false;
+    if (!bs.Read(hasAcks))
+    {
+        trace_stage("fail_has_acks");
+        return 0;
+    }
+    trace_val_u8("has_acks", hasAcks ? 1 : 0);
+    if (hasAcks)
+    {
+        RemoteSystemTimeType ourSystemTime = 0;
+        unsigned short remoteElapsedMS = 0;
+        if (!bs.Read(ourSystemTime)) { trace_stage("fail_our_time"); return 0; }
+        if (!bs.Read(remoteElapsedMS)) { trace_stage("fail_remote_elapsed"); return 0; }
+        DataStructures::RangeList<MessageNumberType> incomingAcks;
+        if (!incomingAcks.Deserialize(&bs)) { trace_stage("fail_ack_ranges"); return 0; }
+        trace_val_u64("our_time", static_cast<unsigned long long>(ourSystemTime));
+        trace_val_u32("remote_elapsed", static_cast<uint32_t>(remoteElapsedMS));
+    }
+
+    bool hasRemoteSystemTime = false;
+    if (!bs.Read(hasRemoteSystemTime))
+    {
+        trace_stage("fail_has_remote_time");
+        return 0;
+    }
+    trace_val_u8("has_remote_time", hasRemoteSystemTime ? 1 : 0);
+    if (hasRemoteSystemTime)
+    {
+        RemoteSystemTimeType remoteSystemTime = 0;
+        if (!bs.Read(remoteSystemTime)) { trace_stage("fail_remote_time"); return 0; }
+        trace_val_u64("remote_time", static_cast<unsigned long long>(remoteSystemTime));
+    }
+#endif
+
+    if (bs.GetNumberOfUnreadBits() < (int)sizeof(MessageNumberType) * 8)
+    {
+        trace_stage("fail_message_bits");
+        return 0;
+    }
+
+    MessageNumberType messageNumber = 0;
+    if (!bs.Read(messageNumber))
+    {
+        trace_stage("fail_message_number");
+        return 0;
+    }
+    trace_val_u32("message_number", static_cast<uint32_t>(messageNumber));
+
+    unsigned char reliability = 0;
+    if (!bs.ReadBits(&reliability, 3))
+    {
+        trace_stage("fail_reliability_bits");
+        return 0;
+    }
+    trace_val_u8("reliability_bits", reliability);
+    if (out_reliability) *out_reliability = reliability;
+
+    if (reliability == UNRELIABLE_SEQUENCED || reliability == RELIABLE_SEQUENCED || reliability == RELIABLE_ORDERED)
+    {
+        unsigned char orderingChannel = 0;
+        if (!bs.ReadBits(&orderingChannel, 5)) { trace_stage("fail_ordering_channel"); return 0; }
+        OrderingIndexType orderingIndex = 0;
+        if (!bs.Read(orderingIndex)) { trace_stage("fail_ordering_index"); return 0; }
+        trace_val_u8("ordering_channel", orderingChannel);
+        trace_val_u32("ordering_index", static_cast<uint32_t>(orderingIndex));
+    }
+
+    bool isSplitPacket = false;
+    if (!bs.Read(isSplitPacket))
+    {
+        trace_stage("fail_split_flag");
+        return 0;
+    }
+    trace_val_u8("split_flag", isSplitPacket ? 1 : 0);
+    if (isSplitPacket)
+    {
+        SplitPacketIdType splitPacketId = 0;
+        SplitPacketIndexType splitPacketIndex = 0;
+        SplitPacketIndexType splitPacketCount = 0;
+        if (!bs.Read(splitPacketId)) { trace_stage("fail_split_id"); return 0; }
+        if (!bs.ReadCompressed(splitPacketIndex)) { trace_stage("fail_split_index"); return 0; }
+        if (!bs.ReadCompressed(splitPacketCount)) { trace_stage("fail_split_count"); return 0; }
+        trace_val_u32("split_id", static_cast<uint32_t>(splitPacketId));
+        trace_val_u32("split_index", static_cast<uint32_t>(splitPacketIndex));
+        trace_val_u32("split_count", static_cast<uint32_t>(splitPacketCount));
+    }
+
+    BitstreamLengthEncoding dataBitLength = 0;
+    if (!bs.ReadCompressed(dataBitLength))
+    {
+        trace_stage("fail_data_bit_length");
+        return 0;
+    }
+    if (dataBitLength == 0)
+    {
+        trace_stage("fail_data_bit_length_zero");
+        return 0;
+    }
+    trace_val_u32("data_bit_length", static_cast<uint32_t>(dataBitLength));
+
+    bs.AlignReadToByteBoundary();
+    const BitSize_t payloadBitOffset = bs.GetReadOffset();
+    const uint32_t payloadOffsetBytes = static_cast<uint32_t>(payloadBitOffset / 8u);
+    const uint32_t payloadBytes = static_cast<uint32_t>(BITS_TO_BYTES(dataBitLength));
+    trace_val_u32("payload_offset_bits", static_cast<uint32_t>(payloadBitOffset));
+    trace_val_u32("payload_offset_bytes", payloadOffsetBytes);
+    trace_val_u32("payload_bytes", payloadBytes);
+
+    const uint32_t totalBits = length * 8u;
+    if (payloadBitOffset + dataBitLength > totalBits)
+    {
+        trace_stage("fail_payload_bits_bounds");
+        return 0;
+    }
+
+    if (payloadOffsetBytes + payloadBytes > length)
+    {
+        trace_stage("fail_payload_bounds");
+        return 0;
+    }
+
+    *out_payload_offset = payloadOffsetBytes;
+    if (out_payload_offset_bits) *out_payload_offset_bits = static_cast<uint32_t>(payloadBitOffset);
+    *out_payload_length = payloadBytes;
+    if (out_payload_bits) *out_payload_bits = static_cast<uint32_t>(dataBitLength);
+    trace_stage("ok");
+    return 1;
+}
+
+RAK_FFI_API int32_t rak_parse_reliable_payload(const uint8_t* data, uint32_t length,
+                                               uint32_t* out_payload_offset,
+                                               uint32_t* out_payload_length,
+                                               uint32_t* out_payload_bits,
+                                               uint8_t* out_reliability)
+{
+    return rak_parse_reliable_payload_common(data,
+                                             length,
+                                             out_payload_offset,
+                                             nullptr,
+                                             out_payload_length,
+                                             out_payload_bits,
+                                             out_reliability);
+}
+
+RAK_FFI_API int32_t rak_parse_reliable_payload_bits(const uint8_t* data, uint32_t length,
+                                                    uint32_t* out_payload_offset,
+                                                    uint32_t* out_payload_offset_bits,
+                                                    uint32_t* out_payload_length,
+                                                    uint32_t* out_payload_bits,
+                                                    uint8_t* out_reliability)
+{
+    return rak_parse_reliable_payload_common(data,
+                                             length,
+                                             out_payload_offset,
+                                             out_payload_offset_bits,
+                                             out_payload_length,
+                                             out_payload_bits,
+                                             out_reliability);
+}
 
 RAK_FFI_API RakSystemAddress rak_unassigned_address(void) {
     RakSystemAddress result;

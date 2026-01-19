@@ -15,6 +15,8 @@ export {
     type RakPacket,
     type RakStatistics,
     getVersion as getRakNetVersion,
+    getRakNetTimeBytes,
+    parseReliablePayload,
     unassignedAddress,
     initStringCompressor,
     encodeString,
@@ -40,7 +42,9 @@ export * from './protocol/LithCompressed';
 export * from './protocol/LithHuffman';
 export * from './protocol/PacketDocs';
 export * from './protocol/PacketNames';
+export * from './protocol/PacketNormalize';
 export * from './protocol/Struct';
 
 // Logging
-export * from './logging/PacketLogger';
+export * from './logging/PacketInspector';
+export * from './logging/AppPacketLogging';
