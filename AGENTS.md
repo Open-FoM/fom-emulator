@@ -8,6 +8,7 @@
 
 # Deep Context
 - `Docs\Notes\` (protocol notes live here; server setup/flow, packet formats, handler addresses; start here)
+- `Docs\Packets\` (canonical packet specs; use `PACKET_TEMPLATE.md` + `GamePackets/` for schema-first parsing)
 - Protocol drill-downs live flat in `Docs\Notes\` (files: `LOGIN*.md`, `CShell_Gameplay_Packets.md`, `CUDPDriver.md`, `ClientNetworking.md`, `MSG_ID_*`).
 - `Login_Request.md`, `Docs\Login_Request.md`, `Docs\Login_Request_*.md` (login handshake notes and captures; use newest dated file)
 - `RakNet_LithTech_DeepDive.md` (RakNet/LithTech integration notes and assumptions)
@@ -40,8 +41,7 @@
 - Continuously map/record confirmed addresses in `Docs/AddressMaps/AddressMap.md`.
 
 # Targets
-- `Client\Client_FoM\` (FoM client binaries; see for the current executable filename)
-- `Client\Client_FoM\server.dll` (dedicated server binary; packet handlers, session flow, and world behavior)
+- `Client\Client_FoM\fom_client.exe` (FoM client binaries; see for the current executable filename)
 - `Client\Client_FoM\Resources\CRes.dll` (resource/item tables and catalog helpers)
 - `Client\Client_FoM\Resources\CShell.dll` (network bitstream parsing + packet read/write)
 
@@ -51,6 +51,21 @@
 - Client dumps: `Client\Client_FoM\` (crash dumps for `fom_client.exe`)
 - Config: both client and server use `.ini` files for env vars + quick behavior toggles
 - Validation/launch: `start_server.bat` (server) and `launch_fom_with_log.bat` (client)
+
+# PacketInspector ANSI Hex Highlighting
+- Config: `PacketInspector\PacketInspector.ini` -> `[Logging] EmitAnsiConsole=1` and `HexDump=1`.
+- Fallback (if ini not found): `Server\packages\networking\src\logging\PacketInspector.ts` uses `FomLogInitSimple` with `EmitAnsiConsole=1`.
+- Legend (console only):
+  - Magenta: outer ID byte (`payload[0]` before unwrap)
+  - Green: inner ID / payload offset chosen by inspector
+  - Red: scan-based ID hit (fallback evidence)
+  - Cyan: timestamp bytes (ID_TIMESTAMP unwrap)
+  - Blue: Lith inner ID within 0x86 or MSG_MESSAGE (0x0D)
+  - Yellow: printable ASCII (existing hex dump highlight)
+- File logs remain plain (no ANSI).
+
+# Mandatory Read (Packet Parsing)
+- Before any packet parsing or override work, read `Docs\RakNet_LithTech_Parse_Pipeline.md` and follow its MSB RakNet + LSB LithTech unwrapping rules.
 
 # IDA Pro
 - IDA Pro is the active disassembler/decompiler for this repo.
