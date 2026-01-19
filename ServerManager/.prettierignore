@@ -1,0 +1,14 @@
+node_modules
+**/node_modules
+**/dist
+**/build
+**/logs
+**/*.dll
+**/*.exe
+**/*.i64
+**/*.bin
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.ico

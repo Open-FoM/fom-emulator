@@ -1,0 +1,10 @@
+{
+  "id": "29",
+  "name": "titan_station",
+  "serverType": "world",
+  "port": "62029",
+  "adminPort": "4730",
+  "adminToken": "dev-admin-token",
+  "serverIp": "127.0.0.1",
+  "envText": "WORLD_ID=29\nWORLD_INST=0\nLOG_FILE_NAME=titan_station.log"
+}

@@ -1,0 +1,267 @@
+{
+  "CompactVec3": 0,
+  "EntryG": false,
+  "EntryGBlock": [],
+  "TableIEntry": 0,
+  "TableIBlock": 0,
+  "ListKEntry": 0,
+  "ListKBlock": 0,
+  "PacketIdUpdate": {
+    "entries": [],
+    "rawHex": ""
+  },
+  "GamePacketEnvelope": {
+    "id": 0,
+    "payloadHex": "",
+    "decoded": {
+      "toString": null
+    }
+  },
+  "IdLoginPacket": {
+    "username": "",
+    "passwordHash": "",
+    "fileCRCs": [],
+    "macAddress": "",
+    "driveModels": [],
+    "driveSerials": [],
+    "loginToken": "",
+    "computerName": "",
+    "hasSteamTicket": false,
+    "steamTicketLength": 0
+  },
+  "IdLoginRequestPacket": {
+    "username": "",
+    "clientVersion": 0
+  },
+  "IdLoginRequestReturnPacket": {
+    "status": 0,
+    "username": ""
+  },
+  "IdLoginReturnPacket": {
+    "status": 0,
+    "playerId": 0,
+    "accountType": 0,
+    "isFullAccount": false,
+    "hasCharFlags": false,
+    "clientVersion": 0,
+    "isBanned": false,
+    "banLength": "",
+    "banReason": "",
+    "worldIDs": [],
+    "factionMOTD": "",
+    "apartment": {
+      "id": 0,
+      "type": 0,
+      "ownerPlayerID": 0,
+      "ownerFactionID": 0,
+      "allowedRanks": [],
+      "isOpen": false,
+      "ownerName": "",
+      "entryCode": "",
+      "storageCapacity": 0,
+      "storageField14": 0,
+      "storageField18": 0,
+      "storageField1C": 0,
+      "storageItemCount": 0,
+      "hasPublicInfo": false,
+      "entryPrice": 0,
+      "publicName": "",
+      "publicDescription": "",
+      "allowedFactions": {
+        "clear": null,
+        "delete": null,
+        "forEach": null,
+        "get": null,
+        "has": null,
+        "set": null,
+        "size": 0,
+        "entries": null,
+        "keys": null,
+        "values": null,
+        "__@iterator@156": null,
+        "__@toStringTag@158": ""
+      },
+      "isDefault": false,
+      "isFeatured": false,
+      "occupancy": 0
+    },
+    "defaultWorldId": 0,
+    "currentWorldId": 0
+  },
+  "IdLoginTokenCheckPacket": {
+    "fromServer": false,
+    "requestToken": ""
+  },
+  "IdRegisterClientPacket": {
+    "worldId": 0,
+    "playerId": 0,
+    "sessionId": 0
+  },
+  "SkillEntry": 0,
+  "SkillSlot": 0,
+  "SkillTable": 0,
+  "SkillTree": {
+    "abilityItemId": 0,
+    "field2": 0,
+    "field4": 0,
+    "field6": 0,
+    "field8": 0,
+    "field9": 0,
+    "field12": 0,
+    "field16": 0,
+    "field20": 0,
+    "field24": 0,
+    "field25": 0,
+    "field26": 0,
+    "extra": [],
+    "encode": null
+  },
+  "SkillTreeList": 0,
+  "ProfileA": {
+    "headerField0": 0,
+    "field20": 0,
+    "field24": 0,
+    "field28": 0,
+    "entries": [],
+    "encode": null
+  },
+  "ProfileB": [],
+  "ProfileC": {
+    "isFemale": 0,
+    "skinTone": 0,
+    "headTexA": 0,
+    "headTexB": 0,
+    "unkU32": 0,
+    "unk5bit": 0,
+    "unk6bit": 0,
+    "unk4bit": 0,
+    "torsoItemId": 0,
+    "legsItemId": 0,
+    "shoesItemId": 0,
+    "extraSlotIds": [],
+    "hasExtraSlots": false,
+    "flagBits": []
+  },
+  "ProfileD": [],
+  "StringBundleE": 0,
+  "IdRegisterClientReturnPacket": {
+    "worldId": 0,
+    "playerId": 0,
+    "returnCode": 0,
+    "appearance": {
+      "isFemale": 0,
+      "skinTone": 0,
+      "headTexA": 0,
+      "headTexB": 0,
+      "unkU32": 0,
+      "unk5bit": 0,
+      "unk6bit": 0,
+      "unk4bit": 0,
+      "torsoItemId": 0,
+      "legsItemId": 0,
+      "shoesItemId": 0,
+      "extraSlotIds": [],
+      "hasExtraSlots": false,
+      "flagBits": []
+    },
+    "profileEntries": []
+  },
+  "MsgMessage": {
+    "packetId": 0,
+    "payloadHex": "",
+    "innerId": 0,
+    "innerTimestamp": null,
+    "innerPayloadHex": "",
+    "decoded": {
+      "entries": [],
+      "rawHex": "",
+      "toString": null
+    }
+  },
+  "IdUserPacket": {
+    "message": {
+      "payloadBits": 0,
+      "Id": 4,
+      "encode": null,
+      "toString": null
+    }
+  },
+  "IdWorldServicePacket": {
+    "actionCode": 0,
+    "flags": 0
+  },
+  "IdWorldHeartbeatPacket": {
+    "token": "",
+    "worldId": 0,
+    "worldInst": 0,
+    "playerId": 0,
+    "clientIp": "",
+    "clientPort": 0
+  },
+  "IdWorldInfoPacket": {
+    "token": "",
+    "worldId": 0,
+    "worldIp": "",
+    "worldPort": 0
+  },
+  "IdWorldLoginPacket": {
+    "worldId": 0,
+    "worldInst": 0,
+    "playerId": 0,
+    "worldConst": 0
+  },
+  "IdWorldLoginReturnPacket": {
+    "code": 1,
+    "flag": 0,
+    "worldIp": "",
+    "worldPort": 0
+  },
+  "IdWorldQueryPacket": {
+    "token": ""
+  },
+  "IdWorldSelectPacket": {
+    "playerId": 0,
+    "subId": 4,
+    "worldId": 0,
+    "worldInst": 0
+  },
+  "MsgNetProtocolVersion": {
+    "protocolVersion": 0,
+    "additionalVersion": 0
+  },
+  "MsgYourId": {
+    "clientId": 0,
+    "isLocal": false
+  },
+  "MsgClientObjectId": {
+    "objectId": 0
+  },
+  "MsgLoadWorld": {
+    "worldId": 0,
+    "gameTime": 0
+  },
+  "LtGuaranteedPacket": {
+    "sequence": 0,
+    "messages": []
+  },
+  "MsgPacketGroup": {
+    "messages": []
+  },
+  "MsgUnguaranteedUpdate": {
+    "entries": [],
+    "gameTime": 0
+  },
+  "MsgUpdate": {
+    "blocks": []
+  },
+  "MsgWorldUpdate": {
+    "worldInst": 0,
+    "sequence": 0,
+    "entries": [],
+    "includeTerminator": false
+  },
+  "MsgPreloadList": {
+    "preloadType": 0,
+    "fileIds": []
+  }
+}

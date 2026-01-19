@@ -1,0 +1,10 @@
+{
+  "id": "24",
+  "name": "aquatica",
+  "serverType": "world",
+  "port": "62024",
+  "adminPort": "4725",
+  "adminToken": "dev-admin-token",
+  "serverIp": "127.0.0.1",
+  "envText": "WORLD_ID=24\nWORLD_INST=0\nLOG_FILE_NAME=aquatica.log"
+}

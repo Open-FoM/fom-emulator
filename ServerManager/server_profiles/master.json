@@ -1,0 +1,10 @@
+{
+  "id": "0",
+  "name": "master",
+  "serverType": "master",
+  "port": "61000",
+  "adminPort": "4701",
+  "adminToken": "dev-admin-token",
+  "serverIp": "127.0.0.1",
+  "envText": "LOG_FILE_NAME=master.log"
+}

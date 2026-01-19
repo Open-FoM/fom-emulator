@@ -1,0 +1,10 @@
+{
+  "id": "11",
+  "name": "andromeda_city",
+  "serverType": "world",
+  "port": "62011",
+  "adminPort": "4712",
+  "adminToken": "dev-admin-token",
+  "serverIp": "127.0.0.1",
+  "envText": "WORLD_ID=11\nWORLD_INST=0\nLOG_FILE_NAME=andromeda_city.log"
+}
