@@ -1,10 +1,10 @@
 /**
  * ID_REGISTER_CLIENT_RETURN (0x79) - World Server -> Client
  * Response to ID_REGISTER_CLIENT (0x78).
- * 
+ *
  * Source: Object.lto @ 0x1007a850 (Packet_ID_WORLD_LOGIN_DATA_Ctor)
  *         Object.lto @ 0x1007ab00 (ID_WORLD_LOGIN_DATA_Write)
- * 
+ *
  * See: Docs/Notes/ID_REGISTER_CLIENT_RETURN_0x79.md
  */
 
@@ -14,17 +14,12 @@ import { Packet } from './base';
 import {
     ProfileA,
     ProfileB,
-    ProfileC,
-    ProfileCData,
-    applyProfileCAppearance,
-    ProfileD,
+    Appearance,
+    AppearanceData,
+    applyAppearancePatch,
+    Stats,
 } from './structs/profile';
-import {
-    CompactVec3,
-    EntryGBlock,
-    TableIBlock,
-    ListKBlock,
-} from './structs/common';
+import { CompactVec3, EntryGBlock, TableIBlock, ListKBlock } from './structs/common';
 import { StringBundleE } from './structs/world';
 
 const MAX_BLOB_BITS = 2048;
@@ -50,8 +45,8 @@ export interface IdRegisterClientReturnData {
     worldId: number;
     playerId: number;
     returnCode: number;
-    appearance?: ProfileCData;
-    profileEntries?: ProfileCData[];
+    appearance?: AppearanceData;
+    appearanceEntries?: AppearanceData[];
 }
 
 export class IdRegisterClientReturnPacket extends Packet {
@@ -60,15 +55,15 @@ export class IdRegisterClientReturnPacket extends Packet {
     worldId: number;
     playerId: number;
     returnCode: number;
-    
+
     profileA: ProfileA;
     profileB: ProfileB;
-    profileC: ProfileC;
-    profileD: ProfileD;
+    appearance: Appearance;
+    profileD: Stats;
     stringBundle: StringBundleE;
     flagA: number;
     flagB: number;
-    profileEntries: ProfileC[];
+    appearanceEntries: Appearance[];
     baseSpawnEnabled: boolean;
     position1: CompactVec3;
     currencyA: number;
@@ -88,16 +83,16 @@ export class IdRegisterClientReturnPacket extends Packet {
         this.worldId = data.worldId;
         this.playerId = data.playerId;
         this.returnCode = data.returnCode;
-        
+
         this.profileA = ProfileA.empty();
         this.profileB = ProfileB.empty();
-        this.profileC = applyProfileCAppearance(ProfileC.defaultMale(), data.appearance ?? {});
-        this.profileD = ProfileD.empty();
+        this.appearance = applyAppearancePatch(Appearance.defaultMale(), data.appearance ?? {});
+        this.profileD = Stats.empty();
         this.stringBundle = StringBundleE.empty();
         this.flagA = 3;
         this.flagB = 0;
-        this.profileEntries = (data.profileEntries ?? []).map(entry =>
-            applyProfileCAppearance(ProfileC.defaultMale(), entry)
+        this.appearanceEntries = (data.appearanceEntries ?? []).map((entry) =>
+            applyAppearancePatch(Appearance.defaultMale(), entry),
         );
         this.baseSpawnEnabled = true;
         this.position1 = new CompactVec3();
@@ -121,38 +116,38 @@ export class IdRegisterClientReturnPacket extends Packet {
             bs.writeCompressedU8(this.worldId);
             bs.writeCompressedU32(this.playerId);
             bs.writeCompressedU8(this.returnCode);
-            
+
             bs.writeStruct(this.profileA);
             bs.writeStruct(this.profileB);
-            bs.writeStruct(this.profileC);
+            bs.writeStruct(this.appearance);
             bs.writeStruct(this.profileD);
             writeStringBundleE(bs, this.stringBundle);
-            
+
             bs.writeCompressedU8(this.flagA & 0xff);
             bs.writeCompressedU8(this.flagB & 0xff);
-            bs.writeCompressedU16(this.profileEntries.length & 0xffff);
-            for (const entry of this.profileEntries) {
+            bs.writeCompressedU16(this.appearanceEntries.length & 0xffff);
+            for (const entry of this.appearanceEntries) {
                 bs.writeStruct(entry);
             }
-            
+
             bs.writeBit(this.baseSpawnEnabled);
             bs.writeStruct(this.position1);
-            
+
             bs.writeCompressedU32(this.currencyA >>> 0);
             bs.writeCompressedU32(this.currencyB >>> 0);
-            
+
             bs.writeBit(this.flag3);
             bs.writeCompressedU16(this.valC & 0xffff);
             bs.writeCompressedU32(this.field18916 >>> 0);
-            
+
             bs.writeStruct(this.entryGBlock);
             writeBlobH(bs, this.blobH);
             bs.writeStruct(this.tableIBlock);
             bs.writeStruct(this.position2);
-            
+
             bs.writeBit(this.hasOverrideSpawn);
             bs.writeStruct(this.listKBlock);
-            
+
             return bs.getData();
         } finally {
             bs.destroy();
@@ -160,7 +155,9 @@ export class IdRegisterClientReturnPacket extends Packet {
     }
 
     static decode(_buffer: Buffer): IdRegisterClientReturnPacket {
-        throw new Error('IdRegisterClientReturnPacket decode not implemented - server->client only');
+        throw new Error(
+            'IdRegisterClientReturnPacket decode not implemented - server->client only',
+        );
     }
 
     toString(): string {

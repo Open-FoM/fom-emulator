@@ -8,7 +8,7 @@ export enum WorldSelectSubId {
     WORLD_ID_INST = 4,
     SUB_ID_5 = 5,
     STARMAP = 6,
-    WORLD_ID_INST_ALT = 7,
+    WORLD_ID_INST_ALT = 7, // client->world travel request (worldId + nodeId)
 }
 
 export interface IdWorldSelectDataSubId4 {
@@ -115,6 +115,75 @@ function encodeSub6List(bs: NativeBitStream, starmap: Sub6List): void {
     bs.writeCompressedU32(starmap.field24 >>> 0);
 }
 
+function decodeFactionListB(bs: NativeBitStream): FactionListB {
+    const key = bs.readCompressedU8() & 0xff;
+    const entryCount = bs.readCompressedU32() >>> 0;
+    const entries: ServerEntityState[] = [];
+
+    for (let i = 0; i < entryCount; i += 1) {
+        entries.push({
+            entityId: bs.readCompressedU32() >>> 0,
+            factionId: bs.readCompressedU16() & 0xffff,
+            standing: bs.readCompressedU16() & 0xffff,
+            flags: bs.readCompressedU8() & 0xff,
+        });
+    }
+
+    return { key, entries };
+}
+
+function decodeFactionListC(bs: NativeBitStream): FactionListC {
+    const key = bs.readCompressedU8() & 0xff;
+    const field20 = bs.readCompressedU32() >>> 0;
+    const pairCount = bs.readCompressedU32() >>> 0;
+    const pairs: FactionPair[] = [];
+
+    for (let i = 0; i < pairCount; i += 1) {
+        pairs.push({
+            valueA: bs.readCompressedU32() >>> 0,
+            valueB: bs.readCompressedU32() >>> 0,
+        });
+    }
+
+    return { key, field20, pairs };
+}
+
+function decodeSub6Entry(bs: NativeBitStream): Sub6Entry {
+    const key = bs.readCompressedU8() & 0xff;
+    const mask = bs.readU32() >>> 0;
+    const u16a = bs.readU16() & 0xffff;
+    const u16b = bs.readCompressedU16() & 0xffff;
+    const listB = decodeFactionListB(bs);
+    const listC = decodeFactionListC(bs);
+
+    return {
+        key,
+        mask,
+        u16a,
+        u16b,
+        listB,
+        listC,
+    };
+}
+
+function decodeSub6List(bs: NativeBitStream): Sub6List {
+    const entryCount = bs.readCompressedU8() & 0xff;
+    const entries: Sub6Entry[] = [];
+    for (let i = 0; i < entryCount; i += 1) {
+        entries.push(decodeSub6Entry(bs));
+    }
+    const field16 = bs.readCompressedU32() >>> 0;
+    const field20 = bs.readCompressedU32() >>> 0;
+    const field24 = bs.readCompressedU32() >>> 0;
+
+    return {
+        entries,
+        field16,
+        field20,
+        field24,
+    };
+}
+
 export function createEmptyFactionListB(key: number = 0): FactionListB {
     return { key, entries: [] };
 }
@@ -219,7 +288,31 @@ export class IdWorldSelectPacket extends Packet {
     }
 
     static decode(_buffer: Buffer): IdWorldSelectPacket {
-        throw new Error('IdWorldSelectPacket decode not fully implemented');
+        const bs = new NativeBitStream(_buffer, true);
+        try {
+            const packetId = bs.readU8();
+            if (packetId !== RakNetMessageId.ID_WORLD_SELECT) {
+                throw new Error(`Expected packet ID 0x7B, got 0x${packetId.toString(16)}`);
+            }
+
+            const playerId = bs.readCompressedU32() >>> 0;
+            const subId = (bs.readCompressedU8() & 0xff) as WorldSelectSubId;
+
+            if (subId === WorldSelectSubId.WORLD_ID_INST || subId === WorldSelectSubId.WORLD_ID_INST_ALT) {
+                const worldId = bs.readCompressedU8() & 0xff;
+                const worldInst = bs.readCompressedU8() & 0xff;
+                return new IdWorldSelectPacket({ playerId, subId, worldId, worldInst });
+            }
+
+            if (subId === WorldSelectSubId.STARMAP) {
+                const starmap = decodeSub6List(bs);
+                return new IdWorldSelectPacket({ playerId, subId, starmap });
+            }
+
+            return new IdWorldSelectPacket({ playerId, subId, rawPayload: null });
+        } finally {
+            bs.destroy();
+        }
     }
 
     static createStarmap(
