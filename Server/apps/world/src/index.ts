@@ -1,62 +1,73 @@
 /**
- * FoM World Server
- *
- * Handles in-world gameplay after players connect from the Master server.
- * Listens on port 62000 (default) for ID_WORLD_LOGIN (0x72) from clients
- * redirected by the master server.
+ * World server entrypoint wiring RakNet transport, handlers, and dispatch.
  */
-
 import {
     RakPeer,
     RakReliability,
     RakPriority,
     type RakSystemAddress,
+    addressFromString,
     addressToIp,
     addressToString,
-    PacketLogger,
-    PacketDirection,
+    createPacketLoggerContext,
+    LithPacketRead,
 } from '@openfom/networking';
+import { RakNetCoreMessageId, RakNetMessageId, LithTechMessageId } from '@openfom/packets';
 import {
-    RakNetMessageId,
-    LithTechMessageId,
-    IdWorldLoginPacket,
-    IdRegisterClientPacket,
-    IdRegisterClientReturnPacket,
-    IdWorldServicePacket,
-    MsgPacketGroup,
-    MsgPreloadList,
-    MsgClientObjectId,
-    WorldSelectSubId,
-    IdWorldSelectPacket,
-} from '@openfom/packets';
-import { configureLogger, debug as logDebug, error as logError, info as logInfo } from '@openfom/utils';
+    debug as logDebug,
+    error as logError,
+    info as logInfo,
+    warn as logWarn,
+} from '@openfom/utils';
 import { loadRuntimeConfig } from './config';
-
+import { startAdminServer } from './admin/AdminServer';
+import { createPacketHandlers } from './handlers/registerHandlers';
+import type { WorldConnection } from './types';
+// Load server + logging configuration once at startup.
 const runtime = loadRuntimeConfig();
 const config = runtime.server;
 const packetLogConfig = runtime.packetLog;
-
-configureLogger({ quiet: packetLogConfig.quiet, debug: config.debug });
-
-PacketLogger.installConsoleMirror({ echoToConsole: !packetLogConfig.quiet });
-
-const packetLogger = new PacketLogger({
-    console: !packetLogConfig.quiet && packetLogConfig.consoleMode !== 'off',
-    file: packetLogConfig.logToFile,
-    consoleMode: packetLogConfig.consoleMode,
-    consoleMinIntervalMs: packetLogConfig.consoleMinIntervalMs,
-    consolePacketIds: packetLogConfig.consolePacketIds,
-    filePacketIds: packetLogConfig.filePacketIds,
-    ignorePacketIds: packetLogConfig.ignorePacketIds,
-    analysis: packetLogConfig.analysisEnabled,
-    consoleRepeatSuppressMs: packetLogConfig.consoleRepeatSuppressMs,
-    flushMode: packetLogConfig.flushMode,
-    assumePayload: true,
+const adminConfig = runtime.admin;
+// Known RakNet/LithTech IDs for packet classification (logging + dispatch normalization).
+const RAKNET_ID_SET = new Set<number>([
+    ...Object.values(RakNetCoreMessageId).filter(
+        (value): value is number => typeof value === 'number',
+    ),
+    ...Object.values(RakNetMessageId).filter((value): value is number => typeof value === 'number'),
+]);
+const LITH_ID_SET = new Set<number>(
+    Object.values(LithTechMessageId).filter((value): value is number => typeof value === 'number'),
+);
+// Centralized packet logging + raw capture helpers.
+const packetLogger = createPacketLoggerContext({
+    packetLogConfig,
+    debugEnabled: config.debug,
+    logWarn,
+    logDebug,
+    label: 'World',
+    rakMessageIds: RAKNET_ID_SET,
+    lithMessageIds: LITH_ID_SET,
 });
+    const { logAppPackets, logPacket, drainRawCapture, getConnectionKey, classifyPacket } =
+        packetLogger;
+// Track per-connection trace throttling.
+const dispatchTraceLast = new Map<string, number>();
+// Rate-limit per-connection dispatch traces to keep logs readable.
 
-PacketLogger.setGlobal(packetLogger);
-PacketLogger.setConsoleMirrorEcho(!packetLogConfig.quiet);
-
+/**
+ * Determine whether to emit dispatch trace logs for a connection.
+ * @param {string} connKey - Connection key.
+ * @returns {boolean} True when trace logging should emit.
+ */
+const shouldTraceDispatch = (connKey: string): boolean => {
+    if (!packetLogConfig.reliableTrace) return false;
+    if (packetLogConfig.reliableTraceIntervalMs <= 0) return true;
+    const now = Date.now();
+    const last = dispatchTraceLast.get(connKey) ?? 0;
+    if (now - last < packetLogConfig.reliableTraceIntervalMs) return false;
+    dispatchTraceLast.set(connKey, now);
+    return true;
+};
 logInfo('='.repeat(60));
 logInfo(' FoM World Server');
 logInfo('='.repeat(60));
@@ -65,351 +76,197 @@ logInfo(`  Max Connections: ${config.maxConnections}`);
 logInfo(`  Debug: ${config.debug}`);
 logInfo('='.repeat(60));
 logInfo('');
-
-interface WorldConnection {
-    address: RakSystemAddress;
-    key: string;
-    playerId: number;
-    worldId: number;
-    worldInst: number;
-    authenticated: boolean;
-    registered: boolean;
-    worldTimeOrigin: number;
-    lithTechOutSeq: number;
-    connectStage: number;
-    pingInterval?: ReturnType<typeof setInterval>;
-}
-
+logInfo(
+    `[Admin] Enabled=${adminConfig.enabled} Port=${adminConfig.port} Token=${adminConfig.token ? 'set' : 'empty'}`,
+);
+// Connection state for live clients + master relay targets.
 const connections = new Map<string, WorldConnection>();
-
-function getConnectionKey(address: RakSystemAddress): string {
-    return `${addressToIp(address)}:${address.port}`;
-}
-
+const masterPeers = new Map<string, { address: RakSystemAddress; lastSeen: number }>();
+// RakNet peer handles UDP transport lifecycle.
 const peer = new RakPeer();
-
 if (!peer.startup(config.maxConnections, config.port, 0)) {
     logError('[World] Failed to start RakNet peer');
     process.exit(1);
 }
-
 peer.setMaxIncomingConnections(config.maxConnections);
 peer.setIncomingPassword(config.password);
-
 logInfo(`[World] Listening on port ${config.port}`);
 logInfo('');
+// Enable raw capture for reliability inspection and packet logging.
+if (packetLogConfig.rawCapture) {
+    peer.configureRawLog({
+        enableRecv: packetLogConfig.rawCaptureRecv,
+        enableSend: packetLogConfig.rawCaptureSend,
+        maxQueue: packetLogConfig.rawCaptureMaxQueue,
+        maxPacketBytes: packetLogConfig.rawCaptureMaxBytes,
+    });
+}
+// Seed master relay target for heartbeat forwarding.
+if (config.masterHost) {
+    const addr = addressFromString(config.masterHost, config.masterPortHint);
+    const key = addressToString(addr);
+    masterPeers.set(key, { address: addr, lastSeen: Date.now() });
+    logInfo(`[World] Heartbeat relay target ${key}`);
+}
 
+/**
+ * Send a reliable RakNet packet to a client.
+ * @param {Buffer} data - Packet payload.
+ * @param {RakSystemAddress} address - Target address.
+ * @returns {boolean} True when the send succeeded.
+ */
 function sendReliable(data: Buffer, address: RakSystemAddress): boolean {
     const addrIp = addressToIp(address);
     const connection = connections.get(getConnectionKey(address));
-    const outgoingPacket = {
-        timestamp: new Date(),
-        direction: PacketDirection.OUTGOING,
-        address: addrIp,
-        port: address.port,
-        data,
-        connectionId: connection?.playerId,
-    };
-    try {
-        packetLogger.log(outgoingPacket);
-    } catch {}
-
-    const success = peer.send(
-        data,
-        RakPriority.HIGH,
-        RakReliability.RELIABLE,
-        0,
-        address,
-        false,
-    );
+    if (logAppPackets) {
+        logPacket(data, 'SEND', addrIp, address.port, connection?.playerId);
+    }
+    const success = peer.send(data, RakPriority.HIGH, RakReliability.RELIABLE, 0, address, false);
     if (config.debug) {
         const addr = addressToString(address);
         const msgId = data[0];
-        logDebug(`[World] SEND 0x${msgId.toString(16).padStart(2, '0')} to ${addr} (${data.length} bytes) - ${success ? 'OK' : 'FAIL'}`);
+        logDebug(
+            `[World] SEND 0x${msgId.toString(16).padStart(2, '0')} to ${addr} (${data.length} bytes) - ${success ? 'OK' : 'FAIL'}`,
+        );
     }
     return success;
 }
 
+/**
+ * Send an unreliable RakNet packet to a client.
+ * @param {Buffer} data - Packet payload.
+ * @param {RakSystemAddress} address - Target address.
+ * @returns {boolean} True when the send succeeded.
+ */
 function sendUnreliable(data: Buffer, address: RakSystemAddress): boolean {
-    const success = peer.send(
-        data,
-        RakPriority.LOW,
-        RakReliability.UNRELIABLE,
-        0,
-        address,
-        false,
-    );
+    const addrIp = addressToIp(address);
+    const connection = connections.get(getConnectionKey(address));
+    if (logAppPackets) {
+        logPacket(data, 'SEND', addrIp, address.port, connection?.playerId);
+    }
+    const success = peer.send(data, RakPriority.LOW, RakReliability.UNRELIABLE, 0, address, false);
     return success;
 }
 
-function sendLithTechBurst(conn: WorldConnection): void {
-    const packetGroup = MsgPacketGroup.buildWorldLoginBurst(
-        conn.playerId,
-        conn.worldId,
-        0.0,
-    );
-    const encoded = packetGroup.encode();
-    sendReliable(encoded, conn.address);
-    logInfo(`[World] -> SMSG_PACKETGROUP (NETPROTOCOLVERSION + YOURID + LOADWORLD) worldId=${conn.worldId}, playerId=${conn.playerId}`);
-}
+/**
+ * Start the admin control plane for world server management.
+ */
+startAdminServer({
+    admin: adminConfig,
+    serverPort: config.port,
+    worldId: config.worldId,
+    worldInst: config.worldInst,
+    connections,
+    sendReliable,
+    sendUnreliable,
+    shutdown,
+});
 
-function handleWorldLogin(packet: IdWorldLoginPacket, address: RakSystemAddress): void {
-    const { worldId, worldInst, playerId, worldConst } = packet;
-    const key = getConnectionKey(address);
+/**
+ * Register packet handlers for incoming RakNet/LithTech messages.
+ */
+const handlers = createPacketHandlers({
+    connections,
+    masterPeers,
+    config,
+    sendReliable,
+    getConnectionKey,
+});
 
-    logInfo(`[World] 0x72 WORLD_LOGIN from ${key}: worldId=${worldId} inst=${worldInst} playerId=${playerId} const=0x${worldConst.toString(16)}`);
-
-    const conn = connections.get(key);
-    if (!conn) {
-        logError(`[World] No connection found for ${key}`);
-        return;
-    }
-
-    conn.playerId = playerId || 1;
-    conn.worldId = worldId || config.worldId;
-    conn.worldInst = worldInst || config.worldInst;
-    conn.authenticated = true;
-
-    logInfo(`[World] Updated connection: playerId=${conn.playerId} worldId=${conn.worldId}`);
-}
-
-function handleRegisterClient(packet: IdRegisterClientPacket, address: RakSystemAddress): void {
-    const { worldId, playerId, sessionId } = packet;
-    const key = getConnectionKey(address);
-
-    logInfo(`[World] 0x78 REGISTER_CLIENT from ${key}: worldId=${worldId} playerId=${playerId} sessionId=${sessionId}`);
-
-    const conn = connections.get(key);
-    if (!conn) {
-        logError(`[World] No connection found for ${key}`);
-        return;
-    }
-
-    conn.authenticated = true;
-
-    conn.playerId = playerId || conn.playerId;
-    conn.worldId = worldId || conn.worldId;
-    conn.registered = true;
-
-    const response = new IdRegisterClientReturnPacket({
-        worldId: conn.worldId,
-        playerId: conn.playerId,
-        returnCode: 1,
-    });
-    
-    const responseBuffer = response.encode();
-    sendReliable(responseBuffer, address);
-    logInfo(`[World] -> 0x79 REGISTER_CLIENT_RETURN (worldId=${conn.worldId}, playerId=${conn.playerId}, ${responseBuffer.length} bytes)`);
-
-    /*
-    // Send 0x7B WORLD_SELECT after 0x79
-    const worldSelect = new IdWorldSelectPacket({
-        playerId: conn.playerId,
-        subId: WorldSelectSubId.WORLD_ID_INST,
-        worldId: conn.worldId,
-        worldInst: conn.worldInst,
-    });
-    const worldSelectBuffer = worldSelect.encode();
-    sendReliable(worldSelectBuffer, address);
-    logInfo(`[World] -> 0x7B WORLD_SELECT (worldId=${conn.worldId}, worldInst=${conn.worldInst}, ${worldSelectBuffer.length} bytes)`);*/
-}
-
-function handleNewConnection(address: RakSystemAddress): void {
-    const key = getConnectionKey(address);
-    logInfo(`[World] New connection from ${key}`);
-
-    const conn: WorldConnection = {
-        address,
-        key,
-        playerId: 1,
-        worldId: config.worldId,
-        worldInst: config.worldInst,
-        authenticated: false,
-        registered: false,
-        worldTimeOrigin: Date.now(),
-        lithTechOutSeq: 0,
-        connectStage: -1,
-    };
-    connections.set(key, conn);
-
-    sendLithTechBurst(conn);
-}
-
-function handleWorldAuth(data: Buffer, address: RakSystemAddress): void {
-    const key = getConnectionKey(address);
-    const conn = connections.get(key);
-    if (!conn) {
-        logError(`[World] No connection found for ${key}`);
-        return;
-    }
-
-    logInfo(`[World] 0x6b WORLD_LOGIN_REQUEST from ${key} (${data.length} bytes)`);
-    // sendLithTechBurst(conn);
-}
-
-function handleDisconnect(address: RakSystemAddress): void {
-    const key = getConnectionKey(address);
-    const conn = connections.get(key);
-    if (conn?.pingInterval) {
-        clearInterval(conn.pingInterval);
-    }
-    logInfo(`[World] Disconnected: ${key}`);
-    connections.delete(key);
-}
-
-function handleConnectStage(data: Buffer, address: RakSystemAddress): void {
-    const key = getConnectionKey(address);
-    const conn = connections.get(key);
-    if (!conn) {
-        logError(`[World] CONNECTSTAGE: No connection found for ${key}`);
-        return;
-    }
-
-    const stage = data[1];
-    conn.connectStage = stage;
-    logInfo(`[World] CMSG_CONNECTSTAGE from ${key}: stage=${stage}`);
-
-    if (stage === 0) {
-        logInfo(`[World] -> SMSG_PRELOADLIST (END) - client loaded world, sending preload end`);
-        const preloadEnd = MsgPreloadList.createEnd();
-        const encoded = preloadEnd.encode();
-        sendReliable(encoded, conn.address);
-    } else if (stage === 1) {
-        logInfo(`[World] -> SMSG_CLIENTOBJECTID - client preloaded, sending object ID ${conn.playerId}`);
-        const clientObjId = MsgClientObjectId.create(conn.playerId);
-        const encoded = clientObjId.encode();
-        sendReliable(encoded, conn.address);
-    }
-}
-
-async function mainLoop() {
+/**
+ * Run the main receive loop until RakNet shuts down.
+ * @returns {Promise<void>} Resolves after the loop exits.
+ */
+async function mainLoop(): Promise<void> {
     logInfo('[World] Starting main loop...');
     logInfo('');
-
     while (peer.isActive()) {
+        // Drain raw capture before app dispatch to keep logs ordered by arrival.
+        drainRawCapture(peer);
         let packet = peer.receive();
         while (packet) {
             const addrIp = addressToIp(packet.systemAddress);
-            const connection = connections.get(getConnectionKey(packet.systemAddress));
-            const incomingPacket = {
-                timestamp: new Date(),
-                direction: PacketDirection.INCOMING,
-                address: addrIp,
-                port: packet.systemAddress.port,
-                data: Buffer.from(packet.data),
-                connectionId: connection?.playerId,
-            };
-            try {
-                packetLogger.log(incomingPacket);
-            } catch {}
-
-            let payload = Buffer.from(packet.data);
-            let messageId = payload[0];
-            let timestamp: bigint | null = null;
-
-            if (messageId === RakNetMessageId.ID_TIMESTAMP) {
-                if (payload.length >= 6) {
-                    // RakNetTime is 32-bit unless __GET_TIME_64BIT is defined.
-                    timestamp = BigInt(payload.readUInt32LE(1));
-                    payload = payload.subarray(5);
-                    messageId = payload[0];
-                    if (config.debug) {
-                        logDebug(`[World] ID_TIMESTAMP -> innerId=0x${messageId.toString(16).padStart(2, '0')} ts=${timestamp.toString()} len=${payload.length}`);
-                    }
+            const connKey = getConnectionKey(packet.systemAddress);
+            const conn = connections.get(connKey);
+            const rawPayload = Buffer.from(packet.data);
+            let payload = rawPayload;
+            let messageId = 0x00;
+            const traceDispatch = shouldTraceDispatch(connKey);
+            const classified = classifyPacket(rawPayload);
+            const canUseClassified = Boolean(
+                classified &&
+                classified.payloadBitLength > 0 &&
+                classified.payloadOffsetBits + classified.payloadBitLength <= rawPayload.length * 8,
+            );
+            if (classified && traceDispatch) {
+                logInfo(
+                    `[Dispatch] mode=${classified.dispatchMode} ok=${canUseClassified ? 1 : 0} ` +
+                        `id=0x${classified.effectiveId.toString(16)} inner=0x${classified.innerId.toString(16)} ` +
+                        `layer=${classified.layer} offBits=${classified.payloadOffsetBits} bits=${classified.payloadBitLength} reason=${classified.dispatchReason}`,
+                );
+            } else if (traceDispatch) {
+                logInfo(
+                    `[Dispatch] mode=raw ok=0 id=0x00 inner=0x00 layer=0 bits=${rawPayload.length * 8} reason=pi_unavailable`,
+                );
+            }
+            if (classified && canUseClassified) {
+                const bitOffset = classified.payloadOffsetBits;
+                const bitLength = classified.payloadBitLength;
+                if (bitOffset % 8 === 0 && bitLength % 8 === 0) {
+                    const start = bitOffset / 8;
+                    const end = start + bitLength / 8;
+                    payload = rawPayload.subarray(start, end);
                 } else {
-                    logError(`[World] ID_TIMESTAMP too short (${payload.length} bytes)`);
-                    packet = peer.receive();
-                    continue;
+                    using reader = new LithPacketRead(rawPayload, rawPayload.length * 8);
+                    reader.seekTo(bitOffset);
+                    payload = reader.readData(bitLength);
                 }
+                messageId = classified.effectiveId & 0xff;
             }
-
-            switch (messageId) {
-                case RakNetMessageId.ID_NEW_INCOMING_CONNECTION:
-                    handleNewConnection(packet.systemAddress);
-                    break;
-
-                case RakNetMessageId.ID_DISCONNECTION_NOTIFICATION:
-                case RakNetMessageId.ID_CONNECTION_LOST:
-                    handleDisconnect(packet.systemAddress);
-                    break;
-
-                case RakNetMessageId.ID_WORLD_LOGIN: {
-                    const worldLoginPacket = IdWorldLoginPacket.decode(Buffer.from(payload));
-                    handleWorldLogin(worldLoginPacket, packet.systemAddress);
-                    break;
-                }
-
-                case RakNetMessageId.ID_WORLD_LOGIN_REQUEST: {
-                    handleWorldAuth(Buffer.from(payload), packet.systemAddress);
-                    break;
-                }
-
-                case RakNetMessageId.ID_WORLDSERVICE: {
-                    const worldServicePacket = IdWorldServicePacket.decode(Buffer.from(payload));
-                    const key = getConnectionKey(packet.systemAddress);
-                    logInfo(`[World] 0xa5 WORLDSERVICE from ${key}: ${worldServicePacket.toString()}`);
-                    break;
-                }
-
-                case RakNetMessageId.ID_REGISTER_CLIENT: {
-                    const registerPacket = IdRegisterClientPacket.decode(Buffer.from(payload));
-                    handleRegisterClient(registerPacket, packet.systemAddress);
-                    break;
-                }
-
-                case LithTechMessageId.MSG_CONNECTSTAGE: {
-                    handleConnectStage(Buffer.from(payload), packet.systemAddress);
-                    break;
-                }
-
-                case RakNetMessageId.ID_USER_PACKET_ENUM: {
-                    if (payload.length < 2) {
-                        logInfo(`[World] Unhandled 0x86 (USER_PACKET) too short (${payload.length} bytes)`);
-                        break;
-                    }
-                    const lithId = payload[1];
-                    if (config.debug) {
-                        logDebug(`[World] USER_PACKET -> lithId=0x${lithId.toString(16).padStart(2, '0')} len=${payload.length - 1}`);
-                    }
-                    const lithPayload = payload.subarray(1);
-                    if (lithId === LithTechMessageId.MSG_CONNECTSTAGE) {
-                        handleConnectStage(Buffer.from(lithPayload), packet.systemAddress);
-                    } else {
-                        logInfo(`[World] Unhandled Lith msg 0x${lithId.toString(16).padStart(2, '0')} (len=${lithPayload.length})`);
-                    }
-                    break;
-                }
-
-                default:
+            if (logAppPackets) {
+                logPacket(rawPayload, 'RECV', addrIp, packet.systemAddress.port, conn?.playerId);
+            }
+            // Replace packet data with the normalized app payload for handlers.
+            packet.data = payload;
+            packet.length = payload.length;
+            const handler = handlers.get(messageId);
+            if (handler) {
+                try {
+                    handler(packet);
+                } catch (err) {
                     const addr = addressToString(packet.systemAddress);
-                    logInfo(`[World] Unhandled 0x${messageId.toString(16).padStart(2, '0')} from ${addr} (${payload.length} bytes)`);
-                    if (payload.length <= 32) {
-                        const hex = Array.from(payload)
-                            .map((b) => b.toString(16).padStart(2, '0'))
-                            .join(' ');
-                        logInfo(`         ${hex}`);
-                    }
-                    break;
+                    const errText = err instanceof Error ? err.stack || err.message : String(err);
+                    logError(
+                        `[World] Error handling packet 0x${messageId.toString(16)} from ${addr}: ${errText}`,
+                    );
+                }
+            } else {
+                // No custom packet logging here; PacketInspector handles packet output.
             }
-
             packet = peer.receive();
         }
-
+        // Small sleep to prevent busy-waiting.
         await Bun.sleep(10);
     }
 }
 
-function shutdown() {
+/**
+ * Gracefully shutdown RakNet and connected services.
+ * @returns {void} No return value.
+ */
+function shutdown(): void {
     logInfo('\n[World] Shutting down...');
     peer.shutdown(500);
     peer.destroy();
     logInfo('[World] Goodbye!');
     process.exit(0);
 }
-
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 
+/**
+ * Start the world server main loop.
+ */
 mainLoop().catch((err) => {
     const errText = err instanceof Error ? err.stack || err.message : String(err);
     logError(`[World] Fatal error in main loop: ${errText}`);
