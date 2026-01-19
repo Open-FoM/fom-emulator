@@ -22,6 +22,19 @@
 /Open-FoMTools/Output/**
 !/ServerManager/
 !/ServerManager/**
+!/PacketInspector/
+!/PacketInspector/**
+# PacketInspector build outputs
+/PacketInspector/Build/
+/PacketInspector/Build/**
+/PacketInspector/BuildWin32/
+/PacketInspector/BuildWin32/**
+/PacketInspector/BuildWin32_VS/
+/PacketInspector/BuildWin32_VS/**
+/PacketInspector/BuildAbs/
+/PacketInspector/BuildAbs/**
+!/Scripts/
+!/Scripts/**
 /ServerManager/dist/
 /ServerManager/dist/**
 /ServerManager/node_modules/
@@ -108,3 +121,10 @@
 /Docs/Notes/AGENTS_change_log.md
 
 **/node_modules
+# PacketInspector nested build outputs
+/PacketInspector/PacketInspector/Build/
+/PacketInspector/PacketInspector/Build/**
+/PacketInspector/PacketInspector/BuildWin32/
+/PacketInspector/PacketInspector/BuildWin32/**
+/PacketInspector/PacketInspector/BuildX64/
+/PacketInspector/PacketInspector/BuildX64/**
