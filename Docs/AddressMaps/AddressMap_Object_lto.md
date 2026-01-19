@@ -765,12 +765,31 @@ These functions dereference g_pLTServer without NULL checks - crash on pure clie
 | 0x10085310 | 0x00085310 | Weather_UpdateMood | World/weather object | decomp/rename | med |
 | 0x10082980 | 0x00082980 | VortexVolume_Ctor | World/vortex object | decomp/rename | med |
 | 0x10082C60 | 0x00082C60 | VortexVolume_New | World/vortex object | decomp/rename | med |
-| 0x10084390 | 0x00084390 | VortexVolume_OnMessage_Client | World/vortex object | decomp/rename | med |
-| 0x10084170 | 0x00084170 | Packet_ID_VORTEX_GATE_Ctor | Packet/bitstream helper | decomp/rename | med |
-| 0x10084240 | 0x00084240 | Packet_ID_VORTEX_GATE_Read | Packet/bitstream helper | decomp/rename | med |
-| 0x10082CB0 | 0x00082CB0 | Packet_ID_VORTEX_GATE_Write | Packet/bitstream helper | decomp/rename | med |
-| 0x10084060 | 0x00084060 | Packet_ID_VORTEX_GATE_Dtor | Packet/bitstream helper | decomp/rename | med |
-| 0x10084120 | 0x00084120 | Packet_ID_VORTEX_GATE_VectorInit | Packet/bitstream helper | decomp/rename | med |
+| 0x10084390 | 0x00084390 | VortexVolume_OnMessage_Client | Vortex collision handler; msgId=3 (touch) builds/sends Packet_ID_VORTEX_GATE (subId=1) with playerId | decomp/rename | high |
+| 0x10084170 | 0x00084170 | Packet_ID_VORTEX_GATE_Ctor | Packet id 0x7B; clears payload fields + subId | decomp/rename | med |
+| 0x10084240 | 0x00084240 | Packet_ID_VORTEX_GATE_Read | Reads u32c playerId + u8c subId + subId payload | decomp/rename | high |
+| 0x10082CB0 | 0x00082CB0 | Packet_ID_VORTEX_GATE_Write | Writes u32c playerId + u8c subId + subId payload | decomp/rename | high |
+| 0x10084060 | 0x00084060 | Packet_ID_VORTEX_GATE_Dtor | Packet dtor | decomp/rename | low |
+| 0x10084120 | 0x00084120 | Packet_ID_VORTEX_GATE_VectorInit | Initializes list payload buffers | decomp/rename | low |
+
+#### Packet_ID_VORTEX_GATE (0x7B) layout (client <-> server; vortex gate request)
+
+- Header:
+  - +0x430: `playerId` (u32c)
+  - +0x434: `subId` (u8c)
+  - +0x435/+0x436: `optA`/`optB` (u8c each; used by subId 3/4/7)
+  - +0x438: `sub2_list` (Struct44List / ItemsAdded payload)
+  - +0x45C: `sub3_u32` (u32c)
+  - +0x460: `sub6_list` (Struct60List)
+
+- SubId payloads (from Packet_ID_VORTEX_GATE_Read/Write):
+  - `1`: no extra payload (sent by VortexVolume_OnMessage_Client on touch)
+  - `2`: `Struct44List_Serialize` @ +0x438 (ItemsAdded list; CShell `ItemList_Read`)
+  - `3`: `u32c` @ +0x45C + `u8c optA` @ +0x435 + `u8c optB` @ +0x436 (purpose unknown)
+  - `4`: `u8c worldId` @ +0x435 + `u8c worldInst` @ +0x436 (CShell triggers login)
+  - `5`: no extra payload (world list request; client->world)
+  - `6`: `Struct60List` @ +0x460
+  - `7`: `u8c worldId` @ +0x435 + `u8c nodeId` @ +0x436 (client->world travel request; nodeId 0=Default, 25=Random)
 | 0x10087190 | 0x00087190 | WorldProperties_Ctor | World properties object | decomp/rename | med |
 | 0x10086E40 | 0x00086E40 | WorldProperties_Dtor | World properties object | decomp/rename | med |
 | 0x100870A0 | 0x000870A0 | WorldProperties_OnMessage | World properties object | decomp/rename | med |

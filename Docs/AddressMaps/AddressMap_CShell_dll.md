@@ -1587,9 +1587,14 @@ Note: renamed from Packet_Id107; IDA names may still use the old prefix.
 | 0x10199270 | 0x00199270 | HandlePacket_ID_WORLD_SELECT_7B | Packet ID 0x7B; validates playerId; subId=4 sets SharedMem[0x1EEC1/0x1EEC2]=worldId/inst + 0x1EEC0=1 (LoginUI msg 0x0B); subId=6 routes payload to UI handler | disasm | high |
 | 0x101064C0 | 0x001064C0 | Packet_ID_7B_Ctor | Packet ID = 0x7B; initializes payload blocks | disasm | med |
 | 0x10106590 | 0x00106590 | Packet_ID_7B_Read | Parses 0x7B (u32c playerId + u8c type + type payload) | disasm | med |
+| 0x10105D80 | 0x00105D80 | Packet_ID_WORLD_SELECT_Write | Writes 0x7B (u32c playerId + u8c subId + subId payload) | decomp | med |
 | 0x101063B0 | 0x001063B0 | Packet_ID_7B_Dtor | Frees 0x7B payload buffers; BitStream_FreeOwnedBuffer | disasm | low |
 | 0x10106470 | 0x00106470 | Packet_ID_7B_Sub6List_Init | Initializes subId=6 list header at +0x460 | disasm | low |
 | 0x10177A40 | 0x00177A40 | WorldSelect_HandleSubId6Payload | SubId=6 handler; applies parsed +0x460 payload to UI (window id 0x31) | disasm | med |
+| 0x10176FC0 | 0x00176FC0 | CWindowWorldSelect_Ctor | World select UI ctor; inits sub6 list + state | decomp | med |
+| 0x10177260 | 0x00177260 | CWindowWorldSelect_Dtor | World select UI dtor | disasm | low |
+| 0x10177290 | 0x00177290 | CWindowWorldSelect_OnCommand | World select UI command handler; sends 0x7B subId=5/7 | decomp | high |
+| 0x10177D50 | 0x00177D50 | WorldSelect_GetBaseCostByClass | Maps classId (from world list entry) -> base cost {5000,10000,15000,20000,25000} | disasm | low |
 | 0x1026F2E0 | 0x0026F2E0 | Packet_ID_7B_ReadSubId6List | SubId=6 payload parser for 0x7B (fills list @+0x460) | disasm | med |
 | 0x10181A00 | 0x00181A00 | HandlePacket_ID_7D_WriteSharedMem_0x2BD0 | Packet ID 0x7D; reads u32c and writes SharedMem block 0x2BD0 (12 bytes) | decomp | low |
 | 0x10164D40 | 0x00164D40 | HandlePacket_ID_6B_SubId44_InventoryUiRefresh | Packet 0x6B subId=44; updates inventory/production UI slots + tooltips | dispatch + decomp | med |
@@ -1991,18 +1996,22 @@ Type-specific payload:
 - type=2 -> ItemList_Read @ 0x102404E0 into +0x438.
 - type=3 -> u32c @+0x45C, u8c @+0x435, u8c @+0x436.
 - type=4 -> u8c @+0x435, u8c @+0x436. (worldId, worldInst)
-- type=5 -> no extra.
+- type=5 -> no extra (client->world list request).
 - type=6 -> Packet_ID_7B_ReadSubId6List @ 0x1026F2E0 on +0x460 (list payload).
-- type=7 -> u8c @+0x435, u8c @+0x436.
+- type=7 -> u8c @+0x435, u8c @+0x436. (client->world travel request: worldId, nodeId)
 
 Handler behavior:
 - if type==4 and playerId matches g_pPlayerStats[0x5B], sets SharedMem[0x1EEC1/0x1EEC2]=worldId/inst, sets 0x1EEC0=1, shows LoginUI msg 0x0B.
 - if type==6, routes +0x460 payload to WorldSelect_HandleSubId6Payload (window id 0x31).
+- type==7 is parsed but ignored by CShell handler (client->world only).
 
 SubId=6 payload (Packet_ID_7B_ReadSubId6List @ 0x1026F2E0):
 - entry_count (u8c), then per-entry: u8 key, u32 mask (read then bitwise inverted), u16a, u16b, listB entry, listC entry.
 - trailing 3x u32c stored at +0x10/+0x14/+0x18 of the sub6 payload struct (meta_a/meta_b/meta_c).
 - entry struct size is 0x3C (60 bytes). Init/reset helpers: sub_101231B0 / sub_10123100; copy helper: sub_10176BA0.
+- UI usage:
+  - byte_659E2954[60 * worldId] is treated as classId (3140+ string ids, base cost tier).
+  - dword_659E2970[15 * worldId] is treated as nodeCount (node list entries).
 
 #### Packet_ID_7D (ID 0x7D) - server->client (SharedMem update)
 
@@ -3844,9 +3853,14 @@ Note: renamed from Packet_Id107; IDA names may still use the old prefix.
 | 0x10199270 | 0x00199270 | HandlePacket_ID_WORLD_SELECT_7B | Packet ID 0x7B; validates playerId; subId=4 sets SharedMem[0x1EEC1/0x1EEC2]=worldId/inst + 0x1EEC0=1 (LoginUI msg 0x0B); subId=6 routes payload to UI handler | disasm | high |
 | 0x101064C0 | 0x001064C0 | Packet_ID_7B_Ctor | Packet ID = 0x7B; initializes payload blocks | disasm | med |
 | 0x10106590 | 0x00106590 | Packet_ID_7B_Read | Parses 0x7B (u32c playerId + u8c type + type payload) | disasm | med |
+| 0x10105D80 | 0x00105D80 | Packet_ID_WORLD_SELECT_Write | Writes 0x7B (u32c playerId + u8c subId + subId payload) | decomp | med |
 | 0x101063B0 | 0x001063B0 | Packet_ID_7B_Dtor | Frees 0x7B payload buffers; BitStream_FreeOwnedBuffer | disasm | low |
 | 0x10106470 | 0x00106470 | Packet_ID_7B_Sub6List_Init | Initializes subId=6 list header at +0x460 | disasm | low |
 | 0x10177A40 | 0x00177A40 | WorldSelect_HandleSubId6Payload | SubId=6 handler; applies parsed +0x460 payload to UI (window id 0x31) | disasm | med |
+| 0x10176FC0 | 0x00176FC0 | CWindowWorldSelect_Ctor | World select UI ctor; inits sub6 list + state | decomp | med |
+| 0x10177260 | 0x00177260 | CWindowWorldSelect_Dtor | World select UI dtor | disasm | low |
+| 0x10177290 | 0x00177290 | CWindowWorldSelect_OnCommand | World select UI command handler; sends 0x7B subId=5/7 | decomp | high |
+| 0x10177D50 | 0x00177D50 | WorldSelect_GetBaseCostByClass | Maps classId (from world list entry) -> base cost {5000,10000,15000,20000,25000} | disasm | low |
 | 0x1026F2E0 | 0x0026F2E0 | Packet_ID_7B_ReadSubId6List | SubId=6 payload parser for 0x7B (fills list @+0x460) | disasm | med |
 | 0x10181A00 | 0x00181A00 | HandlePacket_ID_7D_WriteSharedMem_0x2BD0 | Packet ID 0x7D; reads u32c and writes SharedMem block 0x2BD0 (12 bytes) | decomp | low |
 | 0x10164D40 | 0x00164D40 | HandlePacket_ID_6B_SubId44_InventoryUiRefresh | Packet 0x6B subId=44; updates inventory/production UI slots + tooltips | dispatch + decomp | med |
@@ -4248,18 +4262,22 @@ Type-specific payload:
 - type=2 -> ItemList_Read @ 0x102404E0 into +0x438.
 - type=3 -> u32c @+0x45C, u8c @+0x435, u8c @+0x436.
 - type=4 -> u8c @+0x435, u8c @+0x436. (worldId, worldInst)
-- type=5 -> no extra.
+- type=5 -> no extra (client->world list request).
 - type=6 -> Packet_ID_7B_ReadSubId6List @ 0x1026F2E0 on +0x460 (list payload).
-- type=7 -> u8c @+0x435, u8c @+0x436.
+- type=7 -> u8c @+0x435, u8c @+0x436. (client->world travel request: worldId, nodeId)
 
 Handler behavior:
 - if type==4 and playerId matches g_pPlayerStats[0x5B], sets SharedMem[0x1EEC1/0x1EEC2]=worldId/inst, sets 0x1EEC0=1, shows LoginUI msg 0x0B.
 - if type==6, routes +0x460 payload to WorldSelect_HandleSubId6Payload (window id 0x31).
+- type==7 is parsed but ignored by CShell handler (client->world only).
 
 SubId=6 payload (Packet_ID_7B_ReadSubId6List @ 0x1026F2E0):
 - entry_count (u8c), then per-entry: u8 key, u32 mask (read then bitwise inverted), u16a, u16b, listB entry, listC entry.
 - trailing 3x u32c stored at +0x10/+0x14/+0x18 of the sub6 payload struct (meta_a/meta_b/meta_c).
 - entry struct size is 0x3C (60 bytes). Init/reset helpers: sub_101231B0 / sub_10123100; copy helper: sub_10176BA0.
+- UI usage:
+  - byte_659E2954[60 * worldId] is treated as classId (3140+ string ids, base cost tier).
+  - dword_659E2970[15 * worldId] is treated as nodeCount (node list entries).
 
 #### Packet_ID_7D (ID 0x7D) - server->client (SharedMem update)
 
