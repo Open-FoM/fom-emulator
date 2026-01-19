@@ -1,38 +1,47 @@
+/**
+ * World registry tables and lookup helpers.
+ */
 export type WorldInfo = {
     id: number;
     folder: string | null;
     display: string;
 };
-
-// Synced to Client/Client_FoM/Resources/Worlds. If folder is null, the file is missing/unknown in current assets.
+// Synced to the client runtime world table (CShell g_WorldTable). WORLD_ID is 1-based index.
+// folder = null indicates missing/unmapped world data in current assets.
 export const WORLD_TABLE: ReadonlyArray<WorldInfo> = [
-    { id: 1, folder: 'NY_Manhattan', display: 'NYC-Manhattan' },
-    { id: 2, folder: 'NY_Brooklyn', display: 'NYC-Brooklyn' },
+    { id: 1, folder: 'NY_Manhattan', display: 'NYC - Manhattan' },
+    { id: 2, folder: 'NY_Brooklyn', display: 'NYC - Brooklyn' },
     { id: 3, folder: 'tokyo', display: 'Tokyo - Upper' },
     { id: 4, folder: 'apartments', display: 'Apartments' },
     { id: 5, folder: null, display: 'Earth' },
-    { id: 6, folder: 'necarsfield', display: 'Necarsfield' },
+    { id: 6, folder: 'necarsfield', display: 'Necars Field' },
     { id: 7, folder: 'Paris', display: 'Paris' },
-    { id: 8, folder: 'Aquatica', display: 'Aquatica' },
+    { id: 8, folder: null, display: 'Testing' },
     { id: 9, folder: 'Berlin', display: 'Berlin' },
     { id: 10, folder: 'lowertokyo', display: 'Tokyo - Lower' },
     { id: 11, folder: 'AndromedaCity', display: 'Andromeda City' },
-    { id: 12, folder: 'Newhaven', display: 'Newhaven' },
-    { id: 13, folder: 'Aurelia', display: 'Aurelia' },
-    { id: 14, folder: 'DeMorgan', display: 'De Morgan' },
-    { id: 15, folder: 'CloneFac', display: 'Clone Facility' },
-    { id: 16, folder: 'MoonBase', display: 'Moonbase' },
-    { id: 17, folder: 'Pegasi51', display: 'Pegasi 51' },
-    { id: 18, folder: 'NY_GroundZero', display: 'NYC-Ground Zero' },
+    { id: 12, folder: 'Newhaven', display: 'New Haven' },
+    { id: 13, folder: null, display: 'Ganymede' },
+    { id: 14, folder: 'DeMorgan', display: 'DeMorgans Castle' },
+    { id: 15, folder: 'keplersdome', display: 'Keplers Dome' },
+    { id: 16, folder: 'Moonbase', display: 'Moon Base' },
+    { id: 17, folder: null, display: 'STS Genesis' },
+    { id: 18, folder: 'NY_GroundZero', display: 'NYC - Ground Zero' },
     { id: 19, folder: 'BookersValley', display: 'Bookers Valley' },
-    { id: 20, folder: 'titanstation', display: 'Titan Station' },
+    { id: 20, folder: null, display: 'Epsilon Eridani' },
     { id: 21, folder: 'TerraVentureI', display: 'Terra Venture I' },
-    { id: 22, folder: null, display: 'Dominion Exodus (missing)' },
-    { id: 23, folder: null, display: 'Espen Paradise (missing)' },
+    { id: 22, folder: null, display: 'Dominion Exodus' },
+    { id: 23, folder: null, display: 'Espen Paradise' },
+    { id: 24, folder: 'Aquatica', display: 'Aquatica' },
+    { id: 25, folder: 'Pegasi51', display: 'Pegasi 51' },
+    { id: 26, folder: 'Aurelia', display: 'Aurelia' },
+    { id: 27, folder: 'PaxPrime', display: 'Pax Prime' },
+    { id: 28, folder: 'ceresdelta', display: 'Ceres Delta' },
+    { id: 29, folder: 'titanstation', display: 'Titan Station' },
+    { id: 30, folder: 'CloneFac', display: 'Cloning Facility' },
+    { id: 31, folder: 'TrainingCenter', display: 'Training Center' },
+    { id: 32, folder: null, display: '' },
 ];
-
-// Remaining missing IDs: 22 (Dominion Exodus), 23 (Espen Paradise)
-
 export const APARTMENT_WORLD_TABLE: Readonly<Record<number, string>> = {
     1: 'city_1',
     2: 'colony_dirty_1',
@@ -59,11 +68,21 @@ export const APARTMENT_WORLD_TABLE: Readonly<Record<number, string>> = {
     23: 'backer_pent',
 };
 
+/**
+ * Lookup world info by numeric ID.
+ * @param {number} id - World ID.
+ * @returns {WorldInfo | undefined} World info or undefined.
+ */
 export function getWorldInfo(id: number): WorldInfo | undefined {
     // Look up by numeric world id.
     return WORLD_TABLE.find((entry) => entry.id === id);
 }
 
+/**
+ * Lookup apartment folder by index.
+ * @param {number} index - Apartment index.
+ * @returns {string | undefined} Apartment folder name or undefined.
+ */
 export function getApartmentFolder(index: number): string | undefined {
     // Lookup apartment instance folder by index.
     return APARTMENT_WORLD_TABLE[index];
