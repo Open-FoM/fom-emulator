@@ -14,6 +14,7 @@ export class FileLogger {
     private static processHooksInstalled = false;
     private logFile: fs.WriteStream | null = null;
     private logDir: string = './logs';
+    private logFileName: string = 'fom_server.log';
 
     /**
      * Set the global FileLogger instance.
@@ -84,19 +85,24 @@ export class FileLogger {
      * Initialize the log file with optional directory.
      * Creates directory if it doesn't exist and rotates existing log.
      */
-    initLogFile(logDir?: string): void {
+    initLogFile(logDir?: string, logFileName?: string): void {
         this.logDir = logDir ?? this.logDir;
+        const requested = (logFileName || '').trim();
+        if (requested) {
+            this.logFileName = requested.endsWith('.log') ? requested : `${requested}.log`;
+        }
 
         if (!fs.existsSync(this.logDir)) {
             fs.mkdirSync(this.logDir, { recursive: true });
         }
 
-        const latestName = path.join(this.logDir, 'fom_server.log');
+        const latestName = path.join(this.logDir, this.logFileName);
 
         // Rotate existing log file
         if (fs.existsSync(latestName)) {
             const stamp = this.formatTimestamp(new Date()).replace(':', '.');
-            const rotated = path.join(this.logDir, `fom_server_${stamp}.log`);
+            const base = path.basename(this.logFileName, '.log');
+            const rotated = path.join(this.logDir, `${base}_${stamp}.log`);
             try {
                 fs.renameSync(latestName, rotated);
             } catch {

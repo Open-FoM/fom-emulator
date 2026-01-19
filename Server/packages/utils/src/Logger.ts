@@ -12,10 +12,26 @@ interface LoggerConfig {
     debug: boolean;
 }
 
+export type LogEntry = {
+    level: 'log' | 'warn' | 'error';
+    message: string;
+    ts: number;
+};
+
+type LogListener = (entry: LogEntry) => void;
+
 const config: LoggerConfig = {
     quiet: false,
     debug: false,
 };
+
+const listeners = new Set<LogListener>();
+
+// Subscribe to log output (returns unsubscribe).
+export function onLog(listener: LogListener): () => void {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+}
 
 // Update logging switches.
 export function configureLogger(next: Partial<LoggerConfig>): void {
@@ -28,13 +44,18 @@ export function configureLogger(next: Partial<LoggerConfig>): void {
     }
 }
 
-// Internal emit function - logs to console or file based on quiet mode.
+// Internal emit function - logs to file (if available) and console based on quiet mode.
 function emit(message: string, level: 'log' | 'warn' | 'error'): void {
+    const entry: LogEntry = { level, message, ts: Date.now() };
+    for (const listener of listeners) {
+        try {
+            listener(entry);
+        } catch {}
+    }
+    // Always mirror app-level logs into the file logger (if configured).
+    FileLogger.globalNote(message);
     if (!config.quiet) {
         console[level](message);
-    } else {
-        // In quiet mode, write to file logger if available
-        FileLogger.globalNote(message);
     }
 }
 
