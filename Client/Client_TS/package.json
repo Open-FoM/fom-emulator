@@ -11,6 +11,7 @@
     "client:login": "bun src/tools/TestClient.ts login",
     "client:login6e": "bun src/tools/TestClient.ts login6e",
     "client:world": "bun src/tools/TestClient.ts world",
+    "client:probe": "bun src/tools/TestClient.ts probe",
     "test": "bun src/tests/login_auth_builder.test.ts && bun src/tests/raknet_compressed.test.ts",
     "typecheck": "tsc --noEmit"
   },

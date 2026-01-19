@@ -5,7 +5,7 @@
  */
 
 // Connection constants
-export const DEFAULT_PORT = 61000;
+export const DEFAULT_PORT = 63000;
 export const WORLD_SERVER_PASSWORD = '37eG87Ph';
 export const MTU_SIZE = 1400;
 
@@ -67,8 +67,11 @@ export enum RakNetMessageId {
   ID_LOGIN = 0x6E, // 110
   ID_LOGIN_RETURN = 0x6F, // 111
   ID_LOGIN_TOKEN_CHECK = 0x70, // 112
+  ID_WORLD_LOGIN_REQUEST = 0x6B, // 107 (heartbeat)
   ID_WORLD_LOGIN = 0x72, // 114
   ID_WORLD_LOGIN_RETURN = 0x73, // 115
+  ID_REGISTER_CLIENT = 0x78, // 120
+  ID_REGISTER_CLIENT_RETURN = 0x79, // 121
   ID_WORLD_SELECT = 0x7B, // 123
   
   // User packets start here (RakNet default)

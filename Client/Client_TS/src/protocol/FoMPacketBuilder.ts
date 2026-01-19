@@ -33,6 +33,18 @@ export interface WorldLoginOptions {
   timestampMs?: bigint;
 }
 
+export interface RegisterClientOptions {
+  worldId: number;
+  playerId: number;
+  sessionId: number;
+  timestampMs?: bigint;
+}
+
+export interface WorldHeartbeatOptions {
+  sizeBytes?: number;
+  timestampMs?: bigint;
+}
+
 const writeBoundedBytes = (bs: NativeBitStream, value: Buffer, maxLen: number): void => {
   if (maxLen <= 1) {
     return;
@@ -108,7 +120,8 @@ export const buildLoginAuth = (options: LoginAuthOptions): Buffer => {
     encodeString(username, bs, 2048);
     writeBoundedBytes(bs, passwordHashRaw, 0x40);
     for (let i = 0; i < 3; i += 1) {
-      bs.writeCompressedU32((fileCRCs[i] ?? 0) >>> 0);
+      // Server decoder expects raw u32 (not compressed).
+      bs.writeU32((fileCRCs[i] ?? 0) >>> 0);
     }
     encodeString(macAddress, bs, 2048);
     for (let i = 0; i < 4; i += 1) {
@@ -159,4 +172,33 @@ export const buildWorldLogin = (options: WorldLoginOptions): Buffer => {
   } finally {
     bs.destroy();
   }
+};
+
+export const buildRegisterClient = (options: RegisterClientOptions): Buffer => {
+  const bs = new NativeBitStream();
+  try {
+    if (options.timestampMs !== undefined) {
+      bs.writeU8(RakNetMessageId.ID_TIMESTAMP);
+      const tsBuf = Buffer.alloc(8);
+      tsBuf.writeBigUInt64LE(options.timestampMs);
+      bs.writeBytes(tsBuf);
+    }
+    bs.writeU8(RakNetMessageId.ID_REGISTER_CLIENT);
+    bs.writeCompressedU8(options.worldId & 0xff);
+    bs.writeCompressedU32(options.playerId >>> 0);
+    bs.writeCompressedU32(options.sessionId >>> 0);
+    return bs.getData();
+  } finally {
+    bs.destroy();
+  }
+};
+
+export const buildWorldHeartbeat = (options: WorldHeartbeatOptions = {}): Buffer => {
+  const size = Math.max(1, options.sizeBytes ?? 35);
+  const payload = Buffer.alloc(size, 0);
+  payload[0] = RakNetMessageId.ID_WORLD_LOGIN_REQUEST;
+  if (options.timestampMs !== undefined && size >= 9) {
+    payload.writeBigUInt64LE(options.timestampMs, 1);
+  }
+  return payload;
 };

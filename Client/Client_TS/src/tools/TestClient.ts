@@ -1,3 +1,4 @@
+import * as dgram from 'dgram';
 import os from 'os';
 import path from 'path';
 import {
@@ -5,14 +6,13 @@ import {
   RakPriority,
   RakReliability,
   NativeBitStream,
-  BitStreamReader,
-  BitStreamWriter,
   addressFromString,
   addressToIp,
   addressToString,
   decodeString,
   type RakSystemAddress,
 } from '@openfom/networking';
+import { BitStreamReader, BitStreamWriter } from '../utils/BitStream';
 import {
   DEFAULT_PORT,
   LithTechMessageId,
@@ -24,6 +24,8 @@ import {
   buildLoginAuth,
   buildLoginAuthSession,
   buildLoginRequest,
+  buildRegisterClient,
+  buildWorldHeartbeat,
   buildWorldLogin,
 } from '../protocol/FoMPacketBuilder';
 import type { LoginAuthOptions } from '../protocol/FoMPacketBuilder';
@@ -35,6 +37,161 @@ import {
   parseFlushMode,
   parsePacketIds,
 } from '../config/ConfigLoader';
+
+const MOVEMENT_REPLAY_PACKETS_HEX = [
+  // 2026.01.16-23.43.43:426
+  '40 00 00 00 00 7d 1a 3e 80 00 00 29 58 80 00 00' +
+    ' 1f 40 00 00 21 10 19 00 00 00 00 01 f4 68 fa 7e' +
+    ' 88 78 0b 4a e8 3b c8 94 a6 24 3c 00 00 00 00 20' +
+    ' 6b 80 17 8b ec a8 3a 1d 80 00 00 00 00 00 01 51' +
+    ' 41 02 4b 0a 09 2c 00 1d 20 36 29 a2 00 0f e3 62' +
+    ' 20 66 44 0c 80 00 00 08 00',
+  // 2026.01.16-23.43.43:494
+  '40 00 00 00 00 7d 1a 4f 80 00 00 29 98 80 00 00' +
+    ' 1f 80 00 00 20 c0 19 00 00 00 00 01 f4 69 3d 7e' +
+    ' 88 78 0b 4a e8 3b c8 94 a6 24 3c 00 00 00 00 20' +
+    ' 6b 80 17 8b ec a8 3a 1d 80 00 00 00 00 00 01 51' +
+    ' 41 02 4b 0a 09 2c 00 1d 20 36 29 a2 00 0f e3 62' +
+    ' 20 66 01 90 00 00 01 00',
+  // 2026.01.16-23.43.44:167
+  '40 00 00 00 00 7d 1a f7 c0 00 00 2a 18 80 00 00' +
+    ' 1f c0 00 00 20 c0 19 00 00 00 00 01 f4 6b df 7e' +
+    ' 88 78 0b 4a e8 3b c8 94 a6 24 3c 00 00 00 00 20' +
+    ' 6b 80 17 8b ec a8 3a 1d 80 00 00 00 00 00 01 51' +
+    ' 41 02 4b 0a 09 2c 00 1d 20 36 29 a2 00 0f e3 62' +
+    ' 20 66 01 90 00 00 01 00',
+  // 2026.01.16-23.43.44:832
+  '40 00 00 00 00 7d 1b 9e 40 00 00 2a 58 80 00 00' +
+    ' 20 00 00 00 20 c0 19 00 00 00 00 01 f4 6e 79 7e' +
+    ' 88 78 0b 4a e8 3b c8 94 a6 24 3c 00 00 00 00 20' +
+    ' 6b 80 17 8b ec a8 3a 1d 80 00 00 00 00 00 01 51' +
+    ' 41 02 4b 0a 09 2c 00 1d 20 36 29 a2 00 0f e3 62' +
+    ' 20 66 01 90 00 00 01 00',
+  // 2026.01.16-23.43.45:499
+  '40 00 00 00 00 7d 1c 44 c0 00 00 2b 18 80 00 00' +
+    ' 20 40 00 00 20 c0 19 00 00 00 00 01 f4 71 13 7e' +
+    ' 88 78 0b 4a e8 3b c8 94 a6 24 3c 00 00 00 00 20' +
+    ' 6b 80 17 8b ec a8 3a 1d 80 00 00 00 00 00 01 51' +
+    ' 41 02 4b 0a 09 2c 00 1d 20 36 29 a2 00 0f e3 62' +
+    ' 20 66 01 90 00 00 01 00',
+  // 2026.01.16-23.43.46:165
+  '40 00 00 00 00 7d 1c eb 40 00 00 2b 58 80 00 00' +
+    ' 20 80 00 00 20 c0 19 00 00 00 00 01 f4 73 ad 7e' +
+    ' 88 78 0b 4a e8 3b c8 94 a6 24 3c 00 00 00 00 20' +
+    ' 6b 80 17 8b ec a8 3a 1d 80 00 00 00 00 00 01 51' +
+    ' 41 02 4b 0a 09 2c 00 1d 20 36 29 a2 00 0f e3 62' +
+    ' 20 66 01 90 00 00 01 00',
+  // 2026.01.16-23.43.46:831
+  '40 00 00 00 00 7d 1d 91 c0 00 00 2b 98 80 00 00' +
+    ' 20 c0 00 00 20 c0 19 00 00 00 00 01 f4 76 46 7e' +
+    ' 88 78 0b 4a e8 3b c8 94 a6 24 3c 00 00 00 00 20' +
+    ' 6b 80 17 8b ec a8 3a 1d 80 00 00 00 00 00 01 51' +
+    ' 41 02 4b 0a 09 2c 00 1d 20 36 29 a2 00 0f e3 62' +
+    ' 20 66 01 90 00 00 01 00',
+  // 2026.01.16-23.43.47:021
+  '40 00 00 00 00 7d 1d c1 00 00 00 2c 58 80 00 00' +
+    ' 21 00 00 00 20 c0 19 00 00 00 00 01 f4 77 02 7e' +
+    ' 88 78 0b 4a e8 3b c8 94 a6 24 3c 00 00 00 00 20' +
+    ' 6b 80 17 8b ec a8 3a 1d 80 00 00 00 00 00 01 51' +
+    ' 41 02 4b 0a 09 2c 00 1d 20 36 29 a2 00 0f e3 62' +
+    ' 20 66 01 90 80 00 01 00',
+  // 2026.01.16-23.43.47:685
+  '40 00 00 00 00 7d 1e 67 40 00 00 2c 98 80 00 00' +
+    ' 21 40 00 00 20 c0 19 00 00 00 00 01 f4 79 9d 7e' +
+    ' 88 78 0b 4a e8 3b c8 94 a6 24 3c 00 00 00 00 20' +
+    ' 6b 80 17 8b ec a8 3a 1d 80 00 00 00 00 00 01 51' +
+    ' 41 02 4b 0a 09 2c 00 1d 20 36 29 a2 00 0f e3 62' +
+    ' 20 66 01 90 80 00 01 00',
+  // 2026.01.16-23.41.53:445 (SMSG_LOADWORLD inside packet group)
+  '40 00 00 00 00 7c ae d5 c0 00 00 00 50 00 00 00' +
+    ' 90 00 00 00 00 00 01 f2 bb 4d 00 00 00 02 40 00' +
+    ' 00 04 40 03 00 00 00 00 01 f2 bb 43 00 00 00 00' +
+    ' 01 f2 bb 4d 00 00 00 03 40 00 00 04 40 03 00 00' +
+    ' 00 00 01 f2 bb 43 00 00 00 00 01 f2 bb 4e 00 00' +
+    ' 00 04 40 00 00 02 40 00 00 00 00 00 01 f2 bb 4e' +
+    ' 00 00 00 05 40 00 00 07 40 0e 48 04 07 00 00 00' +
+    ' 00 00 00 00 20 0c 00 00 00 18 07 00 00 38 06 00' +
+    ' 00 00 00 10 00 00',
+  // 2026.01.17-19.04.21:789 (SMSG_LOADWORLD inside packet group)
+  '40 00 00 00 00 39 9a 51 40 00 00 00 50 00 00 00' +
+    ' 90 00 00 00 00 00 00 e6 69 3b 00 00 00 02 40 00' +
+    ' 00 04 40 03 00 00 00 00 00 e6 69 31 00 00 00 00' +
+    ' 00 e6 69 3b 00 00 00 03 40 00 00 04 40 03 00 00' +
+    ' 00 00 00 e6 69 31 00 00 00 00 00 e6 69 3b 00 00' +
+    ' 00 04 40 00 00 02 40 00 00 00 00 00 00 e6 69 3b' +
+    ' 00 00 00 05 40 00 00 07 40 0e 48 04 07 00 00 00' +
+    ' 00 00 00 00 20 0c 00 00 00 18 07 00 00 38 06 00' +
+    ' 00 00 00 01 00 00',
+  // 2026.01.17-19.05.49:624 (REGISTER_CLIENT_RETURN mis-ID)
+  '40 00 00 00 00 39 f0 13 c0 00 00 02 10 00 00 0a' +
+    ' 60 79 88 00 00 00 06 38 78 78 78 60 00 00 0c 3c' +
+    ' 3c 3c 30 c3 0c 30 0e c0 00 00 00 00 00 00 a8 a0' +
+    ' 81 25 85 04 96 00 0e 90 1b 14 d1 00 07 f1 b1 10' +
+    ' 00 00 01 f4 00 00 09 c4 00 00 00 7d 00 00 00 3e' +
+    ' 80 00 01 38 87 87 87 87 87 87 80 00 00 0c 83 c3' +
+    ' c3 c3 c3 c3 c3 c3 c3 c3 c0 00 00 00 07 e1 e0 00' +
+    ' 00 00 2b 00 00 00 32 78 78 78 78 78 78 78 78 78' +
+    ' 78 78 78 78 00 00 01 13 3c 3c 3c 3c 00 00 00 96' +
+    ' 00 00 02 71 0f 0f 0f 0f 0f 0f 0f 07 87 87 87 84' +
+    ' e1 87 0c 30 00 78 78 30 f0 00 3c 21 08 43 c3 c3' +
+    ' 0c 30 00 3c 3c 3c 00',
+  // 2026.01.17-03.31.31:783 (CMSG_CONNECTSTAGE stage=0)
+  '40 00 00 00 00 b1 3e 40 00 00 00 02 d0 00 00 00' +
+    ' 90 00 00 00 00 00 02 c4 f9 00',
+  // 2026.01.17-03.31.31:810 (CMSG_CONNECTSTAGE stage=0)
+  '40 00 00 00 00 b1 3e 46 40 00 00 01 d0 00 00 00' +
+    ' 90 00 00 00 00 00 02 c4 f9 19',
+  // 2026.01.17-03.47.15:590 (CMSG_CONNECTSTAGE stage=0)
+  '40 00 00 00 00 b4 d7 ee 80 00 00 02 d0 00 00 00' +
+    ' 90 00 00 00 00 00 02 d3 5f ba',
+  // 2026.01.17-03.47.15:632 (CMSG_CONNECTSTAGE stage=0)
+  '40 00 00 00 00 b4 d7 f8 00 00 00 01 90 00 00 00' +
+    ' 90 00 00 00 00 00 02 d3 5f e0',
+  // 2026.01.18-15.53.36:605 (Missing connection, observed)
+  '40 00 00 00 00 07 21 3d 40 00 00 02 10 00 00 00',
+  // 2026.01.18-15.53.36:687 (Missing connection, observed)
+  '40 00 00 00 00 07 21 52 00 00 00 02 10 00 00 00',
+  // Missing connection (synthetic variation)
+  '40 00 00 00 00 07 22 3d 40 00 00 02 10 00 00 00',
+  // Missing connection (synthetic variation)
+  '40 00 00 00 00 07 23 3d 40 00 00 02 10 00 00 00',
+  // 2026.01.18-21.55.57:935 (ID_INTERNAL_PING)
+  '40 00 00 00 00 5a 11 02 00 00 00 02 d0 00 00 00' +
+    ' 90 00 00 00 00 00 01 68 44 08',
+  // 2026.01.18-21.56.12:919 (ID_INTERNAL_PING)
+  '40 00 00 00 00 5a 1f a3 00 00 00 04 50 00 00 00' +
+    ' 90 00 00 00 00 00 01 68 7e 8c',
+  // 2026.01.18-21.56.17:931 (ID_INTERNAL_PING)
+  '40 00 00 00 00 5a 24 87 00 00 00 04 d0 00 00 00' +
+    ' 90 00 00 00 00 00 01 68 92 1c',
+  // 2026.01.18-21.55.38:522 (ACK)
+  '80 00 00 00 00 b3 fc 15 80 00 00 00 60 00 00 00 00',
+  // 2026.01.18-21.55.38:549 (ACK)
+  '80 00 00 00 00 b3 fc 1f 80 00 00 00 40 00 00 00 20 00 00 00 80',
+  // 2026.01.18-21.55.39:063 (ACK)
+  '80 00 00 00 00 b3 fd 23 80 00 00 00 60 00 00 00 c0',
+  // 2026.01.18-23.51.xx (World Disconnect: ID_PING / 0x01)
+  '40 00 00 00 00 74 92 3f c0 00 00 2e d0 00 00 00' +
+    ' 90 00 00 00 00 00 01 d2 43 aa',
+  // 2026.01.18-23.51.xx (World Disconnect: ID_PING / 0x01)
+  '40 00 00 00 00 74 92 4f 80 00 00 2e d0 00 00 00' +
+    ' 90 00 00 00 00 00 01 d2 43 aa',
+  // 2026.01.18-23.51.xx (World Disconnect: ID_PING / 0x01)
+  '40 00 00 00 00 74 92 5f 00 00 00 2e d0 00 00 00' +
+    ' 90 00 00 00 00 00 01 d2 43 aa',
+];
+
+const MOVEMENT_REPLAY_CADENCE_MS = [68, 673, 665, 667, 666, 666, 666, 190, 664];
+
+const parseHexPacket = (value: string): Buffer => {
+  const cleaned = value.replace(/[^a-fA-F0-9]/g, '');
+  if (cleaned.length === 0 || cleaned.length % 2 !== 0) {
+    throw new Error('Replay packet hex must be even-length and non-empty.');
+  }
+  return Buffer.from(cleaned, 'hex');
+};
+
+const MOVEMENT_REPLAY_PACKETS = MOVEMENT_REPLAY_PACKETS_HEX.map(parseHexPacket);
 
 class TestClient {
   private masterPeer: RakPeer;
@@ -76,14 +233,31 @@ class TestClient {
   private worldConnectActive: boolean;
   private worldLoginSentToWorld: boolean;
   private worldLithOutSeq: number;
-  private worldConnectStageSent: boolean;
-  private worldPingTimer?: NodeJS.Timeout;
+  private worldConnectStageMask: number;
+  private worldHeartbeatTimer?: NodeJS.Timeout;
+  private worldHeartbeatIntervalMs: number;
+  private worldHeartbeatPayloadBytes: number;
+  private worldRegisterSessionId: number;
+  private worldRegisterSent: boolean;
   private worldYourId: number | null;
   private worldClientObjectId: number | null;
   private worldNetProtocol: { version: number; extra: number } | null;
   private worldUnguaranteedLog: boolean;
   private worldUnguaranteedLogIntervalMs: number;
   private worldUnguaranteedLogLast: number;
+  private worldReplayEnabled: boolean;
+  private worldReplayIntervalMs: number;
+  private worldReplayLoopDelayMs: number;
+  private worldReplayCadenceMs: number[];
+  private worldReplayIndex: number;
+  private worldReplayTimer?: NodeJS.Timeout;
+  private worldReplaySocket?: dgram.Socket;
+  private worldReplaySourcePort: number;
+  private worldReplayPackets: Buffer[];
+  private probePending: boolean;
+  private probeTarget: 'master' | 'world';
+  private probeIds: number[];
+  private probePayloadBytes: number;
 
   constructor(
     serverAddress: string,
@@ -112,6 +286,16 @@ class TestClient {
     },
     worldNet?: {
       connectionId?: number;
+      heartbeatIntervalMs?: number;
+      heartbeatPayloadBytes?: number;
+      sessionId?: number;
+    },
+    worldReplay?: {
+      enabled?: boolean;
+      intervalMs?: number;
+      loopDelayMs?: number;
+      cadenceMs?: number[];
+      sourcePort?: number;
     },
   ) {
     this.masterPeer = new RakPeer();
@@ -147,7 +331,35 @@ class TestClient {
     this.worldLoginSentToWorld = false;
     this.worldConnected = false;
     this.worldLithOutSeq = 0;
-    this.worldConnectStageSent = false;
+    this.worldConnectStageMask = 0;
+    const heartbeatIntervalEnv = parseInt(
+      process.env.WORLD_HEARTBEAT_MS ??
+        process.env.FOM_WORLD_HEARTBEAT_MS ??
+        '10000',
+      10,
+    );
+    const heartbeatBytesEnv = parseInt(
+      process.env.WORLD_HEARTBEAT_BYTES ??
+        process.env.FOM_WORLD_HEARTBEAT_BYTES ??
+        '35',
+      10,
+    );
+    const sessionIdEnv = parseInt(
+      process.env.WORLD_SESSION_ID ??
+        process.env.FOM_WORLD_SESSION_ID ??
+        '0',
+      10,
+    );
+    const heartbeatInterval =
+      worldNet?.heartbeatIntervalMs ?? (Number.isFinite(heartbeatIntervalEnv) ? heartbeatIntervalEnv : 10000);
+    const heartbeatBytes =
+      worldNet?.heartbeatPayloadBytes ?? (Number.isFinite(heartbeatBytesEnv) ? heartbeatBytesEnv : 35);
+    const sessionId =
+      worldNet?.sessionId ?? (Number.isFinite(sessionIdEnv) ? sessionIdEnv : 0);
+    this.worldHeartbeatIntervalMs = Math.max(0, heartbeatInterval || 0);
+    this.worldHeartbeatPayloadBytes = Math.max(1, heartbeatBytes || 1);
+    this.worldRegisterSessionId = Math.max(0, sessionId || 0);
+    this.worldRegisterSent = false;
     this.worldYourId = null;
     this.worldClientObjectId = null;
     this.worldNetProtocol = null;
@@ -165,6 +377,17 @@ class TestClient {
       ) || 5000,
     );
     this.worldUnguaranteedLogLast = 0;
+    this.worldReplayEnabled = worldReplay?.enabled ?? false;
+    this.worldReplayIntervalMs = Math.max(0, worldReplay?.intervalMs ?? 0);
+    this.worldReplayLoopDelayMs = Math.max(0, worldReplay?.loopDelayMs ?? 0);
+    this.worldReplayCadenceMs = worldReplay?.cadenceMs ?? MOVEMENT_REPLAY_CADENCE_MS;
+    this.worldReplayIndex = 0;
+    this.worldReplaySourcePort = Math.max(0, worldReplay?.sourcePort ?? 0);
+    this.worldReplayPackets = MOVEMENT_REPLAY_PACKETS;
+    this.probePending = false;
+    this.probeTarget = 'master';
+    this.probeIds = [];
+    this.probePayloadBytes = 0;
 
     this.masterPollTimer = setInterval(() => {
       this.pollMasterPeer();
@@ -254,6 +477,9 @@ class TestClient {
     ) {
       if (!this.masterConnected) {
         this.masterConnected = true;
+        this.masterAddress = address;
+        this.serverAddress = addressToIp(address);
+        this.serverPort = address.port;
         PacketLogger.globalNote(`[Master] Connected ${addressToString(address)}`, true);
       }
       if (this.pendingLoginRequest) {
@@ -268,6 +494,9 @@ class TestClient {
       }
       if (this.worldLoginPending) {
         this.sendWorldLogin();
+      }
+      if (this.probePending && this.probeTarget === 'master') {
+        this.sendProbePackets('master');
       }
       return;
     }
@@ -320,7 +549,9 @@ class TestClient {
     return this.decodeLoginRequestReturnPayload(data);
   }
 
-  private decodeLoginReturnPayload(inner: Buffer): { status: number; playerId: number } | null {
+  private decodeLoginReturnPayload(
+    inner: Buffer,
+  ): { status: number; playerId: number; worldIds: number[]; defaultWorldId: number; currentWorldId: number } | null {
     if (!inner || inner.length === 0) return null;
     try {
       const stream = new NativeBitStream(inner, true);
@@ -333,14 +564,71 @@ class TestClient {
 
       const status = stream.readCompressedU8() & 0xff;
       const playerId = this.readCompressedUInt(stream, 4);
-      return { status, playerId };
+      const worldIds: number[] = [];
+      let defaultWorldId = 0;
+      let currentWorldId = 0;
+      if (playerId !== 0) {
+        // Align with server IdLoginReturnPacket.encode() to keep stream sync.
+        stream.readCompressedU8(); // accountType
+        stream.readBit(); // isFullAccount
+        stream.readBit(); // hasCharFlags
+        stream.readCompressedU16(); // clientVersion
+        const isBanned = stream.readBit();
+        if (isBanned) {
+          decodeString(stream, 2048);
+          decodeString(stream, 2048);
+        }
+        const worldCount = stream.readCompressedU8() & 0xff;
+        for (let i = 0; i < worldCount; i += 1) {
+          worldIds.push(stream.readCompressedU32() >>> 0);
+        }
+        decodeString(stream, 2048); // factionMOTD
+        this.skipApartmentPayload(stream);
+        defaultWorldId = stream.readCompressedU8() & 0xff;
+        currentWorldId = stream.readCompressedU8() & 0xff;
+      }
+      return { status, playerId, worldIds, defaultWorldId, currentWorldId };
     } catch {
       return null;
     }
   }
 
-  private decodeLoginReturn(data: Buffer): { status: number; playerId: number } | null {
+  private decodeLoginReturn(
+    data: Buffer,
+  ): { status: number; playerId: number; worldIds: number[]; defaultWorldId: number; currentWorldId: number } | null {
     return this.decodeLoginReturnPayload(data);
+  }
+
+  private skipApartmentPayload(stream: NativeBitStream): void {
+    stream.readCompressedU32(); // id
+    stream.readCompressedU8(); // type
+    stream.readCompressedU32(); // ownerPlayerID
+    stream.readCompressedU32(); // ownerFactionID
+    const ranks = stream.readCompressedU8() & 0xff;
+    for (let i = 0; i < ranks; i += 1) {
+      stream.readCompressedU8(); // rankID
+      stream.readBit(); // allowed
+    }
+    stream.readBit(); // isOpen
+    decodeString(stream, 2048); // ownerName
+    decodeString(stream, 2048); // entryCode
+    stream.readCompressedU16(); // storageCapacity
+    stream.readCompressedU32(); // storageField14
+    stream.readCompressedU32(); // storageField18
+    stream.readCompressedU32(); // storageField1C
+    stream.readCompressedU16(); // storageItemCount
+    stream.readBit(); // hasPublicInfo
+    stream.readCompressedU32(); // entryPrice
+    decodeString(stream, 2048); // publicName
+    decodeString(stream, 2048); // publicDescription
+    const factions = stream.readCompressedU32() >>> 0;
+    for (let i = 0; i < factions; i += 1) {
+      stream.readCompressedU32(); // factionId
+      decodeString(stream, 2048); // factionName
+    }
+    stream.readBit(); // isDefault
+    stream.readBit(); // isFeatured
+    stream.readCompressedU32(); // occupancy
   }
 
   private readCompressedUInt(stream: NativeBitStream, size: number): number {
@@ -356,11 +644,11 @@ class TestClient {
     }
   }
 
-  private ipv4FromU32BE(value: number): string {
-    const b0 = (value >>> 24) & 0xff;
-    const b1 = (value >>> 16) & 0xff;
-    const b2 = (value >>> 8) & 0xff;
-    const b3 = value & 0xff;
+  private ipv4FromU32LE(value: number): string {
+    const b0 = value & 0xff;
+    const b1 = (value >>> 8) & 0xff;
+    const b2 = (value >>> 16) & 0xff;
+    const b3 = (value >>> 24) & 0xff;
     return `${b0}.${b1}.${b2}.${b3}`;
   }
 
@@ -398,8 +686,23 @@ class TestClient {
     const flag = this.readCompressedUInt(stream, 1) & 0xff;
     const worldIpU32 = this.readCompressedUInt(stream, 4);
     const worldPort = this.readCompressedUInt(stream, 2) & 0xffff;
-    const worldIp = this.ipv4FromU32BE(worldIpU32);
+    const worldIp = this.ipv4FromU32LE(worldIpU32);
     return { code, flag, worldIp, worldPort };
+  }
+
+  private decodeRegisterClientReturn(data: Buffer): { worldId: number; playerId: number; returnCode: number } | null {
+    if (!data || data.length === 0) return null;
+    const stream = new NativeBitStream(data, true);
+    let packetId = stream.readU8();
+    if (packetId === RakNetMessageId.ID_TIMESTAMP) {
+      stream.readBytes(8);
+      packetId = stream.readU8();
+    }
+    if (packetId !== RakNetMessageId.ID_REGISTER_CLIENT_RETURN) return null;
+    const worldId = this.readCompressedUInt(stream, 1) & 0xff;
+    const playerId = this.readCompressedUInt(stream, 4);
+    const returnCode = this.readCompressedUInt(stream, 1) & 0xff;
+    return { worldId, playerId, returnCode };
   }
 
   private readLithSizeIndicator(reader: BitStreamReader): number {
@@ -564,8 +867,9 @@ class TestClient {
 
   private sendConnectStage(stage: number): void {
     if (!this.worldPeer || !this.worldAddress) return;
-    if (this.worldConnectStageSent) return;
-    this.worldConnectStageSent = true;
+    const bit = 1 << (stage & 0x1f);
+    if (this.worldConnectStageMask & bit) return;
+    this.worldConnectStageMask |= bit;
     const payloadWriter = new BitStreamWriter(16);
     payloadWriter.writeBits(stage & 0xffff, 16);
     const payload = payloadWriter.toBuffer();
@@ -584,21 +888,99 @@ class TestClient {
 
   private startWorldHeartbeat(): void {
     if (!this.worldPeer || !this.worldAddress) return;
-    if (this.worldPingTimer) return;
-    this.worldPingTimer = setInterval(() => {
+    if (this.worldHeartbeatIntervalMs <= 0) return;
+    if (this.worldHeartbeatTimer) return;
+    this.worldHeartbeatTimer = setInterval(() => {
       if (!this.worldPeer || !this.worldAddress) return;
-      const ping = Buffer.alloc(5);
-      ping[0] = RakNetMessageId.ID_PING;
-      ping.writeUInt32BE((Date.now() >>> 0), 1);
+      const heartbeat = buildWorldHeartbeat({
+        sizeBytes: this.worldHeartbeatPayloadBytes,
+        timestampMs: BigInt(Date.now()),
+      });
       this.sendPacket(
         this.worldPeer,
         this.worldAddress,
-        ping,
+        heartbeat,
         this.worldConnectionId,
         RakPriority.LOW,
         RakReliability.UNRELIABLE,
       );
-    }, 3000);
+    }, this.worldHeartbeatIntervalMs);
+  }
+
+  private initWorldReplaySocket(): void {
+    if (this.worldReplaySocket) return;
+    const socket = dgram.createSocket({ type: 'udp4', reuseAddr: this.worldReplaySourcePort > 0 });
+    socket.on('error', (err) => {
+      PacketLogger.globalNote(`[Replay] Socket error: ${err.message}`, true);
+    });
+    if (this.worldReplaySourcePort > 0) {
+      socket.bind(this.worldReplaySourcePort);
+    }
+    this.worldReplaySocket = socket;
+  }
+
+  private scheduleWorldReplayNext(delayMs: number): void {
+    if (this.worldReplayTimer) {
+      clearTimeout(this.worldReplayTimer);
+      this.worldReplayTimer = undefined;
+    }
+    this.worldReplayTimer = setTimeout(() => {
+      this.worldReplayTimer = undefined;
+      const lastIndex = this.sendWorldReplayPacket();
+      const cadence = this.worldReplayCadenceMs;
+      const fallback = this.worldReplayLoopDelayMs || this.worldReplayIntervalMs || 0;
+      const nextDelay =
+        this.worldReplayIntervalMs > 0
+          ? this.worldReplayIntervalMs
+          : (cadence[lastIndex] ?? fallback);
+      this.scheduleWorldReplayNext(Math.max(0, nextDelay));
+    }, Math.max(0, delayMs));
+  }
+
+  private startWorldReplay(): void {
+    if (!this.worldReplayEnabled) return;
+    if (!this.worldAddress) return;
+    if (this.worldReplayTimer) return;
+    if (!this.worldReplayPackets.length) return;
+    this.initWorldReplaySocket();
+    this.worldReplayIndex = 0;
+    PacketLogger.globalNote(
+      `[Replay] Starting movement replay packets=${this.worldReplayPackets.length}`,
+      true,
+    );
+    if (this.worldReplayIntervalMs > 0) {
+      this.worldReplayTimer = setInterval(() => {
+        this.sendWorldReplayPacket();
+      }, this.worldReplayIntervalMs);
+      this.sendWorldReplayPacket();
+      return;
+    }
+    this.scheduleWorldReplayNext(0);
+  }
+
+  private stopWorldReplay(): void {
+    if (this.worldReplayTimer) {
+      clearTimeout(this.worldReplayTimer);
+      clearInterval(this.worldReplayTimer);
+      this.worldReplayTimer = undefined;
+    }
+    if (this.worldReplaySocket) {
+      this.worldReplaySocket.close();
+      this.worldReplaySocket = undefined;
+    }
+  }
+
+  private sendWorldReplayPacket(): number {
+    if (!this.worldAddress) return 0;
+    if (!this.worldReplaySocket) return 0;
+    const packet = this.worldReplayPackets[this.worldReplayIndex];
+    const ip = addressToIp(this.worldAddress);
+    const port = this.worldAddress.port;
+    this.logOutgoing(packet, ip, port, this.worldConnectionId);
+    this.worldReplaySocket.send(packet, port, ip);
+    const sentIndex = this.worldReplayIndex;
+    this.worldReplayIndex = (this.worldReplayIndex + 1) % this.worldReplayPackets.length;
+    return sentIndex;
   }
 
   private initWorldPeer(): void {
@@ -619,7 +1001,7 @@ class TestClient {
       payload = data.subarray(9);
       msgId = payload[0];
     }
-    if (msgId >= RakNetMessageId.ID_USER_PACKET_ENUM && payload.length > 1) {
+    if (msgId === RakNetMessageId.ID_USER_PACKET_ENUM && payload.length > 1) {
       // World packets carry LithTech data inside the RakNet user packet wrapper.
       payload = payload.subarray(1);
       msgId = payload[0];
@@ -631,10 +1013,16 @@ class TestClient {
     ) {
       if (!this.worldConnected) {
         this.worldConnected = true;
+        this.worldAddress = address;
         PacketLogger.globalNote(`[World] Connected ${addressToString(address)}`, true);
       }
       this.sendWorldLoginToWorld();
       this.startWorldHeartbeat();
+      this.startWorldReplay();
+      this.maybeRegisterClient();
+      if (this.probePending && this.probeTarget === 'world') {
+        this.sendProbePackets('world');
+      }
       return;
     }
 
@@ -645,8 +1033,24 @@ class TestClient {
     ) {
       this.worldConnected = false;
       this.worldConnectActive = false;
+      if (!this.worldReplayEnabled) {
+        this.stopWorldReplay();
+      }
+      if (this.worldHeartbeatTimer) {
+        clearInterval(this.worldHeartbeatTimer);
+        this.worldHeartbeatTimer = undefined;
+      }
       PacketLogger.globalNote(
         `[World] Disconnected msg=0x${msgId.toString(16)} ${addressToString(address)}`,
+        true,
+      );
+      return;
+    }
+
+    const registerReturn = this.decodeRegisterClientReturn(payload);
+    if (registerReturn) {
+      PacketLogger.globalNote(
+        `[World] REGISTER_CLIENT_RETURN worldId=${registerReturn.worldId} playerId=${registerReturn.playerId} code=${registerReturn.returnCode}`,
         true,
       );
       return;
@@ -698,6 +1102,7 @@ class TestClient {
             true,
           );
         }
+        this.sendConnectStage(1);
         continue;
       }
       if (msg.msgId === LithTechMessageId.MSG_LOADWORLD) {
@@ -890,6 +1295,98 @@ class TestClient {
     );
   }
 
+  private sendRegisterClientToWorld(): void {
+    if (!this.worldPeer || !this.worldAddress) return;
+    if (this.worldRegisterSent) return;
+    if (this.worldLoginPlayerId <= 0) return;
+    const worldId = this.worldLoginWorldId > 0 ? this.worldLoginWorldId : 1;
+    const payload = buildRegisterClient({
+      worldId,
+      playerId: this.worldLoginPlayerId,
+      sessionId: this.worldRegisterSessionId,
+    });
+    this.worldRegisterSent = true;
+    this.sendPacket(
+      this.worldPeer,
+      this.worldAddress,
+      payload,
+      this.worldConnectionId,
+      RakPriority.HIGH,
+      RakReliability.RELIABLE,
+    );
+  }
+
+  private sendProbePackets(target: 'master' | 'world'): void {
+    if (!this.probePending) return;
+    const ids = this.probeIds.length > 0 ? this.probeIds : [LithTechMessageId.MSG_CONNECTSTAGE];
+    const payloadBytes = Math.max(0, this.probePayloadBytes | 0);
+    const payload = payloadBytes > 0 ? Buffer.alloc(payloadBytes, 0) : Buffer.alloc(0);
+
+    if (target === 'master') {
+      if (!this.masterConnected) return;
+      PacketLogger.globalNote(`[Probe] Sending ${ids.length} Lith IDs to master`, true);
+      for (const id of ids) {
+        const lith = this.buildLithTechGuaranteedPacket([
+          { msgId: id & 0xff, payload, payloadBits: payload.length * 8 },
+        ]);
+        this.sendPacket(
+          this.masterPeer,
+          this.masterAddress,
+          lith,
+          this.connectionId,
+          RakPriority.HIGH,
+          RakReliability.RELIABLE,
+        );
+      }
+      this.probePending = false;
+      return;
+    }
+
+    if (!this.worldPeer || !this.worldAddress) return;
+    PacketLogger.globalNote(`[Probe] Sending ${ids.length} Lith IDs to world`, true);
+    for (const id of ids) {
+      const lith = this.buildLithTechGuaranteedPacket([
+        { msgId: id & 0xff, payload, payloadBits: payload.length * 8 },
+      ]);
+      this.sendPacket(
+        this.worldPeer,
+        this.worldAddress,
+        lith,
+        this.worldConnectionId,
+        RakPriority.HIGH,
+        RakReliability.RELIABLE,
+      );
+    }
+    this.probePending = false;
+  }
+
+  startProbe(target: 'master' | 'world', ids: number[], payloadBytes: number): void {
+    const uniqueIds = Array.from(new Set(ids.filter(Number.isFinite).map(value => value & 0xff)));
+    this.probeTarget = target;
+    this.probeIds = uniqueIds;
+    this.probePayloadBytes = Math.max(0, payloadBytes | 0);
+    this.probePending = true;
+    if (target === 'world') {
+      if (!this.worldConnected) {
+        const address = this.worldLoginTarget ?? { address: this.serverAddress, port: this.serverPort };
+        this.connectWorldDirect(address.address, address.port);
+        return;
+      }
+      this.sendProbePackets('world');
+      return;
+    }
+    if (!this.masterConnected) {
+      this.connectMaster();
+      return;
+    }
+    this.sendProbePackets('master');
+  }
+
+  private maybeRegisterClient(): void {
+    if (!this.worldConnected) return;
+    this.sendRegisterClientToWorld();
+  }
+
   private startWorldConnection(target: { address: string; port: number }): void {
     this.initWorldPeer();
     if (!this.worldPeer) return;
@@ -901,10 +1398,15 @@ class TestClient {
         return;
       }
     }
+    if (this.worldHeartbeatTimer) {
+      clearInterval(this.worldHeartbeatTimer);
+      this.worldHeartbeatTimer = undefined;
+    }
     this.worldLoginTarget = target;
     this.worldConnectActive = true;
     this.worldLoginSentToWorld = false;
-    this.worldConnectStageSent = false;
+    this.worldConnectStageMask = 0;
+    this.worldRegisterSent = false;
     this.worldLithOutSeq = 0;
     this.worldConnected = false;
     this.worldAddress = addressFromString(target.address, target.port);
@@ -915,6 +1417,9 @@ class TestClient {
         `[WorldConnect] connect failed ${target.address}:${target.port}`,
         true,
       );
+    }
+    if (this.worldReplayEnabled) {
+      this.startWorldReplay();
     }
   }
 
@@ -946,6 +1451,11 @@ class TestClient {
     if (loginReturn && loginReturn.status === 1) {
       if (loginReturn.playerId > 0 && this.worldLoginPlayerId === 0) {
         this.worldLoginPlayerId = loginReturn.playerId;
+        this.maybeRegisterClient();
+      }
+      if (this.worldLoginWorldId === 0) {
+        const selected = loginReturn.currentWorldId || loginReturn.defaultWorldId;
+        this.worldLoginWorldId = selected || loginReturn.worldIds[0] || 0;
       }
       if (this.worldLoginWorldId > 0 && !this.worldLoginPending) {
         this.worldLoginPending = true;
@@ -967,6 +1477,7 @@ class TestClient {
         this.worldLoginWorldId = worldId;
         this.worldLoginWorldInst = worldInst;
         this.worldLoginPlayerId = playerId;
+        this.maybeRegisterClient();
         this.worldLoginPending = true;
         this.sendWorldLogin();
       }
@@ -1048,10 +1559,11 @@ class TestClient {
       clearTimeout(this.worldLoginRetryTimer);
       this.worldLoginRetryTimer = undefined;
     }
-    if (this.worldPingTimer) {
-      clearInterval(this.worldPingTimer);
-      this.worldPingTimer = undefined;
+    if (this.worldHeartbeatTimer) {
+      clearInterval(this.worldHeartbeatTimer);
+      this.worldHeartbeatTimer = undefined;
     }
+    this.stopWorldReplay();
   }
 }
 
@@ -1079,6 +1591,22 @@ async function main() {
     const base = value.startsWith('0x') || /[a-f]/i.test(value) ? 16 : 10;
     const parsed = Number.parseInt(value, base);
     return Number.isNaN(parsed) ? undefined : (parsed >>> 0);
+  };
+
+  const parseIdList = (value: string | undefined): number[] => {
+    if (!value) return [];
+    return value
+      .split(',')
+      .map((v) => parseU32(v.trim()))
+      .filter((v): v is number => typeof v === 'number')
+      .map((v) => v & 0xff);
+  };
+
+  const collectLithIds = (): number[] => {
+    const ids = Object.values(LithTechMessageId)
+      .filter((v): v is number => typeof v === 'number')
+      .map((v) => v & 0xff);
+    return Array.from(new Set(ids)).sort((a, b) => a - b);
   };
 
   const parseU32Block = (value: string | undefined): [number, number, number] => {
@@ -1154,9 +1682,50 @@ async function main() {
     parseU32(getFlag('world-player') || process.env.FOM_PLAYER_ID || process.env.PLAYER_ID);
   const worldConst =
     parseU32(getFlag('world-const') || process.env.WORLD_CONST);
+  const worldHeartbeatMs = parseU32(
+    getFlag('world-heartbeat-ms') ||
+      getFlag('world-heartbeat') ||
+      process.env.WORLD_HEARTBEAT_MS ||
+      process.env.FOM_WORLD_HEARTBEAT_MS,
+  );
+  const worldHeartbeatBytes = parseU32(
+    getFlag('world-heartbeat-bytes') ||
+      process.env.WORLD_HEARTBEAT_BYTES ||
+      process.env.FOM_WORLD_HEARTBEAT_BYTES,
+  );
+  const worldSessionId = parseU32(
+    getFlag('world-session') ||
+      getFlag('world-session-id') ||
+      process.env.WORLD_SESSION_ID ||
+      process.env.FOM_WORLD_SESSION_ID,
+  );
+  const worldReplayMs = parseU32(
+    getFlag('world-replay-ms') ||
+      process.env.WORLD_REPLAY_MS ||
+      process.env.FOM_WORLD_REPLAY_MS,
+  );
+  const worldReplayLoopMs = parseU32(
+    getFlag('world-replay-loop-ms') ||
+      process.env.WORLD_REPLAY_LOOP_MS ||
+      process.env.FOM_WORLD_REPLAY_LOOP_MS,
+  );
+  const worldReplayPort = parseU32(
+    getFlag('world-replay-port') ||
+      process.env.WORLD_REPLAY_PORT ||
+      process.env.FOM_WORLD_REPLAY_PORT,
+  );
+  const worldReplayEnabled = parseBool(
+    getFlag('world-replay') || process.env.WORLD_REPLAY || process.env.FOM_WORLD_REPLAY,
+    false,
+  ) || (worldReplayMs !== undefined);
   const worldIp = getFlag('world-ip') || process.env.WORLD_IP;
   const worldPortRaw = getFlag('world-port') || process.env.WORLD_PORT;
   const worldPort = worldPortRaw ? Number.parseInt(worldPortRaw, 10) : NaN;
+  const probeIdsRaw = getFlag('probe-ids') || process.env.FOM_PROBE_IDS;
+  const probeTargetRaw = (getFlag('probe-target') || process.env.FOM_PROBE_TARGET || 'master').toLowerCase();
+  const probePayloadBytes = parseU32(getFlag('probe-bytes') || process.env.FOM_PROBE_BYTES) ?? 0;
+  const probeIds = probeIdsRaw ? parseIdList(probeIdsRaw) : collectLithIds();
+  const probeTarget = probeTargetRaw === 'world' ? 'world' : 'master';
 
   const quiet = parseBool(process.env.QUIET_MODE ?? process.env.FOM_QUIET_LOGS, false);
   if (quiet) {
@@ -1214,6 +1783,15 @@ async function main() {
     worldInst: worldInst ?? 0,
     playerId: playerId ?? 0,
     worldConst: worldConst ?? 0x13bc52,
+  }, {
+    heartbeatIntervalMs: worldHeartbeatMs,
+    heartbeatPayloadBytes: worldHeartbeatBytes,
+    sessionId: worldSessionId,
+  }, {
+    enabled: worldReplayEnabled,
+    intervalMs: worldReplayMs ?? 0,
+    loopDelayMs: worldReplayLoopMs ?? 0,
+    sourcePort: worldReplayPort ?? 0,
   });
 
   switch (command) {
@@ -1230,6 +1808,10 @@ async function main() {
         return;
       }
       client.connectWorldDirect(targetIp, targetPort);
+      break;
+    }
+    case 'probe': {
+      client.startProbe(probeTarget, probeIds, probePayloadBytes);
       break;
     }
     case 'login':
@@ -1258,7 +1840,7 @@ async function main() {
       });
       break;
     default:
-      console.log('Usage: bun src/tools/TestClient.ts [connect|login|login6e|world|world-connect] [address] [port] [--user=NAME] [--client-version=N] [--login-user=NAME] [--login-pass=TEXT] [--login-hash=TEXT] [--login-token=TEXT] [--login-mac=TEXT] [--login-computer=TEXT] [--login-crc=v1,v2,v3] [--login-drives=a,b,c,d] [--login-serials=a,b,c,d] [--login-ticket=HEX] [--login-ticket-len=N] [--login=SECONDS] [--login-auth=BOOL] [--world-ip=IP] [--world-port=N] [--world-id=N] [--world-inst=N] [--world-player=N] [--world-const=N]');
+      console.log('Usage: bun src/tools/TestClient.ts [connect|login|login6e|world|world-connect|probe] [address] [port] [--user=NAME] [--client-version=N] [--login-user=NAME] [--login-pass=TEXT] [--login-hash=TEXT] [--login-token=TEXT] [--login-mac=TEXT] [--login-computer=TEXT] [--login-crc=v1,v2,v3] [--login-drives=a,b,c,d] [--login-serials=a,b,c,d] [--login-ticket=HEX] [--login-ticket-len=N] [--login=SECONDS] [--login-auth=BOOL] [--world-ip=IP] [--world-port=N] [--world-id=N] [--world-inst=N] [--world-player=N] [--world-const=N] [--world-session=N] [--world-heartbeat-ms=N] [--world-heartbeat-bytes=N] [--world-replay=BOOL] [--world-replay-ms=N] [--world-replay-loop-ms=N] [--world-replay-port=N] [--probe-ids=04,06,09] [--probe-target=master|world] [--probe-bytes=N]');
       client.close();
       return;
   }
