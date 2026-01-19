@@ -7,6 +7,10 @@ if not exist node_modules (
   npm install
 )
 
+set BUN_EXE=
+if exist "%USERPROFILE%\\.bun\\bin\\bun.exe" set BUN_EXE=%USERPROFILE%\\.bun\\bin\\bun.exe
+if "%BUN_EXE%"=="" set BUN_EXE=bun
+
 set MODE=
 set HOST=
 set PORT=
@@ -69,10 +73,14 @@ goto parseargs
 
 :parsedargs
 
-if "%MODE%"=="" set MODE=open
+if "%MODE%"=="" set MODE=connect
 if "%HOST%"=="" set HOST=127.0.0.1
 if "%PORT%"=="" set PORT=61000
 if "%LOGIN_DELAY%"=="" set LOGIN_DELAY=3
+
+if /I "%MODE%"=="open" set MODE=connect
+if /I "%MODE%"=="query" set MODE=connect
+if /I "%MODE%"=="login6c" set MODE=login6e
 
 if not "%LOGIN_DELAY%"=="" (
   set LOGIN_ARG=--login=%LOGIN_DELAY%
@@ -80,24 +88,27 @@ if not "%LOGIN_DELAY%"=="" (
   set LOGIN_ARG=
 )
 
-echo [Client_TS] Starting client: %MODE% %HOST%:%PORT%
-
-if /I "%MODE%"=="open" (
-  npx tsx src\tools\TestClient.ts open %HOST% %PORT% %LOGIN_ARG%
-  goto :eof
-)
 if /I "%MODE%"=="connect" (
-  npx tsx src\tools\TestClient.ts connect %HOST% %PORT% %LOGIN_ARG%
+  "%BUN_EXE%" --cwd "%CD%" src\tools\TestClient.ts connect %HOST% %PORT% %LOGIN_ARG%
   goto :eof
 )
-if /I "%MODE%"=="query" (
-  npx tsx src\tools\TestClient.ts query %HOST% %PORT% %LOGIN_ARG%
+if /I "%MODE%"=="login" (
+  "%BUN_EXE%" --cwd "%CD%" src\tools\TestClient.ts login %HOST% %PORT% %LOGIN_ARG%
   goto :eof
 )
-if /I "%MODE%"=="login6c" (
-  npx tsx src\tools\TestClient.ts login6c %HOST% %PORT%
+if /I "%MODE%"=="login6e" (
+  "%BUN_EXE%" --cwd "%CD%" src\tools\TestClient.ts login6e %HOST% %PORT%
   goto :eof
 )
 
-echo Usage: start_client.bat [-mode=open^|connect^|query^|login6c] [-host=IP] [-port=PORT] [-login=SECONDS]
+if /I "%MODE%"=="world" (
+  "%BUN_EXE%" --cwd "%CD%" src\tools\TestClient.ts world %HOST% %PORT%
+  goto :eof
+)
+if /I "%MODE%"=="world-connect" (
+  "%BUN_EXE%" --cwd "%CD%" src\tools\TestClient.ts world-connect %HOST% %PORT%
+  goto :eof
+)
+
+echo Usage: start_client.bat [-mode=connect^|login^|login6e^|world^|world-connect] [-host=IP] [-port=PORT] [-login=SECONDS]
 exit /b 1
