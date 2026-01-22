@@ -91,3 +91,8 @@
 - Update `.gitignore` for generated artifacts (logs/builds) early; never delete user files; use `git rm` only with explicit request.
 - When a remote exists, push at milestone end; never force-push unless explicitly asked.
 - For risky changes, record the intended delta + rollback command in the working log entry.
+
+# Sub-Agents
+- `Hook\AGENTS.md` — C++ hook/proxy standards: Allman braces, PascalCase, Unreal-leaning conventions, detour safety, PacketInspector logging.
+- `Server\AGENTS.md` — Server emulator standards: Bun/TypeScript conventions, packet handling patterns, logging rules.
+- `ServerManager\AGENTS.md` — ServerManager tooling conventions and workflow specifics.
